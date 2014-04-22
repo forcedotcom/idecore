@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0">
+    <channel>
+        <title>DFC Featured Content</title>
+        <description>The latest developer content featured on the DFC home page -- new technical articles, sample code, developer stories, and more.</description>
+        <link>http://wiki.developerforce.com/index.php/More_Featured_Content</link>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <language>en</language>
+        <lastBuildDate>Thu, 07 Aug 2008 11:17:29 -0700</lastBuildDate>
+        <pubDate>Thu, 07 Aug 2008 11:16:53 -0700</pubDate>
+        <generator>FeedForAll Mac v2.1 (2.1.0.1); http://www.FeedForAll.com/</generator>
+        <item>
+            <title>Code: Google Data APIs Schema Demo</title>
+            <description>This open source tool extracts Force.com object meta-data and saves it to a Google Spreadsheet.</description>
+            <link>http://wiki.developerforce.com/index.php/Google_Data_APIs_Schema_Demo</link>
+            <guid isPermaLink="false">935A7758-ADDC-4B20-B18F-A7A2808B0880-891-0000FCCE0C103CD4-FFA</guid>
+            <pubDate>Thu, 07 Aug 2008 11:17:21 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Webinar: Force.com Toolkit for Google Data APIs</title>
+            <description>A chance to watch the recent webinar, which introduces the toolkit and demonstrates the API in action.</description>
+            <link>http://wiki.developerforce.com/index.php/Webinar_Toolkit_for_Google_Data_APIs</link>
+            <guid isPermaLink="false">2A90D31F-9162-412C-937C-089C6D296FF8-891-0000FCC150E6532B-FFA</guid>
+            <pubDate>Thu, 07 Aug 2008 11:17:27 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Code: Consolidated Case History Timeline with Visualforce</title>
+            <description>Learn how to build apps that directly access the Google Documents, Calendar, Spreadsheets, Blogger and Contacts APIs as first-class Apex citizens.</description>
+            <link>http://wiki.developerforce.com/index.php/Visualforce_CaseHistoryTimeline</link>
+            <guid isPermaLink="false">B8F86884-9D28-4CD0-8F72-E2061C7B9E5C-7328-00003AE2BD7C0F0E-FFA</guid>
+            <pubDate>Tue, 29 Jul 2008 16:08:18 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Migration Tool Guide</title>
+            <description>Learn how to Deploy Apex Code and Migrate Organization Settings Using the Force.com Migration Tool, a Java/Ant-based command-line utility.</description>
+            <link>http://wiki.developerforce.com/index.php/Migration_Tool_Guide</link>
+            <guid isPermaLink="false">E4E51D8F-EE54-4CAA-99FC-17427C78A7D4-9377-000010836CBA8B91-FFA</guid>
+            <pubDate>Mon, 28 Jul 2008 14:56:30 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Guide to Certification</title>
+            <description>Developers and Admins will soon be able to gain official certification on the Force.com platform, with the announcement of a global rollout of formal certification.</description>
+            <link>http://wiki.developerforce.com/index.php/Certification</link>
+            <guid isPermaLink="false">E777BABB-8214-4E1E-B589-40B2FA679330-24020-0000AAEF8D0A4B84-FFA</guid>
+            <pubDate>Mon, 21 Jul 2008 16:28:19 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Success Story: Bringing Force.com to Europe</title>
+            <description>Dan Belwood of Sofia Works describes his company's approach to cloud computing and its leveraging of Apex and Visualforce to build custom applications.</description>
+            <link>http://wiki.developerforce.com/index.php/Dan_Belwood_Success_Story</link>
+            <guid isPermaLink="false">4014420F-FFB1-4ADE-A3E8-1C2618AF74E4-24020-0000AAD513CB9F24-FFA</guid>
+            <pubDate>Mon, 21 Jul 2008 16:27:41 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Summer '08 Developer Preview Release of Force.com IDE</title>
+            <description>A new version of the Force.com IDE is now available, featuring page layouts, validation rules, workflows and more.</description>
+            <link>http://wiki.developerforce.com/index.php/Force.com_IDE</link>
+            <guid isPermaLink="false">74E3F2D7-A888-44C7-9C56-02C37996D187-2942-0001F0A5CEB2641F-FFA</guid>
+            <pubDate>Thu, 03 Jul 2008 13:16:44 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Success Story: The Making of a Platform ISV</title>
+            <description>Scott Hemmeter looks at Force.com and sees an ISV business in the making. Read about Scott and his successful Arrowpointe Maps application.</description>
+            <link>http://wiki.developerforce.com/index.php/Scott_Hemmeter_Story</link>
+            <guid isPermaLink="false">362295B5-708B-4B7D-82E0-853F5323F907-2942-0001F08F87D43CEF-FFA</guid>
+            <pubDate>Thu, 03 Jul 2008 13:17:38 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Toolkit for Google Data APIs</title>
+            <description>This toolkit exposes the Google Data APIs directly within Apex, making it easier to access them natively from your Force.com apps. Click through to download the toolkit and access the tutorials.</description>
+            <link>http://developer.force.com/google_data_toolkit</link>
+            <guid isPermaLink="false">4FB2EACB-58D9-4BDD-90AA-E33FA4ECF3B0-26528-0001CF7E09C0D031-FFA</guid>
+            <pubDate>Wed, 02 Jul 2008 12:56:16 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Workbench 2.0 Now Available</title>
+            <description>Workbench is a community-contributed, web-based application tool that administrators and developers can use to manage salesforce.com organizations. It now includes SOSL Search, Smart Lookups and Performance Enhancements. </description>
+            <link>http://wiki.developerforce.com/index.php/Workbench</link>
+            <guid isPermaLink="false">02F448EE-BA24-4BEB-B874-B88D1A43B8DC-29910-00010594FE9465D7-FFA</guid>
+            <pubDate>Fri, 20 Jun 2008 08:50:57 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Success Story: Building a Career with PHP and Force.com</title>
+            <description>Discover how Mike Simonds, a developer.force.com community member, learned how to use PHP and the Force.com Web Services API to write a series of useful tools and tutorials.</description>
+            <link>http://wiki.developerforce.com/index.php/Michael_Simonds_Success_Story</link>
+            <guid isPermaLink="false">D84EBD12-1524-4F22-A367-C23707E05543-29910-000105857FE36220-FFA</guid>
+            <pubDate>Fri, 20 Jun 2008 08:50:13 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Free Event: Tour de Force comes to Santa Clara, Dublin and Tokyo</title>
+            <description>Our global roadshow rolls on, with three cities in June: Santa Clara, Dublin and Tokyo. Whether you're a developer, IT pro, business analyst, or entrepreneur, come and meet the community and Force.com experts, and benefit from tutorials, technical sessions, hands-on labs and demos. All for free. Reserve your spot today!</description>
+            <link>http://tour.force.com/?d=70130000000E0nv</link>
+            <guid isPermaLink="false">10017E8D-A5CA-4BBE-BDA2-72AE9B0D67D9-27321-00005FF56200D40C-FFA</guid>
+            <pubDate>Wed, 04 Jun 2008 12:31:55 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Webinar: Beyond S-Controls. Master Visualforce in Summer '08</title>
+            <description>With the imminent release of Visualforce, your days of relying on S-Controls should be numbered. Register for this live webinar and learn why replacing them with Visualforce will reward you with speed, stability, and much more </description>
+            <link>http://www.apexdevnet.com/visualforce_webinar?d=70130000000E15w</link>
+            <guid isPermaLink="false">01831F17-58E7-4E08-9437-E2C3DEE5A729-27321-00005FE83377514A-FFA</guid>
+            <pubDate>Wed, 04 Jun 2008 12:30:46 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>MyLoanBiz Builds Mortgage Application on the Force.com Platform</title>
+            <description>The five-person MyLoanBiz company, which calls on a small pool of developers on an as-needed basis, runs a tight shop that maximizes the strengths of each employee. Read their story on how the Force.com platform has given the company a blueprint for building a business - complete with technology, marketing, and new releases.</description>
+            <link>http://wiki.developerforce.com/index.php/MyLoanBiz_Force.com_Success_Story</link>
+            <guid isPermaLink="false">5A92EEC1-1EBC-46DD-82E3-FE618D892E46-14533-000069891BA5830F-FFA</guid>
+            <pubDate>Fri, 23 May 2008 09:01:44 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>CODA Launches First Enterprise Accounting System Built on the Force.com Platform</title>
+            <description>CODA just launched CODA 2go, an on-demand financial system built entirely on the Force.com platform. Learn how they developed their custom application in this success story.</description>
+            <link>http://wiki.developerforce.com/index.php/CODA_Builds_On_Demand_Financial_Management_Service_on_Force.com</link>
+            <guid isPermaLink="false">8E279AF8-51FE-4926-BF06-E9D855BF553A-14533-0000695B81708A9C-FFA</guid>
+            <pubDate>Fri, 23 May 2008 09:00:38 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Enhancing Print Anything To Allow Direct PDF Generation</title>
+            <description>Enhancing the Print Anything project, Astitch.net recently published a free extension called the Astitch Document Generator. Find out how this application allows direct PDF generation by exposing the power of XSL and the FOP (Formatting Objects Processing) standard to any data in Salesforce.</description>
+            <link>http://wiki.developerforce.com/index.php/Document_Generation</link>
+            <guid isPermaLink="false">1074DA17-93D6-42C7-9CE5-CDF8DE548882-4712-00016C2637D2E2C1-FFA</guid>
+            <pubDate>Fri, 16 May 2008 13:56:04 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Ready to Deploy Visualforce? It's Coming in Summer '08!</title>
+            <description>Dreamforce Europe opened today with the announcement that Visualforce and Visualforce Components will be made available with the Summer '08 release, out early June. Get started by following our tutorials, demos, code samples and more. </description>
+            <link>http://wiki.developerforce.com/index.php/Visualforce</link>
+            <guid isPermaLink="false">C2E80734-0650-4127-A6DB-FA7FAD11492D-2519-0000D3C3E8BD9FC3-FFA</guid>
+            <pubDate>Mon, 12 May 2008 09:21:54 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>S-Controls and AJAX: Show a Pull-Down List of Related Contacts</title>
+            <description>This S-Control example uses AJAX and JavaScript to add functionality to a standard page. Download the sample code and learn how to supplement your pages with additional information while maintaining a familiar user interface.</description>
+            <link>http://wiki.developerforce.com/index.php/S-Controls_and_AJAX:_Showing_a_pull-down_list_of_related_contacts</link>
+            <guid isPermaLink="false">F23B9B7B-F61E-4037-9A47-E98143EC10A1-360-00000939767A2F3F-FFA</guid>
+            <pubDate>Fri, 02 May 2008 10:28:18 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Download the Workbench App &amp; Open Source Code</title>
+            <description>Combining the power of both the Apex Data Loader with the Force.com Explorer, the Workbench can insert, upsert, update, export, delete, undelete, and purge data as well as describe any object in your salesforce.com organization. The Web app, along with as the source code are now available for you to download.</description>
+            <link>http://wiki.developerforce.com/index.php/Workbench</link>
+            <guid isPermaLink="false">96F530A6-A571-43A8-8529-D7FA124935A0-1314-0000DCC34148DCCD-FFA</guid>
+            <pubDate>Mon, 28 Apr 2008 12:39:12 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Developing with Force.com and Google</title>
+            <description>Get started building powerful Force.com apps that integrate innovative Google technologies. </description>
+            <link>https://wiki.developerforce.com/index.php/Google_Resource_Center</link>
+            <guid isPermaLink="false">485F1210-3AC1-40B2-AFB3-C90D0572E796-415-000014F97CCDD653-FFA</guid>
+            <pubDate>Tue, 15 Apr 2008 13:40:25 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Riskonnect Delivers with Force.com</title>
+            <description>Read how the Force.com platform enabled Bob Morrell, CEO of Riskonnect, to avoid having to build and maintain his own infrastructure while delivering a revolutionary risk management solution in the process.</description>
+            <link>https://wiki.developerforce.com/index.php/Riskonnect_Success_Story</link>
+            <guid isPermaLink="false">F1CDB056-560D-46D8-AB69-62DB367B5960-2127-000046D29933A201-FFA</guid>
+            <pubDate>Wed, 02 Apr 2008 17:07:52 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>“The Perfect Job”: Building Force.com Apps for Nonprofits</title>
+            <description>The road to a dream job does not always run straight. Read about how Steve Andersen, who joined the tech-savvy Seattle nonprofit ONE/Northwest three years ago and has since helped build Force.com applications for some 20 Pacific Northwest environmental groups.</description>
+            <link>https://wiki.developerforce.com/index.php/Steve_Andersen_Community_Profile</link>
+            <guid isPermaLink="false">D112D832-EF55-4ED5-90C0-2687B0E6DB77-374-000009E4AEAC24D3-FFA</guid>
+            <pubDate>Fri, 21 Mar 2008 10:11:51 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Discover the Advance Capabilities of Visualforce</title>
+            <description>In this article series, read how you can use Visualforce pages and controllers to create dependent picklists based on related objects, as well as creating flexible user interfaces based on these picklists.</description>
+            <link>http://wiki.developerforce.com/index.php/Extended_Functionality_of_Visualforce_-_Part_1</link>
+            <guid isPermaLink="false">96E2FFB9-1187-4F1A-80AE-6CC7D678560D-986-00005173DD13BF28-FFA</guid>
+            <pubDate>Fri, 14 Mar 2008 08:22:24 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Be a Part of the Tour de Force Experience: Atlanta, Chicago, New York, and Boston</title>
+            <description><![CDATA[Register now, as this global roadshow rolls on to four new cities in April! <A href="https://wiki.developerforce.com/events/tourdeforce/registration.php?d=70130000000DmPd&city=70130000000DkD5">Atlanta</A>, <A href="https://wiki.developerforce.com/events/tourdeforce/registration.php?d=70130000000DmPd&city=70130000000DkDK">Chicago</A>, <A href="https://wiki.developerforce.com/events/tourdeforce/registration.php?d=70130000000DmPd&city=70130000000DkDA">New York</A>, and <A href="https://wiki.developerforce.com/events/tourdeforce/registration.php?d=70130000000DmPd&city=70130000000DkDF">Boston</A> are the next stops on our 20-city tour. Whether you're a developer, IT pro, business analyst, or entrepreneur, this is the ideal opportunity to experience Force.com live and in person. Come and meet the community and the top Force.com experts and benefit from tutorials, technical sessions, hands-on labs, and demos. <A href="https://wiki.developerforce.com/events/tourdeforce/registration.php?d=70130000000DmPd">Reserve your spot today!</A> ]]></description>
+            <link>https://wiki.developerforce.com/events/tourdeforce/registration.php?d=70130000000DmPd</link>
+            <guid isPermaLink="false">89AFB16D-B9CF-409F-8056-AF256CD332F0-2087-0000A3A7BCE6554D-FFA</guid>
+            <pubDate>Wed, 05 Mar 2008 09:19:01 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Platform Offers Path to Profit in Ten Months</title>
+            <description>How does a small startup attract customers like Hitachi, Symantec, and CBS and within one year turn a profit? The way Apttus puts it, quite easily. Read this to learn how Apttus built its first application — and startup success -- entirely on the Force.com platform.</description>
+            <link>https://wiki.developerforce.com/index.php/Apttus_Success_Story</link>
+            <guid isPermaLink="false">E909AD4F-D992-47B8-977A-0BA8D610E929-591-00001C0B142E7F5D-FFA</guid>
+            <pubDate>Tue, 26 Feb 2008 11:02:53 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Email Services: Sample code for how to unsubscribe from emails</title>
+            <description>Would you like to have a way to allow your customers and prospects to unsubscribe email messages sent out by marketing companies? Learn from this sample code how you can write Force.com Email Services to process unsubscribe requests from the email recipients.
+&lt;A href="https://wiki.developerforce.com/index.php/Force.com_Email_Services_Unsubscribe"&gt;Download Now!&lt;/A&gt; </description>
+            <link>https://wiki.developerforce.com/index.php/Force.com_Email_Services_Unsubscribe</link>
+            <guid isPermaLink="false">7D7C9149-643D-4BCF-BE55-C677C89D3404-571-00001BC9381C0E65-FFA</guid>
+            <pubDate>Tue, 26 Feb 2008 10:58:39 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Announcing the Latest Version of the PHP Toolkit</title>
+            <description>Looking for an easy way to make Web service API method calls? The new version of the &lt;A href="http://wiki.developerforce.com/index.php/PHP_Toolkit_11.0"&gt;PHP Toolkit&lt;/A&gt; is for you. And if you’re already a toolkit user, you’ll be delighted to know that it’s been updated for the latest API, including support for the new metadata API.&lt;BR&gt;
+&lt;A href="http://wiki.developerforce.com/index.php/PHP_Toolkit_11.0"&gt;Download Now!&lt;/A&gt;</description>
+            <link>http://wiki.developerforce.com/index.php/PHP_Toolkit_11.0</link>
+            <guid isPermaLink="false">DCBD7E6C-03E3-4A5F-BA1D-2E1BEF7C9DA6-639-00000E447645CDC8-FFA</guid>
+            <pubDate>Wed, 13 Feb 2008 09:53:10 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Email Services</title>
+            <description>Learn how you can use Force.com Email Services to send emails to Salesforce and process them with Apex code to create and update data from inbound emails. This sample code shows you how an email can be used to create new tasks for a contact record with a matching email address. </description>
+            <link>http://wiki.developerforce.com/index.php/Force.com_Email_Services</link>
+            <guid isPermaLink="false">CE1725A4-72E1-45A5-A4CD-B305EBE2D141-2279-000059276D6C2029-FFA</guid>
+            <pubDate>Wed, 30 Jan 2008 09:58:49 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Announcing Force.com Development as a Service</title>
+            <description>Discover the new set of tools and services that bring developer productivity and collaboration to the Force.com platform-as-a-service model. Development as a Service includes the new Metadata API, Force.com IDE and more.</description>
+            <link>http://wiki.developerforce.com/index.php/DaaS</link>
+            <guid isPermaLink="false">C7C5CC70-314B-439A-B121-41152C11F0AB-15873-00007B1A90188C0A-FFA</guid>
+            <pubDate>Tue, 22 Jan 2008 13:17:02 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Who’s Using Force.com?</title>
+            <description>Read about customers and developers that are finding fast, cost-effective success building their latest business apps on the force.com platform.</description>
+            <link>http://www.salesforce.com/platform/heroes/</link>
+            <guid isPermaLink="false">09D691F2-0B10-45EB-AE09-EF55D46F8F3B-15873-00007AF7AE8D34CF-FFA</guid>
+            <pubDate>Tue, 22 Jan 2008 13:14:54 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Tour de Force San Francisco – A Force.com Platform Conference</title>
+            <description>Kick off the New Year with Tour de Force San Francisco! Join us for this powerful free event and the chance to learn new skills, get expert guidance, and hear inside information on the latest Force.com development technologies.</description>
+            <link>https://wiki.developerforce.com/events/tourdeforcesf/registration.php</link>
+            <guid isPermaLink="false">3F371639-551C-4ACD-A99A-4AD079876380-6489-0001023CCF6108D6-FFA</guid>
+            <pubDate>Tue, 18 Dec 2007 12:09:21 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Whitepaper: The Force.com Platform</title>
+            <description>Force.com platform, the world’s leading on-demand development and deployment environment. The Force.com platform brings all the advantages of the on-demand environment to your own custom applications. Get an introduction to the basics of the platform, including its architecture and main components.</description>
+            <link>http://wiki.developerforce.com/index.php/Force.com:_Create_and_Run_any_Application%2C_On_Demand</link>
+            <guid isPermaLink="false">C3AB598C-CB10-44EB-BFEA-C5D4158BDE7A-6489-0001022F61C9FADD-FFA</guid>
+            <pubDate>Tue, 18 Dec 2007 12:08:30 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Tutorial: Force.com for ASP.NET Developers</title>
+            <description>Learn how you can use Force.com Web Services to access Salesforce.com data from within a Visualforce page and/or a Microsoft ASP.NET Web form. This article will take you through the process of creating custom Force.com logic, then demonstrate how to call that logic from within a Force.com application or from a custom application hosted outside Salesforce.com. Go ahead and mash it up!</description>
+            <link>http://wiki.developerforce.com/index.php/Force.com_for_ASP.NET_Developers</link>
+            <guid isPermaLink="false">F2FDF044-1CD6-4F9B-BD6D-1DE7851B0870-6489-0001021DC71AF5E9-FFA</guid>
+            <pubDate>Tue, 18 Dec 2007 12:07:26 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com: Apex Email Services</title>
+            <description>The Apex Email Services preview is now available in your Developer Edition Org., and should be generally available in the next major release. This feature allows you to create email addresses which can process Apex code as seen in this sample code.</description>
+            <link>http://wiki.developerforce.com/index.php/Apex_Email_Services</link>
+            <guid isPermaLink="false">14851EE2-E96C-4824-AB12-AC8049E3FAE2-1062-00002C4F0B12489F-FFA</guid>
+            <pubDate>Thu, 06 Dec 2007 08:49:21 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Enables Motorola Admin to Expand Role, Responsibilities</title>
+            <description>Michael Farrington has become a force to be reckoned with, thanks to Force.com. Read how Farrington, a Salesforce Administrator on the Sales Technology Team at Motorola’s Enterprise Mobility unit, taught himself how to build Force.com apps, then created a Force.com solution to vastly streamlined a key process for his company.</description>
+            <link>http://wiki.developerforce.com/index.php/Motorola_Admin_to_Force.com_App_Builder_Story</link>
+            <guid isPermaLink="false">317FB63A-E813-41E4-A904-4EDA2AD0A9A1-1364-00004A20454E46C7-FFA</guid>
+            <pubDate>Thu, 29 Nov 2007 12:06:23 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Tell Us What You’re Building with Force.com</title>
+            <description>We’re eager to hear about the cool new apps you are building with Visualforce and force.com! Submit a qualified Visualforce story and we’ll send you a one of our new Force.com t-shirts (while supplies last). </description>
+            <link>http://www.apexdevnet.com/events/submitvisualforceapp</link>
+            <guid isPermaLink="false">6DD86E12-7219-443C-87FE-636B12FA9A1D-1364-00004A04D066C74D-FFA</guid>
+            <pubDate>Thu, 29 Nov 2007 12:05:05 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Enterprise Integration Series: Force.com Data Loader</title>
+            <description>Integrating Force.com applications with your existing environment sometimes requires moving data in and out of the Force.com database. This screencast, part of the Enterprise Integration Series, focuses on the Force.com Data Loader, covering functionality, tips for effective use, and a demo.</description>
+            <link>http://wiki.developerforce.com/index.php/Members:Data_Loader</link>
+            <guid isPermaLink="false">C761A757-2660-4182-837C-CF57B3CD4EEE-1364-000049EA68451E7E-FFA</guid>
+            <pubDate>Thu, 29 Nov 2007 12:02:52 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Introducing Force.com Ideas</title>
+            <description>We're excited to introduce Force.com Ideas, a set of IdeaExchange categories for the Force.com community. Get active in shaping the platform by posting, commenting, and voting on Force.com ideas. Now the community has a unified way to voice its needs, and we are listening!</description>
+            <link>http://ideas.salesforce.com/popular/force.com_development?skin=adn</link>
+            <guid isPermaLink="false">B8B0D88B-A4D7-4F40-BE98-3BC923FDD3BE-4608-0001243D52524169-FFA</guid>
+            <pubDate>Tue, 13 Nov 2007 15:21:00 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Using Browser Technologies in Visualforce</title>
+            <description>Questions about using various browsers technologies and how they fit into the Visualforce strategy? Read this four-part series and get answers on how Visualforce, Flex, and Ajax all work together on the Force.com platform.</description>
+            <link>http://wiki.developerforce.com/index.php/Using_Browser_Technologies_in_Visualforce_-_Part_1</link>
+            <guid isPermaLink="false">913F2426-FA69-4CE5-A59B-A3CD6EE1CD0D-4608-00012407CC6C2D4E-FFA</guid>
+            <pubDate>Tue, 13 Nov 2007 15:20:02 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Success with Visualforce Developer Preview: Employee Directory Application</title>
+            <description>Jason Ouellette of Appirio, is one of the 3000 Visualforce Developer Preview program participant taking advantage of the new technology. Read about his experience building a demo Employee Directory application. </description>
+            <link>http://wiki.developerforce.com/index.php/Visualforce_Employee_App</link>
+            <guid isPermaLink="false">08BBEFFF-E7C8-4C1D-9C4A-A81BCDDD356A-1845-00005966D62688CA-FFA</guid>
+            <pubDate>Wed, 07 Nov 2007 11:06:24 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>"From Admin to App Builder" Live Webinar</title>
+            <description>Want to build powerful applications without programming, to support any process or department in your company? Then join us for a live webinar on how to use Force.com to create custom apps that take advantage of the platform's latest features, including workflow, rollup summary fields, and formulas. </description>
+            <link>http://www.apexdevnet.com/admintoappbuilder</link>
+            <guid isPermaLink="false">CC251C0C-DCF6-44AD-BAFE-2D0693EA7A8E-4335-000105D8026E6198-FFA</guid>
+            <pubDate>Wed, 31 Oct 2007 16:36:40 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>PDF Your Force.com Data with Print Anything and Google Docs</title>
+            <description>Want to create PDF of your Force.com data? Follow this step-by-step guide and learn how to create Adobe PDF files using Print Anything and Google Docs.</description>
+            <link>http://wiki.developerforce.com/index.php/Print_Anything_To_Google_Docs</link>
+            <guid isPermaLink="false">6974DF8C-DE5C-414D-86CE-EB18FF05DFED-4335-000105C4EC322DF7-FFA</guid>
+            <pubDate>Wed, 31 Oct 2007 16:35:25 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Force.com Tutorial: An Introduction to Visualforce</title>
+            <description>Force.com Tutorial: An Introduction to Visualforce Get step-by-step guidance on building your first Visualforce page from this very practical, hands-on tutorial. It covers everything from getting access to the Visualforce Dev Preview to seeing your first Visualforce page live. </description>
+            <link>http://wiki.developerforce.com/index.php/Force.com_Tutorial:_An_Introduction_to_Visualforce</link>
+            <guid isPermaLink="false">50985CE9-9FEB-47E3-993A-15AF32B9209C-510-00000DC3EB359341-FFA</guid>
+            <pubDate>Mon, 22 Oct 2007 13:20:44 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Get Your Hands on Visualforce Preview</title>
+            <description>Enable your Developer Edition org today and start building on-demand apps that utilize the complete force.com "platform as a service" stack.</description>
+            <link>http://www.apexdevnet.com/events/visualforce/registration.php</link>
+            <guid isPermaLink="false">B0AD158F-EC5F-49D6-A3D8-DC84EA8C0400-431-00000DEEECEDC99F-FFA</guid>
+            <pubDate>Wed, 17 Oct 2007 13:07:23 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Winter '08 Developer Preview Program</title>
+            <description>Welcome to the Winter '08 Preview for Developers. Get the latest information on what's new and hot for developers in the Winter '08 release, including some key coders-only technologies you can get your hands on through this Developer Preview.</description>
+            <link>http://wiki.developerforce.com/index.php/Winter_08_Preview</link>
+            <guid isPermaLink="false">2ED9D0CF-74CF-436A-9EAD-DADC80FA32B2-431-00000DC7F594AE29-FFA</guid>
+            <pubDate>Wed, 17 Oct 2007 13:04:42 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Developers@Dreamforce ‘07 Sessions Now Available Online!</title>
+            <description>Missed Dreamforce ‘07? Everyone from entrepreneurs to admins to hard-core developers can now watch over 30 Developers@Dreamforce sessions across four tracks. These practical presentations and demos from Force.com technical experts give you essential fundamentals, insider tips and tricks, and development best practices on the latest Force.com technologies. </description>
+            <link>http://wiki.developerforce.com/index.php/Dreamforce07_Dev_Sessions</link>
+            <guid isPermaLink="false">9CDCEA17-7D59-44C6-8911-A03AFCA6539B-5134-0001D7E68F8AC412-FFA</guid>
+            <pubDate>Wed, 10 Oct 2007 12:40:26 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>A Dreamforce Attendee Builds a BlackBerry App with Visualforce</title>
+            <description>ADN member and Dreamforce ‘07 attendee, Elaine, wasted no time getting started with the Visualforce Developer Preview. Read about the Visualforce tips and tricks she discovered while hanging out in the Developer Lounge and building a custom user experience for her BlackBerry 8800.</description>
+            <link>http://wiki.developerforce.com/index.php/Blackberry_App</link>
+            <guid isPermaLink="false">7A322E21-42DA-4B91-AFA4-2A3D6614750F-5134-0001D7D011EF9FC9-FFA</guid>
+            <pubDate>Wed, 10 Oct 2007 12:38:32 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Building a Blogging Application Using Visualforce</title>
+            <description>You truly can build almost anything on the Force.com platform! This short sample walks you through the creation of a simple blogging app, showing several interesting uses of Visualforce, including a rich text widget from Yahoo, “on load” events in the page, custom controller, “on click” and “action complete” handlers.</description>
+            <link>http://wiki.developerforce.com/index.php/Building_a_Blogging_Application_Using_Visualforce</link>
+            <guid isPermaLink="false">39E14345-048E-48B3-80FE-07960A3814BF-4270-00017BC9ADFE0731-FFA</guid>
+            <pubDate>Mon, 08 Oct 2007 16:32:49 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Webinar: Platform-as-a-Service and the Future of Enterprise Architecture</title>
+            <description>Attend Dave Linthicum's latest webinar for free and to find out why enterprise architecture is evolving from complex, monolithic infrastructures to something far more efficient and dynamic: Platform-as-a-Service.</description>
+            <link>http://www.apexdevnet.com/events/architect_webinar/registration.php</link>
+            <category>News</category>
+            <guid isPermaLink="false">platform-as-a-service-and-the-future-of-enterprise-architecture</guid>
+            <pubDate>Mon, 08 Oct 2007 16:29:02 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Announcing Visualforce</title>
+            <description>The latest addition to the force.com platform, Visualforce provides a complete framework for building and deploying any kind of user experience, and enabling any kind of interface design and interaction to be built and delivered entirely on demand.</description>
+            <link>http://wiki.developerforce.com/index.php/Announcing_Visualforce</link>
+            <category>News</category>
+            <guid isPermaLink="false">announcing-visualforce</guid>
+            <pubDate>Mon, 17 Sep 2007 10:00:00 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Apex Code: The World’s First On-Demand Programming Language</title>
+            <description>This whitepaper provides a conceptual overview of Apex Code and its capabilities, as well as the opportunities it opens for developers.</description>
+            <link>https://wiki.developerforce.com/index.php/Apex_Code:_The_World%E2%80%99s_First_On-Demand_Programming_Language</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">apex-code-the-worlds-first-ondemand-programming</guid>
+            <pubDate>Fri, 02 Feb 2007 11:25:44 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Send Emails Through S-Controls</title>
+            <description>Build new functionality with the Spring '07 Email API. This code example allows you to send emails through the new Email API. You can send both Mass and Single Emails, CC and BCC email addresses, include your email signature as well as send text or HTML email.</description>
+            <link>http://wiki.developerforce.com/index.php/Send_Emails_Through_SControls</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">send-emails-through-scontrols</guid>
+            <pubDate>Wed, 30 May 2007 11:24:45 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Apex Day '07</title>
+            <description>
+ADN Members who missed the event can log in and watch the videos of the presentations and demos. Not a member? It's easy and free to join.</description>
+            <link>http://wiki.developerforce.com/index.php/ApexDay</link>
+            <guid isPermaLink="false">apex-day-07-1</guid>
+            <pubDate>Tue, 30 Jan 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Building Offline Salesforce Apps with Google Gears</title>
+            <description>
+How can your users stay productive with your Salesforce web app while on a plane? You now use Google Gears and Google Web Toolkit to make any on-demand application work off line as well. Read all about it in this article and download the sample code to get started. </description>
+            <link>http://wiki.developerforce.com/index.php/Building_Offline_Salesforce_Applications_with_Google_Gears_and_Google_Web_Toolkit</link>
+            <category>Events</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">building-offline-salesforce-apps-with-google-gears</guid>
+            <pubDate>Thu, 06 Sep 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Java Partner WSDL Samples 10.0</title>
+            <description>
+Learn how to use the Apex API 10.0 with the Partner WSDL with Java. This sample is a great place to start since it contains an Ant build script, necessary library, and code samples that exercise all the available API method calls.</description>
+            <link>http://wiki.developerforce.com/index.php/Java_Partner_WSDL_Samples_10.0</link>
+            <category>Events</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">java-partner-wsdl-samples-100</guid>
+            <pubDate>Thu, 30 Aug 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Apex Toolkit for Eclipse</title>
+            <description>Download the new version of the Apex Toolkit for Eclipse. Find out why this is an ideal tool for writing Apex Code and s-controls as well as publishing finished Apex code into other Salesforce instances.</description>
+            <link>http://wiki.developerforce.com/index.php/Members:Apex_Toolkit_for_Eclipse</link>
+            <category>Events</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">apex-toolkit-for-eclipse</guid>
+            <pubDate>Thu, 30 Aug 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Ready to Launch your On-Demand Company?</title>
+            <description>
+Join hundreds of successful companies who have built their businesses on the salesforce.com platform. Take advantage of a complete set of startup tools, resources and services to build your business today!</description>
+            <link>http://wiki.developerforce.com/index.php/Members:Startupkit</link>
+            <category>Events</category>
+            <category>Business</category>
+            <guid isPermaLink="false">ready-to-launch-your-ondemand-company</guid>
+            <pubDate>Thu, 30 Aug 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Salesforce Platform Success on the Subcontinent</title>
+            <description>Read about the amazing success Indian developers are finding on the Salesforce Platform and AppExchange. These partners have recognized the opportunity of on-demand, and are quickly capitalizing on it to grow their businesses.</description>
+            <link>http://wiki.developerforce.com/index.php/India_Developer_Success</link>
+            <category>Events</category>
+            <category>Business</category>
+            <guid isPermaLink="false">salesforce-platform-success-on-the-subcontinent</guid>
+            <pubDate>Thu, 30 Aug 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Get Ready: Dreamforce Developer Preview Screencast</title>
+            <description>
+Developers@Dreamforce '07 will feature some of the biggest Salesforce.com technology announcements ever. Watch this screencast to get a sneak preview demonstrations of exciting new on-demand technologies such as Apex Code(GA), Metadata API (preview), and more. Also, learn how you can receive early access in order to start working with them right away.</description>
+            <link>http://wiki.developerforce.com/index.php/Members:Dreamforce_Developer_Preview_Screencast</link>
+            <category>Events</category>
+            <category>News</category>
+            <guid isPermaLink="false">get-ready-dreamforce-developer-preview-screencast</guid>
+            <pubDate>Mon, 30 Jul 2007 11:25:02 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Configuring and Implementing Single Sign-on for Salesforce.com</title>
+            <description>Learn how to configure the Salesforce environment for Single Sign-On, as described in the &lt;a href="http://wiki.developerforce.com/index.php/How_to_Implement_Single_Sign-On_with_Salesforce.com"&gt;How to Implementing Single Sign On with Salesforce.com&lt;/a&gt;&gt;guide. In addition, implement &lt;a href="http://wiki.developerforce.com/index.php/Single_Sign-On_for_Salesforce_Clients"&gt;client-based Single Sign-On&lt;/a&gt; by finding out how token-based SSO can be accomplished with Salesforce desktop clients such as Outlook Edition, Lotus Notes Edition, and Office Edition.</description>
+            <link>http://wiki.developerforce.com/index.php/Single_Sign-On_for_Salesforce_Clients</link>
+            <category>Events</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">configuring-and-implementing-single-signon-for-sa</guid>
+            <pubDate>Mon, 30 Jul 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Summer '07 Developer Preview</title>
+            <description>
+Find the latest information on what's new and hot for developers in the Summer '07. Take a preview of Apex Code, Salesforce SOA, Metadata API, and more!</description>
+            <link>http://wiki.developerforce.com/index.php/Summer_07</link>
+            <category>Technical</category>
+            <category>News</category>
+            <guid isPermaLink="false">summer-07-developer-preview</guid>
+            <pubDate>Mon, 30 Jul 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Mashup Third Party Web Services with AJAX Proxy</title>
+            <description>
+Using this tutorial/sample code, learn how to build a mashup on the Salesforce platform using data from a third party web service. As an example, this web service takes in two country names and returns the exchange rate for those two countries.</description>
+            <link>http://wiki.developerforce.com/index.php/Ajax_Proxy</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">mashup-third-party-web-services-with-ajax-proxy</guid>
+            <pubDate>Mon, 30 Jul 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Introducing the Salesforce Enterprise Integration Series</title>
+            <description>
+The Salesforce Platform makes the concepts of SOA real, and this multipart series will show you how. In this first installment, get an overview and learn about system landscapes, platform integration capabilities, and how you can successfully integrate with Salesforce.com.</description>
+            <link>http://wiki.developerforce.com/index.php/Enterprise_Integration_Series</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">introducing-the-salesforce-enterprise-integration</guid>
+            <pubDate>Mon, 30 Jul 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Build On-Demand Apps with Adobe Flex</title>
+            <description>
+Were you not able to attend the webinar? You can now watch the screencast and hear from top technical experts from both Salesforce.com and Adobe, and learn how quick and easy it is to create rich applications on the salesforce.com platform with the Flex Toolkit for Apex.</description>
+            <link>http://wiki.developerforce.com/index.php/Members:Build_On-Demand_Apps_with_Adobe_Flex</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">build-ondemand-apps-with-adobe-flex</guid>
+            <pubDate>Mon, 30 Jul 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Apex Data Loader 9.0</title>
+            <description>
+Learn how to use the Apex Data Loader to perform bulk operations on your Salesforce.com org -- insert, update, upsert and delete data, as well as export data from Salesforce objects.</description>
+            <link>http://wiki.developerforce.com/index.php/Apex_Data_Loader_9.0</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">apex-data-loader-90</guid>
+            <pubDate>Mon, 30 Jul 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Salesforce Developer Conference Wrapup</title>
+            <description>There's nothing like attending a Salesforce event in person, but this page is the next best thing. Watch the keynotes, review the sessions, and find out what you missed.</description>
+            <link>http://wiki.developerforce.com/index.php/Salesforce_Developer_Conference%2C_May_21%2C_2007</link>
+            <category>Events</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">salesforce-developer-conference-wrapup</guid>
+            <pubDate>Tue, 26 Feb 2008 10:59:39 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>Announcing Developers @ Dreamforce '07</title>
+            <description>
+Dreamforce '07 will have more for developers than ever! Five tracks on everything from Apex Code, app development basics, and advanced programming, to building your on-demand business. Plus, powerful labs, special events, parties, and more.</description>
+            <link>http://www.salesforce.com/dreamforce/developer/</link>
+            <category>Events</category>
+            <category>News</category>
+            <guid isPermaLink="false">announcing-developers-dreamforce-07</guid>
+            <pubDate>Sat, 30 Jun 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Building a Google Calendar Mash-up with Salesforce SOA</title>
+            <description>
+You can combine the power of the Salesforce platform with Google Apps to create secure enterprise mash-ups! Read this to see how to use Salesforce SOA and Google Data APIs to present an integrated view of calendar information.</description>
+            <link>http://wiki.developerforce.com/index.php/Building_a_Google_Calendar_Mash-up_with_Salesforce_SOA</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">building-a-google-calendar-mashup-with-salesforce</guid>
+            <pubDate>Sat, 30 Jun 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Apollo for Apex Sample Code</title>
+            <description>
+Spur your imagination on what you can do with Flex/Apollo and the Flex Toolkit for Apex. This sample code is a desktop widget for displaying tasks and events from your salesforce.com account on your desktop.</description>
+            <link>http://wiki.developerforce.com/index.php/Apollo_Sample</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">apollo-for-apex-sample-code</guid>
+            <pubDate>Sat, 30 Jun 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Power of Salesforce SOA in Action</title>
+            <description>
+Watch this 10 min screencast demo and learn how this powerful new capability of the Apex programming language will enable on-demand developers to leverage Web services from anywhere.</description>
+            <link>http://adnsandbox.com/media/soasoa/</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">power-of-salesforce-soa-in-action</guid>
+            <pubDate>Sat, 30 Jun 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Announcing Salesforce SOA</title>
+            <description>Introducing Salesforce SOA, a powerful new capability of the Apex programming language that enables developers to leverage Web services from anywhere and build them into their on-demand applications. Salesforce SOA makes it possible to mashup salesforce.com's multi-tenant on-demand service with enterprise workflow and business processes to enable new kinds of enterprise applications on demand.</description>
+            <link>http://wiki.developerforce.com/index.php/Salesforce_SOA</link>
+            <category>News</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">announcing-salesforce-soa</guid>
+            <pubDate>Wed, 30 May 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Free Book Download: Start Building Your First On-Demand App Today</title>
+            <description>Read this new second edition of the "Creating On-Demand Applications" book and start building on-demand applications. Newly revised and expanded, it provides practical, step-by-step coverage of the Apex platform and how you can use it to build your own business solutions in hours.</description>
+            <link>http://www.apexdevnet.com/events/book/registration.php</link>
+            <category>News</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">download-this-free-book-and-start-building-your-fi</guid>
+            <pubDate>Wed, 30 May 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Salesforce Upsert Tutorial</title>
+            <description>
+Read this tutorial by Mike Simonds, an active member of the ADN community. The tutorial focuses on using Oracle as a local database and pushing data to salesforce.com. Learn how performing updates/inserts to salesforce.com via the upsert command gives an organization much more flexibility to keep data refreshed from an internal data system and the organizations sforce instance.</description>
+            <link>http://wiki.developerforce.com/index.php/Saleforce_PHP_Upsert_Tutorial</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">salesforce-upsert-tutorial</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Best Practice Guide for Style Sheets and S-Controls</title>
+            <description>Read this simple, How-To Guide for the "not-so-advanced" S-Control developer who wants to apply the Salesforce.com branding to their S-Controls in six easy steps!</description>
+            <link>http://wiki.developerforce.com/index.php/Stylesheets_and_S-Controls_Best_Practice_Guide</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">best-practice-guide-for-style-sheets-and-scontrol</guid>
+            <pubDate>Wed, 30 May 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>On-Demand Platforms and the Future of Enterprise Architecture</title>
+            <description>
+Download Dave Linthicum's latest whitepaper for free and discover the benefits of using an on-demand model for enterprise architecture.</description>
+            <link>http://www.apexdevnet.com/events/whitepaper/registration.php</link>
+            <category>Business</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">ondemand-platforms-and-the-future-of-enterprise-a</guid>
+            <pubDate>Wed, 30 May 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Coding With Apex: Salesforce Toolmaker's Batch Product Goes Real-time</title>
+            <description>
+Read the developer success story on Glenn Wilson of Toronto's CRMfusion. Apex Code is still in preview, Glenn has already put it to work—creating a prototype application that's well on its way to becoming a product and ready to ship as soon as Apex Code is released.</description>
+            <link>http://wiki.developerforce.com/index.php/CRMfusion_Story</link>
+            <category>Business</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">coding-with-apex-salesforce-toolmakers-batch-pro</guid>
+            <pubDate>Wed, 30 May 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Tutorial: Creating Flex Salesforce Mashups</title>
+            <description>
+Learn how to use the new a to create a simple Flex application and embed this within your Salesforce application.</description>
+            <link>http://wiki.developerforce.com/index.php/Tutorial:_Creating_Flex_Salesforce_Mashups</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">tutorial-creating-flex-salesforce-mashups</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Mashups: The What and Why</title>
+            <description>
+The first in a two-part series, this article provides an intro to core mashup concepts, as well as covers techniques for creating and enabling enterprise mashups.</description>
+            <link>http://wiki.developerforce.com/index.php/Mashups:_The_What_and_Why</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">mashups-the-what-and-why</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Learn to Develop On-Demand Business Applications</title>
+            <description>
+Watch the screencast and discover how the Apex platform makes it easy to create sophisticated applications with complex business logic—and scale them to thousands of users—without servers or infrastructure. The session was presented by Adam Gross of salesforce.com, as well our partners Tata Consultancy Services (TCS) and Engizma Software from India.</description>
+            <link>http://wiki.developerforce.com/index.php/Member:Learn_to_Develop_On-Demand_Business_Applications</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">learn-to-develop-ondemand-business-applications</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>ADN@Web 2.0 Expo</title>
+            <description>
+Visit us at Web 2.0 Expo! We'll be speaking on the business web and demoing the latest Apex platform technologies, including something entirely new for Apex developers.</description>
+            <link>http://wiki.developerforce.com/index.php/ADN%40Web_2.0_Expo</link>
+            <category>Events</category>
+            <guid isPermaLink="false">adnweb-20-expo</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Time Off Manager: Application Demo</title>
+            <description>
+Get tips on real-world implementation of key Apex platform features andtechnologies by watching this demo of a new app built on Apex.</description>
+            <link>https://wiki.developerforce.com/index.php/PTODemo</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">time-off-manager-application-demo</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>ADN Insider Briefing: Spring '07 Screencast</title>
+            <description>
+Watch this practical developer update presented by Dave Carroll, ADNTechnical Evangelist and Andrew Waite, PM Apex Code. Log-in required.</description>
+            <link>https://wiki.developerforce.com/index.php/Members:Spring_%2707_Insider_Briefing_Webinar</link>
+            <category>Technical</category>
+            <category>News</category>
+            <guid isPermaLink="false">adn-insider-briefing-spring-07-screencast</guid>
+            <pubDate>Mon, 30 Apr 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Spring '07 Release Updates for Developers</title>
+            <description>
+Get updates on the Spring '07 release.</description>
+            <link>https://wiki.developerforce.com/index.php/ADN_Spring_07_Release_Update</link>
+            <category>Technical</category>
+            <category>News</category>
+            <guid isPermaLink="false">spring-07-release-updates-for-developers</guid>
+            <pubDate>Tue, 26 Feb 2008 10:59:53 -0800</pubDate>
+        </item>
+
+        <item>
+            <title>What's New in Apex Web Services API Spring '07</title>
+            <description>
+With the release of Spring '07, including the Apex API, read about the new features and bug fixes that improve the capabilities of applications that leverage the Apex platform.</description>
+            <link>https://wiki.developerforce.com/index.php/What%27s_New_in_Apex_Web_Services_API_Spring_%2707</link>
+            <category>News</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">whats-new-in-apex-web-services-api-spring-07</guid>
+            <pubDate>Fri, 30 Mar 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Developing on the Apex Platform</title>
+            <description>
+Watch this technical session from the recent Apex Day event for an overview of core platform features and technologies. </description>
+            <link>https://wiki.developerforce.com/index.php/Members:Apex_Day_Apex_Platform_Presentation</link>
+            <category>Events</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">developing-on-the-apex-platform</guid>
+            <pubDate>Fri, 30 Mar 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Apex Code Developer Preview Program</title>
+            <description>Find out how ADN members can get access to the Apex Code Developer Preview through their Developer Edition accounts.</description>
+            <link>http://wiki.developerforce.com/index.php/Apex_Code_Developer_Preview_Program</link>
+            <category>Other</category>
+            <category>Technical</category>
+            <guid isPermaLink="false">apex-code-developer-preview-program</guid>
+            <pubDate>Tue, 30 Jan 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>Building a FLEX S-Control Mash-Up</title>
+            <description>
+AJAX plus Adobe Flex makes for a rich visual interface, and this article tells the story of a mashup that takes advantage of those technologies to chart the opportunity stages at an account.</description>
+            <link>https://wiki.developerforce.com/index.php/Building_a_FLEX_S-Control_Mash-Up</link>
+            <category>Technical</category>
+            <guid isPermaLink="false">building-a-flex-scontrol-mashup</guid>
+            <pubDate>Tue, 30 Jan 2007 07:39:03 -0700</pubDate>
+        </item>
+
+        <item>
+            <title>What's New in Apex Web Services API Winter '07</title>
+            <description>
+Comprehensive review of new features, changes and bug fixes in the Winter 07 (8.0) release of the Apex API.</description>
+            <link>https://wiki.developerforce.com/index.php/What%27s_New_in_Apex_Web_Services_API_Winter_%2707</link>
+            <category>Technical</category>
+            <category>News</category>
+            <guid isPermaLink="false">whats-new-in-apex-web-services-api-winter-07</guid>
+            <pubDate>Tue, 30 Jan 2007 07:39:03 -0700</pubDate>
+        </item>
+
+    </channel>
+</rss>

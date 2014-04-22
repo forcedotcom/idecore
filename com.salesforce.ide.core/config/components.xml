@@ -1,0 +1,1543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <!--
+        NOTE:
+        - Component beans depend on the componentPropertyConfigurer bean for values to common component attributes.
+        - When adding a new component, ensure that it's register with the component factory and new component action beans.
+    -->
+
+
+    <!--   P R O P E R T I E S   -->
+    <!--  component attributes are shared with plugin.xml via plugin.properties -->
+    <bean id="componentPropertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value=" classpath:plugin.properties" />
+    </bean>
+
+    <!--   C O M P O N E N T S   -->
+    <bean id="componentResource" class="com.salesforce.ide.core.model.ComponentResource" abstract="true"
+        lazy-init="true" />
+
+    <bean id="component" class="com.salesforce.ide.core.model.Component" parent="componentResource" lazy-init="true">
+        <!-- name must be alphanumeric -->
+        <property name="alphaNumeric" value="true" />
+        <!-- url to direct to specific component via "Show in Salesforce Web"; this preceeds the component id -->
+        <property name="webComponentUrlPart" value="" />
+        <!-- url to direct to component type via "Show in Salesforce Web" -->
+        <property name="webComponentTypeUrlPart" value="" />
+        <!-- determines if wildcard ("*") is supported in package.xml -->
+        <property name="wildCardSupported" value="true" />
+        <!-- determines if component is folder-based, ie components reside in subfolders of the component folder -->
+        <property name="withinFolder" value="false" />
+        <!-- default metadata extension append to component-specific file extension -->
+        <property name="metadataFileExtension" value="${Default.metadataFileExtension}" />
+    </bean>
+
+    <!-- base component beans -->
+    <!-- base apex bean -->
+    <bean id="baseApexComponent" parent="component" scope="prototype" lazy-init="true">
+        <!-- list of api versions that support object type -->
+        <property name="supportedApiVersions" ref="supportedApiVersions" />
+        <!-- distinguishes that component is a composite - one part code body, the other metadata -->
+        <property name="metadataComposite" value="true" />
+        <!-- signifies that the body of the non-metadata file is code -->
+        <property name="codeBody" value="true" />
+    </bean>
+
+    <bean id="baseFolderComponent" parent="component" scope="prototype" lazy-init="true">
+        <property name="wildCardSupported" value="false" />
+        <property name="withinFolder" value="true" />
+        <property name="metadataComposite" value="true" />
+        <!-- built-in subfolder means there is no update allowed for this built-in folder, so no retrieve/deploy support for this folder's metadata
+        but this folder is added to listMetadata so IDE knows to display as an option for retrieving its content. W-623512 -->
+        <property name="builtInSubFolders">
+            <util:list id="builtInSubFolderList" list-class="java.util.ArrayList">
+                <value>unfiled$public</value>
+            </util:list>
+        </property>
+    </bean>
+
+    <!-- component types -->
+    <!-- Analytic Snapshot -->
+    <bean id="AnalyticSnapshot" parent="component" scope="prototype" lazy-init="true">
+        <!-- "${<object-type-name>.<whatever>}" are properties defined in plugin.properties -->
+        <property name="displayName" value="${AnalyticSnapshot.displayName}" />
+        <property name="componentType" value="${AnalyticSnapshot.componentType}" />
+        <property name="defaultFolder" value="${AnalyticSnapshot.defaultFolder}" />
+        <property name="fileExtension" value="${AnalyticSnapshot.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="0A0" />
+        <property name="wildCardSupported" value="false" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="analyticSnapshotMetadata" />
+    </bean>
+    <bean id="analyticSnapshotMetadata" class="${xmlComponentType.package.name}.${AnalyticSnapshot.componentType}" lazy-init="true"/>
+
+     <!-- component types -->
+    <!-- RemoteSiteSetting -->
+    <bean id="RemoteSiteSetting" parent="component" scope="prototype" lazy-init="true">
+
+        <property name="displayName" value="${RemoteSiteSetting.displayName}" />
+        <property name="componentType" value="${RemoteSiteSetting.componentType}" />
+        <property name="defaultFolder" value="${RemoteSiteSetting.defaultFolder}" />
+        <property name="fileExtension" value="${RemoteSiteSetting.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="0rp" />
+        <property name="wildCardSupported" value="false" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="remoteSiteSettingMetadata" />
+    </bean>
+    <bean id="remoteSiteSettingMetadata" class="${xmlComponentType.package.name}.${RemoteSiteSetting.componentType}" lazy-init="true" />
+
+    <!-- apex class -->
+    <bean id="ApexClass" parent="baseApexComponent" scope="prototype" lazy-init="true">
+      <!-- "${<object-type-name>.<whatever>}" are properties defined in plugin.properties -->
+          <property name="displayName" value="${ApexClass.displayName}" />
+          <property name="componentType" value="${ApexClass.componentType}" />
+          <property name="componentTypeAlias" value="${ApexClass.componentTypeAlias}" />
+          <property name="defaultFolder" value="${ApexClass.defaultFolder}" />
+          <property name="fileExtension" value="${ApexClass.fileExtension}" />
+          <property name="caseSensitive" value="false" />
+          <!-- url to direct to component type via "Show in Salesforce Web" -->
+          <property name="webComponentTypeUrlPart" value="01p?setupid=ApexClasses" />
+
+          <property name="maxLabelLength" value="${ApexClass.maxLabelLength}" />
+          <property name="maxNameLength" value="${ApexClass.maxNameLength}" />
+
+          <!--  default body template; value read from template file registered in template registry -->
+          <lookup-method name="getTemplates" bean="apexClassTemplate" />
+          <lookup-method name="getDefaultMetadataExtInstance" bean="apexClassMetadata" />
+          <!-- associated wizard class -->
+          <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizard" />
+        </bean>
+
+    <!-- REVIEWME: there must be a dynamic way to do method look-ups -->
+    <bean id="apexClassTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+        lazy-init="true">
+        <property name="targetObject">
+            <ref bean="templateRegistry" />
+        </property>
+        <property name="targetMethod">
+            <value>getTemplatesByComponentType</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>${ApexClass.componentType}</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- defined default metadata or primary XML body implementation of schema-based object -->
+    <bean id="apexClassMetadata" class="${xmlComponentType.package.name}.${ApexClass.componentType}"  lazy-init="true">	    
+        <property name="apiVersion" ref="lastSupportedApiVersion" />
+    </bean>
+
+    <!-- apex component -->
+    <bean id="ApexComponent" parent="baseApexComponent" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ApexComponent.displayName}" />
+        <property name="componentType" value="${ApexComponent.componentType}" />
+        <property name="defaultFolder" value="${ApexComponent.defaultFolder}" />
+        <property name="fileExtension" value="${ApexComponent.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentTypeUrlPart" value="apexpages/setup/listApexComponent.apexp" />
+        <property name="webComponentUrlPart" value="apexpages/setup/viewApexComponent.apexp?id=" />
+        <property name="maxLabelLength" value="${ApexComponent.maxLabelLength}" />
+        <property name="maxNameLength" value="${ApexComponent.maxNameLength}" />
+
+        <!--  default body template  -->
+        <lookup-method name="getTemplates" bean="apexComponentTemplate" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="apexComponentMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.component.ApexComponentWizard" />
+    </bean>
+
+    <bean id="apexComponentTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+        lazy-init="true">
+        <property name="targetObject">
+            <ref bean="templateRegistry" />
+        </property>
+        <property name="targetMethod">
+            <value>getTemplatesByComponentType</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>${ApexComponent.componentType}</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="apexComponentMetadata" class="${xmlComponentType.package.name}.${ApexComponent.componentType}" lazy-init="true">
+        <property name="description"
+            value="This is a generic template for ${ApexComponent.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+    </bean>
+
+    <!-- apex page -->
+    <bean id="ApexPage" parent="baseApexComponent" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ApexPage.displayName}" />
+        <property name="componentType" value="${ApexPage.componentType}" />
+        <property name="defaultFolder" value="${ApexPage.defaultFolder}" />
+        <property name="fileExtension" value="${ApexPage.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="apexpages/setup/listApexPage.apexp" />
+        <property name="webComponentUrlPart" value="apexpages/setup/viewApexPage.apexp?id=" />
+
+        <property name="maxLabelLength" value="${ApexPage.maxLabelLength}" />
+        <property name="maxNameLength" value="${ApexPage.maxNameLength}" />
+
+        <lookup-method name="getTemplates" bean="apexPageTemplate" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="apexPageMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.page.ApexPageWizard" />
+    </bean>
+
+    <bean id="apexPageTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+        lazy-init="true">
+        <property name="targetObject">
+            <ref bean="templateRegistry" />
+        </property>
+        <property name="targetMethod">
+            <value>getTemplatesByComponentType</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>${ApexPage.componentType}</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="apexPageMetadata" class="${xmlComponentType.package.name}.${ApexPage.componentType}" lazy-init="true">
+        <property name="description" value="" />
+        <property name="apiVersion" ref="lastSupportedApiVersion" />
+    </bean>
+
+    <!-- apex trigger -->
+    <bean id="ApexTrigger" class="com.salesforce.ide.core.model.ApexTrigger" parent="baseApexComponent" scope="prototype"
+        lazy-init="true">
+        <property name="displayName" value="${ApexTrigger.displayName}" />
+        <property name="componentType" value="${ApexTrigger.componentType}" />
+        <property name="componentTypeAlias" value="${ApexTrigger.componentTypeAlias}" />
+        <property name="defaultFolder" value="${ApexTrigger.defaultFolder}" />
+        <property name="fileExtension" value="${ApexTrigger.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=Customize" />
+
+        <property name="maxLabelLength" value="${ApexTrigger.maxLabelLength}" />
+        <property name="maxNameLength" value="${ApexTrigger.maxNameLength}" />
+
+        <lookup-method name="getTemplates" bean="apexTriggerTemplate" />
+        <property name="operationOptions" ref="triggerOperations" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="apexTriggerMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.trigger.ApexTriggerWizard" />
+    </bean>
+
+    <bean id="apexTriggerTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+        lazy-init="true">
+        <property name="targetObject">
+            <ref bean="templateRegistry" />
+        </property>
+        <property name="targetMethod">
+            <value>getTemplatesByComponentType</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>${ApexTrigger.componentType}</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="apexTriggerMetadata" class="${xmlComponentType.package.name}.${ApexTrigger.componentType}" lazy-init="true">
+        <property name="apiVersion" ref="lastSupportedApiVersion" />
+    </bean>
+
+    <!-- custom application -->
+    <bean id="CustomApplication" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomApplication.displayName}" />
+        <property name="componentType" value="${CustomApplication.componentType}" />
+        <property name="defaultFolder" value="${CustomApplication.defaultFolder}" />
+        <property name="fileExtension" value="${CustomApplication.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="02u?setupid=TabSet" />
+
+        <property name="maxLabelLength" value="${CustomApplication.maxLabelLength}" />
+        <property name="maxNameLength" value="${CustomApplication.maxNameLength}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customApplicationMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.application.CustomApplicationWizard" />
+    </bean>
+
+    <bean id="customApplicationMetadata" class="${xmlComponentType.package.name}.${CustomApplication.componentType}"
+        lazy-init="true">
+        <property name="description"
+            value="This is a generic template for ${CustomApplication.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+    </bean>
+
+    <!-- custom data type -->
+    <bean id="CustomDataType" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomDataType.displayName}" />
+        <property name="componentType" value="${CustomDataType.componentType}" />
+        <property name="defaultFolder" value="${CustomDataType.defaultFolder}" />
+        <property name="fileExtension" value="${CustomDataType.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customDataTypeMetadata" />
+    </bean>
+
+    <bean id="customDataTypeMetadata" class="${xmlComponentType.package.name}.${CustomDataType.componentType}" lazy-init="true"/>
+
+    <!-- custom label -->
+    <bean id="CustomLabels" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomLabels.displayName}" />
+        <property name="componentType" value="${CustomLabels.componentType}" />
+        <property name="defaultFolder" value="${CustomLabels.defaultFolder}" />
+        <property name="fileExtension" value="${CustomLabels.fileExtension}" />
+        <property name="webComponentUrlPart" value="101?setupid=ExternalStrings" />
+        <property name="webComponentTypeUrlPart" value="101?setupid=ExternalStrings" />
+        <lookup-method name="getSubComponentTypes" bean="subCustomLabelsComponentTypeList"/>
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customLabelsMetadata" />
+    </bean>
+    <bean id="customLabelsMetadata" class="${xmlComponentType.package.name}.${CustomLabels.componentType}" lazy-init="true" />
+
+    <util:list id="subCustomLabelsComponentTypeList" list-class="java.util.ArrayList">
+        <value>CustomLabel</value>
+    </util:list>
+
+    <!-- custom object -->
+    <bean id="CustomObject" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomObject.displayName}" />
+        <property name="alternativeDisplayName" value="objects - custom" />
+        <property name="componentType" value="${CustomObject.componentType}" />
+        <property name="defaultFolder" value="${CustomObject.defaultFolder}" />
+        <property name="fileExtension" value="${CustomObject.fileExtension}" />
+        <property name="alphaNumeric" value="true" />
+        <property name="webComponentTypeUrlPart" value="setup/ui/customobjects.jsp" />
+
+        <property name="maxLabelLength" value="${CustomObject.maxLabelLength}" />
+        <property name="maxNameLength" value="${CustomObject.maxNameLength}" />
+
+        <property name="associatedComponentTypes">
+            <util:list id="associatedCustomObjectComponentTypeList" list-class="java.util.ArrayList">
+                <value>${Layout.componentType}</value>
+                <value>${Workflow.componentType}</value>
+            </util:list>
+        </property>
+        <lookup-method name="getSubComponentTypes" bean="subCustomObjectComponentTypeList"/>
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customObjectMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.object.CustomObjectWizard" />
+    </bean>
+
+    <util:list id="subCustomObjectComponentTypeList" list-class="java.util.ArrayList">
+        <value>ActionOverride</value>
+        <value>BusinessProcess</value>
+        <value>CompactLayout</value>
+        <value>CustomField</value>
+        <value>FieldSet</value>
+        <value>ListView</value>
+        <value>NamedFilter</value>
+        <value>Picklist</value>
+        <value>RecordType</value>
+        <value>SearchLayouts</value>
+        <value>SharingReason</value>
+        <value>SharingRecalculation</value>
+        <value>ValidationRule</value>
+        <value>WebLink</value>
+    </util:list>
+
+    <bean id="customObjectMetadata" class="${xmlComponentType.package.name}.${CustomObject.componentType}" lazy-init="true">
+        <property name="description"
+            value="This is a generic template for ${CustomObject.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+        <property name="sharingModel">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.SharingModel.READ_WRITE" />
+        </property>
+        <property name="deploymentStatus">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.DeploymentStatus.DEPLOYED" />
+        </property>
+        <property name="nameField">
+            <bean class="${xmlComponentType.package.name}.CustomField">
+                <property name="label" value="${CustomObject.displayName} Label Name" />
+                <property name="type">
+                    <util:constant static-field="com.salesforce.ide.api.metadata.types.FieldType.TEXT" />
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- custom object translation -->
+    <bean id="CustomObjectTranslation" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomObjectTranslation.displayName}" />
+        <property name="componentType" value="${CustomObjectTranslation.componentType}" />
+        <property name="defaultFolder" value="${CustomObjectTranslation.defaultFolder}" />
+        <property name="fileExtension" value="${CustomObjectTranslation.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=Translation"/>
+        <property name="hasAssociatedComponentTypes" value="true" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customObjectTranslationMetadata" />
+    </bean>
+
+    <bean id="customObjectTranslationMetadata" class="${xmlComponentType.package.name}.${CustomObjectTranslation.componentType}" lazy-init="true" />
+
+    <!-- Custom Page Web Link -->
+    <bean id="CustomPageWebLink" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomPageWebLink.displayName}" />
+        <property name="componentType" value="${CustomPageWebLink.componentType}" />
+        <property name="defaultFolder" value="${CustomPageWebLink.defaultFolder}" />
+        <property name="fileExtension" value="${CustomPageWebLink.fileExtension}" />
+        <property name="webComponentUrlPart" value="" />
+        <property name="webComponentTypeUrlPart" value="p/setup/link/CustomResourceLinkList?pageName=CustomPageItem&amp;type=CustomPageItem" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customPageWebLinkMetadata" />
+    </bean>
+
+    <bean id="customPageWebLinkMetadata" class="${xmlComponentType.package.name}.${CustomPageWebLink.componentType}" lazy-init="true"/>
+
+    <!-- custom site -->
+    <bean id="CustomSite" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CustomSite.displayName}" />
+      <property name="componentType" value="${CustomSite.componentType}" />
+      <property name="defaultFolder" value="${CustomSite.defaultFolder}" />
+      <property name="fileExtension" value="${CustomSite.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="0DM/o?setupid=CustomDomain" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="customSiteMetadata" />
+    </bean>
+
+    <bean id="customSiteMetadata" class="${xmlComponentType.package.name}.${CustomSite.componentType}" lazy-init="true"/>
+
+    <!-- custom tab -->
+    <bean id="CustomTab" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CustomTab.displayName}" />
+      <property name="componentType" value="${CustomTab.componentType}" />
+      <property name="defaultFolder" value="${CustomTab.defaultFolder}" />
+      <property name="fileExtension" value="${CustomTab.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="setup/ui/customtabs.jsp" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="customTabMetadata" />
+    </bean>
+
+    <bean id="customTabMetadata" class="${xmlComponentType.package.name}.${CustomTab.componentType}" lazy-init="true">
+      <property name="customObject" value="true" />
+      <property name="description"
+        value="This is a generic template for ${CustomTab.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+      <property name="motif" value="Custom16: Bank" />
+    </bean>
+
+    <!-- Dashboard -->
+    <bean id="Dashboard" parent="baseFolderComponent" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Dashboard.displayName}" />
+      <property name="componentType" value="${Dashboard.componentType}" />
+      <property name="defaultFolder" value="${Dashboard.defaultFolder}" />
+      <property name="fileExtension" value="${Dashboard.fileExtension}" />
+      <property name="folderNameIfFolderTypeMdComponent" value="DashboardFolder" />
+      <property name="metadataComposite" value="false" />
+      <property name="webComponentUrlPart" value="" />
+      <property name="webComponentTypeUrlPart" value="01Z/o" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="dashboardMetadata" />
+    </bean>
+
+    <bean id="dashboardMetadata" class="${xmlComponentType.package.name}.${Dashboard.componentType}" lazy-init="true"/>
+
+    <!-- Data Category Group -->
+    <bean id="DataCategoryGroup" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${DataCategoryGroup.displayName}" />
+        <property name="componentType" value="${DataCategoryGroup.componentType}" />
+        <property name="defaultFolder" value="${DataCategoryGroup.defaultFolder}" />
+        <property name="fileExtension" value="${DataCategoryGroup.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentUrlPart" value="/category/datacategorysetup.apexp?" />
+        <property name="webComponentTypeUrlPart" value="/category/datacategorysetup.apexp" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="dataCategoryGroupMetadata" />
+    </bean>
+    <bean id="dataCategoryGroupMetadata" class="${xmlComponentType.package.name}.${DataCategoryGroup.componentType}" lazy-init="true"/>
+
+    <bean id="PermissionSet" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${PermissionSet.displayName}" />
+        <property name="componentType" value="${PermissionSet.componentType}" />
+        <property name="defaultFolder" value="${PermissionSet.defaultFolder}" />
+        <property name="fileExtension" value="${PermissionSet.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentTypeUrlPart" value="0PS" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="PermissionSetMetadata" />
+    </bean>
+    <bean id="PermissionSetMetadata" class="${xmlComponentType.package.name}.${PermissionSet.componentType}" lazy-init="true"/>
+
+    <bean id="CustomApplicationComponent" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomApplicationComponent.displayName}" />
+        <property name="componentType" value="${CustomApplicationComponent.componentType}" />
+        <property name="defaultFolder" value="${CustomApplicationComponent.defaultFolder}" />
+        <property name="fileExtension" value="${CustomApplicationComponent.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentTypeUrlPart" value="06G" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="CustomApplicationComponentMetadata" />
+    </bean>
+    <bean id="CustomApplicationComponentMetadata" class="${xmlComponentType.package.name}.${CustomApplicationComponent.componentType}" lazy-init="true"/>
+
+    <bean id="ApexTriggerCoupling" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ApexTriggerCoupling.displayName}" />
+        <property name="componentType" value="${ApexTriggerCoupling.componentType}" />
+        <property name="defaultFolder" value="${ApexTriggerCoupling.defaultFolder}" />
+        <property name="fileExtension" value="${ApexTriggerCoupling.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="wildCardSupported" value="false" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="ApexTriggerCouplingMetadata" />
+    </bean>
+    <bean id="ApexTriggerCouplingMetadata" class="${xmlComponentType.package.name}.${ApexTriggerCoupling.componentType}" lazy-init="true"/>
+
+    <bean id="Settings" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Settings.displayName}" />
+        <property name="componentType" value="${Settings.componentType}" />
+        <property name="defaultFolder" value="${Settings.defaultFolder}" />
+        <property name="fileExtension" value="${Settings.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentUrlPart" value="/ui/setup/Setup?setupid=Security#" />
+        <property name="webComponentTypeUrlPart" value="/ui/setup/Setup?setupid=Security" />
+    </bean>
+
+    <bean id="EntitlementTemplate" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${EntitlementTemplate.displayName}" />
+      <property name="componentType" value="${EntitlementTemplate.componentType}" />
+      <property name="defaultFolder" value="${EntitlementTemplate.defaultFolder}" />
+      <property name="fileExtension" value="${EntitlementTemplate.fileExtension}" />
+      <property name="caseSensitive" value="false" />
+      <property name="webComponentUrlPart" value="" />
+      <property name="webComponentTypeUrlPart" value="/551" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="entitlementTemplateMetadata" />    
+    </bean>
+
+    <bean id="entitlementTemplateMetadata" class="${xmlComponentType.package.name}.${EntitlementTemplate.componentType}" lazy-init="true"/>
+
+    <bean id="EntitlementProcess" parent="component" scope="prototype" lazy-init="true">
+  <property name="displayName" value="${EntitlementTemplate.displayName}" />
+        <property name="componentType" value="${EntitlementProcess.componentType}" />
+        <property name="defaultFolder" value="${EntitlementProcess.defaultFolder}" />
+        <property name="fileExtension" value="${EntitlementProcess.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentUrlPart" value="" />
+        <property name="webComponentTypeUrlPart" value="/552" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="entitlementProcessMetadata" />    
+    </bean>
+
+    <bean id="entitlementProcessMetadata" class="${xmlComponentType.package.name}.${EntitlementProcess.componentType}" lazy-init="true"/>
+
+    <bean id="MilestoneType" parent="component" scope="prototype" lazy-init="true">
+    <property name="displayName" value="${MilestoneType.displayName}" />
+        <property name="componentType" value="${MilestoneType.componentType}" />
+        <property name="defaultFolder" value="${MilestoneType.defaultFolder}" />
+        <property name="fileExtension" value="${MilestoneType.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentUrlPart" value="" />
+        <property name="webComponentTypeUrlPart" value="/557" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="milestoneTypeMetadata" />    
+    </bean>
+
+    <bean id="milestoneTypeMetadata" class="${xmlComponentType.package.name}.${MilestoneType.componentType}" lazy-init="true"/>
+
+	<!--  Document -->
+    <bean id="Document" parent="baseFolderComponent" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Document.displayName}" />
+        <property name="componentType" value="${Document.componentType}" />
+        <property name="defaultFolder" value="${Document.defaultFolder}" />
+        <property name="fileExtension" value="" />
+		<property name="folderNameIfFolderTypeMdComponent" value="DocumentFolder" />
+        <property name="textContent" value="false" />
+        <property name="webComponentTypeUrlPart" value="015" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="documentMetadata" />
+    </bean>
+
+    <bean id="documentMetadata" class="${xmlComponentType.package.name}.${Document.componentType}" lazy-init="true">
+        <property name="description"
+            value="This is a generic template for ${Document.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+        <property name="public" value="false" />
+        <property name="internalUseOnly" value="false" />
+    </bean>
+
+    <bean id="EmailTemplate" parent="baseFolderComponent" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${EmailTemplate.displayName}" />
+        <property name="componentType" value="${EmailTemplate.componentType}" />
+        <property name="defaultFolder" value="${EmailTemplate.defaultFolder}" />
+        <property name="fileExtension" value="${EmailTemplate.fileExtension}" />
+		<property name="folderNameIfFolderTypeMdComponent" value="EmailFolder" />
+        <property name="webComponentTypeUrlPart" value="00X?setupid=CommunicationTemplatesEmail" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="emailTemplateMetadata" />
+    </bean>
+
+    <bean id="emailTemplateMetadata" class="${xmlComponentType.package.name}.${EmailTemplate.componentType}" lazy-init="true">
+        <property name="description"
+            value="This is a generic template for ${EmailTemplate.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+        <property name="available" value="false" />
+        <property name="encodingKey">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.Encoding.UTF_8" />
+        </property>
+        <property name="style">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.EmailTemplateStyle.NONE" />
+        </property>
+        <property name="type">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.EmailTemplateType.TEXT" />
+        </property>
+    </bean>
+
+    <!-- folder -->
+    <bean id="Folder" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Folder.displayName}" />
+        <property name="componentType" value="${Folder.componentType}" />
+        <property name="defaultFolder" value="${Folder.defaultFolder}" />
+        <property name="fileExtension" value="${Folder.fileExtension}" />
+        <property name="wildCardSupported" value="false" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="folderMetadata" />
+        <!--  determines that "Folder" is not a Metadata API defined component type -->
+        <property name="internal" value="true" />
+    </bean>
+
+	<bean id="Flow" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Flow.displayName}" />
+        <property name="componentType" value="${Flow.componentType}" />
+        <property name="defaultFolder" value="${Flow.defaultFolder}" />
+        <property name="fileExtension" value="${Flow.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentUrlPart" value="designer/designer.apexp#Id=" />
+        <property name="webComponentTypeUrlPart" value="300?setupid=InteractionProcesses" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="FlowMetadata" />
+    </bean>
+    <bean id="FlowMetadata" class="${xmlComponentType.package.name}.${Flow.componentType}" lazy-init="true"/>
+
+    <bean id="folderMetadata" class="${xmlComponentType.package.name}.${Folder.componentType}" lazy-init="true">
+        <property name="accessType">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.FolderAccessTypes.PUBLIC" />
+        </property>
+        <property name="publicFolderAccess">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.PublicFolderAccess.READ_ONLY" />
+        </property>
+    </bean>
+
+	<bean id="Group" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Group.displayName}" />
+        <property name="componentType" value="${Group.componentType}" />
+        <property name="defaultFolder" value="${Group.defaultFolder}" />
+        <property name="fileExtension" value="${Group.fileExtension}" />
+        <property name="caseSensitive" value="false" />
+        <property name="webComponentTypeUrlPart" value="p/own/OrgPublicGroupsPage/d?setupid=PublicGroups" />
+        <property name="webComponentUrlPart" value="setup/own/groupdetail.jsp?setupid=PublicGroups&amp;id=" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="GroupMetadata" />
+    </bean>
+    <bean id="GroupMetadata" class="${xmlComponentType.package.name}.${Group.componentType}" lazy-init="true"/>
+
+
+    <!-- page layout -->
+    <bean id="Layout" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Layout.displayName}" />
+        <property name="componentType" value="${Layout.componentType}" />
+        <property name="defaultFolder" value="${Layout.defaultFolder}" />
+        <property name="fileExtension" value="${Layout.fileExtension}" />
+        <property name="webComponentUrlPart" value="ui/setup/Setup?setupid=Customize" />
+        <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=Customize" />
+        <property name="associatedComponentTypes">
+            <util:list id="associatedLayoutComponentTypeList" list-class="java.util.ArrayList">
+                <value>CustomObject</value>
+            </util:list>
+        </property>
+        <lookup-method name="getDefaultMetadataExtInstance" bean="layoutMetadata" />
+    </bean>
+
+    <bean id="layoutMetadata" class="${xmlComponentType.package.name}.${Layout.componentType}" lazy-init="true">
+    </bean>
+
+    <!-- letterhead -->
+    <bean id="Letterhead" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Letterhead.displayName}" />
+        <property name="componentType" value="${Letterhead.componentType}" />
+        <property name="defaultFolder" value="${Letterhead.defaultFolder}" />
+        <property name="fileExtension" value="${Letterhead.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="email/brand/brandtemplatelist.jsp" />
+
+        <property name="maxLabelLength" value="${Letterhead.maxLabelLength}" />
+        <property name="maxNameLength" value="${Letterhead.maxNameLength}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="letterheadMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.letterhead.LetterheadWizard" />
+    </bean>
+
+    <bean id="letterheadMetadata" class="${xmlComponentType.package.name}.${Letterhead.componentType}" lazy-init="true">
+        <property name="description"
+            value="This is a generic template for ${Letterhead.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+        <property name="available" value="true" />
+        <property name="backgroundColor" value="#000000" />
+        <property name="bodyColor" value="#FF6600" />
+        <property name="header">
+            <bean class="${xmlComponentType.package.name}.LetterheadHeaderFooter">
+                <property name="backgroundColor" value="#000000" />
+                <property name="horizontalAlignment">
+                    <util:constant static-field="com.salesforce.ide.api.metadata.types.LetterheadHorizontalAlignment.CENTER" />
+                </property>
+                <property name="verticalAlignment">
+                    <util:constant static-field="com.salesforce.ide.api.metadata.types.LetterheadVerticalAlignment.MIDDLE" />
+                </property>
+            </bean>
+        </property>
+        <property name="footer">
+            <bean class="${xmlComponentType.package.name}.LetterheadHeaderFooter">
+                <property name="backgroundColor" value="#000000" />
+                <property name="horizontalAlignment">
+                    <util:constant static-field="com.salesforce.ide.api.metadata.types.LetterheadHorizontalAlignment.CENTER" />
+                </property>
+                <property name="verticalAlignment">
+                    <util:constant static-field="com.salesforce.ide.api.metadata.types.LetterheadVerticalAlignment.MIDDLE" />
+                </property>
+            </bean>
+        </property>
+        <property name="topLine">
+            <bean class="${xmlComponentType.package.name}.LetterheadLine">
+                <property name="color" value="#000000" />
+                <property name="height" value="0" />
+            </bean>
+        </property>
+        <property name="middleLine">
+            <bean class="${xmlComponentType.package.name}.LetterheadLine">
+                <property name="color" value="#000000" />
+                <property name="height" value="0" />
+            </bean>
+        </property>
+        <property name="bottomLine">
+            <bean class="${xmlComponentType.package.name}.LetterheadLine">
+                <property name="color" value="#000000" />
+                <property name="height" value="0" />
+            </bean>
+        </property>
+    </bean>
+
+    <!-- homepage component -->
+    <bean id="HomePageComponent" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${HomePageComponent.displayName}" />
+        <property name="componentType" value="${HomePageComponent.componentType}" />
+        <property name="defaultFolder" value="${HomePageComponent.defaultFolder}" />
+        <property name="fileExtension" value="${HomePageComponent.fileExtension}" />
+        <property name="alphaNumeric" value="false" />
+        <property name="webComponentTypeUrlPart" value="setup/ui/homepagecomponents.jsp?setupid=HomePageComponents" />
+
+        <property name="maxLabelLength" value="${HomePageComponent.maxLabelLength}" />
+        <property name="maxNameLength" value="${HomePageComponent.maxNameLength}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="homePageComponentMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.homepage.component.HomePageComponentWizard" />
+    </bean>
+
+    <bean id="homePageComponentMetadata" class="${xmlComponentType.package.name}.${HomePageComponent.componentType}" lazy-init="true">
+        <property name="body" value="Replace with your content"/>
+        <property name="width">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.PageComponentWidth.NARROW" />
+        </property>
+        <property name="pageComponentType">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.PageComponentType.HTML_AREA" />
+        </property>
+    </bean>
+
+    <!-- homepage layout -->
+    <bean id="HomePageLayout" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${HomePageLayout.displayName}" />
+        <property name="componentType" value="${HomePageLayout.componentType}" />
+        <property name="defaultFolder" value="${HomePageLayout.defaultFolder}" />
+        <property name="fileExtension" value="${HomePageLayout.fileExtension}" />
+        <property name="alphaNumeric" value="false" />
+        <property name="webComponentTypeUrlPart" value="02T?setupid=HomePageLayouts" />
+
+        <property name="maxLabelLength" value="${HomePageLayout.maxLabelLength}" />
+        <property name="maxNameLength" value="${HomePageLayout.maxNameLength}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="homePageLayoutMetadata" />
+        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.homepage.layout.HomePageLayoutWizard" />
+    </bean>
+
+    <bean id="homePageLayoutMetadata" class="${xmlComponentType.package.name}.${HomePageLayout.componentType}" lazy-init="true"/>
+
+    <!-- package manifest -->
+    <bean id="PackageManifest" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${PackageManifest.displayName}" />
+        <property name="componentType" value="${PackageManifest.componentType}" />
+        <property name="defaultFolder" value="${PackageManifest.defaultFolder}" />
+        <property name="fileExtension" value="${PackageManifest.fileExtension}" />
+        <property name="wildCardSupported" value="false" />
+        <property name="packageManifest" value="true" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="packageMetadata" />
+    </bean>
+
+    <bean id="packageMetadata" class="${xmlComponentType.package.name}.Package" lazy-init="true"/>
+
+    <!-- portal -->
+    <bean id="Portal" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Portal.displayName}" />
+        <property name="componentType" value="${Portal.componentType}" />
+        <property name="defaultFolder" value="${Portal.defaultFolder}" />
+        <property name="fileExtension" value="${Portal.fileExtension}" />
+        <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=CustomerSuccessPortal" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="portalMetadata" />
+    </bean>
+
+    <bean id="portalMetadata" class="${xmlComponentType.package.name}.${Portal.componentType}" lazy-init="true"/>
+
+    <!-- profile -->
+    <bean id="Profile" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Profile.displayName}" />
+      <property name="componentType" value="${Profile.componentType}" />
+      <property name="defaultFolder" value="${Profile.defaultFolder}" />
+      <property name="fileExtension" value="${Profile.fileExtension}" />
+      <property name="alphaNumeric" value="false" />
+      <property name="hasAssociatedComponentTypes" value="true" />
+      <property name="webComponentTypeUrlPart" value="setup/ui/profilelist.jsp?setupid=Profiles" />
+
+      <property name="maxLabelLength" value="${Profile.maxLabelLength}" />
+      <property name="maxNameLength" value="${Profile.maxNameLength}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="profileMetadata" />
+      <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.profile.ProfileWizard" />
+    </bean>
+
+    <!--<util:list id="subProfileComponentTypeList" list-class="java.util.ArrayList">
+        <value>ProfileLayoutAssignments</value>
+        <value>ProfileObjectPermissions</value>
+        <value>ProfileRecordTypeVisibility</value>
+        <value>ProfileTabVisibility</value>
+        <value>TabVisibility</value>
+    </util:list>-->
+
+    <bean id="profileMetadata" class="${xmlComponentType.package.name}.${Profile.componentType}" lazy-init="true" />
+
+    <bean id="Queue" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Queue.displayName}" />
+      <property name="componentType" value="${Queue.componentType}" />
+      <property name="defaultFolder" value="${Queue.defaultFolder}" />
+      <property name="fileExtension" value="${Queue.fileExtension}" />
+      <property name="caseSensitive" value="false" />
+      <property name="webComponentTypeUrlPart" value="p/own/Queue/d?setupid=Queues" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="QueueMetadata" />
+    </bean>
+    <bean id="QueueMetadata" class="${xmlComponentType.package.name}.${Queue.componentType}" lazy-init="true"/>
+
+
+    <!-- report -->
+    <bean id="Report" parent="baseFolderComponent" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Report.displayName}" />
+        <property name="componentType" value="${Report.componentType}" />
+        <property name="defaultFolder" value="${Report.defaultFolder}" />
+        <property name="fileExtension" value="${Report.fileExtension}" />
+        <property name="folderNameIfFolderTypeMdComponent" value="ReportFolder" />
+        <property name="metadataComposite" value="false" />
+        <property name="webComponentTypeUrlPart" value="00O?setupid=Reports" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="reportMetadata" />
+    </bean>
+
+    <bean id="reportMetadata" class="${xmlComponentType.package.name}.${Report.componentType}" lazy-init="true"/>
+
+    <!-- report type -->
+    <bean id="ReportType" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ReportType.displayName}" />
+        <property name="componentType" value="${ReportType.componentType}" />
+        <property name="defaultFolder" value="${ReportType.defaultFolder}" />
+        <property name="fileExtension" value="${ReportType.fileExtension}" />
+        <property name="webComponentUrlPart" value="" />
+        <property name="webComponentTypeUrlPart" value="070?setupid=CustomReportTypes" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="reportTypeMetadata" />
+    </bean>
+
+    <bean id="reportTypeMetadata" class="${xmlComponentType.package.name}.${ReportType.componentType}" lazy-init="true"/>
+
+    <bean id="Role" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Role.displayName}" />
+      <property name="componentType" value="${Role.componentType}" />
+      <property name="defaultFolder" value="${Role.defaultFolder}" />
+      <property name="fileExtension" value="${Role.fileExtension}" />
+      <property name="caseSensitive" value="false" />
+      <property name="webComponentTypeUrlPart" value="ui/setup/user/RoleViewPage?setupid=Roles" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="RoleMetadata" />
+    </bean>
+    <bean id="RoleMetadata" class="${xmlComponentType.package.name}.${Role.componentType}" lazy-init="true"/>
+
+    <bean id="Territory" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Territory.displayName}" />
+      <property name="componentType" value="${Territory.componentType}" />
+      <property name="defaultFolder" value="${Territory.defaultFolder}" />
+      <property name="fileExtension" value="${Territory.fileExtension}" />
+      <property name="caseSensitive" value="false" />
+      <property name="webComponentTypeUrlPart" value="ui/setup/territory/TerritoryViewPage?setupid=Territories" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="TerritoryMetadata" />
+    </bean>
+    <bean id="TerritoryMetadata" class="${xmlComponentType.package.name}.${Territory.componentType}" lazy-init="true"/>
+
+    <!-- scontrol -->
+    <bean id="Scontrol" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Scontrol.displayName}" />
+      <property name="componentType" value="${Scontrol.componentType}" />
+      <property name="defaultFolder" value="${Scontrol.defaultFolder}" />
+      <property name="fileExtension" value="${Scontrol.fileExtension}" />
+      <property name="caseSensitive" value="false" />
+      <property name="alphaNumeric" value="true" />
+      <property name="metadataComposite" value="true" />
+      <property name="codeBody" value="true" />
+      <property name="webComponentTypeUrlPart" value="01N?setupid=CustomForms" />
+
+      <property name="maxLabelLength" value="${Scontrol.maxLabelLength}" />
+      <property name="maxNameLength" value="${Scontrol.maxNameLength}" />
+
+      <lookup-method name="getTemplates" bean="scontrolTemplate" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="scontrolMetadata" />
+    </bean>
+
+    <bean id="scontrolTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+      lazy-init="true">
+      <property name="targetObject">
+        <ref bean="templateRegistry" />
+      </property>
+      <property name="targetMethod">
+        <value>getTemplatesByComponentType</value>
+      </property>
+      <property name="arguments">
+        <list>
+          <value>${Scontrol.componentType}</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="scontrolMetadata" class="${xmlComponentType.package.name}.${Scontrol.componentType}" lazy-init="true">
+      <property name="description"
+        value="This is a generic template for ${Scontrol.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+      <property name="contentSource">
+        <util:constant static-field="com.salesforce.ide.api.metadata.types.SControlContentSource.HTML" />
+      </property>
+      <property name="encodingKey">
+            <util:constant static-field="com.salesforce.ide.api.metadata.types.Encoding.UTF_8" />
+        </property>
+        <property name="supportsCaching" value="true" />
+    </bean>
+
+    <!-- Abstract types that won't show in the package explorer, but should need for the component type url -->
+
+    <bean id="AccountSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AccountSharingRules.displayName}" />
+      <property name="componentType" value="${AccountSharingRules.componentType}" />
+      <property name="defaultFolder" value="${AccountSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AccountSharingRulesMetadata" />
+    </bean>
+    <bean id="AccountSharingRulesMetadata" class="${xmlComponentType.package.name}.${AccountSharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="AccountTerritorySharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AccountTerritorySharingRules.displayName}" />
+      <property name="componentType" value="${AccountTerritorySharingRules.componentType}" />
+      <property name="defaultFolder" value="${AccountTerritorySharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AccountTerritorySharingRulesMetadata" />
+    </bean>
+    <bean id="AccountTerritorySharingRulesMetadata" class="${xmlComponentType.package.name}.${AccountTerritorySharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="CampaignSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CampaignSharingRules.displayName}" />
+      <property name="componentType" value="${CampaignSharingRules.componentType}" />
+      <property name="defaultFolder" value="${CampaignSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CampaignSharingRulesMetadata" />
+    </bean>
+    <bean id="CampaignSharingRulesMetadata" class="${xmlComponentType.package.name}.${CampaignSharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="CaseSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CaseSharingRules.displayName}" />
+      <property name="componentType" value="${CaseSharingRules.componentType}" />
+      <property name="defaultFolder" value="${CaseSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CaseSharingRulesMetadata" />
+    </bean>
+    <bean id="CaseSharingRulesMetadata" class="${xmlComponentType.package.name}.${CaseSharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="ContactSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${ContactSharingRules.displayName}" />
+      <property name="componentType" value="${ContactSharingRules.componentType}" />
+      <property name="defaultFolder" value="${ContactSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="ContactSharingRulesMetadata" />
+    </bean>
+    <bean id="ContactSharingRulesMetadata" class="${xmlComponentType.package.name}.${ContactSharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="CustomObjectSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CustomObjectSharingRules.displayName}" />
+      <property name="componentType" value="${CustomObjectSharingRules.componentType}" />
+      <property name="defaultFolder" value="${CustomObjectSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="wildCardSupported" value="false" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CustomObjectSharingRulesMetadata" />
+    </bean>
+    <bean id="CustomObjectSharingRulesMetadata" class="${xmlComponentType.package.name}.${CustomObjectSharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="LeadSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${LeadSharingRules.displayName}" />
+      <property name="componentType" value="${LeadSharingRules.componentType}" />
+      <property name="defaultFolder" value="${LeadSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="LeadSharingRulesMetadata" />
+    </bean>
+    <bean id="LeadSharingRulesMetadata" class="${xmlComponentType.package.name}.${LeadSharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="OpportunitySharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${OpportunitySharingRules.displayName}" />
+      <property name="componentType" value="${OpportunitySharingRules.componentType}" />
+      <property name="defaultFolder" value="${OpportunitySharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="OpportunitySharingRulesMetadata" />
+    </bean>
+    <bean id="OpportunitySharingRulesMetadata" class="${xmlComponentType.package.name}.${OpportunitySharingRules.componentType}" lazy-init="true"/>
+
+    <bean id="UserSharingRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${UserSharingRules.displayName}" />
+      <property name="componentType" value="${UserSharingRules.componentType}" />
+      <property name="defaultFolder" value="${UserSharingRules.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="${SharingRules.detailListUrl}" />
+      <property name="webComponentUrlPart" value="${SharingRules.detailListUrl}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="UserSharingRulesMetadata" />
+    </bean>
+    <bean id="UserSharingRulesMetadata" class="${xmlComponentType.package.name}.${UserSharingRules.componentType}" lazy-init="true"/>
+
+    <!-- The real sharing rule beens that will be used in the package manifest controller -->
+
+    <bean id="AccountOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AccountOwnerSharingRule.displayName}" />
+      <property name="componentType" value="${AccountOwnerSharingRule.componentType}" />
+      <property name="defaultFolder" value="${AccountOwnerSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="p/own/OrgSharingDetail?setupid=SecuritySharing" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AccountOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="AccountOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${AccountOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="AccountCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AccountCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${AccountCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${AccountCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="p/own/OrgSharingDetail?setupid=SecuritySharing" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AccountCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="AccountCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${AccountCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="AccountTerritorySharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AccountTerritorySharingRule.displayName}" />
+      <property name="componentType" value="${AccountTerritorySharingRule.componentType}" />
+      <property name="defaultFolder" value="${AccountTerritorySharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AccountTerritorySharingRuleMetadata" />
+    </bean>
+    <bean id="AccountTerritorySharingRuleMetadata" class="${xmlComponentType.package.name}.${AccountTerritorySharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="CampaignOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CampaignOwnerSharingRule.displayName}" />
+      <property name="componentType" value="${CampaignOwnerSharingRule.componentType}" />
+      <property name="defaultFolder" value="${CampaignOwnerSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CampaignOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="CampaignOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${CampaignOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="CampaignCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CampaignCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${CampaignCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${CampaignCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CampaignCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="CampaignCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${CampaignCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="CaseOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CaseOwnerSharingRule.displayName}" />
+      <property name="componentType" value="${CaseOwnerSharingRule.componentType}" />
+      <property name="defaultFolder" value="${CaseOwnerSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CaseOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="CaseOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${CaseOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="CaseCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CaseCriteriaBasedSharingRule.displayName}" />
+        <property name="componentType" value="${CaseCriteriaBasedSharingRule.componentType}" />
+        <property name="defaultFolder" value="${CaseCriteriaBasedSharingRule.defaultFolder}" />
+        <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="CaseSharingRulesMetadata" />
+    </bean>
+    <bean id="CaseCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${CaseCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="ContactOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ContactOwnerSharingRule.displayName}" />
+        <property name="componentType" value="${ContactOwnerSharingRule.componentType}" />
+        <property name="defaultFolder" value="${ContactOwnerSharingRule.defaultFolder}" />
+        <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="ContactOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="ContactOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${ContactOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="ContactCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${ContactCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${ContactCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${ContactCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="ContactCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="ContactCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${ContactCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+
+    <bean id="CustomObjectOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CustomObjectOwnerSharingRule.displayName}" />
+      <property name="componentType" value="${CustomObjectOwnerSharingRule.componentType}" />
+      <property name="defaultFolder" value="${CustomObjectOwnerSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="wildCardSupported" value="false" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CustomObjectOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="CustomObjectOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${CustomObjectOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="CustomObjectCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CustomObjectCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${CustomObjectCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${CustomObjectCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+      <property name="wildCardSupported" value="false" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CustomObjectCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="CustomObjectCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${CustomObjectCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="LeadOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${LeadOwnerSharingRule.displayName}" />
+      <property name="componentType" value="${LeadOwnerSharingRule.componentType}" />
+      <property name="defaultFolder" value="${LeadOwnerSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="LeadOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="LeadOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${LeadOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="LeadCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${LeadCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${LeadCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${LeadCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="LeadCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="LeadCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${LeadCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="OpportunityOwnerSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${OpportunityOwnerSharingRule.displayName}" />
+      <property name="componentType" value="${OpportunityOwnerSharingRule.componentType}" />
+      <property name="defaultFolder" value="${OpportunityOwnerSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="OpportunityOwnerSharingRuleMetadata" />
+    </bean>
+    <bean id="OpportunityOwnerSharingRuleMetadata" class="${xmlComponentType.package.name}.${OpportunityOwnerSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="OpportunityCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${OpportunityCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${OpportunityCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${OpportunityCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="OpportunityCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="OpportunityCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${OpportunityCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="UserMembershipSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${UserMembershipSharingRule.displayName}" />
+      <property name="componentType" value="${UserMembershipSharingRule.componentType}" />
+      <property name="defaultFolder" value="${UserMembershipSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="UserMembershipSharingRuleMetadata" />
+    </bean>
+    <bean id="UserMembershipSharingRuleMetadata" class="${xmlComponentType.package.name}.${UserMembershipSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="UserCriteriaBasedSharingRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${UserCriteriaBasedSharingRule.displayName}" />
+      <property name="componentType" value="${UserCriteriaBasedSharingRule.componentType}" />
+      <property name="defaultFolder" value="${UserCriteriaBasedSharingRule.defaultFolder}" />
+      <property name="fileExtension" value="${SharingRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="UserCriteriaBasedSharingRuleMetadata" />
+    </bean>
+    <bean id="UserCriteriaBasedSharingRuleMetadata" class="${xmlComponentType.package.name}.${UserCriteriaBasedSharingRule.componentType}" lazy-init="true"/>
+
+    <bean id="AutoResponseRule" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AutoResponseRule.displayName}" />
+      <property name="componentType" value="${AutoResponseRule.componentType}" />
+      <property name="defaultFolder" value="${AutoResponseRule.defaultFolder}" />
+      <property name="fileExtension" value="${AutoResponseRules.fileExtension}" />
+      <property name="wildCardSupported" value="false" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AutoResponseRuleMetadata" />
+    </bean>
+    <bean id="AutoResponseRuleMetadata" class="${xmlComponentType.package.name}.${AutoResponseRule.componentType}" lazy-init="true"/>
+
+    <bean id="AutoResponseRules" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AutoResponseRules.displayName}" />
+      <property name="componentType" value="${AutoResponseRules.componentType}" />
+      <property name="defaultFolder" value="${AutoResponseRules.defaultFolder}" />
+      <property name="fileExtension" value="${AutoResponseRules.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AutoResponseRulesMetadata" />
+    </bean>
+    <bean id="AutoResponseRulesMetadata" class="${xmlComponentType.package.name}.${AutoResponseRules.componentType}" lazy-init="true"/>
+
+    <bean id="AssignmentRule" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${AssignmentRule.displayName}" />
+        <property name="componentType" value="${AssignmentRule.componentType}" />
+        <property name="defaultFolder" value="${AssignmentRule.defaultFolder}" />
+        <property name="fileExtension" value="${AssignmentRules.fileExtension}" />
+        <property name="wildCardSupported" value="false" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="AssignmentRuleMetadata" />
+    </bean>
+    <bean id="AssignmentRuleMetadata" class="${xmlComponentType.package.name}.${AssignmentRule.componentType}" lazy-init="true"/>
+
+    <bean id="AssignmentRules" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${AssignmentRules.displayName}" />
+        <property name="componentType" value="${AssignmentRules.componentType}" />
+        <property name="defaultFolder" value="${AssignmentRules.defaultFolder}" />
+        <property name="fileExtension" value="${AssignmentRules.fileExtension}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="AssignmentRulesMetadata" />
+    </bean>
+    <bean id="AssignmentRulesMetadata" class="${xmlComponentType.package.name}.${AssignmentRules.componentType}" lazy-init="true"/>
+
+    <bean id="EscalationRule" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${EscalationRule.displayName}" />
+        <property name="componentType" value="${EscalationRule.componentType}" />
+        <property name="defaultFolder" value="${EscalationRule.defaultFolder}" />
+        <property name="fileExtension" value="${EscalationRules.fileExtension}" />
+        <property name="wildCardSupported" value="false" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="EscalationRuleMetadata" />
+    </bean>
+    <bean id="EscalationRuleMetadata" class="${xmlComponentType.package.name}.${EscalationRule.componentType}" lazy-init="true"/>
+
+    <bean id="EscalationRules" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${EscalationRules.displayName}" />
+        <property name="componentType" value="${EscalationRules.componentType}" />
+        <property name="defaultFolder" value="${EscalationRules.defaultFolder}" />
+        <property name="fileExtension" value="${EscalationRules.fileExtension}" />
+
+        <lookup-method name="getDefaultMetadataExtInstance" bean="EscalationRulesMetadata" />
+    </bean>
+    <bean id="EscalationRulesMetadata" class="${xmlComponentType.package.name}.${EscalationRules.componentType}" lazy-init="true"/>
+
+    <bean id="AuthProvider" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${AuthProvider.displayName}" />
+      <property name="componentType" value="${AuthProvider.componentType}" />
+      <property name="defaultFolder" value="${AuthProvider.defaultFolder}" />
+      <property name="fileExtension" value="${AuthProvider.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="AuthProviderMetadata" />
+    </bean>
+    <bean id="AuthProviderMetadata" class="${xmlComponentType.package.name}.${AuthProvider.componentType}" lazy-init="true"/>
+
+    <bean id="CallCenter" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${CallCenter.displayName}" />
+      <property name="componentType" value="${CallCenter.componentType}" />
+      <property name="defaultFolder" value="${CallCenter.defaultFolder}" />
+      <property name="fileExtension" value="${CallCenter.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CallCenterMetadata" />
+    </bean>
+    <bean id="CallCenterMetadata" class="${xmlComponentType.package.name}.${CallCenter.componentType}" lazy-init="true"/>
+
+    <bean id="Community" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Community.displayName}" />
+      <property name="componentType" value="${Community.componentType}" />
+      <property name="defaultFolder" value="${Community.defaultFolder}" />
+      <property name="fileExtension" value="${Community.fileExtension}" />
+
+      <lookup-method name="getDefaultMetadataExtInstance" bean="CommunityMetadata" />
+    </bean>
+    <bean id="CommunityMetadata" class="${xmlComponentType.package.name}.${Community.componentType}" lazy-init="true"/>
+
+    <!-- standard object -->
+    <bean id="StandardObject" parent="CustomObject" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${StandardObject.displayName}" />
+      <property name="alternativeDisplayName" value="objects - standard" />
+      <property name="componentType" value="${StandardObject.componentType}" />
+      <property name="alphaNumeric" value="true" />
+      <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=Customize" />
+      <property name="webComponentUrlPart" value="ui/setup/Setup?setupid=" />
+      <property name="remoteDeleteable" value="false" />
+      <property name="remoteAdd" value="false" />
+      <property name="internal" value="true" />
+      <!-- Standard Object 'is a' a CustomObject but we don't want a wizard for it.Hence the following line.  -->
+      <property name="wizardClassName" value="" />
+    </bean>
+
+    <!-- static resources -->
+    <bean id="StaticResource" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${StaticResource.displayName}" />
+      <property name="componentType" value="${StaticResource.componentType}" />
+      <property name="defaultFolder" value="${StaticResource.defaultFolder}" />
+      <property name="fileExtension" value="${StaticResource.fileExtension}" />
+      <property name="metadataComposite" value="true" />
+      <property name="textContent" value="false" />
+      <property name="webComponentTypeUrlPart" value="apexpages/setup/listStaticResource.apexp" />
+      <property name="webComponentUrlPart" value="apexpages/setup/viewStaticResource.apexp?id=" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="staticResourceMetadata" />
+    </bean>
+
+    <bean id="staticResourceMetadata" class="${xmlComponentType.package.name}.${StaticResource.componentType}" lazy-init="true">
+      <property name="description"
+        value="This is a generic template for ${StaticResource.displayName}.  With this template, you may adjust the default elements and values and add new elements and values." />
+      <property name="contentType" value="text/plain" />
+    </bean>
+
+    <!-- translation -->
+    <bean id="Translations" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Translations.displayName}" />
+      <property name="componentType" value="${Translations.componentType}" />
+      <property name="defaultFolder" value="${Translations.defaultFolder}" />
+      <property name="fileExtension" value="${Translations.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=Translation"/>
+      <property name="wildCardSupported" value="true" />
+      <property name="hasAssociatedComponentTypes" value="true" />
+      <lookup-method name="getDefaultMetadataExtInstance" bean="translationsMetadata" />
+    </bean>
+
+    <bean id="translationsMetadata" class="${xmlComponentType.package.name}.${Translations.componentType}" lazy-init="true" />
+
+    <!-- workflow -->
+    <bean id="Workflow" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="${Workflow.displayName}" />
+      <property name="componentType" value="${Workflow.componentType}" />
+      <property name="defaultFolder" value="${Workflow.defaultFolder}" />
+      <property name="fileExtension" value="${Workflow.fileExtension}" />
+      <property name="webComponentTypeUrlPart" value="ui/setup/Setup?setupid=Workflow" />
+      <property name="webComponentUrlPart" value="ui/setup/Setup?setupid=Workflow" />
+      <property name="remoteDeleteable" value="false" />
+      <property name="associatedComponentTypes">
+        <util:list id="associatedWorkflowComponentTypeList" list-class="java.util.ArrayList">
+          <value>CustomObject</value>
+        </util:list>
+      </property>
+      <lookup-method name="getSubComponentTypes" bean="subWorkflowComponentTypeList"/>
+      <lookup-method name="getDefaultMetadataExtInstance" bean="workflowMetadata" />
+      <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.workflow.WorkflowWizard" />
+    </bean>
+
+    <util:list id="subWorkflowComponentTypeList" list-class="java.util.ArrayList">
+      <value>WorkflowFlowAction</value>
+      <value>WorkflowAlert</value>
+      <value>WorkflowFieldUpdate</value>
+      <value>WorkflowKnowledgePublish</value>
+      <value>WorkflowOutboundMessage</value>
+      <value>WorkflowQuickCreate</value>
+      <value>WorkflowRule</value>
+      <value>WorkflowSend</value>
+      <value>WorkflowTask</value>
+      <value>WorkflowChatterPost</value>
+      <value>WorkflowApex</value>
+    </util:list>
+
+    <bean id="workflowMetadata" class="${xmlComponentType.package.name}.${Workflow.componentType}" lazy-init="true"/>
+
+    <!-- unknown -->
+    <!-- catch all for object types returned but not registered as components -->
+    <bean id="Unknown" parent="component" scope="prototype" lazy-init="true">
+      <property name="displayName" value="Unknown" />
+      <property name="componentType" value="Unknown" />
+      <property name="secondaryComponentType" value="Unknown" />
+        <property name="defaultFolder" value="" />
+        <property name="fileExtension" value="" />
+        <property name="textContent" value="false" />
+        <property name="internal" value="true" />
+        <property name="remoteAdd" value="false" />
+        <property name="remoteDeleteable" value="false" />
+    </bean>
+
+    <bean id="QuickAction" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${QuickAction.displayName}" />
+        <property name="componentType" value="${QuickAction.componentType}" />
+        <property name="defaultFolder" value="${QuickAction.defaultFolder}" />
+        <property name="fileExtension" value="${QuickAction.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="quickActionMetadata" />
+    </bean>
+    <bean id="quickActionMetadata" class="${xmlComponentType.package.name}.${QuickAction.componentType}" lazy-init="true" />
+
+    <bean id="ApprovalProcess" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ApprovalProcess.displayName}" />
+        <property name="componentType" value="${ApprovalProcess.componentType}" />
+        <property name="defaultFolder" value="${ApprovalProcess.defaultFolder}" />
+        <property name="fileExtension" value="${ApprovalProcess.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="approvalProcessMetadata" />
+    </bean>
+    <bean id="approvalProcessMetadata" class="${xmlComponentType.package.name}.${ApprovalProcess.componentType}" lazy-init="true" />
+
+    <bean id="InstalledPackage" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${InstalledPackage.displayName}" />
+        <property name="componentType" value="${InstalledPackage.componentType}" />
+        <property name="defaultFolder" value="${InstalledPackage.defaultFolder}" />
+        <property name="fileExtension" value="${InstalledPackage.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="installedPackageMetadata" />
+    </bean>
+    <bean id="installedPackageMetadata" class="${xmlComponentType.package.name}.${InstalledPackage.componentType}" lazy-init="true" />
+
+    <bean id="SamlSsoConfig" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${SamlSsoConfig.displayName}" />
+        <property name="componentType" value="${SamlSsoConfig.componentType}" />
+        <property name="defaultFolder" value="${SamlSsoConfig.defaultFolder}" />
+        <property name="fileExtension" value="${SamlSsoConfig.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="samlSsoConfigMetadata" />
+    </bean>
+    <bean id="samlSsoConfigMetadata" class="${xmlComponentType.package.name}.${SamlSsoConfig.componentType}" lazy-init="true" />
+
+    <bean id="PostTemplate" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${PostTemplate.displayName}" />
+        <property name="componentType" value="${PostTemplate.componentType}" />
+        <property name="defaultFolder" value="${PostTemplate.defaultFolder}" />
+        <property name="fileExtension" value="${PostTemplate.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="postTemplateMetadata" />
+    </bean>
+    <bean id="postTemplateMetadata" class="${xmlComponentType.package.name}.${PostTemplate.componentType}" lazy-init="true" />
+
+    <bean id="ConnectedApp" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ConnectedApp.displayName}" />
+        <property name="componentType" value="${ConnectedApp.componentType}" />
+        <property name="defaultFolder" value="${ConnectedApp.defaultFolder}" />
+        <property name="fileExtension" value="${ConnectedApp.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="connectedAppMetadata" />
+    </bean>
+    <bean id="connectedAppMetadata" class="${xmlComponentType.package.name}.${ConnectedApp.componentType}" lazy-init="true" />
+
+    <bean id="LiveChatAgentConfig" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${LiveChatAgentConfig.displayName}" />
+        <property name="componentType" value="${LiveChatAgentConfig.componentType}" />
+        <property name="defaultFolder" value="${LiveChatAgentConfig.defaultFolder}" />
+        <property name="fileExtension" value="${LiveChatAgentConfig.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="liveChatAgentConfigMetadata" />
+    </bean>
+    <bean id="liveChatAgentConfigMetadata" class="${xmlComponentType.package.name}.${LiveChatAgentConfig.componentType}" lazy-init="true" />
+
+    <bean id="LiveChatButton" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${LiveChatButton.displayName}" />
+        <property name="componentType" value="${LiveChatButton.componentType}" />
+        <property name="defaultFolder" value="${LiveChatButton.defaultFolder}" />
+        <property name="fileExtension" value="${LiveChatButton.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="liveChatButtonMetadata" />
+    </bean>
+    <bean id="liveChatButtonMetadata" class="${xmlComponentType.package.name}.${LiveChatButton.componentType}" lazy-init="true" />
+
+    <bean id="LiveChatDeployment" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${LiveChatDeployment.displayName}" />
+        <property name="componentType" value="${LiveChatDeployment.componentType}" />
+        <property name="defaultFolder" value="${LiveChatDeployment.defaultFolder}" />
+        <property name="fileExtension" value="${LiveChatDeployment.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="liveChatDeploymentMetadata" />
+    </bean>
+    <bean id="liveChatDeploymentMetadata" class="${xmlComponentType.package.name}.${LiveChatDeployment.componentType}" lazy-init="true" />
+
+    <bean id="Skill" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Skill.displayName}" />
+        <property name="componentType" value="${Skill.componentType}" />
+        <property name="defaultFolder" value="${Skill.defaultFolder}" />
+        <property name="fileExtension" value="${Skill.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="skillMetadata" />
+    </bean>
+    <bean id="skillMetadata" class="${xmlComponentType.package.name}.${Skill.componentType}" lazy-init="true" />
+
+    <bean id="Network" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${Network.displayName}" />
+        <property name="componentType" value="${Network.componentType}" />
+        <property name="defaultFolder" value="${Network.defaultFolder}" />
+        <property name="fileExtension" value="${Network.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="networkMetadata" />
+    </bean>
+    <bean id="networkMetadata" class="${xmlComponentType.package.name}.${Network.componentType}" lazy-init="true" />
+
+    <bean id="AppMenu" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${AppMenu.displayName}" />
+        <property name="componentType" value="${AppMenu.componentType}" />
+        <property name="defaultFolder" value="${AppMenu.defaultFolder}" />
+        <property name="fileExtension" value="${AppMenu.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="appMenuMetadata" />
+    </bean>
+    <bean id="appMenuMetadata" class="${xmlComponentType.package.name}.${AppMenu.componentType}" lazy-init="true" />
+
+    <bean id="SharingSet" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${SharingSet.displayName}" />
+        <property name="componentType" value="${SharingSet.componentType}" />
+        <property name="defaultFolder" value="${SharingSet.defaultFolder}" />
+        <property name="fileExtension" value="${SharingSet.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="sharingSetMetadata" />
+    </bean>
+    <bean id="sharingSetMetadata" class="${xmlComponentType.package.name}.${SharingSet.componentType}" lazy-init="true" />
+
+    <bean id="SiteDotCom" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${SiteDotCom.displayName}" />
+        <property name="componentType" value="${SiteDotCom.componentType}" />
+        <property name="defaultFolder" value="${SiteDotCom.defaultFolder}" />
+        <property name="fileExtension" value="${SiteDotCom.fileExtension}" />
+        <property name="metadataComposite" value="true" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="siteDotComMetadata" />
+    </bean>
+    <bean id="siteDotComMetadata" class="${xmlComponentType.package.name}.${SiteDotCom.componentType}" lazy-init="true" />
+
+	<bean id="FlexiPage" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${FlexiPage.displayName}" />
+        <property name="componentType" value="${FlexiPage.componentType}" />
+        <property name="defaultFolder" value="${FlexiPage.defaultFolder}" />
+        <property name="fileExtension" value="${FlexiPage.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="flexiPageMetadata" />
+    </bean>
+    <bean id="flexiPageMetadata" class="${xmlComponentType.package.name}.${FlexiPage.componentType}" lazy-init="true" />
+
+    <bean id="CustomPermission" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomPermission.displayName}" />
+        <property name="componentType" value="${CustomPermission.componentType}" />
+        <property name="defaultFolder" value="${CustomPermission.defaultFolder}" />
+        <property name="fileExtension" value="${CustomPermission.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customPermissionMetadata" />
+    </bean>
+    <bean id="customPermissionMetadata" class="${xmlComponentType.package.name}.${CustomPermission.componentType}" lazy-init="true" />
+
+    <bean id="CustomMetadata" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${CustomMetadata.displayName}" />
+        <property name="componentType" value="${CustomMetadata.componentType}" />
+        <property name="defaultFolder" value="${CustomMetadata.defaultFolder}" />
+        <property name="fileExtension" value="${CustomMetadata.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="customMetadataMetadata" />
+    </bean>
+    <bean id="customMetadataMetadata" class="${xmlComponentType.package.name}.${CustomMetadata.componentType}" lazy-init="true" />
+
+    <bean id="XOrgHub" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${XOrgHub.displayName}" />
+        <property name="componentType" value="${XOrgHub.componentType}" />
+        <property name="defaultFolder" value="${XOrgHub.defaultFolder}" />
+        <property name="fileExtension" value="${XOrgHub.fileExtension}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="xOrgHubMetadata" />
+        <lookup-method name="getSubComponentTypes" bean="subXOrgHubComponentTypeList"/>
+    </bean>
+    <util:list id="subXOrgHubComponentTypeList" list-class="java.util.ArrayList">
+      <value>XOrgHubConnection</value>
+    </util:list>
+    <bean id="xOrgHubMetadata" class="${xmlComponentType.package.name}.${XOrgHub.componentType}" lazy-init="true" />
+</beans>

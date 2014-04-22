@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	<description>Content assist configuration for the editors.</description>
+	<!--
+		See
+		https://sites.google.com/a/salesforce.com/ide/Home/development/how-to-upgrade-apex-code-at-beginning-of-each-release
+	-->
+
+	<!--   E D I T O R    C O N T E N T  -->
+	<!--
+		most apex code content assistance is loaded via config/apexModel.xml.
+		The model file is derived from
+		sfdc-test/func/results/Apex/testAllSystemTypes.xml which contains type
+		name (class/object name), method name, return type, and, some times, a
+		description. The section below is from the "System.Trigger" type.
+		Instead of parsing and loading this section we explicitly add the
+		methods including what "System.Trigger" doesn't include - the return
+		type and a description from the Apex Code developer guide.
+	-->
+	<util:list id="triggerContextVariables" list-class="java.util.ArrayList">
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isExecuting" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if the current context for the Apex script is a trigger, not a Visualforce page, a Web service, or an executeAnonymous call." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isInsert" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if this trigger was fired due to an INSERT operation." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isUpdate" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if this trigger was fired due to an UPDATE operation." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isDelete" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if this trigger was fired due to a DELETE operation." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isBefore" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if this trigger was fired before any record was saved." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isAfter" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if this trigger was fired after all records were saved." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="isUnDelete" />
+			<constructor-arg value="boolean" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns true if this trigger was fired after a record is recovered from the Recycle Bin (that is, after an UNDELETE operation)." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="new" />
+			<constructor-arg value="List:SObject" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns a list of the new versions of the sObject records." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="newMap" />
+			<constructor-arg value="Map:Id, SObject" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="A map of IDs to the new versions of the sObject records." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="old" />
+			<constructor-arg value="List:SObject" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="Returns a list of the old versions of the sObject records." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="oldMap" />
+			<constructor-arg value="Map:Id, SObject" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="A map of IDs to the old versions of the sObject records." />
+		</bean>
+		<bean class="com.salesforce.ide.ui.editors.apex.assistance.ApexMethod">
+			<constructor-arg value="Trigger" />
+			<constructor-arg value="size" />
+			<constructor-arg value="Integer" />
+			<constructor-arg value="true" />
+			<constructor-arg
+				value="The total number of records in a trigger invocation, both old and new." />
+		</bean>
+	</util:list>
+
+	<!--   K E Y W O R D S   -->
+	<util:list id="triggerOperationKeywords" list-class="java.util.ArrayList">
+		<value>before</value>
+		<value>after</value>
+		<value>insert</value>
+		<value>update</value>
+		<value>delete</value>
+		<value>undelete</value>
+		<!--
+			<value>isExecuting</value> <value>isInsert</value>
+			<value>isUpdate</value> <value>isDelete</value>
+			<value>isBefore</value> <value>isAfter</value>
+			<value>isUndelete</value> <value>new</value> <value>newMap</value>
+			<value>old</value> <value>oldMap</value> <value>size</value>
+		-->
+	</util:list>
+
+	<!--
+		NOTE: 'static' and 'void' were missing from "Reserved Keywords" in
+		Apex Lang. Ref
+	-->
+	<util:list id="apexCodeKeywords" list-class="java.util.ArrayList">
+		<value>AND</value>
+		<value>And</value>
+		<value>BY</value>
+		<value>By</value>
+		<value>FROM</value>
+		<value>From</value>
+		<value>GROUP</value>
+		<value>Group</value>
+		<value>HAVING</value>
+		<value>Having</value>
+		<value>IN</value>
+		<value>LAST_90_DAYS</value>
+		<value>LAST_MONTH</value>
+		<value>LAST_N_DAYS</value>
+		<value>LAST_WEEK</value>
+		<value>NEW</value>
+		<value>NEXT_90_DAYS</value>
+		<value>NEXT_MONTH</value>
+		<value>NEXT_N_DAYS</value>
+		<value>NEXT_WEEK</value>
+		<value>NOT</value>
+		<value>NULL</value>
+		<value>New</value>
+		<value>Not</value>
+		<value>Null</value>
+		<value>OR</value>
+		<value>Or</value>
+		<value>SELECT</value>
+		<value>Search</value>
+		<value>Select</value>
+		<value>Set</value>
+		<value>THIS_MONTH</value>
+		<value>THIS_WEEK</value>
+		<value>TODAY</value>
+		<value>TestMethod</value>
+		<value>Today</value>
+		<value>WHERE</value>
+		<value>WebService</value>
+		<value>Webservice</value>
+		<value>Where</value>
+		<value>YESTERDAY</value>
+		<value>above</value>
+		<value>above_or_below</value>
+		<value>abstract</value>
+		<value>advanced</value>
+		<value>after</value>
+		<value>all</value>
+		<value>activate</value>
+		<value>and</value>
+		<value>any</value>
+		<value>array</value>
+		<value>as</value>
+		<value>asc</value>
+		<value>autonomous</value>
+		<value>begin</value>
+		<value>bigdecimal</value>
+		<value>blob</value>
+		<value>at</value>
+		<value>before</value>
+		<value>below</value>
+		<value>break</value>
+		<value>bulk</value>
+		<value>by</value>
+		<value>byte</value>
+		<value>case</value>
+		<value>cast</value>
+		<value>catch</value>
+		<value>category</value>
+		<value>char</value>
+		<value>class</value>
+		<value>collect</value>
+		<value>commit</value>
+		<value>const</value>
+		<value>continue</value>
+		<value>count</value>
+		<value>cube</value>
+		<value>data</value>
+		<value>convertcurrency</value>
+		<value>decimal</value>
+		<value>default</value>
+		<value>delete</value>
+		<value>desc</value>
+		<value>division</value>
+		<value>do</value>
+		<value>else</value>
+		<value>end</value>
+		<value>enum</value>
+		<value>excludes</value>
+		<value>exit</value>
+		<value>export</value>
+		<value>extends</value>
+		<value>false</value>
+		<value>feed</value>
+		<value>fields</value>
+		<value>final</value>
+		<value>finally</value>
+		<value>find</value>
+		<value>first</value>
+		<value>float</value>
+		<value>for</value>
+		<value>from</value>
+		<value>get</value>
+		<value>future</value>
+		<value>global</value>
+		<value>goto</value>
+		<value>group</value>
+		<value>groupid</value>
+		<value>having</value>
+		<value>hint</value>
+		<value>if</value>
+		<value>implements</value>
+		<value>import</value>
+		<value>inner</value>
+		<value>insert</value>
+		<value>instanceof</value>
+		<value>interface</value>
+		<value>into</value>
+		<value>int</value>
+		<value>join</value>
+		<value>last_90_days</value>
+		<value>last_month</value>
+		<value>last_n_days</value>
+		<value>last_week</value>
+		<value>like</value>
+		<value>limit</value>
+		<value>list</value>
+		<value>long</value>
+		<value>loop</value>
+		<value>map</value>
+		<value>merge</value>
+		<value>new</value>
+		<value>newsfeed</value>
+		<value>next_90_days</value>
+		<value>next_month</value>
+		<value>next_n_days</value>
+		<value>next_week</value>
+		<value>not</value>
+		<value>null</value>
+		<value>nulls</value>
+		<value>number</value>
+		<value>object</value>
+		<value>of</value>
+		<value>on</value>
+		<value>or</value>
+		<value>order</value>
+		<value>outer</value>
+		<value>override</value>
+		<value>phrase</value>
+		<value>package</value>
+		<value>parallel</value>
+		<value>pragma</value>
+		<value>private</value>
+		<value>process</value>
+		<value>protected</value>
+		<value>public</value>
+		<value>retrieve</value>
+		<value>return</value>
+		<value>returning</value>
+		<value>rollup</value>
+		<value>rows</value>
+		<value>rollback</value>
+		<value>savepoint</value>
+		<value>search</value>
+		<value>select</value>
+		<value>set</value>
+		<value>sharing</value>
+		<value>static</value>
+		<value>system.runas</value>
+		<value>short</value>
+		<value>sort</value>
+		<value>stat</value>
+		<value>static</value>
+		<value>super</value>
+		<value>switch</value>
+		<value>synchronized</value>
+		<value>system</value>
+		<value>testMethod</value>
+		<value>testmethod</value>
+		<value>then</value>
+		<value>this</value>
+		<value>this_month</value>
+		<value>this_week</value>
+		<value>throw</value>
+		<value>transient</value>
+		<value>today</value>
+		<value>tolabel</value>
+		<value>tomorrow</value>
+		<value>transaction</value>
+		<value>trigger</value>
+		<value>true</value>
+		<value>try</value>
+		<value>type</value>
+		<value>undelete</value>
+		<value>update</value>
+		<value>upsert</value>
+		<value>using</value>
+		<value>virtual</value>
+		<value>void</value>
+		<value>webservice</value>
+		<value>when</value>
+		<value>where</value>
+		<value>while</value>
+		<value>yesterday</value>
+		<value>after</value>
+		<value>before</value>
+		<value>count</value>
+		<value>excludes</value>
+		<value>first</value>
+		<value>includes</value>
+		<value>last</value>
+		<value>order</value>
+		<value>sharing</value>
+		<value>with</value>
+		<value>without</value>
+		<value>yesterday</value>
+	</util:list>
+
+	<util:list id="docKeywords" list-class="java.util.ArrayList">
+		<value>@author</value>
+		<value>@deprecated</value>
+		<value>@exception</value>
+		<value>@param</value>
+		<value>@return</value>
+		<value>@see</value>
+		<value>@serial</value>
+		<value>@serialData</value>
+		<value>@serialField</value>
+		<value>@since</value>
+		<value>@throws</value>
+		<value>@version</value>
+	</util:list>
+</beans>

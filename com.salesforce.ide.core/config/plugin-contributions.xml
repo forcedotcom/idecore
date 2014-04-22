@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <description>Configuration for the different build beans</description>
+
+    <!--   B U I L D E R   -->
+    <bean id="defaultBuilder" class="com.salesforce.ide.core.project.DefaultBuilder" scope="prototype"
+        lazy-init="true" >
+        <property name="builderController" ref="builderController" />
+    </bean>
+
+    <bean id="onlineBuilder" class="com.salesforce.ide.core.project.OnlineBuilder" scope="prototype"
+        lazy-init="true">
+        <property name="builderController" ref="builderController" />
+    </bean>
+
+    <bean id="builderController" class="com.salesforce.ide.core.project.BuilderController" lazy-init="true">
+        <lookup-method name="getBuilderPayloadInstance" bean="builderPayload" />
+    </bean>
+
+    <bean id="builderPayload" class="com.salesforce.ide.core.project.BuilderPayload" scope="prototype" lazy-init="true">
+        <property name="serviceLocator" ref="serviceLocator" />
+        <property name="factoryLocator" ref="factoryLocator" />
+    </bean>
+
+
+</beans>

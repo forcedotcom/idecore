@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <!--
+        NOTE:
+        - Beans in this configuration file depend on the componentPropertyConfigurer bean from components.xml.
+        - When adding a new component, ensure that it's register with the component factory and new component action beans.
+    -->
+
+
+    <!--   F A C T O R I E S -->
+    <!--  aggregates all factories into single instance -->
+    <bean id="factoryLocator" class="com.salesforce.ide.core.factories.FactoryLocator" lazy-init="true">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="componentFactory" ref="componentFactory" />
+        <property name="packageManifestFactory" ref="packageManifestFactory" />
+        <property name="projectPackageFactory" ref="projectPackageFactory" />
+        <property name="metadataFactory" ref="metadataFactory" />
+        <property name="toolingFactory" ref="toolingFactory" />
+        <property name="serviceLocator" ref="serviceLocator" />
+    </bean>
+
+    <bean id="baseFactory" class="com.salesforce.ide.core.factories.BaseFactory" abstract="true" lazy-init="true">
+        <property name="serviceLocator" ref="serviceLocator" />
+        <property name="factoryLocator" ref="factoryLocator" />
+    </bean>
+
+    <bean id="applicationFactory" class="com.salesforce.ide.core.internal.factories.ApplicationContextFactory"
+        parent="baseFactory" abstract="true" lazy-init="true" />
+
+    <bean id="componentFactory" class="com.salesforce.ide.core.factories.ComponentFactory" parent="applicationFactory"
+        lazy-init="true">
+        <!-- ensure that the value string maps to a bean component above -->
+        <property name="componentRegistry" ref="componentRegistryList"/>
+        <property name="metadataFileExtension" value="${Default.metadataFileExtension}" />
+        <!-- use to disable identification and generation of given object types; no spaces between commas -->
+        <property name="defaultDisabledComponentTypes" value="InstalledPackage,SynonymDictionary,WorkflowApex" />
+        <lookup-method name="getComponentListInstance" bean="componentList" />
+    </bean>
+
+    <!-- util:list does not support lazy-int, so we'll use the following -->
+    <bean id="componentRegistryList" class="org.springframework.beans.factory.config.ListFactoryBean"
+       lazy-init="true">
+        <property name="targetListClass" value="com.salesforce.ide.core.model.ComponentList"/>
+        <property name="sourceList">
+            <list>
+                <ref bean="AnalyticSnapshot" />
+                <ref bean="ApexClass" />
+                <ref bean="ApexComponent" />
+                <ref bean="ApexPage" />
+                <ref bean="ApexTrigger" />
+                <ref bean="ApexTriggerCoupling" />
+                <ref bean="AppMenu" />
+                <ref bean="ApprovalProcess" />
+                <ref bean="AuthProvider" />
+                <ref bean="CallCenter" />
+                <ref bean="Community" />
+                <ref bean="ConnectedApp" />
+                <ref bean="CustomApplication" />
+                <ref bean="CustomApplicationComponent" />
+                <ref bean="CustomDataType" />
+                <ref bean="CustomLabels" />
+                <ref bean="CustomObject" />
+                <ref bean="CustomObjectTranslation" />
+                <ref bean="CustomMetadata" />
+                <ref bean="CustomPageWebLink" />
+                <ref bean="CustomPermission" />
+                <ref bean="CustomSite" />
+                <ref bean="CustomTab" />
+                <ref bean="Dashboard" />
+                <ref bean="DataCategoryGroup" />
+                <ref bean="Document" />
+                <ref bean="EmailTemplate" />
+                <ref bean="EntitlementTemplate" />
+                <ref bean="EntitlementProcess" />
+                <ref bean="MilestoneType" />
+                <ref bean="Flow" />
+                <ref bean="FlexiPage" />
+                <ref bean="Group" />
+                <ref bean="HomePageComponent" />
+                <ref bean="HomePageLayout" />
+                <ref bean="InstalledPackage" />
+                <ref bean="Layout" />
+                <ref bean="Letterhead" />
+                <ref bean="LiveChatAgentConfig" />
+                <ref bean="LiveChatButton" />
+                <ref bean="LiveChatDeployment" />
+                <ref bean="Network" />
+                <ref bean="PackageManifest" />
+                <ref bean="Portal" />
+                <ref bean="PermissionSet" />
+                <ref bean="Profile" />
+                <ref bean="PostTemplate" />
+                <ref bean="Queue" />
+                <ref bean="QuickAction" />
+                <ref bean="RemoteSiteSetting" />
+                <ref bean="Report" />
+                <ref bean="ReportType" />
+                <ref bean="Role" />
+                <ref bean="SamlSsoConfig" />
+                <ref bean="Settings" />
+                <ref bean="Scontrol" />
+                <ref bean="SharingSet" />
+                <ref bean="Skill" />
+                <ref bean="SiteDotCom" />
+                <ref bean="Territory" />
+                <ref bean="XOrgHub" />
+
+                <!-- All Sharing Rules -->
+
+                <ref bean="AccountSharingRules" />
+                <ref bean="AccountTerritorySharingRules" />
+                <ref bean="CampaignSharingRules" />
+                <ref bean="CaseSharingRules" />
+                <ref bean="ContactSharingRules" />
+                <ref bean="CustomObjectSharingRules" />
+                <ref bean="LeadSharingRules" />
+                <ref bean="OpportunitySharingRules" />
+                <ref bean="UserSharingRules" />
+
+                <ref bean="AccountOwnerSharingRule" />
+                <ref bean="AccountCriteriaBasedSharingRule" />
+                <ref bean="AccountTerritorySharingRule" />
+                <ref bean="CampaignOwnerSharingRule" />
+                <ref bean="CampaignCriteriaBasedSharingRule" />
+                <ref bean="CaseOwnerSharingRule" />
+                <ref bean="CaseCriteriaBasedSharingRule" />
+                <ref bean="ContactOwnerSharingRule" />
+                <ref bean="ContactCriteriaBasedSharingRule" />
+                <ref bean="CustomObjectOwnerSharingRule" />
+                <ref bean="CustomObjectCriteriaBasedSharingRule" />
+                <ref bean="LeadOwnerSharingRule" />
+                <ref bean="LeadCriteriaBasedSharingRule" />
+                <ref bean="OpportunityOwnerSharingRule" />
+                <ref bean="OpportunityCriteriaBasedSharingRule" />
+                <ref bean="UserMembershipSharingRule" />
+                <ref bean="UserCriteriaBasedSharingRule" />
+
+                <ref bean="AutoResponseRules" />
+                <ref bean="AutoResponseRule" />
+
+                <ref bean="AssignmentRules" />
+                <ref bean="AssignmentRule" />
+
+                <ref bean="EscalationRules" />
+                <ref bean="EscalationRule" />
+
+                <ref bean="StandardObject" />
+                <ref bean="StaticResource" />
+                <ref bean="Translations" />
+                <ref bean="Workflow" />
+                <ref bean="Folder" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="packageManifestFactory" class="com.salesforce.ide.core.factories.PackageManifestFactory"
+        parent="baseFactory" lazy-init="true" >
+        <property name="defaultDisabledRetrieveComponentTypes" ref="defaultDisabledRetrieveComponentTypes"/>
+    </bean>
+
+    <!-- util:list does not support lazy-int, so we'll use the following -->
+    <bean id="defaultDisabledRetrieveComponentTypes" class="org.springframework.beans.factory.config.ListFactoryBean"
+        lazy-init="true">
+        <property name="targetListClass" value="java.util.ArrayList"/>
+        <property name="sourceList">
+            <list>
+                <value>Document</value>
+                <value>EmailTemplate</value>
+                <value>InstalledPackage</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="projectPackageFactory" class="com.salesforce.ide.core.factories.ProjectPackageFactory" parent="baseFactory"
+        lazy-init="true">
+        <lookup-method name="getProjectPackageListInstance" bean="projectPackageList" />
+        <lookup-method name="getProjectPackageInstance" bean="projectPackage" />
+    </bean>
+
+    <bean id="connectionFactory" class="com.salesforce.ide.core.factories.ConnectionFactory" parent="baseFactory"
+        lazy-init="true">
+        <lookup-method name="getConnectionInstance" bean="connection" />
+        <property name="describeObjectRegistry" ref="describeObjectRegistry" />
+        <property name="mergeFieldsRegistry" ref="mergeFieldsRegistry" />
+        <property name="salesforceEndpoints" ref="salesforceEndpoints" />
+    </bean>
+
+    <bean id="metadataFactory" class="com.salesforce.ide.core.factories.MetadataFactory" parent="baseFactory"
+        lazy-init="true">
+        <lookup-method name="getMetadataStubExtInstance" bean="metadataStubExt" />
+    </bean>
+
+	<bean id="toolingFactory" class="com.salesforce.ide.core.factories.ToolingFactory"
+		parent="baseFactory" lazy-init="true">
+		<lookup-method name="getToolingStubExtInstance" bean="toolingStubExt"/>
+	</bean>
+
+	<!-- NOTE: It is important to make these beans, even if it is easier to 
+		just instantiate them with new. If we don't declare them as beans, Spring's 
+		AOP will not work. -->
+
+    <bean id="connection" class="com.salesforce.ide.core.remote.Connection" scope="prototype" lazy-init="true">
+        <property name="salesforceEndpoints" ref="salesforceEndpoints" />
+        <property name="application" value="${pluginName}" />
+        <property name="loginTimeoutMinutes" value="15" />
+    </bean>
+
+
+    <bean id="metadataStubExt" class="com.salesforce.ide.core.remote.MetadataStubExt" scope="prototype" lazy-init="true">
+        <property name="apiVersion" ref="lastSupportedApiVersion" />
+    </bean>
+
+    <bean id="toolingStubExt" class="com.salesforce.ide.core.remote.ToolingStubExt" scope="prototype" lazy-init="true">
+    </bean>
+
+    <!--   S E R V I C E S   -->
+    <!--  aggregates all services into single instance -->
+    <bean id="serviceLocator" class="com.salesforce.ide.core.services.ServiceLocator" lazy-init="true">
+        <property name="packageDeployService" ref="packageDeployService" />
+        <property name="packageRetrieveService" ref="packageRetrieveService" />
+        <property name="projectService" ref="projectService" />
+        <property name="metadataService" ref="metadataService" />
+        <property name="runTestsService" ref="runTestsService" />
+        <property name="loggingService" ref="loggingService" />
+        <property name="apexService" ref="apexService" />
+        <property name="toolingDeployService" ref="toolingDeployService" />
+        <property name="toolingService" ref="toolingService" />
+        <property name="factoryLocator" ref="factoryLocator" />
+    </bean>
+
+    <bean id="baseService" class="com.salesforce.ide.core.services.BaseService" abstract="true" lazy-init="true">
+        <property name="serviceLocator" ref="serviceLocator" />
+        <property name="factoryLocator" ref="factoryLocator" />
+    </bean>
+
+    <bean id="basePackageService" class="com.salesforce.ide.core.services.BasePackageService" abstract="true"
+        parent="baseService" lazy-init="true">
+        <!-- in milliseconds - .5 sec -->
+        <property name="initialPollingInterval" value="500" />
+        <!-- in milliseconds - 8 secs -->
+        <property name="maxPollingInterval" value="8000" />
+        <!-- in milliseconds - 10 min -->
+        <property name="maxPollingTime" value="600000" />
+        <!-- multiple applied to polling interval - eg 500 secs * 2 -->
+        <property name="pollingMultiple" value="2" />
+        <!-- when (# of cycles/rounds) to start applying multiple -->
+        <property name="applyMultipleRound" value="3" />
+    </bean>
+
+    <bean id="packageRetrieveService" class="com.salesforce.ide.core.services.PackageRetrieveService"
+        parent="basePackageService" lazy-init="true" />
+
+    <bean id="packageDeployService" class="com.salesforce.ide.core.services.PackageDeployService"
+        parent="basePackageService" lazy-init="true" />
+
+    <bean id="projectService" class="com.salesforce.ide.core.services.ProjectService" parent="baseService"
+        lazy-init="true">
+        <property name="ideBrandName" value="Force.com IDE" />
+        <property name="platformBrandName" value="Force.com platform" />
+        <property name="ideReleaseName" value="Winter '14" />
+        <property name="supportedEndpointVersions" ref="supportedApiVersions" />
+    </bean>
+
+    <bean id="metadataService" class="com.salesforce.ide.core.services.MetadataService" parent="baseService"
+        lazy-init="true" />
+
+    <bean id="runTestsService" class="com.salesforce.ide.core.services.RunTestsService" parent="baseService"
+        lazy-init="true" />
+
+    <bean id="loggingService" class="com.salesforce.ide.core.services.LoggingService" parent="baseService"
+        lazy-init="true" />
+
+    <bean id="apexService" class="com.salesforce.ide.core.services.ApexService" parent="baseService" lazy-init="true" />
+
+    <bean id="toolingDeployService" class="com.salesforce.ide.core.services.ToolingDeployService" parent="baseService" lazy-init="true" />
+
+    <bean id="toolingService" class="com.salesforce.ide.core.services.ToolingService" parent="baseService" lazy-init="true" />
+
+
+    <!--   R E G I S T R I E S -->
+    <bean id="baseRegistry" class="com.salesforce.ide.core.remote.registries.BaseRegistry"
+        abstract="true" lazy-init="true">
+        <property name="connectionFactory" ref="connectionFactory" />
+    </bean>
+
+    <bean id="mergeFieldsRegistry" class="com.salesforce.ide.core.remote.registries.MergeFieldsRegistry"
+        parent="baseRegistry" lazy-init="true">
+        <property name="standardMergeFields" ref="standardMergeFieldsTables"/>
+        <property name="userRoleKey" value="userRole" />
+        <property name="profileKey" value="profile" />
+        <property name="standardObjectActionsKey" value="standardObjectActions" />
+        <property name="standardObjectTypesKey" value="standardObjectTypes" />
+        <property name="organizationKey" value="organization" />
+        <property name="userKey" value="user" />
+        <property name="describeObjectRegistry" ref="describeObjectRegistry" />
+    </bean>
+    
+    <!-- util:map does not support lazy-int, so we'll use the following -->
+    <bean id="standardMergeFieldsTables" class="org.springframework.beans.factory.config.MapFactoryBean"
+        lazy-init="true">
+        <property name="targetMapClass" value="java.util.Hashtable"/>
+        <property name="sourceMap">
+            <map>
+                <entry key="userRole" value-ref="userRoleTable" />
+                <entry key="profile" value-ref="profileTable" />
+                <entry key="standardObjectActions" value-ref="standardObjectActionTable" />
+                <entry key="standardObjectTypes" value-ref="standardObjectTypeTable" />
+                <entry key="organization" value-ref="organizationTable" />
+                <entry key="user" value-ref="userTable" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="describeObjectRegistry" class="com.salesforce.ide.core.remote.registries.DescribeObjectRegistry"
+        parent="baseRegistry" lazy-init="true">
+        <property name="workflowableObjectNames" ref="workflowableObjectNamesList" />
+        <property name="crtableObjectNames" ref="crtableObjectNamesList" />
+        <property name="excludedCrtFields" ref="excludedCrtFieldsTables"/>
+        <property name="excludedTypes" ref="excludedDescribeObjectRegistryTypes"/>
+    </bean>
+    
+    <!-- util:map does not support lazy-int, so we'll use the following -->
+    <bean id="excludedCrtFieldsTables" class="org.springframework.beans.factory.config.MapFactoryBean"
+        lazy-init="true">
+        <property name="targetMapClass" value="java.util.Hashtable"/>
+        <property name="sourceMap">
+            <map>
+                <entry key="Default" value-ref="defaultExcludedList" />
+                <entry key="Account" value-ref="accountExcludedList" />
+                <entry key="Opportunity" value-ref="opportunityExcludedList" />
+                <entry key="Idea" value-ref="ideaExcludedList" />
+                <entry key="User" value-ref="userExcludedList" />
+            </map>
+        </property>
+    </bean>
+    
+    <!-- util:list does not support lazy-int, so we'll use the following -->
+    <bean id="excludedDescribeObjectRegistryTypes" class="org.springframework.beans.factory.config.ListFactoryBean"
+        lazy-init="true">
+        <property name="targetListClass" value="java.util.ArrayList"/>
+        <property name="sourceList">
+	        <list>
+              <value>ApexClass</value>
+	            <value>ApexComponent</value>
+	            <value>ApexPage</value>
+	            <value>ApexTrigger</value>
+	            <value>Partner</value>
+	        </list>
+	    </property>
+	</bean>
+
+    <!--   M I S C E L L A N E O U S   -->
+    <bean id="componentList" class="com.salesforce.ide.core.model.ComponentList" scope="prototype" lazy-init="true">
+        <property name="projectService" ref="projectService" />
+    </bean>
+
+    <bean id="projectPackageList" class="com.salesforce.ide.core.model.ProjectPackageList" scope="prototype"
+        lazy-init="true">
+        <property name="projectService" ref="projectService" />
+    </bean>
+
+    <bean id="projectPackage" class="com.salesforce.ide.core.model.ProjectPackage" scope="prototype" lazy-init="true">
+        <lookup-method name="getComponentListInstance" bean="componentList" />
+        <property name="projectService" ref="projectService" />
+        <property name="metadataExtClass" value="${xmlComponentType.package.name}.Package" />
+    </bean>
+
+    <bean id="salesforceEndpoints" class="com.salesforce.ide.core.remote.SalesforceEndpoints" lazy-init="true"
+        init-method="init">
+        <property name="defaultEndpointLabel" value="Production/Developer Edition" />
+        <property name="defaultEndpointServers" ref="defaultEndpointServers"/>
+        <!-- REVIEWME: why isn't ${user.dir) being translated by propertyConfigurer -->
+        <property name="userEndpointsFilePath" value=".salesforce/user-endpoints.txt" />
+        <property name="endpointUrlSuffix" value="services/Soap/u" />
+        <property name="defaultApiVersion" ref="lastSupportedApiVersion" />
+        <property name="defaultProtocol" value="https" />
+    </bean>
+    
+    <!-- util:map does not support lazy-int, so we'll use the following -->
+    <bean id="defaultEndpointServers" class="org.springframework.beans.factory.config.MapFactoryBean"
+        lazy-init="true">
+        <property name="targetMapClass" value="java.util.LinkedHashMap"/>
+        <property name="sourceMap">
+            <map>
+                <entry key="Production/Developer Edition" value="www.salesforce.com" />
+                <entry key="Sandbox" value="test.salesforce.com" />
+                <entry key="Pre-Release" value="prerellogin.pre.salesforce.com" />
+            </map>
+        </property>
+    </bean>
+
+</beans>

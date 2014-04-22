@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Force.com IDE" id="com.salesforce.ide.product" application="org.eclipse.ui.ide.workbench" version="31.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/com.salesforce.ide/images/about.png"/>
+      <text>
+         End User License Agreement
+Force.com IDE version 31.0
+Except as described below, com.salesforce.ide,
+com.salesforce.ide.api,
+com.salesforce.ide.branding,
+com.salesforce.ide.core,
+com.salesforce.ide.deployment,
+com.salesforce.ide.documentation,
+com.salesforce.ide.ui,
+com.salesforce.ide.ui.editors,
+com.salesforce.ide.ui.editors.intro,
+com.salesforce.ide.schemabrowser,
+com.salesforce.ide.core.compatibility,
+com.salesforce.ide.core.compatibility.auth.platformdb,
+and com.salesforce.ide.upgrade jar files are Copyright (c) 2005-2013,
+salesforce.com, inc. All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+* Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+* Neither the name of salesforce.com, inc. nor the names of its
+contributors may be used to endorse or promote products derived
+from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+BUT
+NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
+The following Third Party components are licensed as follows:
+AspectJ 1.5.4
+aspectjrt.jar
+aspectjweaver.jar
+Your use of the AspectJ code is subject to the terms and conditions
+of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+Axis 1.1
+axis.jar
+jaxrpc.jar
+saaj.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Axis code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+Commons Discovery 0.2
+commons-discovery.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Commons Discovery code is subject to the terms
+and conditions of the Apache License, Version 1.1, available
+at http://www.apache.org/licenses/LICENSE-1.1.
+Commons Lang 2.3
+commons-lang.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Axis code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+Commons Logging 1.0.3
+commons-logging.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Commons Logging code is subject to the terms
+and conditions of the Apache License, Version 2.0, available
+at http://www.apache.org/licenses/LICENSE-2.0.
+guava-16.0.1.jar
+This product includes software developed by Google Inc.
+(http://code.google.com/p/guava-libraries)
+Your use of the collections code is subject to the terms and
+conditions of the Apache License, Version 2.0, available at 
+http://www.apache.org/licenses/LICENSE-2.0
+Sun JAXB 1.0.4 and SAAJ 1.2.1
+activation.jar
+mail.jar
+jaxb-api.jar
+jaxb-impl.jar
+Use and redistribution of these components of the Java WSDP are
+subject to the
+Sun Microsystems Inc. JAVA WEB SERVICES DEVELOPER PACK, VERSION
+1.5 Software License Agreement available at http://java.sun.com/webservices/docs/1.5/LICENSE.
+Additional information regarding redistribution of Java WSDP
+components can be found in the release notes available at http://java.sun.com/webservices/docs/1.5/ReleaseNotes.html
+Spring Framework 2.5.2
+spring-aop.jar
+spring-beans.jar
+spring-context.jar
+spring-core.jar
+This plug-in includes software developed by the Spring Framework
+Project (http://www.springframework.org).
+Your use of the Spring Framework code is subject to the terms
+and conditions of the Apache License, Version 2.0, available
+at http://www.apache.org/licenses/LICENSE-2.0.html.
+Woodstox 3.9.2
+stax-api-1.0.1.jar
+This copy of Woodstox XML processor is licensed under the Apache
+(Software) License, version 2.0 (&quot;the License&quot;). See
+the License
+for details about distribution rights, and the specific rights
+regarding derivate works.
+You may obtain a copy of the License at:
+http://www.apache.org/licenses/
+A copy is also included in the downloadable source code package
+containing Woodstox, in file &quot;ASL2.0&quot;, under the same
+directory
+as this file.
+Xerces 2.5.0
+xercesImpl.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Xerces code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgs>-Dfile.encoding=UTF-8
+-Xms256m
+-Xmx1024m
+-XX:PermSize=128M
+-XX:MaxPermSize=512M</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread 
+-Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/com.salesforce.ide/images/app16.png" i32="/com.salesforce.ide/images/app32.png" i48="/com.salesforce.ide/images/app48.png" i64="/com.salesforce.ide/images/app64.png" i128="/com.salesforce.ide/images/app128.png"/>
+
+   <splash
+      location="com.salesforce.ide" />
+   <launcher name="forceide">
+      <linux icon="/com.salesforce.ide/images/linux_icon_v002.xpm"/>
+      <macosx icon="/com.salesforce.ide/images/i-mac512_v002.icns"/>
+      <solaris/>
+      <win useIco="true">
+         <ico path="/com.salesforce.ide/images/force.com_icon_v002.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.salesforce.ide"/>
+      <plugin id="com.salesforce.ide.core.compatibility"/>
+      <plugin id="org.apache.log4j"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.launcher"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+   </plugins>
+
+
+</product>

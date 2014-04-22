@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project name="metadata-objects-jaxb" default="all" basedir=".">
+
+	<property name="tmp.dir" value="${basedir}/_tmp" />
+	<property name="ide.bin" value="${basedir}/../bin" />
+	<property name="ide.lib" value="${basedir}/../lib" />
+	<property name="jaxb.lib.dir" value="${basedir}/jaxb-lib" />
+	<property name="schema.file" value="${basedir}/metadata.xsd" />
+	<property name="lib.dir" value="${basedir}/../lib" />
+	<property name="jar.name" value="force-ide-metadata.jar" />
+	<property name="package.name" value="com.salesforce.ide.api.metadata.types" />
+
+	<path id="classpath">
+		<pathelement path="${ide.bin}" />
+		<pathelement path="${tmp.dir}/classes" />
+		<fileset dir="${jaxb.lib.dir}" includes="jaxb-xjc.jar" />
+		<fileset dir="${ide.lib}" includes="jaxb*.jar" />
+		<fileset dir="${ide.lib}" includes="activation.jar" />
+		<fileset dir="${ide.lib}" includes="stax-api-1.0.1.jar" />
+	</path>
+
+	<!-- found in jaxb jar -->
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		<classpath refid="classpath" />
+	</taskdef>
+
+	<target name="all" depends="init, generate.jaxb.objects, compile.jaxb.objects, jar.jaxb.objects" />
+
+	<target name="init">
+		<delete dir="${tmp.dir}" />
+		<mkdir dir="${tmp.dir}" />
+		<mkdir dir="${tmp.dir}/gen-src" />
+		<mkdir dir="${tmp.dir}/classes" />
+	</target>
+
+	<target name="generate.jaxb.objects" depends="init">
+		<echo message="Compiling the schema..." />
+		<xjc schema="${schema.file}" package="${package.name}" destdir="${tmp.dir}/gen-src">
+			<produces dir="${tmp.dir}/gen-src/com" includes="**/*.java" />
+			<arg value="-verbose" />
+		</xjc>
+	</target>
+
+	<target name="compile.jaxb.objects">
+		<echo message="Compiling xsd generated source files..." />
+		<javac destdir="${tmp.dir}/classes" debug="on" verbose="true" target="1.6">
+			<src path="${tmp.dir}/gen-src" />
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="jar.jaxb.objects">
+		<echo message="Jaring xsd generated source and class files..." />
+		<jar destfile="${lib.dir}/${jar.name}">
+			<fileset dir="${tmp.dir}/classes" includes="com/**"/>
+			<fileset dir="${tmp.dir}/gen-src" includes="com/**"/>
+		</jar>
+	</target>
+
+</project>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <description>TODO: This file configures several things and needs to be split</description>
+
+    <!-- A P I   V E R S I O N   S U P P O R T -->
+    <util:set id="supportedApiVersions" set-class="java.util.TreeSet">
+		<value>31.0</value>
+    </util:set>
+
+    <bean id="lastSupportedApiVersion" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject">
+            <ref local="supportedApiVersions" />
+        </property>
+        <property name="targetMethod">
+            <value>last</value>
+        </property>
+    </bean>
+
+	<!-- TODO: refactor, remove refs to class names -->
+    <util:list id="retryExceptionCodes" list-class="java.util.ArrayList">
+         <value type="com.sforce.soap.partner.fault.wsc.ExceptionCode">INVALID_SESSION_ID</value>
+         <value type="com.sforce.soap.metadata.StatusCode">ALREADY_IN_PROCESS</value>
+    </util:list>
+
+    <util:list id="reloginExceptionCodes" list-class="java.util.ArrayList">
+         <value type="com.sforce.soap.partner.fault.wsc.ExceptionCode">INVALID_SESSION_ID</value>
+    </util:list>
+
+    <!--   C O M P O N E N T   C O N T E N T  -->
+    <!-- template registry -->
+    <bean id="templateRegistry" class="com.salesforce.ide.core.internal.templates.TemplateRegistry" lazy-init="false"
+        init-method="init">
+        <property name="templateDepotLocation" value="/templates"/>
+        <property name="templateExtension" value="template"/>
+        <property name="maxCustomTemplates" value="20"/>
+        <property name="customPrefix" value="Custom"/>
+    </bean>
+
+    <util:list id="triggerOperations" list-class="java.util.ArrayList">
+        <value>before insert</value>
+        <value>before update</value>
+        <value>before delete</value>
+        <value>after insert</value>
+        <value>after update</value>
+        <value>after delete</value>
+        <value>after undelete</value>
+    </util:list>
+
+
+    <!--   S O B J E C T  -->
+    <!-- workflow-able objects   -->
+    <util:list id="workflowableObjectNamesList" list-class="java.util.ArrayList">
+        <value>Account</value>
+        <value>Asset</value>
+        <value>Campaign</value>
+        <value>Case</value>
+        <value>Contact</value>
+        <value>Contract</value>
+        <value>Event</value>
+        <value>Idea</value>
+        <value>Lead</value>
+        <value>Opportunity</value>
+        <value>Opportunity Product</value>
+        <value>Product</value>
+        <value>Solution</value>
+        <value>Task</value>
+    </util:list>
+
+    <util:list id="crtableObjectNamesList" list-class="java.util.ArrayList">
+        <value>Account</value>
+        <value>Activity</value>
+        <value>Asset</value>
+        <value>Campaign</value>
+        <value>Case</value>
+        <value>Contact</value>
+        <value>Contract</value>
+        <value>Dashboard</value>
+        <value>Idea</value>
+        <value>Lead</value>
+        <value>Opportunity</value>
+        <value>Order</value>
+        <value>PartnerNetworkConnection</value>
+        <value>Product2</value>
+        <value>Report</value>
+        <value>Solution</value>
+        <value>Territory</value>
+        <value>User</value>
+    </util:list>
+
+	<!-- Default excluded fields from CRT layout -->
+	<util:list id="defaultExcludedList" list-class="java.util.ArrayList">
+		<value>IsDeleted</value>
+		<value>SystemModstamp</value>
+		<value>MasterRecordId</value>
+	</util:list>
+
+	<util:list id="accountExcludedList" list-class="java.util.ArrayList">
+		<value>MayEdit</value>
+		<value>IsLocked</value>
+	</util:list>
+
+	<util:list id="opportunityExcludedList" list-class="java.util.ArrayList">
+		<value>ForecastCategory</value>
+		<value>Pricebook2Id</value>
+		<value>FiscalQuarter</value>
+		<value>FiscalYear</value>
+		<value>Fiscal</value>
+	</util:list>
+
+	<util:list id="ideaExcludedList" list-class="java.util.ArrayList">
+		<value>VoteScore</value>
+		<value>VoteTotal</value>
+	</util:list>
+
+	<util:list id="userExcludedList" list-class="java.util.ArrayList">
+		<value>DelegatedApproverId</value>
+		<value>UserPermissionsMarketingUser</value>
+		<value>UserPermissionsOfflineUser</value>
+		<value>UserPermissionsCallCenterAutoLogin</value>
+		<value>UserPermissionsMobileUser</value>
+		<value>UserPreferencesActivityRemindersPopup</value>
+		<value>UserPreferencesEventRemindersCheckboxDefault</value>
+		<value>UserPreferencesTaskRemindersCheckboxDefault</value>
+		<value>UserPreferencesReminderSoundOff</value>
+		<value>UserPreferencesApexPagesDeveloperMode</value>
+		<value>CallCenterId</value>
+	</util:list>
+
+	<!--   M E R G E   F I E L D S   -->
+    <util:map id="userRoleTable" map-class="java.util.Hashtable">
+        <entry key="Case Access Level for Account Owner" value="$UserRole.CaseAccessForAccountOwner" />
+        <entry key="Description" value="$UserRole.RollupDescription" />
+        <entry key="Last Modified By ID" value="$UserRole.LastModifiedById" />
+        <entry key="Last Modified Date" value="$UserRole.LastModifiedDate" />
+        <entry key="Name" value="$UserRole.Name" />
+        <entry key="Opportunity Access Level for Account Owner" value="$UserRole.OpportunityAccessForAccountOwner" />
+        <entry key="Role ID" value="$UserRole.Id" />
+    </util:map>
+
+    <util:map id="profileTable" map-class="java.util.Hashtable">
+        <entry key="Created By ID" value="$Profile.CreatedById" />
+        <entry key="Created Date" value="$Profile.CreatedDate" />
+        <entry key="Description" value="$Profile.Description" />
+        <entry key="Last Modified By ID" value="$Profile.LastModifiedById" />
+        <entry key="Last Modified Date" value="$Profile.LastModifiedDate" />
+        <entry key="License Type" value="$Profile.LicenseType" />
+        <entry key="Name" value="$Profile.Name" />
+        <entry key="Profile ID" value="$Profile.Id" />
+    </util:map>
+
+    <util:map id="standardObjectActionTable" map-class="java.util.Hashtable">
+        <entry key="Account.ChangeOwner" value="$Action.Account.ChangeOwner" />
+        <entry key="Account.Delete" value="$Action.Account.Delete" />
+        <entry key="Account.Edit" value="$Action.Account.Edit" />
+        <entry key="Account.EnableAsPartner" value="$Action.Account.EnableAsPartner" />
+        <entry key="Account.New" value="$Action.Account.New" />
+        <entry key="Account.Share" value="$Action.Account.Share" />
+        <entry key="Account.View" value="$Action.Account.View" />
+        <entry key="Activity.LogCall" value="$Action.Activity.LogCall" />
+        <entry key="Activity.MailMerge" value="$Action.Activity.MailMerge" />
+        <entry key="Activity.RequestUpdate" value="$Action.Activity.RequestUpdate" />
+        <entry key="Activity.SendEmail" value="$Action.Activity.SendEmail" />
+        <entry key="Activity.ViewAll" value="$Action.Activity.ViewAll" />
+        <entry key="Asset.Clone" value="$Action.Asset.Clone" />
+        <entry key="Asset.Delete" value="$Action.Asset.Delete" />
+        <entry key="Asset.Edit" value="$Action.Asset.Edit" />
+        <entry key="Asset.New" value="$Action.Asset.New" />
+        <entry key="Asset.View" value="$Action.Asset.View" />
+        <entry key="Campaign.AddCampaign" value="$Action.Campaign.AddCampaign" />
+        <entry key="Campaign.AdvancedSetup" value="$Action.Campaign.AdvancedSetup" />
+        <entry key="Campaign.ChangeOwner" value="$Action.Campaign.ChangeOwner" />
+        <entry key="Campaign.Clone" value="$Action.Campaign.Clone" />
+        <entry key="Campaign.Delete" value="$Action.Campaign.Delete" />
+        <entry key="Campaign.Edit" value="$Action.Campaign.Edit" />
+        <entry key="Campaign.ManageMembers" value="$Action.Campaign.ManageMembers" />
+        <entry key="Campaign.New" value="$Action.Campaign.New" />
+        <entry key="Campaign.View" value="$Action.Campaign.View" />
+        <entry key="Case.Accept" value="$Action.Case.Accept" />
+        <entry key="Case.ChangeOwner" value="$Action.Case.ChangeOwner" />
+        <entry key="Case.ChangeStatus" value="$Action.Case.ChangeStatus" />
+        <entry key="Case.Clone" value="$Action.Case.Clone" />
+        <entry key="Case.CloseCase" value="$Action.Case.CloseCase" />
+        <entry key="Case.Delete" value="$Action.Case.Delete" />
+        <entry key="Case.Edit" value="$Action.Case.Edit" />
+        <entry key="Case.MassClose" value="$Action.Case.MassClose" />
+        <entry key="Case.NewCase" value="$Action.Case.NewCase" />
+        <entry key="Case.Share" value="$Action.Case.Share" />
+        <entry key="Case.View" value="$Action.Case.View" />
+        <entry key="Contact.AddToCampaign" value="$Action.Contact.AddToCampaign" />
+        <entry key="Contact.ChangeOwner" value="$Action.Contact.ChangeOwner" />
+        <entry key="Contact.Clone" value="$Action.Contact.Clone" />
+        <entry key="Contact.Delete" value="$Action.Contact.Delete" />
+        <entry key="Contact.Edit" value="$Action.Contact.Edit" />
+        <entry key="Contact.EnableSelfService" value="$Action.Contact.EnableSelfService" />
+        <entry key="Contact.Merge" value="$Action.Contact.Merge" />
+        <entry key="Contact.NewContact" value="$Action.Contact.NewContact" />
+        <entry key="Contact.RequestUpdate" value="$Action.Contact.RequestUpdate" />
+        <entry key="Contact.View" value="$Action.Contact.View" />
+        <entry key="Contact.ViewSelfService" value="$Action.Contact.ViewSelfService" />
+        <entry key="Contract.Activate" value="$Action.Contract.Activate" />
+        <entry key="Contract.ChangeOwner" value="$Action.Contract.ChangeOwner" />
+        <entry key="Contract.Clone" value="$Action.Contract.Clone" />
+        <entry key="Contract.Delete" value="$Action.Contract.Delete" />
+        <entry key="Contract.Edit" value="$Action.Contract.Edit" />
+        <entry key="Contract.New" value="$Action.Contract.New" />
+        <entry key="Contract.View" value="$Action.Contract.View" />
+        <entry key="Event.Accept" value="$Action.Event.Accept" />
+        <entry key="Event.AddToOutlook" value="$Action.Event.AddToOutlook" />
+        <entry key="Event.Cancel" value="$Action.Event.Cancel" />
+        <entry key="Event.Clone" value="$Action.Event.Clone" />
+        <entry key="Event.Decline" value="$Action.Event.Decline" />
+        <entry key="Event.Delete" value="$Action.Event.Delete" />
+        <entry key="Event.DeleteSeries" value="$Action.Event.DeleteSeries" />
+        <entry key="Event.Edit" value="$Action.Event.Edit" />
+        <entry key="Event.FollowupEvent" value="$Action.Event.FollowupEvent" />
+        <entry key="Event.FollowupTask" value="$Action.Event.FollowupTask" />
+        <entry key="Event.NewEvent" value="$Action.Event.NewEvent" />
+        <entry key="Event.View" value="$Action.Event.View" />
+        <entry key="Lead.Accept" value="$Action.Lead.Accept" />
+        <entry key="Lead.AddToCampaign" value="$Action.Lead.AddToCampaign" />
+        <entry key="Lead.ChangeOwner" value="$Action.Lead.ChangeOwner" />
+        <entry key="Lead.ChangeStatus" value="$Action.Lead.ChangeStatus" />
+        <entry key="Lead.Clone" value="$Action.Lead.Clone" />
+        <entry key="Lead.Convert" value="$Action.Lead.Convert" />
+        <entry key="Lead.Delete" value="$Action.Lead.Delete" />
+        <entry key="Lead.Edit" value="$Action.Lead.Edit" />
+        <entry key="Lead.FindDup" value="$Action.Lead.FindDup" />
+        <entry key="Lead.New" value="$Action.Lead.New" />
+        <entry key="Lead.Share" value="$Action.Lead.Share" />
+        <entry key="Lead.View" value="$Action.Lead.View" />
+        <entry key="Opportunity.ChangeOwner" value="$Action.Opportunity.ChangeOwner" />
+        <entry key="Opportunity.Clone" value="$Action.Opportunity.Clone" />
+        <entry key="Opportunity.Delete" value="$Action.Opportunity.Delete" />
+        <entry key="Opportunity.Edit" value="$Action.Opportunity.Edit" />
+        <entry key="Opportunity.New" value="$Action.Opportunity.New" />
+        <entry key="Opportunity.Share" value="$Action.Opportunity.Share" />
+        <entry key="Opportunity.View" value="$Action.Opportunity.View" />
+        <entry key="OpportunityLineItem.AddProduct" value="$Action.OpportunityLineItem.AddProduct" />
+        <entry key="OpportunityLineItem.ChoosePricebook" value="$Action.OpportunityLineItem.ChoosePricebook" />
+        <entry key="OpportunityLineItem.Delete" value="$Action.OpportunityLineItem.Delete" />
+        <entry key="OpportunityLineItem.Edit" value="$Action.OpportunityLineItem.Edit" />
+        <entry key="OpportunityLineItem.EditAllProduct" value="$Action.OpportunityLineItem.EditAllProduct" />
+        <entry key="OpportunityLineItem.Sort" value="$Action.OpportunityLineItem.Sort" />
+        <entry key="OpportunityLineItem.View" value="$Action.OpportunityLineItem.View" />
+        <entry key="Product2.Clone" value="$Action.Product2.Clone" />
+        <entry key="Product2.Delete" value="$Action.Product2.Delete" />
+        <entry key="Product2.Edit" value="$Action.Product2.Edit" />
+        <entry key="Product2.New" value="$Action.Product2.New" />
+        <entry key="Product2.View" value="$Action.Product2.View" />
+        <entry key="Solution.CaseSelect" value="$Action.Solution.CaseSelect" />
+        <entry key="Solution.Delete" value="$Action.Solution.Delete" />
+        <entry key="Solution.Edit" value="$Action.Solution.Edit" />
+        <entry key="Solution.New" value="$Action.Solution.New" />
+        <entry key="Solution.SelfServSelect" value="$Action.Solution.SelfServSelect" />
+        <entry key="Solution.View" value="$Action.Solution.View" />
+        <entry key="Task.Close" value="$Action.Task.Close" />
+        <entry key="Task.Delete" value="$Action.Task.Delete" />
+        <entry key="Task.Edit" value="$Action.Task.Edit" />
+        <entry key="Task.FollowupEvent" value="$Action.Task.FollowupEvent" />
+        <entry key="Task.FollowupTask" value="$Action.Task.FollowupTask" />
+        <entry key="Task.NewTask" value="$Action.Task.NewTask" />
+        <entry key="Task.View" value="$Action.Task.View" />
+    </util:map>
+
+    <util:map id="standardObjectTypeTable" map-class="java.util.Hashtable">
+        <entry key="Account" value="$ObjectType.Account" />
+        <entry key="AccountContactRole" value="$ObjectType.AccountContactRole" />
+        <entry key="Attachment" value="$ObjectType.Attachment" />
+        <entry key="BrandTemplate" value="$ObjectType.BrandTemplate" />
+        <entry key="BusinessProcess" value="$ObjectType.BusinessProcess" />
+        <entry key="Campaign" value="$ObjectType.Campaign" />
+        <entry key="CampaignMember" value="$ObjectType.CampaignMember" />
+        <entry key="Case" value="$ObjectType.Case" />
+        <entry key="CaseComment" value="$ObjectType.CaseComment" />
+        <entry key="CaseContactRole" value="$ObjectType.CaseContactRole" />
+        <entry key="CaseSolution" value="$ObjectType.CaseSolution" />
+        <entry key="Contact" value="$ObjectType.Contact" />
+        <entry key="Contract" value="$ObjectType.Contract" />
+        <entry key="ContractContactRole" value="$ObjectType.ContractContactRole" />
+        <entry key="Document" value="$ObjectType.Document" />
+        <entry key="Event" value="$ObjectType.Event" />
+        <entry key="Folder" value="$ObjectType.Folder" />
+        <entry key="Group" value="$ObjectType.Group" />
+        <entry key="GroupMember" value="$ObjectType.GroupMember" />
+        <entry key="Lead" value="$ObjectType.Lead" />
+        <entry key="MailmergeTemplate" value="$ObjectType.MailmergeTemplate" />
+        <entry key="Note" value="$ObjectType.Note" />
+        <entry key="Opportunity" value="$ObjectType.Opportunity" />
+        <entry key="OpportunityCompetitor" value="$ObjectType.OpportunityCompetitor" />
+        <entry key="OpportunityContactRole" value="$ObjectType.OpportunityContactRole" />
+        <entry key="OpportunityHistory" value="$ObjectType.OpportunityHistory" />
+        <entry key="OpportunityLineItem" value="$ObjectType.OpportunityLineItem" />
+        <entry key="Organization" value="$ObjectType.Organization" />
+        <entry key="Partner" value="$ObjectType.Partner" />
+        <entry key="Pricebook" value="$ObjectType.Pricebook" />
+        <entry key="Product" value="$ObjectType.Product" />
+        <entry key="Profile" value="$ObjectType.Profile" />
+        <entry key="Queue" value="$ObjectType.Queue" />
+        <entry key="QueueMember" value="$ObjectType.QueueMember" />
+        <entry key="RecordType" value="$ObjectType.RecordType" />
+        <entry key="Scontrol" value="$ObjectType.Scontrol" />
+        <entry key="Solution" value="$ObjectType.Solution" />
+        <entry key="Task" value="$ObjectType.Task" />
+        <entry key="User" value="$ObjectType.User" />
+        <entry key="UserRole" value="$ObjectType.UserRole" />
+        <entry key="WebLink" value="$ObjectType.WebLink" />
+    </util:map>
+
+    <util:map id="organizationTable" map-class="java.util.Hashtable">
+        <entry key="City" value="$Organization.City" />
+        <entry key="Country" value="$Organization.Country" />
+        <entry key="Division" value="$Organization.Division" />
+        <entry key="Fax" value="$Organization.Fax" />
+        <entry key="Name" value="$Organization.Name" />
+        <entry key="Organization ID" value="$Organization.Id" />
+        <entry key="Phone" value="$Organization.Phone" />
+        <entry key="State/Province" value="$Organization.State" />
+        <entry key="Street" value="$Organization.Street" />
+        <entry key="UI Skin" value="$Organization.UiSkin" />
+        <entry key="Zip/Postal Code" value="$Organization.PostalCode" />
+    </util:map>
+
+    <util:map id="userTable" map-class="java.util.Hashtable">
+        <entry key="Alias" value="$User.Alias" />
+        <entry key="Cell" value="$User.MobilePhone" />
+        <entry key="City" value="$User.City" />
+        <entry key="Company Name" value="$User.CompanyName" />
+        <entry key="Country" value="$User.Country" />
+        <entry key="Department" value="$User.Department" />
+        <entry key="Division" value="$User.Division" />
+        <entry key="E-mail" value="$User.Email" />
+        <entry key="End of Day" value="$User.EndDay" />
+        <entry key="Extension" value="$User.Extension" />
+        <entry key="Fax" value="$User.Fax" />
+        <entry key="First Name" value="$User.FirstName" />
+        <entry key="Last Name" value="$User.LastName" />
+        <entry key="Phone" value="$User.Phone" />
+        <entry key="Profile ID" value="$User.ProfileId" />
+        <entry key="Role ID" value="$User.UserRoleId" />
+        <entry key="Start of Day" value="$User.StartDay" />
+        <entry key="State/Province" value="$User.State" />
+        <entry key="Street" value="$User.Street" />
+        <entry key="Title" value="$User.Title" />
+        <entry key="User ID" value="$User.Id" />
+        <entry key="Username" value="$User.Username" />
+        <entry key="Zip/Postal Code" value="$User.PostalCode" />
+    </util:map>
+
+ </beans>

@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %displayName
+Bundle-SymbolicName: com.salesforce.ide.ui.editors.intro; singleton:=true
+Bundle-Version: 31.0.0.qualifier
+Bundle-Activator: com.salesforce.ide.ui.editors.intro.IntroPlugin
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
+ org.eclipse.core.runtime;bundle-version="3.8.0",
+ org.apache.xerces;bundle-version="2.9.0",
+ org.eclipse.ui.browser;bundle-version="3.4.0",
+ org.eclipse.ui.editors;bundle-version="3.8.0",
+ org.eclipse.ui.ide;bundle-version="3.8.0",
+ org.eclipse.ui.intro;bundle-version="3.4.0",
+ org.eclipse.help;bundle-version="3.6.0",
+ org.eclipse.core.resources;bundle-version="3.8.0",
+ com.salesforce.ide.ui;bundle-version="31.0.0",
+ org.eclipse.ui.cheatsheets;bundle-version="3.4.0",
+ com.salesforce.ide.core;bundle-version="31.0.0"
+Import-Package: org.apache.log4j
+Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Eclipse-BuddyPolicy: registered
+Eclipse-RegisterBuddy: com.salesforce.ide.core
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

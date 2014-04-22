@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <description>Main configuration file that loads all the other configuration files</description>
+
+    <!--   S T A T I C   C O N T E N T   -->
+    <import resource="static-content.xml"/>
+
+    <!--   C O M P O N E N T S   -->
+    <import resource="components.xml"/>
+
+    <!--   F A C T O R I E S   &   S E R V I C E S   -->
+    <import resource="services.xml"/>
+
+    <!--   A S P E C T S -->
+    <import resource="aspects.xml"/>
+
+    <!--   P L U G I N   C O N T R I B U T I O N S   -->
+    <import resource="plugin-contributions.xml"/>
+
+</beans>

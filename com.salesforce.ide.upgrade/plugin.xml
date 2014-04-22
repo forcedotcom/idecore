@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<!--
+Force.com IDE Copyright (c) 2008 Salesforce.com
+-->
+
+<plugin>
+
+    <!--   N A T U R E S   &   B U I L D E R S   -->
+    <!-- upgrade -->
+    <extension point="org.eclipse.core.resources.natures"
+        id="com.salesforce.ide.nature.upgrade"
+        name="Force.com Upgrade Nature">
+        <runtime>
+            <run class="com.salesforce.ide.upgrade.project.UpgradeNature" />
+        </runtime>
+        <builder id="com.salesforce.ide.builder.upgrade"/>
+        <options allowLinking="true" />
+    </extension>
+
+    <extension point="org.eclipse.core.resources.builders"
+        id="com.salesforce.ide.builder.upgrade"
+        name="Force.com Upgrade Builder">
+        <builder hasNature="true" isConfigurable="true">
+        <run class="com.salesforce.ide.upgrade.project.UpgradeBuilder">
+            <parameter name="beanId" value="builderController"/>
+         </run>
+      </builder>
+    </extension>
+
+    <!--   P R O B L E M   M A R K E R S   -->
+    <extension
+        id="dirty"
+        name="Force.com project upgrade required"
+        point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.dirty"/>
+        <persistent value="true"/>
+    </extension>
+    
+    <extension
+         id="inactive"
+         name="Force.com project upgrade required"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.inactive"/>
+        <persistent value="true"/>
+    </extension>
+
+    <!--   M E N U S  -->
+    <extension point="org.eclipse.ui.popupMenus">
+        <!-- upgrade -->
+        <objectContribution
+            id="com.salesforce.ide.upgrade.menu.upgradeProject"
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject">
+            <menu
+                id="com.salesforce.ide.ui.menu.tools"
+                label="Force&amp;.com"
+                path="additions">
+                <separator name="group0" />
+            </menu>
+            <visibility>
+                <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
+            </visibility>
+            <action
+                id="com.salesforce.ide.upgrade.actions.upgradeProject"
+                class="com.salesforce.ide.upgrade.ui.actions.UpgradeAction"
+                label="&amp;Upgrade Project..."
+                tooltip="%tooltip.upgrade"
+                helpContextId="com.salesforce.ide.documentation.upgradeProject"
+                menubarPath="com.salesforce.ide.ui.menu.tools/group0" />
+        </objectContribution>
+    </extension>
+    
+    <!--   S T A R T U P   -->
+    <extension point="org.eclipse.ui.startup">
+       <startup class="com.salesforce.ide.upgrade.internal.UpgradeStartup"/>
+    </extension>
+        
+</plugin>

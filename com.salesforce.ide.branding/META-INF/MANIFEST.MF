@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Build-Changlist-Number: @p4_build_version@
+Bundle-Name: %displayName
+Bundle-SymbolicName: com.salesforce.ide.branding
+Bundle-Version: 31.0.0.qualifier
+Bundle-Activator: com.salesforce.ide.branding.Activator
+Bundle-Vendor: %providerName
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.8.0"
+Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Localization: plugin

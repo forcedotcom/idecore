@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[2.0.3.v200802061800]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[true]]></enableImports>
+	<configs>
+		<config>config/aspects.xml</config>
+		<config>config/components.xml</config>
+		<config>config/services.xml</config>
+		<config>config/static-content.xml</config>
+		<config>config/plugin-contributions.xml</config>
+		<config>config/core-application-context.xml</config>
+	</configs>
+	<configSets>
+		<configSet>
+			<name><![CDATA[core]]></name>
+			<allowBeanDefinitionOverriding>true</allowBeanDefinitionOverriding>
+			<incomplete>false</incomplete>
+			<configs>
+				<config>config/static-content.xml</config>
+				<config>config/components.xml</config>
+				<config>config/services.xml</config>
+				<config>config/aspects.xml</config>
+				<config>config/core-application-context.xml</config>
+				<config>config/plugin-contributions.xml</config>
+			</configs>
+		</configSet>
+	</configSets>
+</beansProjectDescription>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+    <!--   E D I T O R S  -->
+    <extension point="org.eclipse.ui.editors">
+        <!-- schema -->
+        <editor
+            id="com.salesforce.ide.schemabrowser.schemaBrowser"
+            class="com.salesforce.ide.schemabrowser.ui.SchemaBrowser"
+            default="true"
+            extensions="%SchemaBrowser.fileExtension"
+            filenames="%SchemaBrowser.fileName"
+            icon="icons/appExDevIco16.png"
+            name="%SchemaBrowser.displayName">
+        </editor>
+    </extension>
+
+</plugin>

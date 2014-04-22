@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<description>Configuration for the editors to load the appropriate
+		scanners and method proposals through configuration files instead of
+		hardcoding those values.</description>
+
+	<!-- S T A T I C C O N T E N T -->
+	<import resource="static-editor-content.xml" />
+
+	<!-- E D I T O R S -->
+	<bean id="apexSysClassStaticMethodProposal"
+		class="com.salesforce.ide.ui.editors.apex.assistance.proposals.ApexSysClassStaticMethodProposal"
+		scope="prototype" lazy-init="true">
+		<property name="triggerContextVariables" ref="triggerContextVariables" />
+	</bean>
+
+	<bean id="apexDocScanner"
+		class="com.salesforce.ide.ui.editors.apex.assistance.ApexDocScanner"
+		scope="prototype" lazy-init="true" init-method="init">
+		<property name="docKeywords" ref="docKeywords" />
+	</bean>
+
+	<bean id="apexCodeScanner"
+		class="com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner"
+		scope="prototype" lazy-init="true">
+		<property name="keywords" ref="apexCodeKeywords" />
+		<property name="triggerOperations" ref="triggerOperationKeywords" />
+	</bean>
+
+</beans>

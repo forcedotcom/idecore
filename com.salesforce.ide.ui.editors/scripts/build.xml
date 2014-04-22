@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<project name="static-content" default="apex.code.keywords.grammar" basedir=".">
+
+	<!--<property name="apex.code.keywords.grammer.file" value="${basedir}/../../../../../../patch/core/sfdc/config/grammar/apex.g" /-->
+	<property name="apex.code.keywords.local.file" value="${basedir}/keywords.txt" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${basedir}/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
+	<target name="apex.code.keywords.grammar">
+		<available file="${apex.code.keywords.grammar.file}" type="file" property="grammar.file"/>
+		<if>
+			<equals arg1="${grammar.file}" arg2="$${grammar.file}" />
+			<then>
+				<fail message="Apex Code keyword file not found (${apex.code.keywords.grammar.file})" />
+			</then>
+		</if>
+
+		<loadfile
+            property="tokens"
+            srcFile="${apex.code.keywords.grammar.file}">
+			<filterchain>
+				<linecontains>
+					<contains value="=&#39;"/>
+				</linecontains>
+				<tokenfilter>
+					<trim/>
+					<containsregex
+                            pattern=".*=&#39;"
+                            replace=""/>
+					<containsregex
+                            pattern="&#39;;"
+                            replace=""/>
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<sortlist property="sorted.tokens" value="${tokens}" delimiter="${line.separator}" />
+		<antcall target="generate.keyword.list">
+			<param name="tokens" value="${sorted.tokens}"/>
+		</antcall>
+	</target>
+
+	<target name="apex.code.keywords.local">
+		<available file="${apex.code.keywords.local.file}" type="file" property="local.file"/>
+		<if>
+			<equals arg1="${local.file}" arg2="$${local.file}" />
+			<then>
+				<fail message="Apex Code keyword file not found (${apex.code.keywords.local.file})" />
+			</then>
+		</if>
+
+		<loadfile
+            property="tokens"
+            srcFile="${apex.code.keywords.local.file}">
+			<filterchain>
+				<tokenfilter>
+                    <trim/>
+                    <replaceregex 
+                        pattern="\*" 
+                        replace=""/>
+                    <replaceregex 
+                        pattern=" {2,}" 
+                        replace="${line.separator}"/>
+                    <replaceregex 
+                        pattern="\*" 
+                        replace=""/>
+                    <replaceregex 
+                        pattern=" {2,}" 
+                        replace="${line.separator}"/>
+                    <replaceregex 
+                        pattern=" " 
+                        replace="${line.separator}"/>
+                    <replaceregex 
+                        pattern=" " 
+                        replace="${line.separator}"/>
+                </tokenfilter>
+			</filterchain>
+		</loadfile>
+		<sortlist property="sorted.tokens" value="${tokens}" delimiter="${line.separator}" />
+		<antcall target="generate.keyword.list">
+			<param name="tokens" value="${sorted.tokens}"/>
+		</antcall>
+	</target>
+	
+    <target name="test">
+        <loadfile
+            property="tokens"
+            srcFile="${apex.code.keywords.local.file}">
+            <filterchain>
+                <tokenfilter>
+                    <trim/>
+                	<replaceregex 
+                        pattern="\*" 
+                        replace=""/>
+                	<replaceregex 
+                        pattern=" {2,}" 
+                        replace="${line.separator}"/>
+                	<replaceregex 
+                        pattern="\*" 
+                        replace=""/>
+                    <replaceregex 
+                        pattern=" {2,}" 
+                        replace="${line.separator}"/>
+                	<replaceregex 
+                        pattern=" " 
+                        replace="${line.separator}"/>
+                	<replaceregex 
+                        pattern=" " 
+                        replace="${line.separator}"/>
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+        <sortlist property="sorted.tokens" value="${tokens}" delimiter="${line.separator}" />
+        <echo message="${sorted.tokens}"/>
+    </target>
+
+	<target name="generate.keyword.list">
+        <concat destfile="tmp.txt"><![CDATA[   <util:list id="apexCodeKeywords" list-class="java.util.ArrayList">]]></concat>
+        <foreach list="${tokens}" delimiter="${line.separator}" param="value" target="echo.value" inheritall="true" trim="true"/>
+        <concat append="true" destfile="tmp.txt"><![CDATA[${line.separator}   </util:list>${line.separator}]]></concat>
+    </target>
+    
+    <target name="echo.value">
+        <concat append="true" destfile="tmp.txt"><![CDATA[${line.separator}       <value>${value}</value>]]></concat>
+    </target>
+
+</project>

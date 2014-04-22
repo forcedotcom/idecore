@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<!--
+    Force.com IDE Copyright (c) 2008 Salesforce.com
+-->
+
+<plugin>
+
+    <!--   N A T U R E S   &   B U I L D E R S   -->
+    <!-- default -->
+    <extension point="org.eclipse.core.resources.natures"
+        id="com.salesforce.ide.nature.default"
+        name="%nature.label.0">
+        <runtime>
+            <run class="com.salesforce.ide.core.project.DefaultNature" />
+        </runtime>
+        <builder id="com.salesforce.ide.builder.default"/>
+        <options allowLinking="true" />
+    </extension>
+
+    <extension point="org.eclipse.core.resources.builders"
+        id="com.salesforce.ide.builder.default"
+        name="%builder.label.0">
+        <builder
+            hasNature="true"
+            isConfigurable="false">
+         <run class="com.salesforce.ide.core.project.DefaultBuilder">
+            <parameter name="beanId" value="builderController"/>
+         </run>
+      </builder>
+    </extension>
+
+    <!-- online -->
+    <extension point="org.eclipse.core.resources.natures"
+        id="com.salesforce.ide.nature.online"
+        name="%nature.label.1">
+        <runtime>
+            <run class="com.salesforce.ide.core.project.OnlineNature" />
+        </runtime>
+        <builder id="com.salesforce.ide.builder.online"/>
+        <options allowLinking="true" />
+    </extension>
+
+    <extension point="org.eclipse.core.resources.builders"
+        id="com.salesforce.ide.builder.online"
+        name="%builder.label.1">
+        <builder
+            hasNature="true"
+            isConfigurable="true">
+         <run class="com.salesforce.ide.core.project.OnlineBuilder">
+            <parameter name="beanId" value="builderController"/>
+         </run>
+      </builder>
+    </extension>
+      
+    <!-- inactive -->
+    <extension point="org.eclipse.core.resources.natures"
+        id="com.salesforce.ide.nature.inactive"
+        name="%nature.label.2">
+        <runtime>
+            <run class="com.salesforce.ide.core.project.InactiveNature" />
+        </runtime>
+        <options allowLinking="true" />
+    </extension>
+
+
+    <!--   C O N T E N T   T Y P E S   -->
+    <extension point="org.eclipse.core.runtime.contentTypes"
+            id="com.salesforce.ide.core.contentTypes">
+       
+       <content-type
+            id="com.salesforce.ide.core.contentType.analyticSnapshot"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%AnalyticSnapshot.fileExtension"
+            name="%AnalyticSnapshot.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%AnalyticSnapshot.componentType"/>
+            </describer>
+        </content-type>
+            
+        <content-type
+            id="com.salesforce.ide.core.contentType.remoteSiteSetting"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%RemoteSiteSetting.fileExtension"
+            name="%RemoteSiteSetting.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%RemoteSiteSetting.componentType"/>
+            </describer>            
+        </content-type>
+        
+        <content-type
+              base-type="com.salesforce.ide.core.contentType.apex"
+              default-charset="UTF-8"
+              file-extensions="%ApexClass.fileExtension"
+              id="com.salesforce.ide.core.contentType.class"
+              name="%ApexClass.displayName"
+              priority="normal"/>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.page"
+            base-type="org.eclipse.wst.html.core.htmlsource"
+            file-extensions="%ApexPage.fileExtension"
+            name="%ApexPage.displayName"
+            priority="normal"
+            default-charset="UTF-8"/>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.component"
+            base-type="org.eclipse.wst.html.core.htmlsource"
+            file-extensions="%ApexComponent.fileExtension"
+            name="%ApexComponent.displayName"
+            priority="normal"
+            default-charset="UTF-8"/>
+
+        <content-type
+              base-type="org.eclipse.core.runtime.text"
+              default-charset="UTF-8"
+              id="com.salesforce.ide.core.contentType.apex"
+              name="Apex Code"
+              priority="normal">
+        </content-type>
+
+
+        <content-type
+              base-type="com.salesforce.ide.core.contentType.apex"
+              default-charset="UTF-8"
+              file-extensions="%ApexTrigger.fileExtension"
+              id="com.salesforce.ide.core.contentType.trigger"
+              name="%ApexTrigger.displayName"
+              priority="normal"/>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.application"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomApplication.fileExtension"
+            name="%CustomApplication.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomApplication.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.customDataType"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomDataType.fileExtension"
+            name="%CustomDataType.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomDataType.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.customLabels"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomLabels.fileExtension"
+            name="%CustomLabels.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomLabels.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.customObject"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomObject.fileExtension"
+            name="%CustomObject.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomObject.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.customObjectTranslation"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomObjectTranslation.fileExtension"
+            name="%CustomObjectTranslation.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomObjectTranslation.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.customPageWebLink"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomPageWebLink.fileExtension"
+            name="%CustomPageWebLink.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomPageWebLink.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.site"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomSite.fileExtension"
+            name="%CustomSite.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomSite.componentType"/>
+            </describer>
+        </content-type>
+        
+		<content-type
+            id="com.salesforce.ide.core.contentType.dashboard"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Dashboard.fileExtension"
+            name="%Dashboard.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Dashboard.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.dataCategoryGroup"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%DataCategoryGroup.fileExtension"
+            name="%DataCategoryGroup.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%DataCategoryGroup.componentType"/>
+            </describer>
+        </content-type>
+        
+        <content-type
+            id="com.salesforce.ide.core.contentType.entitlementTemplate"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%EntitlementTemplate.fileExtension"
+            name="%EntitlementTemplate.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+            <parameter name="element" value="%EntitlementTemplate.componentType"/>
+            </describer>
+        </content-type>
+        
+        <content-type
+            id="com.salesforce.ide.core.contentType.email"
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="%EmailTemplate.fileExtension"
+            name="%EmailTemplate.displayName"
+            priority="normal"
+            default-charset="UTF-8"/>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.layout"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Layout.fileExtension"
+            name="%Layout.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Layout.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.letterHead"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Letterhead.fileExtension"
+            name="%Letterhead.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Letterhead.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.homePageComponent"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%HomePageComponent.fileExtension"
+            name="%HomePageComponent.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%HomePageComponent.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.homePageLayout"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%HomePageLayout.fileExtension"
+            name="%HomePageLayout.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%HomePageLayout.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.tab"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%CustomTab.fileExtension"
+            name="%CustomTab.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%CustomTab.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.package"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Package.fileExtension"
+            name="%Package.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.portal"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Portal.fileExtension"
+            name="%Portal.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Portal.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.profile"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Profile.fileExtension"
+            name="%Profile.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Profile.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.permissionSet"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%PermissionSet.fileExtension"
+            name="%PermissionSet.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%PermissionSet.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.report"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Report.fileExtension"
+            name="%Report.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Report.componentType"/>
+            </describer>
+        </content-type>
+
+		<content-type
+            id="com.salesforce.ide.core.contentType.reportType"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%ReportType.fileExtension"
+            name="%ReportType.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%ReportType.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.scontrol"
+            base-type="org.eclipse.wst.html.core.htmlsource"
+            file-extensions="%Scontrol.fileExtension"
+            name="%Scontrol.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <property name="DeveloperName" />
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.translations"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Translations.fileExtension"
+            name="%Translations.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Translations.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.workflow"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Workflow.fileExtension"
+            name="%Workflow.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%Workflow.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.appmenu"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%AppMenu.fileExtension"
+            name="%AppMenu.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%AppMenu.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.sharingset"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%SharingSet.fileExtension"
+            name="%SharingSet.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+                <parameter name="element" value="%SharingSet.componentType"/>
+            </describer>
+        </content-type>
+    </extension>
+
+
+    <!--   P R O B L E M   M A R K E R S   -->
+    <extension
+        id="problem"
+        name="Force.com sync state"
+        point="org.eclipse.core.resources.markers">
+        <super type="org.eclipse.core.resources.problemmarker"/>
+        <persistent value="true"/>
+    </extension>
+
+    <extension
+        id="dirty"
+        name="Force.com sync state"
+        point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+
+    <extension
+         id="compileError"
+         name="Force.com compilation problem"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+
+    <extension
+         id="saveError"
+         name="Force.com save problem"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+
+    <extension
+         id="retrieveError"
+         name="Force.com retrieve problem"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+
+    <extension
+         id="runTestFailure"
+         name="Force.com run test failure"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+
+    <extension
+         id="codeCoverageWarning"
+         name="Force.com code coverage warning"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+    
+    <extension
+         id="inactive"
+         name="Force.com project inactive"
+         point="org.eclipse.core.resources.markers">
+        <super type="com.salesforce.ide.core.problem"/>
+        <persistent value="true"/>
+    </extension>
+
+    <!--   M I S C E L L A N E O U S   -->
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+        <propertyTester
+            id="com.salesforce.ide.core.expressions.ResourceTester"
+            type="org.eclipse.core.resources.IResource"
+            namespace="com.salesforce.ide.core.expressions"
+            properties="pathContains,pathStartsWith,isSourceResource,isSourceRoot,isRefreshableResource,isDeployableResource,isSourceComponentFolder,isPrjOrNonRefPkgFolders,isRunTestEnabledResources"
+            class="com.salesforce.ide.core.expressions.ResourceTester">
+        </propertyTester>
+    </extension>
+</plugin>
+

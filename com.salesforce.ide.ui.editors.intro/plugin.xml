@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+    <!--   A C T I O N S  -->
+	<extension point="org.eclipse.ui.actionSets">
+	     <actionSet
+			id="com.salesforce.ide.ui.editors.intro.menuActionSet"
+			label="%action.label.Intro">
+		     <action
+		         class="com.salesforce.ide.ui.editors.intro.actions.OpenIntroAction"
+		         id="com.salesforce.ide.ui.editors.intro.actions.OpenIntroAction"
+		         label="%action.label.Intro"
+		         menubarPath="help/forceIDE" 
+		         icon="icons/appExDevIco16.png"
+		         tooltip="%action.tooltip.Intro"
+		         style="push"/>
+	    </actionSet>
+    </extension>
+       
+    <!--   P R E F E N C E S  -->
+    <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="com.salesforce.ide.ui.editors.intro.preferences.PreferenceInitializer"/>
+	</extension>
+	
+   	<extension point="org.eclipse.ui.preferencePages">
+	    <page
+	          category="com.salesforce.ide.ui.preferences.GeneralPreferencePage"
+	          class="com.salesforce.ide.ui.editors.intro.preferences.IntroPreferencePage"
+	          id="com.salesforce.ide.ui.editors.intro.preferences.IntroPreferencePage"
+	          name="%preferences.page.Intro"/>
+	</extension>
+	
+	<!--   E D I T O R S  -->
+    <extension point="org.eclipse.ui.editors">
+        <!-- intro -->
+		<editor
+        class="com.salesforce.ide.ui.editors.intro.browser.IntroEditor"
+        default="true"
+        icon="icons/appExDevIco16.png"
+        id="com.salesforce.ide.ui.editors.intro"
+        name="%editor.name.Intro"/>
+    </extension>
+    
+    <!--   S T A R T U P   -->
+    <extension point="org.eclipse.ui.startup">
+       <startup class="com.salesforce.ide.ui.editors.intro.browser.IntroStartup">
+       </startup>
+    </extension>
+       
+    <extension point="org.eclipse.ui.perspectiveExtensions">
+       <perspectiveExtension
+             targetID="com.salesforce.ide.perspective">
+          <view
+                closeable="true"
+                id="org.eclipse.help.ui.HelpView"
+                minimized="false"
+                moveable="true"
+                ratio="1"
+                relationship="stack"
+                relative="org.eclipse.ui.views.ContentOutline"
+                showTitle="true"
+                standalone="false"
+                visible="true">
+          </view>
+          <view
+                id="org.eclipse.ui.cheatsheets.views.CheatSheetView"
+                ratio="1"
+                relationship="stack"
+                relative="org.eclipse.ui.views.ContentOutline">
+          </view>
+       </perspectiveExtension>
+    </extension>
+</plugin>

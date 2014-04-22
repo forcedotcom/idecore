@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+	<description>Configures the join points where we try to retry different
+		aspects such as login, metadata operations, etc.</description>
+	<!-- For info on Spring AOP, see http://static.springframework.org/spring/docs/2.5.x/reference/aop.html -->
+
+	<!-- A S P E C T S -->
+	<!-- this switches on the load-time weaving -->
+	<aop:config>
+		<!-- retry login -->
+		<aop:aspect id="loginRetryAspect" ref="loginRetry">
+			<aop:around
+				pointcut="execution(* com.salesforce.ide.core.remote.Connection.*login())"
+				method="loginRetry" />
+		</aop:aspect>
+
+		<!-- retry crud operations -->
+		<aop:aspect id="crudOperationsRetryAspect" ref="crudOperationsRetry">
+			<aop:around
+				pointcut="execution(* com.salesforce.ide.core.remote.Connection.create*(..)) or
+                            execution(* com.salesforce.ide.core.remote.Connection.retrieve*(..)) or
+                            execution(* com.salesforce.ide.core.remote.Connection.query*(..)) or
+                            execution(* com.salesforce.ide.core.remote.Connection.update*(..)) or
+                            execution(* com.salesforce.ide.core.remote.Connection.delete*(..)) or
+                            execution(* com.salesforce.ide.core.remote.Connection.describe*(..))"
+				method="crudOperationRetry" />
+		</aop:aspect>
+
+		<!-- retry metadata operations -->
+		<aop:aspect id="metadataOperationsRetryAspect" ref="metadataOperationsRetry">
+			<aop:around
+				pointcut="execution(* com.salesforce.ide.core.remote.MetadataStubExt.describeMetadata(..)) or
+                              execution(* com.salesforce.ide.core.remote.MetadataStubExt.retrieve(..)) or
+                              execution(* com.salesforce.ide.core.remote.MetadataStubExt.deploy(..)) or
+                              execution(* com.salesforce.ide.core.remote.MetadataStubExt.listMetadata(..)) or
+                              execution(* com.salesforce.ide.core.remote.MetadataStubExt.check*(..))"
+				method="metadataOperationsRetry" />
+		</aop:aspect>
+
+		<!-- retry tooling operations -->
+		<aop:aspect id="toolingOperationsRetryAspect" ref="toolingOperationsRetry">
+			<aop:around
+				pointcut="execution(* com.salesforce.ide.core.remote.ToolingStubExt.create(..)) or
+						  execution(* com.salesforce.ide.core.remote.ToolingStubExt.query(..)) or
+                          execution(* com.salesforce.ide.core.remote.ToolingStubExt.delete(..))"
+				method="toolingOperationsRetry" />
+		</aop:aspect>
+
+		<!-- services pre-processor -->
+		<aop:aspect id="servicePreProcessorAspect" ref="servicePreProcessor">
+			<aop:before
+				pointcut="execution(* com.salesforce.ide.core.remote.MetadataStubExt.retrieve(
+                                com.sforce.soap.metadata.RetrieveRequest)) and
+                    args(retrieveRequest)"
+				method="preProcessRetrieve" arg-names="retrieveRequest" />
+		</aop:aspect>
+
+		<!-- proxy -->
+		<!-- connection -->
+		<aop:aspect id="connectionProxyAspect" ref="proxy">
+			<aop:before
+	pointcut="execution(* com.salesforce.ide.core.remote.Connection.*login()) or
+                    execution(* com.salesforce.ide.core.remote.Connection.create*(..)) or
+                    execution(* com.salesforce.ide.core.remote.Connection.retrieve*(..)) or
+                    execution(* com.salesforce.ide.core.remote.Connection.query*(..)) or
+                    execution(* com.salesforce.ide.core.remote.Connection.update*(..)) or
+                    execution(* com.salesforce.ide.core.remote.Connection.delete*(..)) or
+                    execution(* com.salesforce.ide.core.remote.Connection.describe*(..)) or
+                    execution(* com.salesforce.ide.core.remote.MetadataStubExt.describeMetadata(..)) or
+                    execution(* com.salesforce.ide.core.remote.MetadataStubExt.retrieve(..)) or
+                    execution(* com.salesforce.ide.core.remote.MetadataStubExt.deploy(..)) or
+                    execution(* com.salesforce.ide.core.remote.MetadataStubExt.listMetadata(..)) or
+                    execution(* com.salesforce.ide.core.remote.MetadataStubExt.check*(..)) or
+                    execution(* com.salesforce.ide.core.remote.ToolingStubExt.create*(..)) or
+				    execution(* com.salesforce.ide.core.remote.ToolingStubExt.query*(..)) or
+                    execution(* com.salesforce.ide.core.remote.ToolingStubExt.delete*(..)) or
+                    execution(* com.salesforce.ide.core.services.ApexService.executeAnonymous(java.lang.String, org.eclipse.core.resources.IProject))"
+	method="setConnectionProxy" />
+		</aop:aspect>
+
+		<!-- profiling -->
+		<!-- FOR DEVELOPMENT ONLY <aop:aspect id="profilingAspect" ref="methodProfiler"> 
+			<aop:around pointcut="execution(* com.salesforce.ide.core.remote.MetadataStubExt.describeMetadata(..)) 
+			or execution(* com.salesforce.ide.core.remote.MetadataStubExt.retrieve(..)) 
+			or execution(* com.salesforce.ide.core.remote.MetadataStubExt.deploy(..)) 
+			or execution(* com.salesforce.ide.core.remote.MetadataStubExt.listMetadata(..)) 
+			or execution(* com.salesforce.ide.core.remote.MetadataStubExt.check*(..)) 
+			or execution(* com.salesforce.ide.core.remote.Connection.*login()) or execution(* 
+			com.salesforce.ide.core.remote.Connection.create*(..)) or execution(* com.salesforce.ide.core.remote.Connection.retrieve*(..)) 
+			or execution(* com.salesforce.ide.core.remote.Connection.query*(..)) or execution(* 
+			com.salesforce.ide.core.remote.Connection.update*(..)) or execution(* com.salesforce.ide.core.remote.Connection.delete*(..)) 
+			or execution(* com.salesforce.ide.core.remote.Connection.describe*(..))" 
+			method="profile" /> </aop:aspect> -->
+	</aop:config>
+
+	<!-- aspect beans -->
+	<bean id="baseRetryAspect"
+		class="com.salesforce.ide.core.internal.aspects.BaseRetryAspect"
+		abstract="true" lazy-init="true">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="metadataFactory" ref="metadataFactory" />
+		<property name="toolingFactory" ref="toolingFactory" />
+		<property name="maxRetries" value="1" />
+		<property name="retryableCodes" ref="retryExceptionCodes" />
+		<property name="reloginCodes" ref="reloginExceptionCodes" />
+	</bean>
+
+	<!-- Advise Ordering: Spring AOP follows the same precedence rules as AspectJ 
+		to determine the order of advice execution. The highest precedence advice 
+		runs first "on the way in" (so given two pieces of before advice, the one 
+		with highest precedence runs first). "On the way out" from a join point, 
+		the highest precedence advice runs last (so given two pieces of after advice, 
+		the one with the highest precedence will run second). -->
+
+	<!-- retry login -->
+	<bean id="loginRetry"
+		class="com.salesforce.ide.core.internal.aspects.LoginRetryAspect"
+		parent="baseRetryAspect" lazy-init="true">
+		<property name="order" value="100" />
+	</bean>
+
+	<!-- retry crud operations -->
+	<bean id="crudOperationsRetry"
+		class="com.salesforce.ide.core.internal.aspects.CrudOperationsRetryAspect"
+		parent="baseRetryAspect" lazy-init="true">
+		<property name="order" value="90" />
+	</bean>
+
+	<!-- retry metadata operations -->
+	<bean id="metadataOperationsRetry"
+		class="com.salesforce.ide.core.internal.aspects.MetadataOperationsRetryAspect"
+		parent="baseRetryAspect">
+		<property name="order" value="90" />
+	</bean>
+	
+    <!-- retry tooling operations -->
+	<bean id="toolingOperationsRetry"
+		class="com.salesforce.ide.core.internal.aspects.ToolingOperationsRetryAspect"
+		parent="baseRetryAspect">
+		<property name="order" value="90" />
+	</bean>
+
+	<!-- services pre-processor -->
+	<bean id="servicePreProcessor"
+		class="com.salesforce.ide.core.internal.aspects.ServicePreProcessorAspect"
+		lazy-init="true">
+		<property name="order" value="105" />
+	</bean>
+
+	<!-- proxy -->
+	<bean id="proxy" class="com.salesforce.ide.core.internal.aspects.ProxyAspect"
+		lazy-init="true">
+		<property name="order" value="80" />
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
+
+	<!-- profiling -->
+	<!-- FOR DEVELOPMENT ONLY <bean id="methodProfiler" class="com.salesforce.ide.core.internal.aspects.ProfilingAspect" 
+		lazy-init="true"> <property name="order" value="1" /> </bean> -->
+</beans>
