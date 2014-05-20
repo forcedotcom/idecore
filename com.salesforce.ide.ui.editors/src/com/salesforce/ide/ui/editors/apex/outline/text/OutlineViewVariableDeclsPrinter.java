@@ -14,7 +14,7 @@ import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.VariableDecls;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.ast.ASTPrinterFactory;
+import apex.jorje.services.printers.PrinterFactory;
 
 /**
  * Print VariableDecls in the following form: 
@@ -26,7 +26,7 @@ final class OutlineViewVariableDeclsPrinter implements Printer<VariableDecls> {
     private final Printer<TypeRef> typeRefPrinter;
     private final Printer<Identifier> identifierPrinter;
 
-    public OutlineViewVariableDeclsPrinter(ASTPrinterFactory astPrinterFactory) {
+    public OutlineViewVariableDeclsPrinter(PrinterFactory astPrinterFactory) {
         this.typeRefPrinter = astPrinterFactory.typeRefPrinter();
         this.identifierPrinter = astPrinterFactory.identifierPrinter();
     }

@@ -25,7 +25,7 @@ import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.InterfaceDecl;
 import apex.jorje.services.printers.ListPrinter;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.ast.StandardASTPrinterFactory;
+import apex.jorje.services.printers.StandardPrinterFactory;
 
 import com.salesforce.ide.ui.editors.apex.outline.ApexLabelProvider;
 import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
@@ -41,7 +41,7 @@ import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
  * 
  */
 public final class OutlineViewElementTextProvider implements IOutlineViewElementHandler<String> {
-    private static StandardASTPrinterFactory printerFactory = new StandardASTPrinterFactory(0, "");
+    private static StandardPrinterFactory printerFactory = new StandardPrinterFactory(0, "");
     private static Printer<Identifier> identifierPrinter = printerFactory.identifierPrinter();
     private static OutlineViewVariableDeclsPrinter variableDeclsPrinter = new OutlineViewVariableDeclsPrinter(
             printerFactory);

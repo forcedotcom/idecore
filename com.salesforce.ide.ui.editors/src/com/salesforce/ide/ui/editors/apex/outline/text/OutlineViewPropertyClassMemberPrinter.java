@@ -14,14 +14,14 @@ import apex.jorje.data.ast.BlockMember.PropertyMember;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.ast.StandardASTPrinterFactory;
+import apex.jorje.services.printers.StandardPrinterFactory;
 
 final class OutlineViewPropertyClassMemberPrinter implements Printer<PropertyMember> {
 
     private Printer<TypeRef> typeRefPrinter;
     private Printer<Identifier> identifierPrinter;
 
-    public OutlineViewPropertyClassMemberPrinter(StandardASTPrinterFactory printerFactory) {
+    public OutlineViewPropertyClassMemberPrinter(StandardPrinterFactory printerFactory) {
         this.typeRefPrinter = printerFactory.typeRefPrinter();
         this.identifierPrinter = printerFactory.identifierPrinter();
     }

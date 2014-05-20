@@ -18,7 +18,7 @@ import apex.jorje.data.ast.FormalParameter;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.ast.ASTPrinterFactory;
+import apex.jorje.services.printers.PrinterFactory;
 
 /**
  * Print MethodDecls in the following form: methodName(variable1Type, variable2Type, ...) : returnType
@@ -31,7 +31,7 @@ final class OutlineViewMethodClassMemberPrinter implements Printer<MethodMember>
     private final Printer<TypeRef> typeRefPrinter;
     private final Printer<Identifier> identifierPrinter;
 
-    public OutlineViewMethodClassMemberPrinter(ASTPrinterFactory astPrinterFactory,
+    public OutlineViewMethodClassMemberPrinter(PrinterFactory astPrinterFactory,
             Printer<Iterable<FormalParameter>> formalParametersPrinter) {
         this.formalParametersPrinter = formalParametersPrinter;
         this.typeRefPrinter = astPrinterFactory.typeRefPrinter();

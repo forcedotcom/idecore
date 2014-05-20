@@ -13,7 +13,7 @@ package com.salesforce.ide.ui.editors.apex.outline.text;
 import apex.jorje.data.ast.FormalParameter;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.ast.ASTPrinterFactory;
+import apex.jorje.services.printers.PrinterFactory;
 
 /**
  * Prints just the type of the formal argument.
@@ -25,7 +25,7 @@ final class OutlineViewFormalParameterPrinter implements Printer<FormalParameter
 
     private Printer<TypeRef> typeRefPrinter;
 
-    public OutlineViewFormalParameterPrinter(ASTPrinterFactory astPrinterFactory) {
+    public OutlineViewFormalParameterPrinter(PrinterFactory astPrinterFactory) {
         this.typeRefPrinter = astPrinterFactory.typeRefPrinter();
     }
 

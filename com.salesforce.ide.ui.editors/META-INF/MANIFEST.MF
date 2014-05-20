@@ -27,7 +27,7 @@ Require-Bundle: com.salesforce.ide.api;bundle-version="[31.0.0,32.0.0)",
  org.eclipse.ui.forms;bundle-version="3.5.200"
 Import-Package: org.apache.log4j
 Bundle-ClassPath: .,
- lib/antlr-3.1.1.jar,
+ lib/antlr-complete-3.5.1.jar,
  lib/apex-jorje-data-1.0-SNAPSHOT.jar,
  lib/apex-jorje-parser-1.0-SNAPSHOT.jar,
  lib/apex-jorje-semantic-1.0-SNAPSHOT.jar,
