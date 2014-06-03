@@ -42,6 +42,7 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
         super();
     }
 
+    @Override
     public void createInitialLayout(IPageLayout layout) {
         String editorArea = layout.getEditorArea();
 
@@ -49,7 +50,7 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
         folder.addView(JavaUI.ID_PACKAGES);
         folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 
-        IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea);
+        IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.7, editorArea);
         outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
         outputfolder.addView(UIConstants.RUN_TEST_VIEW_ID);
         outputfolder.addView(UIConstants.DEBUG_LOG_VIEW_ID);

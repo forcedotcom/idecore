@@ -10,19 +10,33 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.views.executeanonymous;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.*;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.LoggingInfo;
@@ -59,7 +73,8 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         this.executeAnonymousController = executeAnonymousController;
         
         addDisposeListener(new DisposeListener(){
-			public void widgetDisposed(DisposeEvent e) {
+			@Override
+            public void widgetDisposed(DisposeEvent e) {
 				color.dispose();
 			}
         });
@@ -78,37 +93,45 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
     protected void initialize() {
         GridLayout gridLayout = new GridLayout();
-        gridLayout.horizontalSpacing = 5;
-        gridLayout.numColumns = 2;
         setLayout(gridLayout);
         setSize(new Point(566, 757));
 
-        GridData gridData3 = new GridData();
-        gridData3.horizontalAlignment = GridData.FILL;
-        gridData3.grabExcessHorizontalSpace = true;
-        gridData3.grabExcessVerticalSpace = true;
-        gridData3.horizontalSpan = 2;
-        gridData3.heightHint = 650;
-        gridData3.verticalAlignment = GridData.FILL;
-        sashForm = new SashForm(this, SWT.NONE);
-        sashForm.setOrientation(SWT.VERTICAL);
-        sashForm.setLayoutData(gridData3);
-
-        createSourceComposite();
-        createResultComposite();
+        createLoggingComposite();
+        createSash();
 
         loadProjects();
         setActiveProject(executeAnonymousController.getProject());
     }
 
+    private void createSash() {
+        GridData gridData3 = new GridData();
+        gridData3.horizontalAlignment = GridData.FILL;
+        gridData3.grabExcessHorizontalSpace = true;
+        gridData3.grabExcessVerticalSpace = true;
+        gridData3.heightHint = 650;
+        gridData3.verticalAlignment = GridData.FILL;
+
+        sashForm = new SashForm(this, SWT.BORDER_SOLID | SWT.VERTICAL);
+        sashForm.setSashWidth(5);
+        sashForm.setLayoutData(gridData3);
+        createSourceComposite();
+        createResultComposite();
+        sashForm.setWeights(new int[] { 2, 1 });
+    }
+
+    private void createLoggingComposite() {
+        Composite composite = new Composite(this, SWT.NONE);
+        composite.setLayout(new GridLayout(3, false));
+        createProjectComposite(composite);
+        loggingComposite =
+                new LoggingComposite(composite,
+                        ContainerDelegate.getInstance().getServiceLocator().getLoggingService(), SWT.NONE, false,
+                        LoggingInfo.SupportedFeatureEnum.ExecuteAnonymous);
+    }
+
     protected void createSourceComposite() {
         cmpSource = new Composite(sashForm, SWT.NONE);
         cmpSource.setLayout(new GridLayout(3, false));
-
-        createProjectComposite(cmpSource);
-        loggingComposite =
-                new LoggingComposite(cmpSource, ContainerDelegate.getInstance().getServiceLocator().getLoggingService(), SWT.NONE, false,
-                        LoggingInfo.SupportedFeatureEnum.ExecuteAnonymous);
 
         // Source to execute: label
         CLabel lblSource = new CLabel(cmpSource, SWT.NONE);
@@ -120,6 +143,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         txtSourceInput.setEnabled(false);
         txtSourceInput.setLayoutData(getInputResultsGridData());
         txtSourceInput.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 if (txtSourceInput != null && btnExecute != null) {
                     btnExecute.setEnabled(Utils.isNotEmpty(txtSourceInput.getText()));
@@ -182,10 +206,6 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         CLabel lblResult = new CLabel(cmpResult, SWT.NONE);
         lblResult.setText("Results:");
 
-        @SuppressWarnings("unused")
-        Label filler2 = new Label(cmpResult, SWT.NONE);
-        @SuppressWarnings("unused")
-        Label filler3 = new Label(cmpResult, SWT.NONE);
         txtResult = new StyledText(cmpResult, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
         txtResult.setBackground(color);
         txtResult.setLayoutData(getInputResultsGridData());
@@ -202,6 +222,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         lblProject.setText("Active Project:");
         cboProject = new Combo(cmpProject, SWT.DROP_DOWN | SWT.READ_ONLY);
         cboProject.addSelectionListener(new org.eclipse.swt.events.SelectionListener() {
+            @Override
             @SuppressWarnings("unchecked")
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
                 Combo tmpCboProject = (Combo) e.widget;
@@ -218,6 +239,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -264,6 +286,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
             cboProject.removeAll();
             cboProject.setData(projects);
             Collections.sort(projects, new Comparator<IProject>() {
+                @Override
                 public int compare(IProject o1, IProject o2) {
                     return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
                 }
@@ -294,6 +317,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
     private void handleExecuteResults(final ExecuteAnonymousResultExt executeAnonymousResult) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 if (executeAnonymousResult.getCompiled()) {
                     if (executeAnonymousResult.getSuccess()) {
