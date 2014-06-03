@@ -30,5 +30,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACKETS, true);
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACES, true);
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_STRINGS, true);
+        store.setDefault(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER, true);
 	}
 }

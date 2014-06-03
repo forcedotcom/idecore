@@ -360,11 +360,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
         List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
 
-        //        IJavaProject project= EditorUtility.getJavaProject(input);
-        //        if (project != null) {
-        //            stores.add(new EclipsePreferencesAdapter(new ProjectScope(project.getProject()), JavaCore.PLUGIN_ID));
-        //        }
-
         stores.add(ForceIdeEditorsPlugin.getDefault().getPreferenceStore());
         stores.add(new PreferencesAdapter(ForceIdeEditorsPlugin.getDefault().getPluginPreferences()));
         stores.add(EditorsUI.getPreferenceStore());

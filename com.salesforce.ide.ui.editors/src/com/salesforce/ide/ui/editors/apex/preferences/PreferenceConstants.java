@@ -65,4 +65,14 @@ public class PreferenceConstants {
      * </p>
      */
     public final static String EDITOR_CLOSE_BRACES = "closeBraces"; //$NON-NLS-1$
+
+    /**
+     * Controls whether we are going to parse with the new compiler. This affects the following:
+     * <ul>
+     * <li>Error Reporting</li>
+     * <li>Outline View</li>
+     * </ul>
+     * We set this as a preference because the new compiler is still in beta mode so errors could happen.
+     */
+    public final static String EDITOR_PARSE_WITH_NEW_COMPILER = "parseWithNewCompiler"; //$NON-NLS-1$
 }

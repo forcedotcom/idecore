@@ -1,12 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2014 Salesforce.com, inc.. All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
- *     Salesforce.com, inc. - initial API and implementation
+ * Contributors: Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex;
 
@@ -15,6 +12,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
@@ -32,9 +30,11 @@ import apex.jorje.data.ast.CompilationUnit.InterfaceDeclUnit;
 import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 import apex.jorje.parser.impl.ApexParserImpl;
 
+import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.errors.ApexErrorMarkerHandler;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;
 import com.salesforce.ide.ui.editors.apex.parser.IdeApexParser;
+import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
 
 /**
  * This is the actual strategy used for doing the reconciling for the current text in the editor. For now, it will
@@ -93,10 +93,14 @@ public class ApexReconcilingStrategy implements IReconcilingStrategy, IReconcili
 
         @Override
         public void run() throws Exception {
-            clearExistingErrorMarkers();
-            parseCurrentEditorContents();
-            reportParseErrors();
-            updateOutlineViewIfPossible();
+            IPreferenceStore preferenceStore = ForceIdeEditorsPlugin.getDefault().getPreferenceStore();
+            boolean shouldUpdate = preferenceStore.getBoolean(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER);
+            if (shouldUpdate) {
+                clearExistingErrorMarkers();
+                parseCurrentEditorContents();
+                reportParseErrors();
+                updateOutlineViewIfPossible();
+            }
         }
 
         // TODO: Do we really have to clear it each time?

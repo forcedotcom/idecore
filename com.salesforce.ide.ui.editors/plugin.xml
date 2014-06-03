@@ -13,7 +13,7 @@
             targetID="org.eclipse.wst.sse.ui.StructuredTextEditor.EditorContext">
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
+                label="%menu.label"
                 path="additions">
                 <separator name="group0" />
             </menu>
@@ -21,7 +21,7 @@
                 id="com.salesforce.ide.actions.mergeFields"
                 class="com.salesforce.ide.ui.editors.actions.MergeFieldsAction"
                 tooltip="%tooltip.MergeFields"
-                label="Insert &amp;Merge Field"
+                label="%action.label"
                 enablesFor="1"
                 helpContextId="com.salesforce.ide.documentation.mergeFields"
                 menubarPath="com.salesforce.ide.ui.menu.tools/group0"/>
@@ -84,9 +84,17 @@
        </provider>
     </extension>
 
-<!--   P R E F E N C E S  -->
+    <!--   P R E F E N C E S  -->
     <extension point="org.eclipse.core.runtime.preferences">
       <initializer class="com.salesforce.ide.ui.editors.apex.preferences.PreferenceInitializer"/>
+	</extension>
+    <extension point="org.eclipse.ui.preferencePages">
+       <page
+             category="com.salesforce.ide.ui.preferences.GeneralPreferencePage"
+             class="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage"
+             id="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage"
+             name="%page.name">
+       </page>
 	</extension>
     <extension
            point="org.eclipse.wst.sse.ui.sourcevalidation">

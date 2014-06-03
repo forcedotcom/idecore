@@ -39,10 +39,6 @@ import com.salesforce.ide.ui.editors.apex.util.ApexCodeWhitespaceDetector;
 import com.salesforce.ide.ui.editors.apex.util.ApexCodeWordDetector;
 import com.sforce.soap.partner.wsc.DescribeSObjectResult;
 
-/**
- * Derives from org.eclipse.jdt.internal.ui.text.java.JavaCodeScanner and is governed by the
- * terms of the original copyright on that file.
- */
 public class ApexCodeScanner extends RuleBasedScanner {
 
     private static Logger logger = Logger.getLogger(ApexCodeScanner.class);
