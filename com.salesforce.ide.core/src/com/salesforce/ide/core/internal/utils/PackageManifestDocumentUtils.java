@@ -24,10 +24,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-/*
- * Code review, cwall 9/22/08 General: need logging
- */
-
 /**
  * This class contains convenience methods for working with package.xml files which are loaded into memory as as w3c DOM
  * trees
@@ -41,6 +37,7 @@ public class PackageManifestDocumentUtils {
 
     public static final NamespaceContext nsc = new NamespaceContext() {
 
+        @Override
         public String getNamespaceURI(String prefix) {
             if (prefix.equals(Constants.PACKAGE_MANIFEST_METADATA)) {
                 return Constants.PACKAGE_MANIFEST_NAMESPACE_URI;
@@ -49,10 +46,12 @@ public class PackageManifestDocumentUtils {
             return null;
         }
 
+        @Override
         public String getPrefix(String namespaceURI) {
             return null;
         }
 
+        @Override
         public Iterator<String> getPrefixes(String namespaceURI) {
             return null;
         }
@@ -168,8 +167,7 @@ public class PackageManifestDocumentUtils {
             Node version =
                     doc.createElementNS(Constants.PACKAGE_MANIFEST_NAMESPACE_URI, Constants.PACKAGE_MANIFEST_VERSION);
 
-            //TODO figure out how to add correct version
-            Text versionText = doc.createTextNode("15.0");
+            Text versionText = doc.createTextNode("31.0");
             version.appendChild(versionText);
             packageNode.appendChild(version);
             doc.insertBefore(packageNode, doc.getLastChild());
@@ -439,12 +437,14 @@ public class PackageManifestDocumentUtils {
     }
 
     private static Comparator<Node> typeComparator = new Comparator<Node>() {
+        @Override
         public int compare(Node o1, Node o2) {
             return String.CASE_INSENSITIVE_ORDER.compare(getComponentName(o1), getComponentName(o2));
         }
     };
 
     private static Comparator<Node> memberComparator = new Comparator<Node>() {
+        @Override
         public int compare(Node o1, Node o2) {
             return String.CASE_INSENSITIVE_ORDER.compare(getMemberName(o1), getMemberName(o2));
         }
