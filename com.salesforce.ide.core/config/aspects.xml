@@ -49,7 +49,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			<aop:around
 				pointcut="execution(* com.salesforce.ide.core.remote.ToolingStubExt.create(..)) or
 						  execution(* com.salesforce.ide.core.remote.ToolingStubExt.query(..)) or
-                          execution(* com.salesforce.ide.core.remote.ToolingStubExt.delete(..))"
+                          execution(* com.salesforce.ide.core.remote.ToolingStubExt.delete(..)) or
+                          execution(* com.salesforce.ide.core.remote.ToolingStubExt.update(..))"
 				method="toolingOperationsRetry" />
 		</aop:aspect>
 
