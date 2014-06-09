@@ -64,19 +64,19 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected ExecuteAnonymousController executeAnonymousController = null;
     protected LoggingComposite loggingComposite;
     private static final int DEFAULT_PROJ_SELECTION = 0;
-    
+
     Color color = new Color(Display.getCurrent(), 240, 240, 240);
 
     public ExecuteAnonymousViewComposite(Composite parent, int style,
             ExecuteAnonymousController executeAnonymousController) {
         super(parent, style);
         this.executeAnonymousController = executeAnonymousController;
-        
-        addDisposeListener(new DisposeListener(){
-			@Override
+
+        addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
-				color.dispose();
-			}
+                color.dispose();
+            }
         });
         initialize();
     }
@@ -111,12 +111,11 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         gridData3.heightHint = 650;
         gridData3.verticalAlignment = GridData.FILL;
 
-        sashForm = new SashForm(this, SWT.BORDER_SOLID | SWT.VERTICAL);
-        sashForm.setSashWidth(5);
+        sashForm = new SashForm(this, SWT.BORDER_SOLID | SWT.HORIZONTAL);
+        sashForm.setSashWidth(2);
         sashForm.setLayoutData(gridData3);
         createSourceComposite();
         createResultComposite();
-        sashForm.setWeights(new int[] { 2, 1 });
     }
 
     private void createLoggingComposite() {
@@ -131,17 +130,29 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
     protected void createSourceComposite() {
         cmpSource = new Composite(sashForm, SWT.NONE);
-        cmpSource.setLayout(new GridLayout(3, false));
+        cmpSource.setLayout(new GridLayout(2, false));
 
         // Source to execute: label
         CLabel lblSource = new CLabel(cmpSource, SWT.NONE);
         lblSource.setText("Source to execute:");
         lblSource.setLayoutData(new GridData(GridData.CENTER));
 
+        // Execute Anonymous button
+        btnExecute = new Button(cmpSource, SWT.NONE);
+        btnExecute.setText("Execute Anonymous");
+        btnExecute.setEnabled(false);
+        btnExecute.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
+        btnExecute.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
+            @Override
+            public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
+                executeExecuteAnonymous();
+            }
+        });
+
         // Apex input text field        
         txtSourceInput = new StyledText(cmpSource, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         txtSourceInput.setEnabled(false);
-        txtSourceInput.setLayoutData(getInputResultsGridData());
+        txtSourceInput.setLayoutData(getInputResultsGridData(2));
         txtSourceInput.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
@@ -151,27 +162,16 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
             }
         });
 
-        // Execute Anonymous button
-        btnExecute = new Button(cmpSource, SWT.NONE);
-        btnExecute.setText("Execute Anonymous");
-        btnExecute.setEnabled(false);
-        btnExecute.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        btnExecute.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
-            @Override
-            public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
-                executeExecuteAnonymous();
-            }
-        });
     }
 
-    private GridData getInputResultsGridData() {
+    private GridData getInputResultsGridData(int span) {
         Rectangle rect = UIUtils.getClientArea(getShell());
 
         GridData gridData = new GridData();
         gridData.horizontalAlignment = GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
         gridData.grabExcessVerticalSpace = true;
-        gridData.horizontalSpan = 3;
+        gridData.horizontalSpan = span;
         gridData.heightHint = (int) (rect.height * .4);
         gridData.verticalAlignment = GridData.FILL;
         return gridData;
@@ -201,14 +201,14 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
     protected void createResultComposite() {
         cmpResult = new Composite(sashForm, SWT.NONE);
-        cmpResult.setLayout(new GridLayout(3, false));
+        cmpResult.setLayout(new GridLayout(1, false));
 
         CLabel lblResult = new CLabel(cmpResult, SWT.NONE);
         lblResult.setText("Results:");
 
         txtResult = new StyledText(cmpResult, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
         txtResult.setBackground(color);
-        txtResult.setLayoutData(getInputResultsGridData());
+        txtResult.setLayoutData(getInputResultsGridData(1));
     }
 
     protected void createProjectComposite(Composite cmpSource) {
@@ -335,8 +335,9 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                     }
                 } else {
                     StringBuilder strBuilder = new StringBuilder("Compile error at line ");
-                    strBuilder.append(executeAnonymousResult.getLine()).append(" column ").append(
-                        executeAnonymousResult.getColumn()).append("\n").append(executeAnonymousResult.getCompileProblem());
+                    strBuilder.append(executeAnonymousResult.getLine()).append(" column ")
+                            .append(executeAnonymousResult.getColumn()).append("\n")
+                            .append(executeAnonymousResult.getCompileProblem());
                     txtResult.setText(strBuilder.toString());
                 }
             }
@@ -347,6 +348,5 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     public void validateUserInput() {
 
     }
-    
-    
+
 }
