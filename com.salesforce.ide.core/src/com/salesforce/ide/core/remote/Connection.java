@@ -341,12 +341,14 @@ public class Connection {
     }
 
     public void setProxy(IProxy proxy) {
-        //Be safe
         if (connectorConfig != null) {
             setProxyOnConnectorConfig(proxy, connectorConfig);
         }
         if (metadataConnectorConfig != null) {
             setProxyOnConnectorConfig(proxy, metadataConnectorConfig);
+        }
+        if (toolingConnectorConfig != null) {
+            setProxyOnConnectorConfig(proxy, toolingConnectorConfig);
         }
     }
 

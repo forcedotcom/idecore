@@ -23,6 +23,7 @@ import com.salesforce.ide.core.internal.preferences.proxy.IProxy;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.MetadataStubExt;
+import com.salesforce.ide.core.remote.ToolingStubExt;
 
 /**
  * Manages applying Eclipse capture proxy settings to outbound Salesforce.com API calls
@@ -38,6 +39,7 @@ public class ProxyAspect implements Ordered {
     protected PreferenceManager preferenceManager = PreferenceManager.getInstance();
     protected ConnectionFactory connectionFactory = null;
 
+    @Override
     public int getOrder() {
         return this.order;
     }
@@ -63,6 +65,9 @@ public class ProxyAspect implements Ordered {
             connection = (Connection) joinPoint.getTarget();
         } else if (joinPoint.getTarget() instanceof MetadataStubExt) {
             MetadataStubExt stub = (MetadataStubExt) joinPoint.getTarget();
+            connection = stub.getConnection();
+        } else if (joinPoint.getTarget() instanceof ToolingStubExt) {
+            ToolingStubExt stub = (ToolingStubExt) joinPoint.getTarget();
             connection = stub.getConnection();
         } else if (Utils.isNotEmpty(joinPoint.getArgs())) {
             Object[] objects = joinPoint.getArgs();
