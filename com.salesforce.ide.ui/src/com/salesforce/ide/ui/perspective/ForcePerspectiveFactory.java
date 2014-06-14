@@ -90,6 +90,5 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 
         layout.addActionSet(UIConstants.PLUGIN_PREFIX + ".actionset.help");
-        layout.addActionSet(UIConstants.PLUGIN_PREFIX + ".editors.intro.menuActionSet");
     }
 }
