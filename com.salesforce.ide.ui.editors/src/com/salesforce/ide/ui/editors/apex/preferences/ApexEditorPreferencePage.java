@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc.. All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2014 Salesforce.com, inc..
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors: Salesforce.com, inc. - initial API and implementation
+ * Contributors:
+ *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.preferences;
 
@@ -25,7 +28,9 @@ import com.salesforce.ide.ui.internal.utils.UIUtils;
 
 public class ApexEditorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-    private BooleanFieldEditor enableNewParser;
+    // Package access for testing purposes
+    BooleanFieldEditor enableNewParser;
+    Group startupGroup;
 
     public ApexEditorPreferencePage() {}
 
@@ -46,19 +51,22 @@ public class ApexEditorPreferencePage extends PreferencePage implements IWorkben
         GridLayout layout = new GridLayout();
         entryTable.setLayout(layout);
 
-        Group startupGroup = new Group(entryTable, SWT.NONE);
+        startupGroup = new Group(entryTable, SWT.NONE);
         startupGroup.setText(EditorMessages.getString("ApexEditorPreferencePage.ApexParserGroup")); //$NON-NLS-1$
         startupGroup.setLayout(new GridLayout());
         startupGroup.setLayoutData(new GridData(768));
 
-        enableNewParser =
-                new BooleanFieldEditor(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER,
-                        EditorMessages.getString("ApexEditorPreferencePage.EnableNewParserOption"), startupGroup); //$NON-NLS-1$
+        enableNewParser = instantiateBooleanFieldEditor(startupGroup);
         enableNewParser.setPage(this);
         enableNewParser.setPreferenceStore(getPreferenceStore());
         enableNewParser.load();
 
         return entryTable;
+    }
+
+    protected BooleanFieldEditor instantiateBooleanFieldEditor(Composite parent) {
+        return new BooleanFieldEditor(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER,
+                EditorMessages.getString("ApexEditorPreferencePage.EnableNewParserOption"), parent); //$NON-NLS-1$
     }
 
     @Override
