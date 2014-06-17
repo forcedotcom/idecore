@@ -147,7 +147,7 @@ public class ApexErrorMarkerHandler {
                                 try {
                                     Map<String, Object> config = new HashMap<String, Object>();
                                     MarkerUtilities.setMessage(config,
-                                        PrinterUtil.ENGLISH.print(apexException.getError()));
+                                        PrinterUtil.INSTANCE.print(apexException.getError()));
 
                                     MarkerUtilities.setCharStart(config,
                                         ParserLocationTranslator.getStartOffset(loc, fDocument));
@@ -179,7 +179,7 @@ public class ApexErrorMarkerHandler {
 
                         MarkerUtilities.setLineNumber(config, 1);
                         // Need to implement the first, currently get a NotImplementedYet exception
-                        MarkerUtilities.setMessage(config, PrinterUtil.ENGLISH.print(apexException.getError()));
+                        MarkerUtilities.setMessage(config, PrinterUtil.INSTANCE.print(apexException.getError()));
 
                         // Not sure why there aren't any utilities methods for these fields in MarkerUtilities
                         // Set them directly instead.

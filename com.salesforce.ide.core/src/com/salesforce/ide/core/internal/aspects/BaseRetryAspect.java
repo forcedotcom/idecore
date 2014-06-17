@@ -68,6 +68,7 @@ public abstract class BaseRetryAspect implements Ordered {
         this.toolingFactory = toolingFactory;
     }
 
+    @Override
     public int getOrder() {
         return this.order;
     }
@@ -262,6 +263,8 @@ public abstract class BaseRetryAspect implements Ordered {
             return (Connection) joinPoint;
         } else if (obj instanceof MetadataStubExt) {
             return ((MetadataStubExt) obj).getConnection();
+        } else if (obj instanceof ToolingStubExt) {
+            return ((ToolingStubExt) obj).getConnection();
         }
 
         return null;

@@ -171,9 +171,10 @@ public class ToolingDeployService extends BaseService {
     ContainerAsyncRequest pollUntilUnqueuedOrCancelled(ToolingStubExt stub, IProgressMonitor monitor, String soql,
             ContainerAsyncRequest onGoingRequest) throws ForceRemoteException {
         QueryResult queryResult;
+        int delayMultipler = 1;
         while (onGoingRequest.getState().equalsIgnoreCase("queued")) {
             try {
-                Thread.sleep(POLL_INTERVAL);
+                Thread.sleep(POLL_INTERVAL * delayMultipler++);
                 if (monitor.isCanceled()) { // The user has canceled the task
                     ContainerAsyncRequest abortedRequest = new ContainerAsyncRequest();
                     abortedRequest.setId(onGoingRequest.getId());
