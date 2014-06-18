@@ -34,12 +34,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 
 import com.salesforce.ide.api.metadata.types.Package;
@@ -154,6 +152,7 @@ public class ProjectController extends Controller {
 
         try {
             ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     try {
                         performCreateProject(monitor);
@@ -176,7 +175,7 @@ public class ProjectController extends Controller {
         saveConnection(monitor);
 
         // create project
-        createProject(true, monitor);
+        createProject(false, monitor);
 
         // save settings to project
         saveSettings(monitor);
@@ -225,19 +224,15 @@ public class ProjectController extends Controller {
             throw new IllegalArgumentException("Project model and/or project name cannot be null");
         }
 
-        String[] forceNatures;
-        Bundle debugBundle = Platform.getBundle(Constants.DEBUG_BUNDLE);
-        if (applyOnlineNature && debugBundle != null) {
-            forceNatures = new String[] { DefaultNature.NATURE_ID, OnlineNature.NATURE_ID, Constants.DEBUG_NATURE };
-        } else {
-            forceNatures =
-                    applyOnlineNature ? new String[] { DefaultNature.NATURE_ID, OnlineNature.NATURE_ID }
-                            : new String[] { DefaultNature.NATURE_ID };
-        }
+
+        String[] forceNatures =
+                applyOnlineNature ? new String[] { DefaultNature.NATURE_ID, OnlineNature.NATURE_ID }
+                        : new String[] { DefaultNature.NATURE_ID };
 
         IProject newProject =
                 ContainerDelegate.getInstance().getServiceLocator().getProjectService()
-                        .createProject(getProjectModel().getProjectName(), forceNatures, monitor);
+                        .createProject(getProjectModel().getProjectName(), forceNatures,
+                            monitor);
         getProjectModel().setProject(newProject);
     }
 
@@ -842,6 +837,7 @@ public class ProjectController extends Controller {
     public boolean reAuthenticate(IRunnableContext context) throws InvocationTargetException {
         final ForceProject forceProject = getProjectModel().getForceProject();
         IRunnableWithProgress resetConnection = new IRunnableWithProgress() {
+            @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
                 ContainerDelegate.getInstance().getServiceLocator().getProjectService().getConnectionFactory()
                         .removeConnection(forceProject);

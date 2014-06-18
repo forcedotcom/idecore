@@ -350,9 +350,6 @@ public interface Constants {
     String PROJECT_PROPERTIES_PAGE_ID = "com.salesforce.ide.ui.properties.project";
     String PROJECT_CONTENT_PROPERTIES_PAGE_ID = "com.salesforce.ide.ui.properties.project.content";
 
-    String DEBUG_BUNDLE = "com.salesforce.ide.debugger";
-    String DEBUG_NATURE = "com.salesforce.ide.debugger.nature";
-
     // Deployment Summary Constants.
     // This was pulled out of Deployment Summary becauase Eclipse 3.4.2 had a bug.
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=263877

@@ -97,7 +97,7 @@ public class ProjectCreateOperation extends BaseWorkspaceModifyOperation {
 
             // create project
             monitor.subTask(UIMessages.getString("ProjectCreateWizard.CreateOperation.CreateProject.label"));
-            projectController.createProject(true, monitor);
+            projectController.createProject(false, monitor);
             monitorWork(monitor);
 
             // save settings to project
