@@ -24,6 +24,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import com.salesforce.ide.core.internal.context.ContainerDelegate;
+import com.salesforce.ide.core.services.ProjectService;
+
 /**
  * This class contains convenience methods for working with package.xml files which are loaded into memory as as w3c DOM
  * trees
@@ -34,6 +37,9 @@ import org.w3c.dom.Text;
 public class PackageManifestDocumentUtils {
 
     private static final Logger logger = Logger.getLogger(PackageManifestDocumentUtils.class);
+    
+    private static final ProjectService projectService = ContainerDelegate.getInstance().getServiceLocator()
+            .getProjectService();
 
     public static final NamespaceContext nsc = new NamespaceContext() {
 
@@ -167,7 +173,7 @@ public class PackageManifestDocumentUtils {
             Node version =
                     doc.createElementNS(Constants.PACKAGE_MANIFEST_NAMESPACE_URI, Constants.PACKAGE_MANIFEST_VERSION);
 
-            Text versionText = doc.createTextNode("31.0");
+            Text versionText = doc.createTextNode(projectService.getLastSupportedEndpointVersion());
             version.appendChild(versionText);
             packageNode.appendChild(version);
             doc.insertBefore(packageNode, doc.getLastChild());

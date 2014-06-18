@@ -169,13 +169,15 @@ public class ProjectController extends Controller {
         }
     }
 
+    // Used by the testing framework to create projects
+    // This is similar to the creation path through the wizard except that it turns the project "online" by default
     private void performCreateProject(IProgressMonitor monitor) throws ForceConnectionException, InterruptedException,
             CoreException, ForceRemoteException, InvocationTargetException, FactoryException, ServiceException,
             IOException {
         saveConnection(monitor);
 
         // create project
-        createProject(false, monitor);
+        createProject(true, monitor);
 
         // save settings to project
         saveSettings(monitor);
