@@ -743,7 +743,7 @@ public class ProjectController extends Controller {
                     + getProjectModel().getProjectName() + "'");
         }
 
-        monitorCheck(monitor);
+        monitorCheckSubTask(monitor, Messages.getString("Component.RetrieveManagedComponents"));
         RetrieveResultExt retrieveResultHandler =
                 ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService()
                         .retrieveManagedInstalledPackages(getProjectModel().getConnection(), monitor);
@@ -772,7 +772,6 @@ public class ProjectController extends Controller {
             }
         }
 
-        monitorCheck(monitor);
         ProjectPackageList projectPackageList = retrieveResultHandler.getProjectPackageList();
         if (Utils.isEmpty(projectPackageList)) {
             if (logger.isDebugEnabled()) {
@@ -781,12 +780,12 @@ public class ProjectController extends Controller {
             return;
         }
 
-        monitorCheck(monitor);
+        monitorCheckSubTask(monitor, Messages.getString("Components.Generating"));
         projectPackageList.setProject(getProjectModel().getProject());
         projectPackageList.generateComponents(retrieveResultHandler.getZipFile(),
             retrieveResultHandler.getFileMetadataHandler());
 
-        monitorCheck(monitor);
+        monitorCheckSubTask(monitor, Messages.getString("Components.Saving"));
         projectPackageList.saveResources(getProjectModel().getProject(), new SubProgressMonitor(monitor, 1));
 
         monitorCheck(monitor);

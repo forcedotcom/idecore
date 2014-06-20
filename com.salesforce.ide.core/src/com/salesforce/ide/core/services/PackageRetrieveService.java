@@ -29,6 +29,7 @@ import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
+import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.OperationStats;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
@@ -41,12 +42,12 @@ import com.salesforce.ide.core.remote.MetadataStubExt;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.core.remote.metadata.RetrieveMessageExt;
 import com.salesforce.ide.core.remote.metadata.RetrieveResultExt;
-import com.sforce.soap.metadata.AsyncRequestState;
 import com.sforce.soap.metadata.AsyncResult;
 import com.sforce.soap.metadata.FileProperties;
 import com.sforce.soap.metadata.ListMetadataQuery;
 import com.sforce.soap.metadata.RetrieveRequest;
 import com.sforce.soap.metadata.RetrieveResult;
+import com.sforce.soap.metadata.RetrieveStatus;
 
 /**
  * Class encapsulates all retrieve functionality.
@@ -132,7 +133,7 @@ public class PackageRetrieveService extends BasePackageService {
      * @throws InterruptedException
      */
     public RetrieveResultExt retrieveAll(IProject project, IProgressMonitor monitor) throws ForceConnectionException,
-    ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
+            ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -848,8 +849,8 @@ public class PackageRetrieveService extends BasePackageService {
      */
     public RetrieveResultExt retrieveSelectiveSubComponentFolder(ProjectPackageList projectPackageList,
             String[] componentTypes, String subComponentFolder, IProgressMonitor monitor)
-                    throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException,
-                    InterruptedException, ForceRemoteException, RemoteException, CoreException {
+            throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException,
+            InterruptedException, ForceRemoteException, RemoteException, CoreException {
         if (projectPackageList == null || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Package list and/or project cannot be null");
         }
@@ -947,24 +948,24 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("MetadataStubExt cannot be null");
         }
 
-        monitorCheckSubTask(monitor, "Preparing results...");
+        monitorCheckSubTask(monitor, Messages.getString("Retrieve.PreparingResults"));
 
+        RetrieveResult retrieveResult;
         try {
-            waitForResult(new AsyncResultAdapter(asyncResult, metadataStubExt), metadataStubExt, operationStats,
-                monitor);
+            IFileBasedResultAdapter result =
+                    waitForResult(new RetrieveResultAdapter(asyncResult, metadataStubExt), metadataStubExt,
+                        operationStats, monitor);
+            retrieveResult = ((RetrieveResultAdapter) result).getRetrieveResult();
+
         } catch (ServiceTimeoutException e) {
             e.setMetadataResultExt(retrieveResultExt);
             throw e;
         }
 
-        // upon completion, retrieve result and set to handler
-        RetrieveResult retrieveResult = metadataStubExt.checkRetrieveStatus(asyncResult.getId());
-
         if (logger.isDebugEnabled()) {
             logger.debug("Received retrieve() result at " + (new Date()).toString());
         }
 
-        // REVIEWME: should we create an empty wrapper?
         if (retrieveResultExt == null) {
             retrieveResultExt = new RetrieveResultExt();
         }
@@ -1092,7 +1093,7 @@ public class PackageRetrieveService extends BasePackageService {
             strBuff.append("Retrieval request of the following");
             if (Utils.isNotEmpty(packageNames)) {
                 strBuff.append(" [").append(defaultPackage ? packageNames.length + 1 : packageNames.length)
-                .append("] packages: ");
+                        .append("] packages: ");
                 for (String packageName : packageNames) {
                     strBuff.append("'").append(packageName).append("' ");
                 }
@@ -1108,7 +1109,7 @@ public class PackageRetrieveService extends BasePackageService {
             int componentCnt = 0;
             if (Utils.isNotEmpty(componentNames)) {
                 strBuff.append("\nRequesting retrieval of the following ").append("[").append(componentNames.length)
-                .append("] components: ");
+                        .append("] components: ");
                 for (String componentName : componentNames) {
                     strBuff.append("\n (").append(++componentCnt).append(") ").append(componentName);
                 }
@@ -1178,13 +1179,13 @@ public class PackageRetrieveService extends BasePackageService {
 
 }
 
-class AsyncResultAdapter implements IFileBasedResultAdapter {
+class RetrieveResultAdapter implements IFileBasedResultAdapter {
 
     private AsyncResult asyncResult;
-    private AsyncResult asyncResultStatus;
+    private RetrieveResult retrieveResult;
     private MetadataStubExt metadataStubExt;
 
-    public AsyncResultAdapter(AsyncResult asyncResult, MetadataStubExt metadataStubExt) {
+    public RetrieveResultAdapter(AsyncResult asyncResult, MetadataStubExt metadataStubExt) {
         this.asyncResult = asyncResult;
         this.metadataStubExt = metadataStubExt;
     }
@@ -1196,24 +1197,24 @@ class AsyncResultAdapter implements IFileBasedResultAdapter {
 
     @Override
     public IFileBasedResultAdapter checkStatus() throws ForceRemoteException {
-        asyncResultStatus = metadataStubExt.checkStatus(new String[] { asyncResult.getId() })[0];
+        retrieveResult = metadataStubExt.checkRetrieveStatus(asyncResult.getId());
         return this;
     }
 
     @Override
     public boolean isDone() {
-        return asyncResultStatus.isDone();
+        return retrieveResult.isDone();
     }
 
     @Override
     public boolean isFailure() {
-        return asyncResultStatus.getState() != AsyncRequestState.Completed;
+        return retrieveResult.getStatus() == RetrieveStatus.Failed;
     }
 
     @Override
     public String logStatus(Logger logger) {
         String status =
-                "Aync state is '" + asyncResultStatus.getState().toString() + "' for operation id '"
+                "Retrieve result state is '" + retrieveResult.getStatus().toString() + "' for operation id '"
                         + asyncResult.getId() + "'";
         logger.debug(status);
         return status;
@@ -1222,10 +1223,9 @@ class AsyncResultAdapter implements IFileBasedResultAdapter {
     @Override
     public String logFailure(Logger logger) {
         StringBuffer strBuff =
-                new StringBuffer().append(asyncResultStatus.getMessage()).append(" (")
-                .append(asyncResultStatus.getStatusCode()).append(")");
-        logger.warn("Deploy or retrieve operation to '" + metadataStubExt.getServerName() + "' failed: "
-                + strBuff.toString());
+                new StringBuffer().append(retrieveResult.getErrorMessage()).append(" (")
+                        .append(retrieveResult.getStatus()).append(")");
+        logger.warn("Retrieve operation from '" + metadataStubExt.getServerName() + "' failed: " + strBuff.toString());
         return strBuff.toString();
     }
 
@@ -1234,9 +1234,8 @@ class AsyncResultAdapter implements IFileBasedResultAdapter {
         StringBuffer errorMessageBuffer = new StringBuffer();
 
         errorMessageBuffer.append("\nOperation : ").append(operationStats.getOperationName()).append("\nMessage : ")
-        .append(asyncResultStatus.getMessage()).append("\nState Detail : ")
-        .append(asyncResultStatus.getState()).append("\nStatus Code : ")
-        .append(asyncResultStatus.getStatusCode());
+                .append(retrieveResult.getMessages().toString()).append("\nState Detail : ")
+                .append(retrieveResult.getStatus()).append("\nStatus Code : ").append(retrieveResult.getStatus());
 
         logger.debug(errorMessageBuffer.toString());
         return errorMessageBuffer.toString();
@@ -1244,6 +1243,14 @@ class AsyncResultAdapter implements IFileBasedResultAdapter {
 
     @Override
     public String retrieveRealTimeStatusUpdatesIfAny() {
+        if (retrieveResult != null && retrieveResult.getStatus() != null) {
+            return Messages.getString("Retrieve.ReportingStatus",
+                new Object[] { retrieveResult.getStatus(), new Date() });
+        }
         return "Polling server '" + metadataStubExt.getServerName() + "' for response ....";
+    }
+
+    public RetrieveResult getRetrieveResult() {
+        return retrieveResult;
     }
 }

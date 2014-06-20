@@ -237,21 +237,21 @@ public abstract class ComponentResource implements IComponent {
         ResourceProperties.setProperty(file, QualifiedNames.QN_FULL_NAME, getFullName());
         ResourceProperties.setProperty(file, QualifiedNames.QN_NAMESPACE_PREFIX, getNamespacePrefix());
         ResourceProperties.setProperty(file, QualifiedNames.QN_PACKAGE_NAME, getPackageName());
-        ResourceProperties.setProperty(file, QualifiedNames.QN_STATE, getState());
+        //        ResourceProperties.setProperty(file, QualifiedNames.QN_STATE, getState());
 
-        ResourceProperties.setProperty(file, QualifiedNames.QN_CREATED_BY_NAME, getCreatedByName());
-        ResourceProperties.setProperty(file, QualifiedNames.QN_CREATED_BY_ID, getCreatedById());
-        ResourceProperties.setLong(file, QualifiedNames.QN_CREATED_DATE, (getCreatedDate() != null ? getCreatedDate()
-                .getTimeInMillis() : 0));
+        //        ResourceProperties.setProperty(file, QualifiedNames.QN_CREATED_BY_NAME, getCreatedByName());
+        //        ResourceProperties.setProperty(file, QualifiedNames.QN_CREATED_BY_ID, getCreatedById());
+        //        ResourceProperties.setLong(file, QualifiedNames.QN_CREATED_DATE, (getCreatedDate() != null ? getCreatedDate()
+        //                .getTimeInMillis() : 0));
 
-        ResourceProperties.setProperty(file, QualifiedNames.QN_LAST_MODIFIED_BY_NAME, getLastModifiedByName());
-        ResourceProperties.setProperty(file, QualifiedNames.QN_LAST_MODIFIED_BY_ID, getLastModifiedById());
-        ResourceProperties.setLong(file, QualifiedNames.QN_LAST_MODIFIED_DATE, (getLastModifiedDate() != null
-                ? getLastModifiedDate().getTimeInMillis() : 0));
+        //        ResourceProperties.setProperty(file, QualifiedNames.QN_LAST_MODIFIED_BY_NAME, getLastModifiedByName());
+        //        ResourceProperties.setProperty(file, QualifiedNames.QN_LAST_MODIFIED_BY_ID, getLastModifiedById());
+        //        ResourceProperties.setLong(file, QualifiedNames.QN_LAST_MODIFIED_DATE, (getLastModifiedDate() != null
+        //                ? getLastModifiedDate().getTimeInMillis() : 0));
 
         ResourceProperties.setLong(file, QualifiedNames.QN_ORIGINAL_BODY_CHECKSUM, getOriginalBodyChecksum());
 
-        ResourceProperties.setLong(file, QualifiedNames.QN_FETCH_DATE, fetchTime);
+        //        ResourceProperties.setLong(file, QualifiedNames.QN_FETCH_DATE, fetchTime);
 
         saveAdditionalFileProperties(file);
     }

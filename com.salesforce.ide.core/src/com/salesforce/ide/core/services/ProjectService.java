@@ -2599,8 +2599,7 @@ public class ProjectService extends BaseService {
         // get remote package list to evaluate
         ProjectPackageList remoteProjectPackageList = retrieveResultExt.getProjectPackageList();
 
-        monitorCheck(monitor);
-        monitorSubTask(monitor, "Generating components from results...");
+        monitorCheckSubTask(monitor, Messages.getString("Components.Generating"));
         remoteProjectPackageList.generateComponents(retrieveResultExt.getZipFile(),
             retrieveResultExt.getFileMetadataHandler(), monitor);
         monitorWork(monitor);
@@ -2612,7 +2611,7 @@ public class ProjectService extends BaseService {
             return false;
         }
 
-        monitorSubTask(monitor, "Evaluating local and remote components...");
+        monitorSubTask(monitor, Messages.getString("Components.Evaluating"));
         // test either project package
         for (ProjectPackage localProjectPackage : localProjectPackageList) {
             monitorCheck(monitor);
