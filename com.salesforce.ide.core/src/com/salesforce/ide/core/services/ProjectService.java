@@ -35,10 +35,10 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -187,7 +187,7 @@ public class ProjectService extends BaseService {
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Existing project '" + projectName
-                    + "' found in workspace - will attempt to apply Force.com");
+                        + "' found in workspace - will attempt to apply Force.com");
             }
             projectDescription = newProject.getDescription();
         }
@@ -221,7 +221,7 @@ public class ProjectService extends BaseService {
     }
 
     public ProjectPackageList getProjectContents(IResource resource, IProgressMonitor monitor) throws CoreException,
-    InterruptedException, FactoryException {
+            InterruptedException, FactoryException {
         if (resource == null) {
             throw new IllegalArgumentException("Resource cannot be null");
         }
@@ -287,7 +287,7 @@ public class ProjectService extends BaseService {
     }
 
     public ProjectPackageList getProjectContents(IProject project, IProgressMonitor monitor) throws CoreException,
-    InterruptedException, FactoryException {
+            InterruptedException, FactoryException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -309,8 +309,8 @@ public class ProjectService extends BaseService {
                 || Utils.isEmpty(((IFolder) sourceResource).members())) {
             if (logger.isInfoEnabled()) {
                 logger.info(Constants.SOURCE_FOLDER_NAME
-                    + " not found, does not exist, or does not contain package folders in project '"
-                    + project.getName() + "'");
+                        + " not found, does not exist, or does not contain package folders in project '"
+                        + project.getName() + "'");
             }
             return projectPackageList;
         }
@@ -331,7 +331,7 @@ public class ProjectService extends BaseService {
             if (componentList.isEmpty()) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Component folder '" + componentFolder.getName()
-                        + "' is does not contain components for enabled object types");
+                            + "' is does not contain components for enabled object types");
                 }
                 continue;
             }
@@ -340,7 +340,7 @@ public class ProjectService extends BaseService {
             projectPackageList.addComponents(componentList, false);
             if (logger.isDebugEnabled()) {
                 logger.debug("Added '" + componentFolder.getName() + "' folder containing [" + componentList.size()
-                    + "] components to project package list");
+                        + "] components to project package list");
             }
         }
 
@@ -431,8 +431,8 @@ public class ProjectService extends BaseService {
                 if (logger.isInfoEnabled()) {
                     StringBuilder stringBuilder = new StringBuilder("File '");
                     stringBuilder.append(resource.getProjectRelativePath().toPortableString())
-                    .append(" found for component type '").append(componentType).append("', component '")
-                    .append(componentName).append("'");
+                            .append(" found for component type '").append(componentType).append("', component '")
+                            .append(componentName).append("'");
                     logger.info(stringBuilder.toString());
                 }
                 return (IFile) resource;
@@ -445,8 +445,8 @@ public class ProjectService extends BaseService {
                         if (logger.isInfoEnabled()) {
                             StringBuilder stringBuilder = new StringBuilder("File '");
                             stringBuilder.append(subFolderResource.getProjectRelativePath().toPortableString())
-                            .append(" found for component type '").append(componentType)
-                            .append("', component '").append(componentName).append("'");
+                                    .append(" found for component type '").append(componentType)
+                                    .append("', component '").append(componentName).append("'");
                             logger.info(stringBuilder.toString());
                         }
                         return (IFile) subFolderResource;
@@ -528,7 +528,7 @@ public class ProjectService extends BaseService {
     }
 
     public IFolder getComponentFolderByComponentType(IProject project, String componentType) throws CoreException,
-    FactoryException {
+            FactoryException {
         Component component = getComponentFactory().getComponentByComponentType(componentType);
         if (component == null) {
             logger.warn("Unable to find component for type '" + componentType + "'");
@@ -579,7 +579,7 @@ public class ProjectService extends BaseService {
     }
 
     public ComponentList getComponentsForComponentType(IProject project, String componentType) throws CoreException,
-    FactoryException {
+            FactoryException {
         IFolder componentFolder = getComponentFolderByComponentType(project, componentType);
         ComponentList componentList = getComponentFactory().getComponentListInstance();
         componentList.addAll(getComponentsForFolder(componentFolder, true));
@@ -587,7 +587,7 @@ public class ProjectService extends BaseService {
     }
 
     public ComponentList getComponentsForFolder(IFolder folder, boolean traverse) throws CoreException,
-    FactoryException {
+            FactoryException {
         return getComponentsForFolder(folder, traverse, true);
     }
 
@@ -625,7 +625,7 @@ public class ProjectService extends BaseService {
                         && !enabledComponentTypesList.contains(registeredComponent.getComponentType())) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping component type '" + registeredComponent.getComponentType()
-                            + "' - type not a selected object type");
+                                + "' - type not a selected object type");
                     }
                     continue;
                 }
@@ -657,15 +657,6 @@ public class ProjectService extends BaseService {
         return componentList;
     }
 
-    /**
-     * @param folder
-     * @param traverse
-     * @param includeBody
-     *            TODO
-     * @return
-     * @throws CoreException
-     * @throws FactoryException
-     */
     public ComponentList getComponentsForComponentFolder(IFolder folder, boolean traverse, boolean includeBody)
             throws CoreException, FactoryException {
         if (folder == null || !folder.exists() || Utils.isEmpty(folder.members())) {
@@ -718,7 +709,7 @@ public class ProjectService extends BaseService {
      * @throws FactoryException
      */
     public ComponentList getComponentsForSubComponentFolder(IFolder folder, boolean traverse) throws CoreException,
-    FactoryException {
+            FactoryException {
         ComponentList componentList = getComponentsForComponentFolder(folder, traverse, true);
         if (componentList == null) {
             componentList = getComponentFactory().getComponentListInstance();
@@ -1137,7 +1128,7 @@ public class ProjectService extends BaseService {
             boolean hasNature = project.hasNature(DefaultNature.NATURE_ID);
             if (logger.isDebugEnabled()) {
                 logger.debug("Project '" + project.getName() + "' is " + (hasNature ? Constants.EMPTY_STRING : "not")
-                    + " " + Constants.PLUGIN_NAME + " managed");
+                        + " " + Constants.PLUGIN_NAME + " managed");
             }
             return hasNature;
         } catch (CoreException e) {
@@ -1159,7 +1150,7 @@ public class ProjectService extends BaseService {
             boolean hasNature = project.hasNature(OnlineNature.NATURE_ID);
             if (logger.isDebugEnabled()) {
                 logger.debug("Project '" + project.getName() + "' is " + (hasNature ? Constants.EMPTY_STRING : "not")
-                    + " " + Constants.PLUGIN_NAME + " managed");
+                        + " " + Constants.PLUGIN_NAME + " managed");
             }
             return hasNature;
         } catch (CoreException e) {
@@ -1175,7 +1166,7 @@ public class ProjectService extends BaseService {
     public boolean isInManagedProject(IResource resource) {
         if (resource == null
                 || (resource.getType() != IResource.PROJECT && resource.getType() != IResource.FOLDER && resource
-                .getType() != IResource.FILE)) {
+                        .getType() != IResource.FILE)) {
             return false;
         }
 
@@ -1235,7 +1226,7 @@ public class ProjectService extends BaseService {
         if (resource.getProjectRelativePath().toPortableString().startsWith(Constants.SOURCE_FOLDER_NAME)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Resource '" + resource.getProjectRelativePath().toPortableString()
-                    + "' is a package resource");
+                        + "' is a package resource");
             }
             return true;
         }
@@ -1250,7 +1241,7 @@ public class ProjectService extends BaseService {
 
         IFile packageManifest =
                 resource.getProject()
-                .getFile(Constants.SOURCE_FOLDER_NAME + "/" + Constants.PACKAGE_MANIFEST_FILE_NAME);
+                        .getFile(Constants.SOURCE_FOLDER_NAME + "/" + Constants.PACKAGE_MANIFEST_FILE_NAME);
         return packageManifest != null && packageManifest.exists();
     }
 
@@ -1277,7 +1268,7 @@ public class ProjectService extends BaseService {
         } catch (CoreException e) {
             String logMessage = Utils.generateCoreExceptionLog(e);
             logger.warn("Unable to get members of folder '" + folder.getProjectRelativePath().toPortableString()
-                + "': " + logMessage);
+                    + "': " + logMessage);
         }
 
         if (Utils.isEmpty(members)) {
@@ -1383,7 +1374,7 @@ public class ProjectService extends BaseService {
         if (resource.getProjectRelativePath().toPortableString().contains(Constants.REFERENCED_PACKAGE_FOLDER_NAME)) {
             if (logger.isInfoEnabled()) {
                 logger.info("Resource '" + resource.getProjectRelativePath().toPortableString()
-                    + "' is a referenced package");
+                        + "' is a referenced package");
             }
             return true;
         }
@@ -1423,7 +1414,7 @@ public class ProjectService extends BaseService {
         if (parentFolder == null || parentFolder.getType() != IResource.FOLDER || !isSourceFolder(parentFolder)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Parent resource of folder name '" + folder.getProjectRelativePath().toPortableString()
-                    + "' is not a src folder - folder deemed not a component folder");
+                        + "' is not a src folder - folder deemed not a component folder");
             }
             return false;
         }
@@ -1463,7 +1454,7 @@ public class ProjectService extends BaseService {
         if (resource.getName().equals(Constants.PACKAGE_MANIFEST_FILE_NAME)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("File '" + resource.getProjectRelativePath().toPortableString()
-                    + "' is a package manifest file");
+                        + "' is a package manifest file");
             }
             return true;
         }
@@ -1484,7 +1475,7 @@ public class ProjectService extends BaseService {
                 .endsWith(Constants.DEFAULT_PACKAGED_NAME + "/" + Constants.PACKAGE_MANIFEST_FILE_NAME)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("File '" + resource.getProjectRelativePath().toPortableString()
-                    + "' is the defauult package manifest file");
+                        + "' is the defauult package manifest file");
             }
             return true;
         }
@@ -1713,8 +1704,8 @@ public class ProjectService extends BaseService {
 
         StringBuilder stringBuilder = new StringBuilder("API version '");
         stringBuilder.append(endpointApiVesion)
-        .append("' is not supported by this Force.com IDE release. Project will be updated to ")
-        .append("latest supported API version: ").append(lastSupportEndpointVersion);
+                .append("' is not supported by this Force.com IDE release. Project will be updated to ")
+                .append("latest supported API version: ").append(lastSupportEndpointVersion);
         logger.warn(stringBuilder.toString());
 
         getMetadataFactory().removeMetadataStubExt(forceProject);
@@ -1870,7 +1861,7 @@ public class ProjectService extends BaseService {
     }
 
     public IFile saveToFile(IFile file, String content, IProgressMonitor monitor) throws InvocationTargetException,
-    CoreException, IOException, InterruptedException {
+            CoreException, IOException, InterruptedException {
 
         if (file == null || file.getType() != IResource.FILE || Utils.isEmpty(content)) {
             logger.warn("Unable to save file - file and/or content is null or empty");
@@ -1988,7 +1979,7 @@ public class ProjectService extends BaseService {
     private void handleMessageForNullComponent(ProjectPackageList projectPackageList, DeployMessage deployMessage) {
         if (logger.isInfoEnabled()) {
             logger.warn("Unable to handle deploy message - could not find component '" + deployMessage.getFileName()
-                + "' in list.  Will attempt to find w/in project");
+                    + "' in list.  Will attempt to find w/in project");
         }
 
         IFile file = getComponentFileForFilePath(projectPackageList.getProject(), deployMessage.getFileName());
@@ -2029,9 +2020,8 @@ public class ProjectService extends BaseService {
                 (componentHasSubType) ? deployMessage.getFullName() + " : " + deployMessage.getProblem()
                         : deployMessage.getProblem();
 
-                MarkerUtils.getInstance().applySaveErrorMarker(resource, deployMessage.getLineNumber(),
-                    deployMessage.getColumnNumber(),
-                    deployMessage.getColumnNumber(), problemStr);
+        MarkerUtils.getInstance().applySaveErrorMarker(resource, deployMessage.getLineNumber(),
+            deployMessage.getColumnNumber(), deployMessage.getColumnNumber(), problemStr);
     }
 
     private void applySaveWarningMarker(IResource resource, DeployMessage deployMessage) {
@@ -2051,9 +2041,8 @@ public class ProjectService extends BaseService {
                 (componentHasSubType) ? deployMessage.getFullName() + " : " + deployMessage.getProblem()
                         : deployMessage.getProblem();
 
-                MarkerUtils.getInstance().applySaveWarningMarker(resource, deployMessage.getLineNumber(),
-                    deployMessage.getColumnNumber(),
-                    deployMessage.getColumnNumber(), problemStr);
+        MarkerUtils.getInstance().applySaveWarningMarker(resource, deployMessage.getLineNumber(),
+            deployMessage.getColumnNumber(), deployMessage.getColumnNumber(), problemStr);
     }
 
     public boolean handleRetrieveResult(RetrieveResultExt retrieveResultHandler, boolean save, IProgressMonitor monitor)
@@ -2094,8 +2083,7 @@ public class ProjectService extends BaseService {
                 logger.debug("Saving returned content to project");
             }
 
-            monitorCheck(monitor);
-            monitorSubTask(monitor, "Generate components from retrieve results...");
+            monitorCheckSubTask(monitor, Messages.getString("Components.Generating"));
 
             // clean then load clean project package list to be saved to project
             projectPackageList.removeAllComponents();
@@ -2106,19 +2094,12 @@ public class ProjectService extends BaseService {
 
             // flag builder to not build and save
             flagSkipBuilder(projectPackageList.getProject());
-            monitorSubTask(monitor, "Save components to project...");
+            monitorCheckSubTask(monitor, Messages.getString("Components.Saving"));
 
-            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    try {
-                        projectPackageList.saveResources(toSaveComponentTypes, monitor);
-                    } catch (Exception e) {
-                        throw new CoreException(new Status(IStatus.ERROR, Constants.FORCE_PLUGIN_PREFIX, 0,
-                            e.getMessage(), e));
-                    }
-                }
-            }, null, IResource.NONE, monitor);
+            WorkspaceJob job =
+                    new ForceProjectRefreshJob.ForceRrojectRefreshResources(projectPackageList, toSaveComponentTypes);
+            job.setRule(projectPackageList.getProject());
+            job.schedule();
 
             monitorWork(monitor);
         } else {
@@ -2215,7 +2196,7 @@ public class ProjectService extends BaseService {
         String compositeComponentFilePath = component.getCompositeMetadataFilePath();
         if (Utils.isEmpty(compositeComponentFilePath)) {
             logger.warn("Unable to handle composite deploy message for '" + component.getMetadataFilePath()
-                + "' - composite filepath is null or empty");
+                    + "' - composite filepath is null or empty");
             return;
         }
 
@@ -2252,8 +2233,8 @@ public class ProjectService extends BaseService {
 
         // clear all existing run test failure markers on deployed resources
         MarkerUtils.getInstance().clearRunTestFailureMarkers(
-            projectPackageList.getComponentResourcesForComponentTypes(new String[] {
-                    Constants.APEX_CLASS, Constants.APEX_TRIGGER }));
+            projectPackageList.getComponentResourcesForComponentTypes(new String[] { Constants.APEX_CLASS,
+                    Constants.APEX_TRIGGER }));
 
         if (runTestResultHandler == null || runTestResultHandler.getNumFailures() == 0) {
             if (logger.isInfoEnabled()) {
@@ -2277,7 +2258,7 @@ public class ProjectService extends BaseService {
                     projectPackageList.getComponentByNameType(runTestFailure.getName(), Constants.APEX_CLASS);
             if (component == null) {
                 logger.warn("Unable to handle run test message - could not find component '" + runTestFailure.getName()
-                    + "' in list.  Will attempt to find w/in project");
+                        + "' in list.  Will attempt to find w/in project");
                 try {
                     IFile file =
                             getComponentFileByNameType(projectPackageList.getProject(), runTestFailure.getName(),
@@ -2288,14 +2269,14 @@ public class ProjectService extends BaseService {
                     } else if (projectPackageList.getProject() != null) {
                         StringBuffer strBuff = new StringBuffer();
                         strBuff.append("Unable to get file resource for '").append(runTestFailure.getName())
-                        .append("' for code coverage warning '").append(runTestFailure.getMessage())
-                        .append("'. Assigning failure to project.");
+                                .append("' for code coverage warning '").append(runTestFailure.getMessage())
+                                .append("'. Assigning failure to project.");
                         logger.warn(strBuff.toString());
                         MarkerUtils.getInstance().applyRunTestFailureMarker(projectPackageList.getProject(),
                             runTestFailure.getMessage());
                     } else {
                         logger.warn("Unable to get file resource for '" + runTestFailure.getName()
-                            + "' for run test failure " + runTestFailure.getMessage());
+                                + "' for run test failure " + runTestFailure.getMessage());
                     }
                 } catch (CoreException e) {
                     String logMessage = Utils.generateCoreExceptionLog(e);
@@ -2348,7 +2329,7 @@ public class ProjectService extends BaseService {
         }
         final Pattern pattern =
                 Pattern.compile(".*line ([0-9]+?), column ([0-9]+?).*", Pattern.DOTALL | Pattern.MULTILINE
-                    | Pattern.CASE_INSENSITIVE);
+                        | Pattern.CASE_INSENSITIVE);
         final Matcher matcher = pattern.matcher(stackTrace);
         matcher.find();
         String line = matcher.group(1);
@@ -2388,8 +2369,8 @@ public class ProjectService extends BaseService {
             if (Utils.isEmpty(codeCoverageWarning.getName())) {
                 StringBuffer strBuff = new StringBuffer();
                 strBuff.append("Unable to get file resource for '").append(codeCoverageWarning.getName())
-                .append("' for code coverage warning '").append(codeCoverageWarning.getMessage())
-                .append("'. Applying warning to project.");
+                        .append("' for code coverage warning '").append(codeCoverageWarning.getMessage())
+                        .append("'. Applying warning to project.");
                 logger.warn(strBuff.toString());
                 applyCodeCoverageWarningMarker(project, codeCoverageWarning.getMessage());
                 continue;
@@ -2407,22 +2388,22 @@ public class ProjectService extends BaseService {
                 try {
                     IFile file =
                             getComponentFileByNameType(project, codeCoverageWarning.getName(), new String[] {
-                                Constants.APEX_CLASS, Constants.APEX_TRIGGER });
+                                    Constants.APEX_CLASS, Constants.APEX_TRIGGER });
                     if (file != null) {
                         applyCodeCoverageWarningMarker(file, codeCoverageWarning.getMessage());
                     } else if (project != null) {
                         StringBuffer strBuff = new StringBuffer("Unable to get file resource for '");
                         strBuff.append(codeCoverageWarning.getName()).append("' for code coverage warning '")
-                        .append(codeCoverageWarning.getMessage()).append("'. Assigning warning to project.");
+                                .append(codeCoverageWarning.getMessage()).append("'. Assigning warning to project.");
                         logger.warn(strBuff.toString());
                         applyCodeCoverageWarningMarker(project, codeCoverageWarning.getMessage());
                     } else {
                         logger.warn("Unable to get file resource for '" + codeCoverageWarning.getName()
-                            + "' for code coverage warning " + codeCoverageWarning.getMessage());
+                                + "' for code coverage warning " + codeCoverageWarning.getMessage());
                     }
                 } catch (Exception e) {
                     logger.error("Unable to get file resource for '" + codeCoverageWarning.getName()
-                        + "' for code coverage warning " + codeCoverageWarning.getMessage(), e);
+                            + "' for code coverage warning " + codeCoverageWarning.getMessage(), e);
                 }
                 continue;
             }
@@ -2442,8 +2423,8 @@ public class ProjectService extends BaseService {
     }
 
     public boolean isResourceInSync(IResource resource, IProgressMonitor monitor) throws CoreException,
-    ForceConnectionException, FactoryException, IOException, ServiceException, ForceRemoteException,
-    InterruptedException {
+            ForceConnectionException, FactoryException, IOException, ServiceException, ForceRemoteException,
+            InterruptedException {
         if (resource == null) {
             throw new IllegalArgumentException("IResource cannot be null");
         }
@@ -2477,8 +2458,8 @@ public class ProjectService extends BaseService {
      * @throws ServiceException
      */
     public boolean isProjectInSync(IProject project, IProgressMonitor monitor) throws CoreException,
-    ForceConnectionException, FactoryException, IOException, ServiceException, ForceRemoteException,
-    InterruptedException {
+            ForceConnectionException, FactoryException, IOException, ServiceException, ForceRemoteException,
+            InterruptedException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -2487,7 +2468,7 @@ public class ProjectService extends BaseService {
 
         if (localProjectPackageList == null) {
             logger.warn("Unable to check in sync for project '" + project.getName()
-                + "' - local local project package list is null");
+                    + "' - local local project package list is null");
             return true;
         }
 
@@ -2507,8 +2488,8 @@ public class ProjectService extends BaseService {
     }
 
     public boolean isFolderInSync(IFolder folder, IProgressMonitor monitor) throws CoreException,
-    ForceConnectionException, FactoryException, IOException, ServiceException, ForceRemoteException,
-    InterruptedException {
+            ForceConnectionException, FactoryException, IOException, ServiceException, ForceRemoteException,
+            InterruptedException {
         if (folder == null || folder.getProject() == null) {
             throw new IllegalArgumentException("Folder and/or folder's project cannot be null");
         }
@@ -2530,7 +2511,7 @@ public class ProjectService extends BaseService {
 
         if (localProjectPackageList == null) {
             logger.warn("Unable to check in sync for folder '" + folder.getName()
-                + "' - local local project package list is null");
+                    + "' - local local project package list is null");
             return true;
         }
 
@@ -2552,7 +2533,7 @@ public class ProjectService extends BaseService {
     }
 
     public boolean isFileInSync(IFile file, IProgressMonitor monitor) throws CoreException, ForceConnectionException,
-    IOException, FactoryException, ServiceException, ForceRemoteException, InterruptedException {
+            IOException, FactoryException, ServiceException, ForceRemoteException, InterruptedException {
         if (file == null || file.getProject() == null) {
             throw new IllegalArgumentException("File and/or file's project cannot be null");
         }
@@ -2567,7 +2548,7 @@ public class ProjectService extends BaseService {
             component = getComponentFactory().getComponentFromFile(file, true);
         } catch (FactoryException e) {
             logger.warn("Unable to check in sync for file '" + file.getName()
-                + "' - unable to create component from file");
+                    + "' - unable to create component from file");
             return true;
         }
 
@@ -2618,7 +2599,7 @@ public class ProjectService extends BaseService {
             // local package does not exist remotely, assume project is out-of-sync
             if (!remoteProjectPackageList.hasPackage(localProjectPackage.getName())) {
                 logger.warn("Project package '" + localProjectPackage.getName()
-                    + "' does not exist remotely - assuming project is out of sync");
+                        + "' does not exist remotely - assuming project is out of sync");
                 return false;
             }
 
@@ -2627,7 +2608,7 @@ public class ProjectService extends BaseService {
                     remoteProjectPackageList.getProjectPackage(localProjectPackage.getName());
             if (!localProjectPackage.hasChanged(remoteProjectPackage)) {
                 logger.warn("Project package '" + localProjectPackage.getName()
-                    + "' does not jive with remote package - assuming project is out of sync");
+                        + "' does not jive with remote package - assuming project is out of sync");
                 return false;
             }
             monitorCheck(monitor);

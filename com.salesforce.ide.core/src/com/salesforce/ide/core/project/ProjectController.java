@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -60,6 +61,7 @@ import com.salesforce.ide.core.remote.MetadataStubExt;
 import com.salesforce.ide.core.remote.metadata.DescribeMetadataResultExt;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.core.remote.metadata.RetrieveResultExt;
+import com.salesforce.ide.core.services.ForceProjectRefreshJob;
 import com.salesforce.ide.core.services.ServiceException;
 import com.salesforce.ide.core.services.ServiceTimeoutException;
 import com.sforce.soap.metadata.FileProperties;
@@ -772,7 +774,7 @@ public class ProjectController extends Controller {
             }
         }
 
-        ProjectPackageList projectPackageList = retrieveResultHandler.getProjectPackageList();
+        final ProjectPackageList projectPackageList = retrieveResultHandler.getProjectPackageList();
         if (Utils.isEmpty(projectPackageList)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("No results to handle - project package list is empty");
@@ -786,7 +788,11 @@ public class ProjectController extends Controller {
             retrieveResultHandler.getFileMetadataHandler());
 
         monitorCheckSubTask(monitor, Messages.getString("Components.Saving"));
-        projectPackageList.saveResources(getProjectModel().getProject(), new SubProgressMonitor(monitor, 1));
+        WorkspaceJob job =
+                new ForceProjectRefreshJob.ForceProjectRefreshProject(projectPackageList,
+                        projectPackageList.getProject());
+        job.setRule(projectPackageList.getProject());
+        job.schedule();
 
         monitorCheck(monitor);
     }
