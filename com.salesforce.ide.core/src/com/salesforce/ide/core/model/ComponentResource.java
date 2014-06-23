@@ -265,6 +265,7 @@ public abstract class ComponentResource implements IComponent {
 
     public IFile saveToFile(IProject project, ProjectPackage projectPackage, IProgressMonitor monitor)
             throws InvocationTargetException, CoreException, IOException, InterruptedException, ForceProjectException {
+        monitor.subTask(getFileName());
         setProjectPackageProperties(projectPackage);
         resource = createFile(project, monitor);
         setFileResource(resource);
@@ -281,7 +282,7 @@ public abstract class ComponentResource implements IComponent {
     }
 
     public IFile saveToFile(boolean saveProperties, IProgressMonitor monitor) throws InvocationTargetException,
-    CoreException, InterruptedException, ForceProjectException {
+            CoreException, InterruptedException, ForceProjectException {
         monitorCheck(monitor);
 
         if (resource == null) {
@@ -322,7 +323,7 @@ public abstract class ComponentResource implements IComponent {
                 }
             } catch (IOException e) {
                 logger.error("Unable to close stream on file '" + resource.getProjectRelativePath().toPortableString()
-                    + "'");
+                        + "'");
             }
 
             // save associated file properties
@@ -373,7 +374,7 @@ public abstract class ComponentResource implements IComponent {
             content = getContentString(resource);
         } catch (Exception e) {
             logger.error("Unable to get content for file '" + resource.getProjectRelativePath().toPortableString()
-                + "'", e);
+                    + "'", e);
         }
 
         long currentFileChecksum = generateChecksum(content);
@@ -545,7 +546,7 @@ public abstract class ComponentResource implements IComponent {
 
         if (!file.exists()) {
             logger.warn("Unable to load file properties - file '" + file.getProjectRelativePath().toPortableString()
-                + "' does not exist");
+                    + "' does not exist");
             return;
         }
 
@@ -603,7 +604,7 @@ public abstract class ComponentResource implements IComponent {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Set body [" + getBodyChecksum() + "] and orginal body [" + getOriginalBodyChecksum()
-                + "] checksums");
+                    + "] checksums");
         }
     }
 
@@ -735,11 +736,12 @@ public abstract class ComponentResource implements IComponent {
     public String toString() {
         final String TAB = ", ";
         StringBuffer retValue = new StringBuffer();
-        retValue.append("filePath=").append(this.metadataFilePath).append(TAB).append("bodyChecksum=").append(
-            this.bodyChecksum).append(TAB).append("originalBodyChecksum=").append(this.originalBodyChecksum)
-            .append(TAB).append("resource=").append(this.resource != null ? this.resource.getName() : null).append(
-                TAB).append("file size=").append(this.file != null ? this.file.length : 0).append(TAB).append(
-                        "fetchDate=").append((new Date(getFetchTime())).toString());
+        retValue.append("filePath=").append(this.metadataFilePath).append(TAB).append("bodyChecksum=")
+                .append(this.bodyChecksum).append(TAB).append("originalBodyChecksum=")
+                .append(this.originalBodyChecksum).append(TAB).append("resource=")
+                .append(this.resource != null ? this.resource.getName() : null).append(TAB).append("file size=")
+                .append(this.file != null ? this.file.length : 0).append(TAB).append("fetchDate=")
+                .append((new Date(getFetchTime())).toString());
 
         return retValue.toString();
     }
@@ -748,8 +750,9 @@ public abstract class ComponentResource implements IComponent {
     public String toStringLite() {
         final String TAB = ", ";
         StringBuffer retValue = new StringBuffer();
-        retValue.append("filePath=").append(this.metadataFilePath).append(TAB).append("bodyChecksum=").append(
-            this.bodyChecksum).append(TAB).append("originalBodyChecksum=").append(this.originalBodyChecksum);
+        retValue.append("filePath=").append(this.metadataFilePath).append(TAB).append("bodyChecksum=")
+                .append(this.bodyChecksum).append(TAB).append("originalBodyChecksum=")
+                .append(this.originalBodyChecksum);
         return retValue.toString();
     }
 }

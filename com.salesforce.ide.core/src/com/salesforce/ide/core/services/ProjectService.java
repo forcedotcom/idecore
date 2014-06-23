@@ -2097,7 +2097,7 @@ public class ProjectService extends BaseService {
             monitorCheckSubTask(monitor, Messages.getString("Components.Saving"));
 
             WorkspaceJob job =
-                    new ForceProjectRefreshJob.ForceRrojectRefreshResources(projectPackageList, toSaveComponentTypes);
+                    new ForceProjectRefreshJob.ForceProjectRefreshResources(projectPackageList, toSaveComponentTypes);
             job.setRule(projectPackageList.getProject());
             job.schedule();
 

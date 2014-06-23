@@ -64,11 +64,11 @@ public abstract class ForceProjectRefreshJob extends WorkspaceJob {
 
     }
 
-    public static class ForceRrojectRefreshResources extends ForceProjectRefreshJob {
+    public static class ForceProjectRefreshResources extends ForceProjectRefreshJob {
 
         private String[] componentNames;
 
-        public ForceRrojectRefreshResources(ProjectPackageList packageList, String[] componentNames) {
+        public ForceProjectRefreshResources(ProjectPackageList packageList, String[] componentNames) {
             super(packageList);
             this.componentNames = componentNames;
         }

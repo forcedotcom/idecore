@@ -56,7 +56,7 @@ import com.sforce.soap.metadata.FileProperties;
 
 /**
  * Encapsulates a project's package management including a package contents.
- *
+ * 
  * @author cwall
  */
 public class ProjectPackageList extends ArrayList<ProjectPackage> {
@@ -871,7 +871,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
     /**
      * Id is not unique identifier to find component.
-     *
+     * 
      * @param id
      * @return
      */
@@ -1165,7 +1165,9 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                         + project.getName());
             }
 
-            int saveCnt = 0;
+            int savedCount = 0;
+            int totalCount = componentList.size();
+            monitor.beginTask(Messages.getString("Components.Generating"), totalCount);
             for (Component component : componentList) {
                 monitorCheck(monitor);
                 // if provided, only save selected object types
@@ -1179,8 +1181,10 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 }
 
                 try {
+                    monitor.setTaskName(Messages.getString("Components.Generating.Updating", new Object[] {
+                            savedCount++, totalCount }));
+                    monitor.worked(1);
                     component.saveToFile(project, projectPackage, new SubProgressMonitor(monitor, 1));
-                    saveCnt++;
                 } catch (OperationCanceledException e) {
                     logger.warn("Save " + component.getFullDisplayName() + " to file cancelled");
                     break;
@@ -1199,7 +1203,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Saved [" + saveCnt + "] components to project " + project.getName());
+                logger.debug("Saved [" + savedCount + "] components to project " + project.getName());
             }
         }
     }
@@ -1210,8 +1214,8 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             String message = ForceExceptionUtils.getStrippedExceptionMessage(coreException.getMessage());
             logger.warn("Unable to save " + component.getFullDisplayName() + " to file - " + message);
             StringBuffer strBuff = new StringBuffer(Messages.getString("Components.SaveResourceError.message"));
-            strBuff.append(":\n\n").append(message).append("\n\n").append(
-                Messages.getString("Components.SaveResourceError.SkipAllReadOnly.message"));
+            strBuff.append(":\n\n").append(message).append("\n\n")
+                    .append(Messages.getString("Components.SaveResourceError.SkipAllReadOnly.message"));
 
             MessageDialogRunnable messageDialogRunnable =
                     new MessageDialogRunnable("Cannot Write to File", null, strBuff.toString(), MessageDialog.WARNING,
@@ -1230,8 +1234,8 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         String message = ForceExceptionUtils.getStrippedExceptionMessage(exception.getMessage());
         logger.warn("Unable to save " + component.getFullDisplayName() + " to file - " + message);
         StringBuffer strBuff = new StringBuffer(Messages.getString("Components.SaveResourceError.message"));
-        strBuff.append(":\n\n").append(message).append("\n\n").append(
-            Messages.getString("Components.SaveResourceError.ContinueWithSaving.message"));
+        strBuff.append(":\n\n").append(message).append("\n\n")
+                .append(Messages.getString("Components.SaveResourceError.ContinueWithSaving.message"));
 
         MessageDialogRunnable messageDialogRunnable =
                 new MessageDialogRunnable("Cannot Write to File", null, strBuff.toString(), MessageDialog.WARNING,
