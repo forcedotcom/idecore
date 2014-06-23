@@ -1247,7 +1247,7 @@ class RetrieveResultAdapter implements IFileBasedResultAdapter {
             return Messages.getString("Retrieve.ReportingStatus",
                 new Object[] { retrieveResult.getStatus(), new Date() });
         }
-        return "Polling server '" + metadataStubExt.getServerName() + "' for response ....";
+        return Messages.getString("PackageService.Polling", new Object[] { metadataStubExt.getServerName() });
     }
 
     public RetrieveResult getRetrieveResult() {

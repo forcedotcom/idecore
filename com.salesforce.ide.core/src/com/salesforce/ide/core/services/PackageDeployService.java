@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.salesforce.ide.api.metadata.MetadataDebuggingInfoHandler;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
+import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.OperationStats;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.ZipUtils;
@@ -150,7 +151,7 @@ public class PackageDeployService extends BasePackageService {
 
     public DeployResultExt deploy(Connection connection, ProjectPackageList projectPackageList,
             DeployOptions deployOptions, LogInfo[] logInfos, boolean adjust, IProgressMonitor monitor)
-                    throws ServiceException, ForceRemoteException, InterruptedException {
+            throws ServiceException, ForceRemoteException, InterruptedException {
         DeployResultExt deployResultExt =
                 deployWork(connection, getZip(projectPackageList), deployOptions, logInfos, adjust, monitor);
 
@@ -197,9 +198,10 @@ public class PackageDeployService extends BasePackageService {
 
         DeployResult deployResult;
         try {
-            IFileBasedResultAdapter result = waitForResult(new DeployResultAdapter(asyncResult, metadataStubExt), metadataStubExt,
-                operationStats, monitor);
-            deployResult = ((DeployResultAdapter)result).getDeployResult();
+            IFileBasedResultAdapter result =
+                    waitForResult(new DeployResultAdapter(asyncResult, metadataStubExt), metadataStubExt,
+                        operationStats, monitor);
+            deployResult = ((DeployResultAdapter) result).getDeployResult();
         } catch (ServiceTimeoutException ex) {
             ex.setMetadataResultExt(deployResultExt);
             throw ex;
@@ -344,7 +346,7 @@ public class PackageDeployService extends BasePackageService {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Got zip file of size [" + (Utils.isNotEmpty(zip) ? zip.length : null)
-                + "] for project package");
+                    + "] for project package");
         }
 
         return zip;
@@ -360,12 +362,12 @@ public class PackageDeployService extends BasePackageService {
             if (deployOptions != null) {
                 StringBuffer strBuff = new StringBuffer("Deploy options:");
                 strBuff.append("\n  Check only = " + deployOptions.isCheckOnly())
-                .append("\n  Single package = " + deployOptions.isSinglePackage())
-                .append("\n  Run all tests = " + deployOptions.isRunAllTests())
-                .append("\n  Update package manifest = " + deployOptions.isAutoUpdatePackage())
-                .append("\n  Save w/ missing files = " + deployOptions.isAllowMissingFiles())
-                .append("\n  Rollback on error = " + deployOptions.isRollbackOnError())
-                .append("\n  Perform retrieve = " + deployOptions.isPerformRetrieve());
+                        .append("\n  Single package = " + deployOptions.isSinglePackage())
+                        .append("\n  Run all tests = " + deployOptions.isRunAllTests())
+                        .append("\n  Update package manifest = " + deployOptions.isAutoUpdatePackage())
+                        .append("\n  Save w/ missing files = " + deployOptions.isAllowMissingFiles())
+                        .append("\n  Rollback on error = " + deployOptions.isRollbackOnError())
+                        .append("\n  Perform retrieve = " + deployOptions.isPerformRetrieve());
                 logger.debug(strBuff.toString());
                 if (Utils.isNotEmpty(deployOptions.getRunTests())) {
                     String[] tests = deployOptions.getRunTests();
@@ -462,8 +464,8 @@ class DeployResultAdapter implements IFileBasedResultAdapter {
     @Override
     public String logFailure(Logger logger) {
         StringBuffer strBuff =
-                new StringBuffer().append(deployResult.getErrorStatusCode()).append(" (").append(deployResult.getErrorMessage())
-                .append(")");
+                new StringBuffer().append(deployResult.getErrorStatusCode()).append(" (")
+                        .append(deployResult.getErrorMessage()).append(")");
         logger.warn("Deploy or retrieve operation to '" + metadataStubExt.getServerName() + "' failed: "
                 + strBuff.toString());
         return strBuff.toString();
@@ -474,13 +476,13 @@ class DeployResultAdapter implements IFileBasedResultAdapter {
         StringBuffer errorMessageBuffer = new StringBuffer();
 
         errorMessageBuffer.append("\n'Operation' [Total count :Error count :Success count]\n").append("'")
-        .append(operationStats.getOperationName()).append("' Components [")
-        .append(deployResult.getNumberComponentsTotal()).append(":")
-        .append(deployResult.getNumberComponentErrors()).append(":")
-        .append(deployResult.getNumberComponentsDeployed()).append("] Tests : [")
-        .append(deployResult.getNumberTestsTotal()).append(":").append(deployResult.getNumberTestErrors())
-        .append(":").append(deployResult.getNumberTestsCompleted()).append("]").append("\nState Detail : ")
-        .append(deployResult.getStateDetail());
+                .append(operationStats.getOperationName()).append("' Components [")
+                .append(deployResult.getNumberComponentsTotal()).append(":")
+                .append(deployResult.getNumberComponentErrors()).append(":")
+                .append(deployResult.getNumberComponentsDeployed()).append("] Tests : [")
+                .append(deployResult.getNumberTestsTotal()).append(":").append(deployResult.getNumberTestErrors())
+                .append(":").append(deployResult.getNumberTestsCompleted()).append("]").append("\nState Detail : ")
+                .append(deployResult.getStateDetail());
 
         logger.debug(errorMessageBuffer.toString());
         return errorMessageBuffer.toString();
@@ -488,14 +490,22 @@ class DeployResultAdapter implements IFileBasedResultAdapter {
 
     @Override
     public String logStatus(Logger logger) {
-        String status = "Deploy state is '" + deployResult.getStatus().toString() + "' for operation id '" + asyncResult.getId() + "'";
+        String status =
+                "Deploy state is '" + deployResult.getStatus().toString() + "' for operation id '"
+                        + asyncResult.getId() + "'";
         logger.debug(status);
         return status;
     }
 
     @Override
     public String retrieveRealTimeStatusUpdatesIfAny() {
-        return "Polling server '" + metadataStubExt.getServerName() + "' for response ....";
+        if (deployResult != null && deployResult.getStatus() != null) {
+            return Messages.getString(
+                "Deploy.ReportingStatus",
+                new Object[] { deployResult.getStatus(), deployResult.getNumberComponentsDeployed(),
+                        deployResult.getNumberComponentsTotal(), new Date() });
+        }
+        return Messages.getString("PackageService.Polling", new Object[] { metadataStubExt.getServerName() });
     }
 
     public DeployResult getDeployResult() {
