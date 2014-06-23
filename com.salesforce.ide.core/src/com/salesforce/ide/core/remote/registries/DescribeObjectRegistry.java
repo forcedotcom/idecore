@@ -49,6 +49,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
     protected List<String> excludedTypes = null;
     protected Comparator<DescribeSObjectResult> describeSObjectResultComparator =
             new Comparator<DescribeSObjectResult>() {
+                @Override
                 public int compare(DescribeSObjectResult o1, DescribeSObjectResult o2) {
                     String s1 = o1.getName();
                     String s2 = o2.getName();
@@ -377,9 +378,8 @@ public class DescribeObjectRegistry extends BaseRegistry {
             }
         }
         if (logger.isDebugEnabled() && Utils.isNotEmpty(filteredCrtableObjectNamesPluralLabel)) {
-            logger
-                    .debug("Cross check CrtableObjectNamesList to see DescribeSObject supported. The list after filtered '"
-                            + filteredCrtableObjectNamesPluralLabel + "'");
+            logger.debug("Cross check CrtableObjectNamesList to see DescribeSObject supported. The list after filtered '"
+                    + filteredCrtableObjectNamesPluralLabel + "'");
         }
         return filteredCrtableObjectNamesPluralLabel;
     }
@@ -485,6 +485,16 @@ public class DescribeObjectRegistry extends BaseRegistry {
             if (cachedDescribeSObject.getLabelPlural().equalsIgnoreCase(objectPluralLabel)) {
                 return cachedDescribeSObject;
             }
+        }
+        return null;
+    }
+
+    // This method will not load the sobjects if it has not already been loaded. Instead it can return null.
+    // Useful in the case of ApexCodeScanner.java where it's better to proceed to load the editor first.
+    public Collection<DescribeSObjectResult> getCachedDescribeSObjectResultsIfAny(IProject project) {
+        Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(project.getName());
+        if (Utils.isNotEmpty(describeCache)) {
+            return describeCache.values();
         }
         return null;
     }
@@ -609,8 +619,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
                 for (DescribeSObjectResult describeSObjectResult : describeSObjectResults) {
                     if (excludedTypes.contains(describeSObjectResult.getName())) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Excluding type '" + describeSObjectResult.getName()
-                                    + "' from describe cache");
+                            logger.debug("Excluding type '" + describeSObjectResult.getName() + "' from describe cache");
                         }
                         continue;
                     }
@@ -682,10 +691,10 @@ public class DescribeObjectRegistry extends BaseRegistry {
         strBuffer.append("Cached describe objects [" + describeSObjectResults.size() + "] are:");
         int describeCnt = 0;
         for (DescribeSObjectResult describeSObjectResult : describeSObjectResults) {
-            strBuffer.append("\n (").append(++describeCnt).append(") ").append(describeSObjectResult.getName()).append(
-                ", custom object = ").append(describeSObjectResult.isCustom()).append(", triggerable = ").append(
-                describeSObjectResult.isTriggerable()).append(", layoutable = ").append(
-                describeSObjectResult.isLayoutable()).append(", workflowable = ").append("n/a");
+            strBuffer.append("\n (").append(++describeCnt).append(") ").append(describeSObjectResult.getName())
+                    .append(", custom object = ").append(describeSObjectResult.isCustom()).append(", triggerable = ")
+                    .append(describeSObjectResult.isTriggerable()).append(", layoutable = ")
+                    .append(describeSObjectResult.isLayoutable()).append(", workflowable = ").append("n/a");
         }
         logger.debug(strBuffer.toString());
     }

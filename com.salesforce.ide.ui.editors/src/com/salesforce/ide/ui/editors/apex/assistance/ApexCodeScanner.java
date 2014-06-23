@@ -109,7 +109,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         setRules(rules.toArray(new IRule[rules.size()]));
     }
 
-    private WordRule generateKeywordRule(IProject project) {
+    WordRule generateKeywordRule(IProject project) {
         IToken keyword = new Token(getBoldTextAttribute(apexCodeColorProvider.getColor(ApexCodeColorProvider.KEYWORD)));
         IToken other = new Token(new TextAttribute(apexCodeColorProvider.getColor(ApexCodeColorProvider.DEFAULT)));
 
@@ -131,7 +131,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         if (project != null) {
             try {
                 Collection<DescribeSObjectResult> describeSObjectResults =
-                        getDescribeObjectRegistry().getCachedDescribeSObjects(project);
+                        getDescribeObjectRegistry().getCachedDescribeSObjectResultsIfAny(project);
                 if (Utils.isNotEmpty(describeSObjectResults)) {
                     IToken sobjects =
                             new Token(new TextAttribute(
