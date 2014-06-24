@@ -23,12 +23,12 @@ import com.salesforce.ide.core.internal.utils.Utils;
 import com.sforce.soap.metadata.LogInfo;
 
 /**
- *
- * LoggingService serves the bridge setting logging related info to preference.
- * Methods around LoggingInfo return/take LoggingInfo as param. In contract to service that uses LogInfo.
- *
+ * 
+ * LoggingService serves the bridge setting logging related info to preference. Methods around LoggingInfo return/take
+ * LoggingInfo as param. In contract to service that uses LogInfo.
+ * 
  * REVIEWME: Seems like most of this is project-related, best suited for ProjectService
- *
+ * 
  * @author fchang
  */
 public class LoggingService extends BaseService {
@@ -38,16 +38,15 @@ public class LoggingService extends BaseService {
     }
 
     /**
-	 *
-	 * Retrieve default selected log info preference for first category: used when
-	 * logging composite first-time loaded. The default category should be
-	 * selected is 'Apex Code' and default level is 'Debug'
-	 *
-	 * @param project
-	 * @param supportedFeatureEnum
-	 * @return
-	 */
-	public LoggingInfo getDefaultSelectedLoggingInfo(IProject project, SupportedFeatureEnum supportedFeatureEnum) {
+     * 
+     * Retrieve default selected log info preference for first category: used when logging composite first-time loaded.
+     * The default category should be selected is 'Apex Code' and default level is 'Debug'
+     * 
+     * @param project
+     * @param supportedFeatureEnum
+     * @return
+     */
+    public LoggingInfo getDefaultSelectedLoggingInfo(IProject project, SupportedFeatureEnum supportedFeatureEnum) {
         LogCategoryExt defaultSelectedCategory = LogCategoryExt.Apex_code;
         LogCategoryLevelExt level = getLogCategoryLevelExt(project, defaultSelectedCategory, supportedFeatureEnum);
         return new LoggingInfo(defaultSelectedCategory, level);
@@ -55,6 +54,7 @@ public class LoggingService extends BaseService {
 
     /**
      * Retrieve all local log info preferences: used to send aggregated user's log selections to server.
+     * 
      * @param project
      * @param supportedFeatureEnum
      * @return
@@ -83,6 +83,7 @@ public class LoggingService extends BaseService {
 
     /**
      * Apply all log info to preference: used by restore logging setting in Project property when user press cancel.
+     * 
      * @param project
      * @param cachedLoggingSetting
      * @param supportedFeatureEnum
@@ -95,7 +96,9 @@ public class LoggingService extends BaseService {
     }
 
     /**
-     * @param supportedFeatureEnum - pre-pended as namespace to set proper preference for either run test or exec anonymous logging settings.
+     * @param supportedFeatureEnum
+     *            - pre-pended as namespace to set proper preference for either run test or exec anonymous logging
+     *            settings.
      */
     private void setLogCategory(IProject project, LogCategoryExt categoryExt, LogCategoryLevelExt levelyExt,
             SupportedFeatureEnum supportedFeatureEnum) {
@@ -112,16 +115,19 @@ public class LoggingService extends BaseService {
 
     /**
      * Return default log level for each category if preference hasn't set.
-     * @param supportedFeatureEnum - pre-pended as namespace to retrieve proper preference for either run test or exec anonymous logging settings.
+     * 
+     * @param supportedFeatureEnum
+     *            - pre-pended as namespace to retrieve proper preference for either run test or exec anonymous logging
+     *            settings.
      */
     private LogCategoryLevelExt getLogCategoryLevelExt(IProject project, LogCategoryExt logCategory,
             SupportedFeatureEnum supportedFeatureEnum) {
         LogCategoryLevelExt level = null;
         String logCategoryLevel =
                 getProjectService().getString(project, supportedFeatureEnum + logCategory.getInternalValue(), null);
-        // return default log level for each category if preference hasn't set.
         if (Utils.isEmpty(logCategoryLevel)) {
-            level = LogCategoryExt.Apex_code == logCategory ? LogCategoryLevelExt.Debug : LogCategoryLevelExt.Info;
+            // return default log level for each category if preference hasn't set.
+            level = logCategory.getDefaultLogCategoryLevel();
         } else {
             level = LogCategoryLevelExt.fromExternalValue(logCategoryLevel);
         }
@@ -130,7 +136,7 @@ public class LoggingService extends BaseService {
 
     /**
      * fchang: remove this transforming method once remove apex api completely!
-     *
+     * 
      * @param supportedFeatureEnum
      * @return
      */

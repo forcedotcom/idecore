@@ -15,18 +15,17 @@ import java.util.Map;
 import com.sforce.soap.metadata.LogCategoryLevel;
 
 /**
- *
+ * 
  * extend LogCategoryLevel to represent None value externally.
- *
+ * 
  * @author fchang
  */
-public class LogCategoryLevelExt {
-
+public final class LogCategoryLevelExt {
     private final String externalVal;
     private final LogCategoryLevel logCategoryLevel;
     private static Map<String, LogCategoryLevelExt> map = new java.util.HashMap<String, LogCategoryLevelExt>();
 
-    protected LogCategoryLevelExt(LogCategoryLevel logCategoryLevel, java.lang.String externalVal) {
+    protected LogCategoryLevelExt(LogCategoryLevel logCategoryLevel, String externalVal) {
         this.logCategoryLevel = logCategoryLevel;
         this.externalVal = externalVal;
         map.put(externalVal, this);
@@ -60,5 +59,38 @@ public class LogCategoryLevelExt {
         return logCategoryExt;
     }
 
+    // Auto-generated using Eclipse. Please don't modify by hand unless there is a good reason and please regenerate if you add/remove fields
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((externalVal == null) ? 0 : externalVal.hashCode());
+        result = prime * result + ((logCategoryLevel == null) ? 0 : logCategoryLevel.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        LogCategoryLevelExt other = (LogCategoryLevelExt) obj;
+        if (externalVal == null) {
+            if (other.externalVal != null)
+                return false;
+        } else if (!externalVal.equals(other.externalVal))
+            return false;
+        if (logCategoryLevel != other.logCategoryLevel)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "LogCategoryLevelExt [externalVal=" + externalVal + ", logCategoryLevel=" + logCategoryLevel + "]";
+    }
 }

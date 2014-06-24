@@ -18,38 +18,38 @@ import com.salesforce.ide.api.metadata.types.LogCategoryLevelExt;
 import com.sforce.soap.metadata.LogInfo;
 
 /**
- *
- * This class should be stateless. The logging state should be stored in project preference thru LoggingService.
- * This class provides utilities to coordinate UI display and preference storage; as well as enforce type safety.
- * Since this class is used to support UI operation; therefore, it only supports ONE LogInfo instead of ARRAY of LogInfo.
- *
+ * 
+ * This class should be stateless. The logging state should be stored in project preference thru LoggingService. This
+ * class provides utilities to coordinate UI display and preference storage; as well as enforce type safety. Since this
+ * class is used to support UI operation; therefore, it only supports ONE LogInfo instead of ARRAY of LogInfo.
+ * 
  * @author fchang
  */
 public class LoggingInfo {
     /** Support/control drop-down combo content */
-    private static final LogCategoryExt[] categoryExts =
-            { LogCategoryExt.Db, LogCategoryExt.Workflow, LogCategoryExt.Validation, LogCategoryExt.Callout,
-                    LogCategoryExt.Apex_code, LogCategoryExt.Apex_profiling };
+    private static final LogCategoryExt[] categoryExts = { LogCategoryExt.Db, LogCategoryExt.Workflow,
+            LogCategoryExt.Validation, LogCategoryExt.Callout, LogCategoryExt.Apex_code, LogCategoryExt.Apex_profiling,
+            LogCategoryExt.Visualforce, LogCategoryExt.System };
 
-    private static final Map<LogCategoryExt, LogCategoryLevelExt[]> loggingMap = new HashMap<LogCategoryExt, LogCategoryLevelExt[]>();
-    static {
-        loggingMap.put(LogCategoryExt.Db, new LogCategoryLevelExt[] { LogCategoryLevelExt.None,
-                LogCategoryLevelExt.Info });
-        loggingMap.put(LogCategoryExt.Workflow, new LogCategoryLevelExt[] { LogCategoryLevelExt.None,
-                LogCategoryLevelExt.Info, LogCategoryLevelExt.Finest });
-        loggingMap.put(LogCategoryExt.Validation, new LogCategoryLevelExt[] { LogCategoryLevelExt.None,
-                LogCategoryLevelExt.Info });
-        loggingMap.put(LogCategoryExt.Callout, new LogCategoryLevelExt[] { LogCategoryLevelExt.None,
-                LogCategoryLevelExt.Info });
-        loggingMap.put(LogCategoryExt.Apex_code, new LogCategoryLevelExt[] { LogCategoryLevelExt.None,
-                LogCategoryLevelExt.Error, LogCategoryLevelExt.Warn, LogCategoryLevelExt.Info,
-                LogCategoryLevelExt.Debug, LogCategoryLevelExt.Fine, LogCategoryLevelExt.Finer,
-                LogCategoryLevelExt.Finest });
-        loggingMap.put(LogCategoryExt.Apex_profiling, new LogCategoryLevelExt[] { LogCategoryLevelExt.None,
-                LogCategoryLevelExt.Info });
+    private static final Map<LogCategoryExt, LogCategoryLevelExt[]> loggingMap =
+            new HashMap<LogCategoryExt, LogCategoryLevelExt[]>();
+
+    static LogCategoryLevelExt[] generateFreshLevels() {
+        return new LogCategoryLevelExt[] { LogCategoryLevelExt.None, LogCategoryLevelExt.Error,
+                LogCategoryLevelExt.Warn, LogCategoryLevelExt.Info, LogCategoryLevelExt.Debug,
+                LogCategoryLevelExt.Fine, LogCategoryLevelExt.Finer, LogCategoryLevelExt.Finest };
     }
+
+    static {
+        for (LogCategoryExt category : categoryExts) {
+            loggingMap.put(category, generateFreshLevels());
+        }
+    }
+
     // Enum for features that are enabled for new logging framework. This is used as namespace for storing logging setting in project pref.
-    public enum SupportedFeatureEnum {RunTest, ExecuteAnonymous}
+    public enum SupportedFeatureEnum {
+        RunTest, ExecuteAnonymous
+    }
 
     public static LogCategoryExt[] getLogCategories() {
         return categoryExts;
@@ -57,6 +57,7 @@ public class LoggingInfo {
 
     /**
      * State of supporting log category level range for scale swt.
+     * 
      * @param categoryExt
      * @return
      */
@@ -66,6 +67,7 @@ public class LoggingInfo {
 
     /**
      * Used by UI to convert scale selection index and combo selection to corresponding LoggingInfo value.
+     * 
      * @param scale
      * @param comboSelection
      * @return
@@ -78,6 +80,7 @@ public class LoggingInfo {
 
     /**
      * Used by UI to convert selection index to corresponding LogCategoryLevel value.
+     * 
      * @param categoryExt
      * @param selectionIndex
      * @return
@@ -88,6 +91,7 @@ public class LoggingInfo {
 
     /**
      * Utility to convert from Log category level text to corresponding scale index.
+     * 
      * @param categoryExt
      * @param logCategoryLevel
      * @return
@@ -95,19 +99,22 @@ public class LoggingInfo {
     private static int getLevelScaleSelectionFrom(LogCategoryExt categoryExt, LogCategoryLevelExt levelExt) {
         LogCategoryLevelExt[] levelExts = loggingMap.get(categoryExt);
         for (int i = 0; i < levelExts.length; i++) {
-            if (levelExt.equals(levelExts[i])) return i;
+            if (levelExt.equals(levelExts[i]))
+                return i;
         }
         return 0;
     }
 
     /**
      * Utility to convert from Log category level text to corresponding scale index.
+     * 
      * @param logCategoryLevel
      * @return
      */
     private static int getCategoryComboSelectionFrom(LogCategoryExt logCategoryExt) {
         for (int i = 0; i < categoryExts.length; i++) {
-            if(logCategoryExt.equals(categoryExts[i])) return i;
+            if (logCategoryExt.equals(categoryExts[i]))
+                return i;
         }
         return 0;
     }
@@ -132,7 +139,7 @@ public class LoggingInfo {
      * return null for None log level - exclude this category & level from debuggingHeader.
      */
     public LogInfo getLogInfo() {
-        if (this.levelExt != LogCategoryLevelExt.None ) {
+        if (this.levelExt != LogCategoryLevelExt.None) {
             LogInfo logInfo = new LogInfo();
             logInfo.setCategory(categoryExt.getLogCategory());
             logInfo.setLevel(levelExt.getLogCategoryLevel());
@@ -143,6 +150,7 @@ public class LoggingInfo {
 
     /**
      * Used to re-display the logging setting back to UI from LogInfo
+     * 
      * @return
      */
     public int getLevelScaleSelection() {
@@ -151,6 +159,7 @@ public class LoggingInfo {
 
     /**
      * Used to re-display the logging setting back to UI from LogInfo.
+     * 
      * @return
      */
     public String getLevelLabelText() {
@@ -159,6 +168,7 @@ public class LoggingInfo {
 
     /**
      * Used to re-display the logging setting back to UI from LogInfo.
+     * 
      * @return
      */
     public int getCategorySelection() {

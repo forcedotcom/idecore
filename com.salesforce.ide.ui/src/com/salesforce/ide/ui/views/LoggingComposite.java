@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Scale;
 
 import com.salesforce.ide.api.metadata.types.LogCategoryExt;
 import com.salesforce.ide.core.internal.utils.LoggingInfo;
-import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.LoggingInfo.SupportedFeatureEnum;
+import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.services.LoggingService;
 
 /**
@@ -36,8 +36,6 @@ import com.salesforce.ide.core.services.LoggingService;
  * @author fchang
  */
 public class LoggingComposite extends Composite {
-//    private static final Logger logger = Logger.getLogger(LoggingComposite.class);
-
     private static final String INIT_PLUS_PREFIX = "+               ";
     private static final String PLUS_PREFIX = "+   ";
 
@@ -99,6 +97,7 @@ public class LoggingComposite extends Composite {
         logCategoryCombo.setEnabled(false);
         populateLogCategory();
         logCategoryCombo.addSelectionListener(new org.eclipse.swt.events.SelectionListener() {
+            @Override
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
                 String logCategoryText = ((Combo) e.widget).getText();
                 handleLogCategoryChange(LogCategoryExt.fromExternalValue(logCategoryText));
@@ -113,6 +112,7 @@ public class LoggingComposite extends Composite {
                 setLoggingInfo(loggingInfo);
             }
 
+            @Override
             public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {}
         });
 
@@ -129,6 +129,7 @@ public class LoggingComposite extends Composite {
         logLevelScale.setPageIncrement(1);
         logLevelScale.setLayoutData(new GridData(SWT.BEGINNING));
         logLevelScale.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 LoggingInfo loggingInfo =
                         LoggingInfo.getLoggingInfo(logLevelScale.getSelection(), logCategoryCombo.getText());
@@ -148,6 +149,7 @@ public class LoggingComposite extends Composite {
     private void populateLogCategory() {
         LogCategoryExt[] categories = LoggingInfo.getLogCategories();
         Arrays.sort(categories, new Comparator<LogCategoryExt>() {
+            @Override
             public int compare(LogCategoryExt o1, LogCategoryExt o2) {
                 return o1.getExternalValue().compareTo(o2.getExternalValue());
             }
