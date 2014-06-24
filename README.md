@@ -17,4 +17,4 @@ License
 Getting started
 ---------------
 
-Refer to the [wiki page](https://git.soma.salesforce.com/nchen/ide.core/wiki/Getting-started) for this repository.
+Refer to the [wiki page](wiki/Getting-started) for this repository.
