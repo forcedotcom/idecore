@@ -56,7 +56,7 @@ public class ToolingStubExt {
         }
 
         updateSessionId(connection.getSessionId());
-        toolingConnection.setCallOptions(connection.getClientId());
+        toolingConnection.setCallOptions(connection.getApplication());
 
     }
 

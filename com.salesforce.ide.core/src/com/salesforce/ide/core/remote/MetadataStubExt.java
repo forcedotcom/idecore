@@ -116,10 +116,10 @@ public class MetadataStubExt {
         }
 
         updateSessionId(connection.getSessionId());
-        metadataConnection.setCallOptions(connection.getClientId());
+        metadataConnection.setCallOptions(connection.getApplication());
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Set client id on metadata stub '" + connection.getClientId() + "'");
+            logger.debug("Set client id on metadata stub '" + connection.getApplication() + "'");
         }
     }
 
@@ -316,7 +316,8 @@ public class MetadataStubExt {
     public Set<String> getSupportedMetadataComponents2() throws ForceRemoteException {
     	List<DescribeMetadataObject> metadataObjects = Lists.newArrayList(describeMetadata().getMetadataObjects());
 		Function<DescribeMetadataObject, String> metadataObjectToName = new Function<DescribeMetadataObject, String>() {
-			public String apply(DescribeMetadataObject metadataObject) { return metadataObject.getXmlName(); }
+			@Override
+            public String apply(DescribeMetadataObject metadataObject) { return metadataObject.getXmlName(); }
 		};
     	HashSet<String> supportedNames = new HashSet<String>();
 		supportedNames.addAll(Lists.transform(metadataObjects, metadataObjectToName));
