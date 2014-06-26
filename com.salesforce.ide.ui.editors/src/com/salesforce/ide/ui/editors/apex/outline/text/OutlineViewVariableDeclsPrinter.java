@@ -13,12 +13,12 @@ package com.salesforce.ide.ui.editors.apex.outline.text;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.VariableDecls;
+import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
 import apex.jorje.services.printers.PrinterFactory;
 
 /**
- * Print VariableDecls in the following form: 
- * nameOfVariable : typeOfVariable
+ * Print VariableDecls in the following form: nameOfVariable : typeOfVariable
  * 
  * @author nchen
  */
@@ -32,9 +32,9 @@ final class OutlineViewVariableDeclsPrinter implements Printer<VariableDecls> {
     }
 
     @Override
-    public String print(VariableDecls x) {
+    public String print(VariableDecls x, PrintContext context) {
         // This is safe because we ensure that we only have one decl per element
         // @see com.salesforce.ide.ui.editors.apex.outline.BlockMemberFilter
-        return identifierPrinter.print(x.decls.get(0).name) + " : " + typeRefPrinter.print(x.type);
+        return identifierPrinter.print(x.decls.get(0).name, context) + " : " + typeRefPrinter.print(x.type, context);
     }
 }

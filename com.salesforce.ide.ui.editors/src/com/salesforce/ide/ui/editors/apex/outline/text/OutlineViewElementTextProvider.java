@@ -23,7 +23,9 @@ import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 import apex.jorje.data.ast.EnumDecl;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.InterfaceDecl;
+import apex.jorje.services.messageproviders.impl.MessageProviderImpl;
 import apex.jorje.services.printers.ListPrinter;
+import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
 import apex.jorje.services.printers.StandardPrinterFactory;
 
@@ -41,7 +43,8 @@ import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
  * 
  */
 public final class OutlineViewElementTextProvider implements IOutlineViewElementHandler<String> {
-    private static StandardPrinterFactory printerFactory = new StandardPrinterFactory(0, "");
+    private static StandardPrinterFactory printerFactory = new StandardPrinterFactory(MessageProviderImpl.INSTANCE, 0,
+            "");
     private static Printer<Identifier> identifierPrinter = printerFactory.identifierPrinter();
     private static OutlineViewVariableDeclsPrinter variableDeclsPrinter = new OutlineViewVariableDeclsPrinter(
             printerFactory);
@@ -52,37 +55,43 @@ public final class OutlineViewElementTextProvider implements IOutlineViewElement
     private static OutlineViewPropertyClassMemberPrinter propertyMemberPrinter =
             new OutlineViewPropertyClassMemberPrinter(printerFactory);
 
+    private PrintContext defaultPrintContext() {
+        return new PrintContext();
+    }
+
     @Override
     public String handle(TriggerDeclUnit element) {
-        return identifierPrinter.print(element.name);
+        return identifierPrinter.print(element.name, defaultPrintContext());
     }
 
+    @Override
     public String handle(ClassDecl element) {
-        return identifierPrinter.print(element.name);
+        return identifierPrinter.print(element.name, defaultPrintContext());
     }
 
+    @Override
     public String handle(InterfaceDecl element) {
-        return identifierPrinter.print(element.name);
+        return identifierPrinter.print(element.name, defaultPrintContext());
     }
 
     @Override
     public String handle(EnumDecl element) {
-        return identifierPrinter.print(element.name);
+        return identifierPrinter.print(element.name, defaultPrintContext());
     }
 
     @Override
     public String handle(InnerClassMember element) {
-        return identifierPrinter.print(element.body.name);
+        return identifierPrinter.print(element.body.name, defaultPrintContext());
     }
 
     @Override
     public String handle(InnerInterfaceMember element) {
-        return identifierPrinter.print(element.body.name);
+        return identifierPrinter.print(element.body.name, defaultPrintContext());
     }
 
     @Override
     public String handle(InnerEnumMember element) {
-        return identifierPrinter.print(element.body.name);
+        return identifierPrinter.print(element.body.name, defaultPrintContext());
     }
 
     @Override
@@ -97,21 +106,21 @@ public final class OutlineViewElementTextProvider implements IOutlineViewElement
 
     @Override
     public String handle(FieldMember element) {
-        return variableDeclsPrinter.print(element.variableDecls);
+        return variableDeclsPrinter.print(element.variableDecls, defaultPrintContext());
     }
 
     @Override
     public String handle(MethodMember element) {
-        return methodMemberPrinter.print(element);
+        return methodMemberPrinter.print(element, defaultPrintContext());
     }
 
     @Override
     public String handle(PropertyMember element) {
-        return propertyMemberPrinter.print(element);
+        return propertyMemberPrinter.print(element, defaultPrintContext());
     }
 
     @Override
     public String handle(Identifier element) {
-        return identifierPrinter.print(element);
+        return identifierPrinter.print(element, defaultPrintContext());
     }
 }

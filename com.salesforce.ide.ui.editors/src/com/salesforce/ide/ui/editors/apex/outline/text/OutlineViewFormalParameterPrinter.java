@@ -12,6 +12,7 @@ package com.salesforce.ide.ui.editors.apex.outline.text;
 
 import apex.jorje.data.ast.FormalParameter;
 import apex.jorje.data.ast.TypeRef;
+import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
 import apex.jorje.services.printers.PrinterFactory;
 
@@ -30,9 +31,9 @@ final class OutlineViewFormalParameterPrinter implements Printer<FormalParameter
     }
 
     @Override
-    public String print(FormalParameter x) {
+    public String print(FormalParameter x, PrintContext context) {
         try {
-            return typeRefPrinter.print(x.type);
+            return typeRefPrinter.print(x.type, context);
         } catch (NullPointerException npe) {
             return "";
         }

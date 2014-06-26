@@ -13,6 +13,7 @@ package com.salesforce.ide.ui.editors.apex.outline.text;
 import apex.jorje.data.ast.BlockMember.PropertyMember;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
+import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
 import apex.jorje.services.printers.StandardPrinterFactory;
 
@@ -27,8 +28,9 @@ final class OutlineViewPropertyClassMemberPrinter implements Printer<PropertyMem
     }
 
     @Override
-    public String print(PropertyMember x) {
-        return identifierPrinter.print(x.propertyDecl.name) + " : " + typeRefPrinter.print(x.propertyDecl.type);
+    public String print(PropertyMember x, PrintContext context) {
+        return identifierPrinter.print(x.propertyDecl.name, context) + " : "
+                + typeRefPrinter.print(x.propertyDecl.type, context);
     }
 
 }

@@ -34,6 +34,7 @@ import apex.jorje.data.errors.SemanticError.UndeclaredVariable;
 import apex.jorje.data.errors.UserError;
 import apex.jorje.data.errors.UserError.Semantic;
 import apex.jorje.services.errors.ErrorReporter;
+import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.PrinterUtil;
 
 import com.salesforce.ide.core.project.MarkerUtils;
@@ -146,8 +147,8 @@ public class ApexErrorMarkerHandler {
                             public Map<String, Object> _case(RealLoc loc) {
                                 try {
                                     Map<String, Object> config = new HashMap<String, Object>();
-                                    MarkerUtilities.setMessage(config,
-                                        PrinterUtil.INSTANCE.print(apexException.getError()));
+                                    MarkerUtilities.setMessage(config, PrinterUtil.INSTANCE.getFactory()
+                                            .userErrorPrinter().print(apexException.getError(), new PrintContext()));
 
                                     MarkerUtilities.setCharStart(config,
                                         ParserLocationTranslator.getStartOffset(loc, fDocument));
@@ -179,7 +180,10 @@ public class ApexErrorMarkerHandler {
 
                         MarkerUtilities.setLineNumber(config, 1);
                         // Need to implement the first, currently get a NotImplementedYet exception
-                        MarkerUtilities.setMessage(config, PrinterUtil.INSTANCE.print(apexException.getError()));
+                        MarkerUtilities.setMessage(
+                            config,
+                            PrinterUtil.INSTANCE.getFactory().userErrorPrinter()
+                                    .print(apexException.getError(), new PrintContext()));
 
                         // Not sure why there aren't any utilities methods for these fields in MarkerUtilities
                         // Set them directly instead.

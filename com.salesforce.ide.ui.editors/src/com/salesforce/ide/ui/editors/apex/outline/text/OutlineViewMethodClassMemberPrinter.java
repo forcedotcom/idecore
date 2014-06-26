@@ -17,6 +17,7 @@ import apex.jorje.data.ast.BlockMember.MethodMember;
 import apex.jorje.data.ast.FormalParameter;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
+import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
 import apex.jorje.services.printers.PrinterFactory;
 
@@ -39,11 +40,11 @@ final class OutlineViewMethodClassMemberPrinter implements Printer<MethodMember>
     }
 
     @Override
-    public String print(MethodMember x) {
+    public String print(MethodMember x, PrintContext context) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(identifierPrinter.print(x.methodDecl.name) + "("
-                + formalParametersPrinter.print(x.methodDecl.formalParameters.values) + ")");
+        sb.append(identifierPrinter.print(x.methodDecl.name, context) + "("
+                + formalParametersPrinter.print(x.methodDecl.formalParameters.values, context) + ")");
 
         if (x.methodDecl.type instanceof Optional.Some) { // If we have a value
             sb.append(" : " + printTypeRef(x.methodDecl.type));
@@ -57,7 +58,7 @@ final class OutlineViewMethodClassMemberPrinter implements Printer<MethodMember>
 
                 @Override
                 public String _case(Some<TypeRef> x) {
-                    return typeRefPrinter.print(x.value);
+                    return typeRefPrinter.print(x.value, new PrintContext());
                 }
 
                 @Override
