@@ -917,17 +917,13 @@ public class Utils {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (IOException e) {
-					// do nothing
-				}
+                } catch (IOException e) {}
 
 				try {
 					if (contents != null) {
 						contents.close();
 					}
-				} catch (IOException e) {
-					// do nothing
-				}
+                } catch (IOException e) {}
 			}
 
 			if (logger.isDebugEnabled()) {
@@ -937,12 +933,6 @@ public class Utils {
 			}
 
 			contentStr = strBuff.toString();
-			try {
-				contentStr = new String(strBuff.toString().getBytes(),
-						Constants.UTF_8);
-			} catch (UnsupportedEncodingException e) {
-				logger.error("Unable to set body", e);
-			}
 		}
 
 		return contentStr;
