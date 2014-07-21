@@ -1,6 +1,4 @@
-[![githalytics.com
-alpha](https://cruel-carlota.pagodabox.com/011426863636559c9724ff602508e0a3
-"githalytics.com")](http://githalytics.com/forcedotcom/idecore)
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/011426863636559c9724ff602508e0a3 "githalytics.com")](http://githalytics.com/forcedotcom/idecore)
 
 Force.com IDE Core
 ========
