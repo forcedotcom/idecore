@@ -33,9 +33,12 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
     private static ThreadLocal<String> LOCAL = new ThreadLocal<String>();
     private final ThreadLocal<Boolean> isDebugLog = new ThreadLocal<Boolean>();
     private final ThreadLocal<Boolean> isDebugLogFound = new ThreadLocal<Boolean>();
-    private final ThreadLocal<String> log = new ThreadLocal<String>();
-
-    public MetadataDebuggingInfoHandler() {}
+    private final ThreadLocal<StringBuilder> log = new ThreadLocal<StringBuilder>();
+    private final ThreadLocal<CharacterLogger> characterLogger = new ThreadLocal<CharacterLogger>();
+    
+    public MetadataDebuggingInfoHandler() {
+    	log.set(new StringBuilder());
+    }
 
     /**
      * Gets the debug log from the last call made on this thread.
@@ -60,8 +63,7 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
     public void startDocument() throws SAXException {
         //Ensure variables are initialized
         isDebugLog.set(false);
-        isDebugLogFound.set(false);
-        log.set("");
+        isDebugLogFound.set(false);        
     }
 
     @Override
@@ -69,14 +71,19 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
         if (qName.equalsIgnoreCase("DebugLog")) {
             isDebugLog.set(true);
             isDebugLogFound.set(true);
+            characterLogger.set(new CharacterLogger() { @Override public void appendCharacters(ThreadLocal<StringBuilder> log, char[] ch, int start, int length) {
+            	log.get().append(ch, start, length);
+            }});
+        }
+        else
+        {
+        	 characterLogger.set(new CharacterLogger() { @Override public void appendCharacters(ThreadLocal<StringBuilder> log, char[] ch, int start, int length) {}});
         }
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        if (isDebugLog.get()) {
-            log.set(log.get() + new String(ch, start, length));
-        }
+    public void characters(char[] ch, int start, int length) throws SAXException {	
+		characterLogger.get().appendCharacters(log, ch, start, length);
     }
 
     @Override
@@ -89,9 +96,14 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
     @Override
     public void endDocument() throws SAXException {
         if (isDebugLogFound.get()) {
-            LOCAL.set(log.get());
+            LOCAL.set(log.get().toString());
         } else {
             LOCAL.set(null);
         }
+    }
+    
+    private interface CharacterLogger 
+    {
+    	void appendCharacters(ThreadLocal<StringBuilder> log, char[] ch, int start, int length);
     }
 }
