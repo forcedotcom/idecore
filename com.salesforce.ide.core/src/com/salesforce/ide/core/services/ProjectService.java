@@ -35,10 +35,10 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -2096,10 +2096,17 @@ public class ProjectService extends BaseService {
             flagSkipBuilder(projectPackageList.getProject());
             monitorCheckSubTask(monitor, Messages.getString("Components.Saving"));
 
-            WorkspaceJob job =
-                    new ForceProjectRefreshJob.ForceProjectRefreshResources(projectPackageList, toSaveComponentTypes);
-            job.setRule(projectPackageList.getProject());
-            job.schedule();
+            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    try {
+                        projectPackageList.saveResources(toSaveComponentTypes, monitor);
+                    } catch (Exception e) {
+                        throw new CoreException(new Status(IStatus.ERROR, Constants.FORCE_PLUGIN_PREFIX, 0,
+                                e.getMessage(), e));
+                    }
+                }
+            }, null, IResource.NONE, monitor);
 
             monitorWork(monitor);
         } else {
