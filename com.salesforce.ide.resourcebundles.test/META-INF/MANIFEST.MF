@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Resource Bundles JUnit Plug-in Tests
+Bundle-SymbolicName: com.salesforce.ide.resourcebundles.test
+Bundle-Version: 31.0.0.qualifier
+Bundle-Vendor: SALESFORCE
+Fragment-Host: com.salesforce.ide.resourcebundles;bundle-version="31.0.0"
+Require-Bundle: org.junit4;bundle-version="4.8.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -42,6 +42,8 @@ public class ForceProject extends Org {
     private String projectIdentifier = null;
     private boolean preferToolingDeployment = true;
     private String[] enabledComponentTypes;
+    private boolean unzipStaticResourcesAutomatically = true;
+	private boolean zipResourceBundlesAutomatically = true;
 
     //   C O N S T R U C T O R S
     public ForceProject() {
@@ -126,7 +128,23 @@ public class ForceProject extends Org {
     public void setPreferToolingDeployment(boolean isPreferred) {
         preferToolingDeployment = isPreferred;
     }
+    
+    public boolean getUnzipStaticResourcesAutomatically() {
+		return unzipStaticResourcesAutomatically;
+	}
 
+	public void setUnzipStaticResourcesAutomatically(boolean b) {
+		this.unzipStaticResourcesAutomatically = b;
+	}
+
+	public boolean getZipResourceBundlesAutomatically() {
+		return zipResourceBundlesAutomatically;
+	}
+
+	public void setZipResourceBundlesAutomatically(boolean b) {
+		this.zipResourceBundlesAutomatically = b;
+	}
+	
     @Override
     public String getFullLogDisplay() {
         StringBuffer strBuff = new StringBuffer(super.getFullLogDisplay());
