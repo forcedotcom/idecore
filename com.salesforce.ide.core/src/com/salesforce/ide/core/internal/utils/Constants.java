@@ -220,6 +220,8 @@ public interface Constants {
     String PROP_IDE_VERSION = "ideVersion";
     String PROP_PROJECT_IDENTIFIER = "projectIdentifier";
     String PROP_PREFER_TOOLING_DEPLOYMENT = "preferToolingDeployment";
+    String PROP_ZIP_RESOURCE_BUNDLES_AUTOMATICALLY = "zipResourceBundlesAutomatically";
+    String PROP_UNZIP_STATIC_RESOURCES_AUTOMATICALLY = "unzipStaticResourcesAutomatically";
 
     // P R O J E C T
     String LOGGING_LEVEL = "loggingLevel";

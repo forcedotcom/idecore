@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+    <extension
+            point="org.eclipse.ui.startup">
+        <startup
+                class="com.salesforce.ide.resourcebundles.internal.Startup">
+        </startup>
+    </extension>
+    
+    <extension point="org.eclipse.ui.popupMenus">
+        <objectContribution
+                id="com.salesforce.ide.resourcebundles.menu.singleZip"
+                objectClass="org.eclipse.core.resources.IFolder"
+                adaptable="true">
+            <menu
+	                id="com.salesforce.ide.ui.menu.tools"
+	                label="Force&amp;.com"
+	                icon="icons/appExDevIco16.png"
+	                path="additions">
+                <separator name="tools"/>
+            </menu>
+            <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.resourcebundles.isSingleZippable"/>
+            </enablement>
+            <action
+                    id="com.salesforce.ide.resourcebundles.ZipToStaticResourceAction"
+                    class="com.salesforce.ide.resourcebundles.ZipToStaticResourceAction"
+                    label="ZIP to Static Resource"
+                    menubarPath="com.salesforce.ide.ui.menu.tools/tools">
+            </action>
+        </objectContribution>
+        <objectContribution
+                id="com.salesforce.ide.resourcebundles.menu.multipleZip"
+                objectClass="org.eclipse.core.resources.IFolder"
+                adaptable="true">
+            <menu
+	                id="com.salesforce.ide.ui.menu.tools"
+	                label="Force&amp;.com"
+	                icon="icons/appExDevIco16.png"
+	                path="additions">
+                <separator name="tools"/>
+            </menu>
+            <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.resourcebundles.isMultipleZippable"/>
+            </enablement>
+            <action
+                    id="com.salesforce.ide.resourcebundles.ZipToStaticResourceAction"
+                    class="com.salesforce.ide.resourcebundles.ZipToStaticResourceAction"
+                    label="ZIP to Static Resources"
+                    menubarPath="com.salesforce.ide.ui.menu.tools/tools">
+            </action>
+        </objectContribution>
+        <objectContribution
+                id="com.salesforce.ide.resourcebundles.menu.singleUnzip"
+                objectClass="org.eclipse.core.resources.IResource"
+                adaptable="true">
+            <menu
+	                id="com.salesforce.ide.ui.menu.tools"
+	                label="Force&amp;.com"
+	                icon="icons/appExDevIco16.png"
+	                path="additions">
+                <separator name="tools"/>
+            </menu>
+            <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.resourcebundles.isSingleUnzippable"/>
+            </enablement>
+            <action
+                    id="com.salesforce.ide.resourcebundles.UnzipToResourceBundleAction"
+                    class="com.salesforce.ide.resourcebundles.UnzipToResourceBundleAction"
+                    label="Un-ZIP to Resource Bundle"
+                    menubarPath="com.salesforce.ide.ui.menu.tools/tools">
+            </action>
+        </objectContribution>
+        <objectContribution
+                id="com.salesforce.ide.resourcebundles.menu.multipleUnzip"
+                objectClass="org.eclipse.core.resources.IResource"
+                adaptable="true">
+            <menu
+	                id="com.salesforce.ide.ui.menu.tools"
+	                label="Force&amp;.com"
+	                icon="icons/appExDevIco16.png"
+	                path="additions">
+                <separator name="tools"/>
+            </menu>
+            <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.resourcebundles.isMultipleUnzippable"/>
+            </enablement>
+            <action
+                    id="com.salesforce.ide.resourcebundles.UnzipToResourceBundleAction"
+                    class="com.salesforce.ide.resourcebundles.UnzipToResourceBundleAction"
+                    label="Un-ZIP to Resource Bundles"
+                    menubarPath="com.salesforce.ide.ui.menu.tools/tools">
+            </action>
+        </objectContribution>
+    </extension>
+    
+    <extension
+            point="org.eclipse.core.expressions.propertyTesters">
+        <propertyTester
+                id="com.salesforce.ide.resourcebundles.ResourceTester"
+                class="com.salesforce.ide.resourcebundles.internal.ResourceTester"
+                type="org.eclipse.core.resources.IResource"
+                namespace="com.salesforce.ide.resourcebundles"
+                properties="isSingleZippable, isMultipleZippable, isSingleUnzippable, isMultipleUnzippable">
+        </propertyTester>
+    </extension>
+
+    <extension
+              id="com.salesforce.ide.resourcebundles.problemmarker.zip"
+              name="Force.com zip to static resource"
+              point="org.eclipse.core.resources.markers">
+          <super type="org.eclipse.core.resources.problemmarker"/>
+          <persistent value="true"/>
+    </extension>
+    
+    <extension
+              id="com.salesforce.ide.resourcebundles.problemmarker.unzip"
+              name="Force.com unzip to resource bundle"
+              point="org.eclipse.core.resources.markers">
+          <super type="org.eclipse.core.resources.problemmarker"/>
+          <persistent value="true"/>
+    </extension>
+    
+    <extension
+          point="org.eclipse.ui.propertyPages">
+       <page
+             category="com.salesforce.ide.ui.properties.project"
+             class="com.salesforce.ide.resourcebundles.internal.ResourceBundlesPropertyPage"
+             id="com.salesforce.ide.ui.properties.project.resourcebundles"
+             name="Resource Bundles">
+           <filter name="projectNature" value="com.salesforce.ide.nature.default" />
+           <enabledWhen>
+               <instanceof value="org.eclipse.core.resources.IProject" />
+           </enabledWhen>
+       </page>
+    </extension>
+
+</plugin>

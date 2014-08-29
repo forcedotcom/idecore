@@ -1605,7 +1605,13 @@ public class ProjectService extends BaseService {
                 : defaultvalue;
     }
 
-    protected IEclipsePreferences getPreferences(IProject project) {
+    /**
+     * Public for tests only.
+     * 
+     * As a new ForceProject is created on every call to getForceProject, the underlying preference
+     * that the ForceProject object is created from needs to be set in tests.
+     */
+    public IEclipsePreferences getPreferences(IProject project) {
         ProjectScope projectScope = new ProjectScope(project);
         IEclipsePreferences node = projectScope.getNode(ForceIdeCorePlugin.getPluginId());
         return node;
@@ -1644,7 +1650,11 @@ public class ProjectService extends BaseService {
         forceProject.setPreferToolingDeployment(preferences.getBoolean(Constants.PROP_PREFER_TOOLING_DEPLOYMENT, true));
         forceProject.setHttpsProtocol(preferences.getBoolean(Constants.PROP_HTTPS_PROTOCOL, true));
         forceProject.setReadTimeoutSecs(preferences.getInt(Constants.PROP_READ_TIMEOUT,
-            Constants.READ_TIMEOUT_IN_SECONDS_DEFAULT));
+                Constants.READ_TIMEOUT_IN_SECONDS_DEFAULT));
+        forceProject.setZipResourceBundlesAutomatically(preferences.getBoolean(
+        		Constants.PROP_ZIP_RESOURCE_BUNDLES_AUTOMATICALLY, true));
+        forceProject.setUnzipStaticResourcesAutomatically(preferences.getBoolean(
+        		Constants.PROP_UNZIP_STATIC_RESOURCES_AUTOMATICALLY, true));
 
         if (Utils.isEmpty(forceProject.getEndpointServer())) {
             logger.warn("Unable to get authorization info - endpoint is null or empty");
@@ -1738,6 +1748,8 @@ public class ProjectService extends BaseService {
         setBoolean(project, Constants.PROP_HTTPS_PROTOCOL, forceProject.isHttpsProtocol());
         setBoolean(project, Constants.PROP_PREFER_TOOLING_DEPLOYMENT, forceProject.getPreferToolingDeployment());
         setInt(project, Constants.PROP_READ_TIMEOUT, forceProject.getReadTimeoutSecs());
+        setBoolean(project, Constants.PROP_ZIP_RESOURCE_BUNDLES_AUTOMATICALLY, forceProject.getZipResourceBundlesAutomatically());
+        setBoolean(project, Constants.PROP_UNZIP_STATIC_RESOURCES_AUTOMATICALLY, forceProject.getUnzipStaticResourcesAutomatically());
 
         Map<String, String> credentialMap = new HashMap<String, String>();
         credentialMap.put(Constants.PROP_PASSWORD, forceProject.getPassword());
