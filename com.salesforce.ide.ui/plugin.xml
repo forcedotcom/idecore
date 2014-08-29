@@ -171,9 +171,10 @@
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true">
             <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                path="additions">
+                  id="com.salesforce.ide.ui.menu.tools"
+                  label="Force&amp;.com"
+                  icon="icons/appExDevIco16.png"
+                  path="additions">
                 <separator name="group1" />
             </menu>
             <visibility>
@@ -208,6 +209,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group1" />
             </menu>
@@ -241,6 +243,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group1" />
             </menu>
@@ -271,6 +274,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group1" />
             </menu>
@@ -303,6 +307,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group2" />
             </menu>
@@ -332,6 +337,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group2" />
             </menu>
@@ -360,10 +366,15 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group2" />
             </menu>
             <enablement>
+                <or>
+                    <instanceof value="org.eclipse.core.resources.IProject"/>
+                    <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+                </or>
                 <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
             </enablement>
             <action
@@ -389,6 +400,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group5" />
             </menu>
@@ -419,11 +431,17 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group6" />
             </menu>
             <visibility>
                 <and>
+                    <or>
+                        <objectClass name="org.eclipse.core.resources.IProject" />
+                        <objectState name="path" value="*/src" />
+                        <objectState name="path" value="*/src/*" />
+                    </or>
                     <objectState name="projectNature" value="com.salesforce.ide.nature.default" />
                     <not>
                         <objectState name="name" value="%SchemaBrowser.fullName" />
@@ -463,6 +481,7 @@
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="tools" />
             </menu>
@@ -491,6 +510,7 @@
            <menu
                  id="com.salesforce.ide.ui.menu.tools"
                  label="Force&amp;.com"
+                 icon="icons/appExDevIco16.png"
                  path="additions">
               <separator name="group6">
               </separator>
@@ -515,11 +535,16 @@
            <menu
                  id="com.salesforce.ide.ui.menu.tools"
                  label="Force&amp;.com"
+                 icon="icons/appExDevIco16.png"
                  path="additions">
               <separator name="group6"/>
            </menu>
            <filter name="projectNature" value="com.salesforce.ide.nature.default"/>
            <enablement>
+              <or>
+                  <instanceof value="org.eclipse.core.resources.IProject"/>
+                  <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+              </or>
               <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isPrjOrNonRefPkgFolders"/>
            </enablement>
            <action
@@ -622,6 +647,7 @@
             class="com.salesforce.ide.ui.refactoring.ResourceMoveParticipant"
             name="%move.resource.participant">
             <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
                 <or>
                     <instanceof value="org.eclipse.core.resources.IFile"/>
                     <instanceof value="org.eclipse.core.resources.IFolder"/>
@@ -641,6 +667,7 @@
             class="com.salesforce.ide.ui.refactoring.ResourceRenameParticipant"
             name="%rename.resource.participant">
             <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
                 <or>
                     <instanceof value="org.eclipse.core.resources.IFile"/>
                     <instanceof value="org.eclipse.core.resources.IFolder"/>
@@ -660,6 +687,7 @@
             class="com.salesforce.ide.ui.refactoring.ResourceCopyParticipant"
             name="%copy.resource.participant">
             <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
                 <or>
                     <instanceof value="org.eclipse.core.resources.IFile"/>
                     <instanceof value="org.eclipse.core.resources.IFolder"/>
@@ -679,6 +707,7 @@
             class="com.salesforce.ide.ui.refactoring.ResourceDeleteParticipant"
             name="%delete.resource.participant">
             <enablement>
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
                 <or>
                     <instanceof value="org.eclipse.core.resources.IFile"/>
                     <instanceof value="org.eclipse.core.resources.IFolder"/>

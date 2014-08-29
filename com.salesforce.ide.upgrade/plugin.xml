@@ -56,6 +56,7 @@ Force.com IDE Copyright (c) 2008 Salesforce.com
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group0" />
             </menu>
