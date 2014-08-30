@@ -10,6 +10,9 @@
  ******************************************************************************/
 package com.salesforce.ide.schemabrowser.ui.tableviewer;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -19,6 +22,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import com.salesforce.ide.core.internal.utils.XmlConstants;
+import com.sforce.ws.bind.CalendarCodec;
 import com.sforce.ws.bind.XmlObject;
 
 /**
@@ -36,6 +40,8 @@ public class CellLabelProvider extends LabelProvider implements ITableLabelProvi
     private static ImageRegistry imageRegistry = new ImageRegistry();
 
     static String ICON_PATH = "icons/";
+    
+    private CalendarCodec calendarCodec = new CalendarCodec();
 
     /**
      * Note: An image registry owns all of the image objects registered with it, and automatically disposes of them the
@@ -71,6 +77,8 @@ public class CellLabelProvider extends LabelProvider implements ITableLabelProvi
                     result = (String) field.getChildren(XmlConstants.ELEM_TYPE).next().getValue();
                 } else if (xmlType.getLocalPart().equals(XmlConstants.XMLTYPE_QUERY_RESULT)) {
                     result = field.getName().getLocalPart() + "(" + field.getChild("size").getValue() + ")";
+                } else {
+                    result = format(field.getValue());
                 }
             } else {
                 result = (String) field.getValue();
@@ -95,6 +103,27 @@ public class CellLabelProvider extends LabelProvider implements ITableLabelProvi
             }
         }
         return result;
+    }
+    
+    // Aggregate values come through as specific types that need turning into strings
+    private String format(Object value) {
+        if (value == null) {
+            return null;
+        } else if (value instanceof Calendar || value instanceof Date) {
+            return calendarCodec.getValueAsString(value);
+        } else if (value instanceof Double) {
+            return Double.toString((Double) value);
+        } else if (value instanceof Float) {
+            return Float.toString((Float) value);
+        } else if (value instanceof Long) {
+            return Long.toString((Long) value);
+        } else if (value instanceof Integer) {
+            return Integer.toString((Integer) value);
+        } else if (value instanceof Boolean) {
+            return Boolean.toString((Boolean) value);
+        } else {
+            return String.valueOf(value);
+        }
     }
 
     /**
