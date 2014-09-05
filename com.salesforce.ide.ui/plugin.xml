@@ -160,6 +160,17 @@
             finalPerspective="com.salesforce.ide.perspective"
             project="true">
         </wizard>
+    
+        <wizard
+              category="com.salesforce.ide.ui.wizards"
+              class="com.salesforce.ide.ui.wizards.components.wsdl.Wsdl2apexWizard"
+              hasPages="true"
+              icon="icons/appExDevIco16.png"
+              id="com.salesforce.ide.ui.wizards.createWsdl2Apex"
+              name="Apex Class(from WSDL)"
+              preferredPerspective="com.salesforce.ide.perspective"
+              project="false">
+        </wizard>
     </extension>
 
 
@@ -536,6 +547,34 @@
                     </not>
                 </enablement>
             </action>
+        </objectContribution>
+        
+        
+        
+        
+        <objectContribution
+              adaptable="true"
+              id="com.salesforce.ide.ui.menu.wsdl2apex"
+              objectClass="org.eclipse.core.resources.IProject">
+           <menu
+                 id="com.salesforce.ide.ui.menu.tools"
+                 label="Force&amp;.com"
+                 path="additions">
+              <separator
+                    name="group4">
+              </separator>
+           </menu>
+           <action
+                 class="com.salesforce.ide.ui.actions.OpenProjectContentPropertiesAction"
+                 enablesFor="1"
+                 id="com.salesforce.ide.ui.actions.openProjectContentProperties"
+                 label="Create Apex class from Wsdl"
+                 menubarPath="com.salesforce.ide.ui.menu.tools/group4">
+           </action>
+           <filter
+                 name="projectNature"
+                 value="com.salesforce.ide.nature.default">
+           </filter>
         </objectContribution>
         
     </extension>

@@ -27,7 +27,9 @@ Require-Bundle: com.salesforce.ide.core;bundle-version="[31.0.0,32.0.0)",
  org.eclipse.ui.forms;bundle-version="3.5.0",
  org.eclipse.ui.intro;bundle-version="3.4.0",
  org.eclipse.help.ui;bundle-version="3.5.0",
- org.eclipse.help;bundle-version="3.6.0"
+ org.eclipse.help;bundle-version="3.6.0",
+ org.eclipse.jface,
+ org.eclipse.swt
 Import-Package: org.apache.log4j
 Bundle-ClassPath: .
 Eclipse-LazyStart: true

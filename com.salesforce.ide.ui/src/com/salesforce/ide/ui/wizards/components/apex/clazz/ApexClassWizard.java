@@ -13,7 +13,10 @@ package com.salesforce.ide.ui.wizards.components.apex.clazz;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 
+import com.salesforce.ide.core.internal.components.MultiClassComponentController;
 import com.salesforce.ide.core.internal.components.apex.clazz.ApexClassComponentController;
+import com.salesforce.ide.core.internal.components.apex.clazz.ApexClassModel;
+import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
 import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizard;
@@ -21,7 +24,7 @@ import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizard;
 /**
  * Wizard to create new Apex Class.
  * 
- * @author cwall
+ * @author cwall, kevin.ren
  */
 public class ApexClassWizard extends ApexCodeWizard {
 
@@ -36,6 +39,15 @@ public class ApexClassWizard extends ApexCodeWizard {
 
     public ApexClassWizard(IFolder folder, IProject project) {
         super(folder, project);
+    }
+
+    public ApexClassWizard(Boolean saveMultipleFiles, ProjectPackageList allPackages) throws ForceProjectException {
+        super();
+        if (saveMultipleFiles) {
+            controller = new MultiClassComponentController(new ApexClassModel(), allPackages);
+        } else {
+            controller = new ApexClassComponentController();
+        }
     }
 
     @Override
