@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 31.0
+Salesforce.com Apex API version 33.0
 
 Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
 -->
 <definitions targetNamespace="http://soap.sforce.com/2006/08/apex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/2006/08/apex">
  <types>
   <xsd:schema elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/2006/08/apex">
-   <xsd:complexType name="ExecuteAnonymousResult">
+   <xsd:complexType name="CompileAndTestRequest">
     <xsd:sequence>
-     <xsd:element name="column" type="xsd:int"/>
-     <xsd:element name="compileProblem" type="xsd:string" nillable="true"/>
-     <xsd:element name="compiled" type="xsd:boolean"/>
-     <xsd:element name="exceptionMessage" type="xsd:string" nillable="true"/>
-     <xsd:element name="exceptionStackTrace" type="xsd:string" nillable="true"/>
-     <xsd:element name="line" type="xsd:int"/>
-     <xsd:element name="success" type="xsd:boolean"/>
+     <xsd:element name="checkOnly" type="xsd:boolean"/>
+     <xsd:element name="classes" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="deleteClasses" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="deleteTriggers" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="runTestsRequest" minOccurs="0" type="tns:RunTestsRequest"/>
+     <xsd:element name="triggers" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="CompilePackageResult">
+   <xsd:complexType name="RunTestsRequest">
     <xsd:sequence>
-     <xsd:element name="bodyCrc" minOccurs="0" type="xsd:int"/>
-     <xsd:element name="column" type="xsd:int"/>
-     <xsd:element name="id" type="tns:ID" nillable="true"/>
-     <xsd:element name="line" type="xsd:int"/>
-     <xsd:element name="problem" type="xsd:string" nillable="true"/>
+     <xsd:element name="allTests" type="xsd:boolean"/>
+     <xsd:element name="classes" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="namespace" type="xsd:string"/>
+     <xsd:element name="packages" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="CompileAndTestResult">
+    <xsd:sequence>
+     <xsd:element name="classes" minOccurs="0" maxOccurs="unbounded" type="tns:CompileClassResult"/>
+     <xsd:element name="deleteClasses" minOccurs="0" maxOccurs="unbounded" type="tns:DeleteApexResult"/>
+     <xsd:element name="deleteTriggers" minOccurs="0" maxOccurs="unbounded" type="tns:DeleteApexResult"/>
+     <xsd:element name="runTestsResult" type="tns:RunTestsResult"/>
      <xsd:element name="success" type="xsd:boolean"/>
+     <xsd:element name="triggers" minOccurs="0" maxOccurs="unbounded" type="tns:CompileTriggerResult"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="CompileClassResult">
@@ -38,27 +45,6 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="problem" minOccurs="0" type="xsd:string"/>
      <xsd:element name="success" type="xsd:boolean"/>
      <xsd:element name="warnings" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="CompileTriggerResult">
-    <xsd:sequence>
-     <xsd:element name="bodyCrc" minOccurs="0" type="xsd:int"/>
-     <xsd:element name="column" type="xsd:int"/>
-     <xsd:element name="id" type="tns:ID" nillable="true"/>
-     <xsd:element name="line" type="xsd:int"/>
-     <xsd:element name="name" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="problem" type="xsd:string" nillable="true"/>
-     <xsd:element name="success" type="xsd:boolean"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="CompileAndTestResult">
-    <xsd:sequence>
-     <xsd:element name="classes" minOccurs="0" maxOccurs="unbounded" type="tns:CompileClassResult"/>
-     <xsd:element name="deleteClasses" minOccurs="0" maxOccurs="unbounded" type="tns:DeleteApexResult"/>
-     <xsd:element name="deleteTriggers" minOccurs="0" maxOccurs="unbounded" type="tns:DeleteApexResult"/>
-     <xsd:element name="runTestsResult" type="tns:RunTestsResult"/>
-     <xsd:element name="success" type="xsd:boolean"/>
-     <xsd:element name="triggers" minOccurs="0" maxOccurs="unbounded" type="tns:CompileTriggerResult"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="DeleteApexResult">
@@ -127,6 +113,40 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="time" type="xsd:double"/>
     </xsd:sequence>
    </xsd:complexType>
+   <xsd:complexType name="CompileTriggerResult">
+    <xsd:sequence>
+     <xsd:element name="bodyCrc" minOccurs="0" type="xsd:int"/>
+     <xsd:element name="column" type="xsd:int"/>
+     <xsd:element name="id" type="tns:ID" nillable="true"/>
+     <xsd:element name="line" type="xsd:int"/>
+     <xsd:element name="name" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="problem" type="xsd:string" nillable="true"/>
+     <xsd:element name="success" type="xsd:boolean"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="ExecuteAnonymousResult">
+    <xsd:sequence>
+     <xsd:element name="column" type="xsd:int"/>
+     <xsd:element name="compileProblem" type="xsd:string" nillable="true"/>
+     <xsd:element name="compiled" type="xsd:boolean"/>
+     <xsd:element name="exceptionMessage" type="xsd:string" nillable="true"/>
+     <xsd:element name="exceptionStackTrace" type="xsd:string" nillable="true"/>
+     <xsd:element name="line" type="xsd:int"/>
+     <xsd:element name="success" type="xsd:boolean"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WsdlToApexInfo">
+    <xsd:sequence>
+     <xsd:element name="mapping" minOccurs="0" maxOccurs="unbounded" type="tns:NamespacePackagePair"/>
+     <xsd:element name="wsdl" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="NamespacePackagePair">
+    <xsd:sequence>
+     <xsd:element name="namespace" type="xsd:string"/>
+     <xsd:element name="packageName" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
    <xsd:complexType name="WsdlToApexResult">
     <xsd:sequence>
      <xsd:element name="apexScripts" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
@@ -134,29 +154,32 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="success" type="xsd:boolean"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:element name="DebuggingInfo">
+   <xsd:element name="AllowFieldTruncationHeader">
     <xsd:complexType>
      <xsd:sequence>
-      <xsd:element name="debugLog" type="xsd:string"/>
+      <xsd:element name="allowFieldTruncation" type="xsd:boolean"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
-   <xsd:complexType name="CompileAndTestRequest">
+   <xsd:element name="CallOptions">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="client" type="xsd:string"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="DebuggingHeader">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="categories" minOccurs="0" maxOccurs="unbounded" type="tns:LogInfo"/>
+      <xsd:element name="debugLevel" type="tns:LogType"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="LogInfo">
     <xsd:sequence>
-     <xsd:element name="checkOnly" type="xsd:boolean"/>
-     <xsd:element name="classes" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-     <xsd:element name="deleteClasses" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-     <xsd:element name="deleteTriggers" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-     <xsd:element name="runTestsRequest" minOccurs="0" type="tns:RunTestsRequest"/>
-     <xsd:element name="triggers" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="RunTestsRequest">
-    <xsd:sequence>
-     <xsd:element name="allTests" type="xsd:boolean"/>
-     <xsd:element name="classes" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-     <xsd:element name="namespace" type="xsd:string"/>
-     <xsd:element name="packages" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="category" type="tns:LogCategory"/>
+     <xsd:element name="level" type="tns:LogCategoryLevel"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:simpleType name="LogCategory">
@@ -184,12 +207,6 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Error"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="LogInfo">
-    <xsd:sequence>
-     <xsd:element name="category" type="tns:LogCategory"/>
-     <xsd:element name="level" type="tns:LogCategoryLevel"/>
-    </xsd:sequence>
-   </xsd:complexType>
    <xsd:simpleType name="LogType">
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="None"/>
@@ -200,43 +217,10 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Detail"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="NamespacePackagePair">
-    <xsd:sequence>
-     <xsd:element name="namespace" type="xsd:string"/>
-     <xsd:element name="packageName" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="PackageVersion">
-    <xsd:sequence>
-     <xsd:element name="majorNumber" type="xsd:int"/>
-     <xsd:element name="minorNumber" type="xsd:int"/>
-     <xsd:element name="namespace" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="WsdlToApexInfo">
-    <xsd:sequence>
-     <xsd:element name="mapping" minOccurs="0" maxOccurs="unbounded" type="tns:NamespacePackagePair"/>
-     <xsd:element name="wsdl" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:element name="PackageVersionHeader">
+   <xsd:element name="DebuggingInfo">
     <xsd:complexType>
      <xsd:sequence>
-      <xsd:element name="packageVersions" minOccurs="0" maxOccurs="unbounded" type="tns:PackageVersion"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="SessionHeader">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="sessionId" type="xsd:string"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="DuplicateRuleHeader">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="allowSave" type="xsd:boolean"/>
+      <xsd:element name="debugLog" type="xsd:string"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
@@ -247,32 +231,24 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
-   <xsd:element name="AllowFieldTruncationHeader">
+   <xsd:element name="PackageVersionHeader">
     <xsd:complexType>
      <xsd:sequence>
-      <xsd:element name="allowFieldTruncation" type="xsd:boolean"/>
+      <xsd:element name="packageVersions" minOccurs="0" maxOccurs="unbounded" type="tns:PackageVersion"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
-   <xsd:element name="DebuggingHeader">
+   <xsd:complexType name="PackageVersion">
+    <xsd:sequence>
+     <xsd:element name="majorNumber" type="xsd:int"/>
+     <xsd:element name="minorNumber" type="xsd:int"/>
+     <xsd:element name="namespace" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:element name="SessionHeader">
     <xsd:complexType>
      <xsd:sequence>
-      <xsd:element name="categories" minOccurs="0" maxOccurs="unbounded" type="tns:LogInfo"/>
-      <xsd:element name="debugLevel" type="tns:LogType"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="AllOrNoneHeader">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="allOrNone" type="xsd:boolean"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="CallOptions">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="client" type="xsd:string"/>
+      <xsd:element name="sessionId" type="xsd:string"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
@@ -531,7 +507,7 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/31.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/33.0"/>
   </port>
  </service>
 </definitions>

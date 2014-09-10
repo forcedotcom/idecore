@@ -32,6 +32,7 @@ import com.salesforce.ide.core.remote.tooling.ContainerAsyncRequestMessageHandle
 import com.salesforce.ide.core.remote.tooling.ContainerMemberFactory;
 import com.salesforce.ide.core.remote.tooling.MetadataContainerFailureHandler;
 import com.sforce.soap.tooling.ContainerAsyncRequest;
+import com.sforce.soap.tooling.ContainerAsyncRequestState;
 import com.sforce.soap.tooling.MetadataContainer;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SObject;
@@ -172,13 +173,13 @@ public class ToolingDeployService extends BaseService {
             ContainerAsyncRequest onGoingRequest) throws ForceRemoteException {
         QueryResult queryResult;
         int delayMultipler = 1;
-        while (onGoingRequest.getState().equalsIgnoreCase("queued")) {
+        while (onGoingRequest.getState() == ContainerAsyncRequestState.Queued) {
             try {
                 Thread.sleep(POLL_INTERVAL * delayMultipler++);
                 if (monitor.isCanceled()) { // The user has canceled the task
                     ContainerAsyncRequest abortedRequest = new ContainerAsyncRequest();
                     abortedRequest.setId(onGoingRequest.getId());
-                    abortedRequest.setState("Aborted");
+                    abortedRequest.setState(ContainerAsyncRequestState.Aborted);
                     stub.update(new SObject[] { abortedRequest });
                     return abortedRequest;
                 }

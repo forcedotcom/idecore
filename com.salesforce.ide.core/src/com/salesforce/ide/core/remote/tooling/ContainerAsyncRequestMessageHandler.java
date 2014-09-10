@@ -20,6 +20,7 @@ import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.project.MarkerUtils;
 import com.salesforce.ide.core.services.ToolingDeployService;
 import com.sforce.soap.tooling.ContainerAsyncRequest;
+import com.sforce.soap.tooling.ContainerAsyncRequestState;
 import com.sforce.soap.tooling.DeployMessage;
 
 /**
@@ -31,13 +32,6 @@ import com.sforce.soap.tooling.DeployMessage;
 public class ContainerAsyncRequestMessageHandler {
     private final Logger logger = Logger.getLogger(ToolingDeployService.class);
 
-    // These should be enums in the API, but they are not
-    public final static String ABORTED = "aborted"; //$NON-NLS-1$
-    public final static String ERROR = "error"; //$NON-NLS-1$
-    public final static String FAILED = "failed"; //$NON-NLS-1$
-    public final static String COMPLETED = "completed"; //$NON-NLS-1$
-    public final static String INVALIDATED = "invalidated"; //$NON-NLS-1$
-
     private ContainerAsyncRequest car; // We need this to get the status, compile failures and/or errors
 
     private ComponentList list; // We need this to map back to the actual file resource
@@ -48,16 +42,16 @@ public class ContainerAsyncRequestMessageHandler {
     }
 
     public void handle() {
-        String state = car.getState();
-        if (state.equalsIgnoreCase(INVALIDATED)) {
+        ContainerAsyncRequestState state = car.getState();
+        if (state == ContainerAsyncRequestState.Invalidated) {
             handleInvalidatedCase();
-        } else if (state.equalsIgnoreCase(COMPLETED)) {
+        } else if (state == ContainerAsyncRequestState.Completed) {
             handleCompletedCase();
-        } else if (state.equalsIgnoreCase(FAILED)) {
+        } else if (state == ContainerAsyncRequestState.Failed) {
             handleFailedCase();
-        } else if (state.equalsIgnoreCase(ERROR)) {
+        } else if (state == ContainerAsyncRequestState.Error) {
             handleErrorCase();
-        } else if (state.equalsIgnoreCase(ABORTED)) {
+        } else if (state == ContainerAsyncRequestState.Aborted) {
             handleAbortedCase();
         }
     }

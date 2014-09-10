@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Salesforce.com Metadata XSD for API version 31.0 Copyright 2006-2014 
+<!-- Salesforce.com Metadata XSD for API version 33.0 Copyright 2006-2014 
 	Salesforce.com, inc. All Rights Reserved -->
 <xsd:schema xmlns:tns="http://soap.sforce.com/2006/04/metadata"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
