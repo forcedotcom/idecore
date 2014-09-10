@@ -104,7 +104,7 @@ public class ToolingStubExt {
     public DeleteResult[] delete(String[] ids) throws ForceRemoteException {
         DeleteResult[] deleteResults = null;
         try {
-            toolingConnection.delete(ids);
+            deleteResults = toolingConnection.delete(ids);
         } catch (ConnectionException e) {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }
@@ -114,7 +114,7 @@ public class ToolingStubExt {
     public SaveResult[] update(SObject[] sObjects) throws ForceRemoteException {
         SaveResult[] saveResults = null;
         try {
-            toolingConnection.update(sObjects);
+            saveResults = toolingConnection.update(sObjects);
         } catch (ConnectionException e) {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }
