@@ -167,7 +167,7 @@
               hasPages="true"
               icon="icons/appExDevIco16.png"
               id="com.salesforce.ide.ui.wizards.createWsdl2Apex"
-              name="Apex Class(from WSDL)"
+              name="Apex Class (from WSDL)"
               preferredPerspective="com.salesforce.ide.perspective"
               project="false">
         </wizard>

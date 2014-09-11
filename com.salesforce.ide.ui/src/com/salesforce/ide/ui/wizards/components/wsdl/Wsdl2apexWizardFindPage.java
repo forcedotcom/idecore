@@ -95,7 +95,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
     public Wsdl2apexWizardFindPage() {
         super("selectFiles");
         setTitle("Select file");
-        setDescription("Select the Source File");
+        setDescription("Select the source file");
     }
 
     public String getWsdlFileLocation() {
@@ -127,12 +127,12 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
         final GridData gridData = new GridData();
         gridData.horizontalSpan = 3;
         label.setLayoutData(gridData);
-        label.setText("Select the Wsdl file you would like to convert");
+        label.setText("Select the WSDL file you would like to convert.");
 
         final Label wsdlFileLabel = new Label(container, SWT.NONE);
         final GridData gridData2 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         wsdlFileLabel.setLayoutData(gridData2);
-        wsdlFileLabel.setText("Wsdl File:");
+        wsdlFileLabel.setText("WSDL File:");
 
         wsdlFileField = new Text(container, SWT.BORDER);
         wsdlFileField.addModifyListener(new ModifyListener() {
