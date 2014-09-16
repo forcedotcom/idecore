@@ -274,9 +274,9 @@ public class Connection {
                     setToolingServerUrl(getToolingServiceEndpoint(getPartnerConnection().getConfig().getServiceEndpoint()));
                 } else {
                     String metadataServerUrl =
-                            changeServer(loginResult.getMetadataServerUrl(), forceProject.getEndpointServer());
+                            changeServer(loginResult.getMetadataServerUrl(), forceProject.getEndpointServer(), forceProject.isHttpsProtocol());
                     setMetadataServerUrl(metadataServerUrl);
-                    String serverUrl = changeServer(loginResult.getServerUrl(), forceProject.getEndpointServer());
+                    String serverUrl = changeServer(loginResult.getServerUrl(), forceProject.getEndpointServer(), forceProject.isHttpsProtocol());
                     setToolingServerUrl(getToolingServiceEndpoint(serverUrl));
                 }
             } else {
@@ -306,11 +306,11 @@ public class Connection {
         setToolingEndPoint();
     }
 
-    private String changeServer(String url, String server) {
+    private String changeServer(String url, String server, boolean isHttps) {
         if (Utils.isEmpty(url) || Utils.isEmpty(server) || !url.startsWith(Constants.HTTP)) {
             return url;
         }
-        return url.substring(0, url.indexOf("//") + 2) + server + url.substring(url.indexOf("/", 9));
+        return (isHttps ? "https://" : "http://" ) + server + url.substring(url.indexOf("/", 9));
     }
 
     private void initializeConnectorConfig(ConnectorConfig connectorConfig) {
@@ -337,7 +337,7 @@ public class Connection {
                         forceProject.isHttpsProtocol());
             connectorConfig.setAuthEndpoint(endpointUrl);
             connectorConfig.setServiceEndpoint(connectorConfig.getAuthEndpoint());
-        }
+        } 
     }
 
     public void setProxy(IProxy proxy) {
@@ -437,11 +437,20 @@ public class Connection {
         }
 
         String url = connectorConfig.getServiceEndpoint();
-        if (Utils.isNotEmpty(url)) {
-            url = url.substring(0, url.indexOf("/", "http://".length() + 1));
+        if (Utils.isNotEmpty(url)) {        	
+            url = getRootUrlWithProtocol(url);
         }
         return url;
     }
+
+    /**
+     * @param url For example, http://na1.salesforce.com/home/home.jsp
+     * @return For example, http://na1.salesforce.com/
+     */
+	private String getRootUrlWithProtocol(String url) {
+		url = url.substring(0, url.indexOf("/", url.indexOf("//") + 2));
+		return url;
+	}
 
     public String getWebUrlRoot() {
         if (connectorConfig == null) {
