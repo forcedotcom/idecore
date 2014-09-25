@@ -76,7 +76,7 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
     }
 
     public void addPages() {
-        setWindowTitle("Convert Wsdl file to Apex");
+        setWindowTitle("Convert WSDL File to Apex");
         this.convertPage = new Wsdl2apexWizardFindPage();
         this.createPage = new Wsdl2apexWizardRenameClasses();
         addPage(convertPage);
