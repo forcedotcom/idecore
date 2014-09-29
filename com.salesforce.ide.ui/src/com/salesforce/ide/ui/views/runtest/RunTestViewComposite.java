@@ -154,18 +154,25 @@ public class RunTestViewComposite extends Composite {
                 new LoggingComposite(rightHandComposite, runView.getLoggingService(), SWT.NONE, false,
                         LoggingInfo.SupportedFeatureEnum.RunTest);
 
-        GridData gridData2 = new GridData(1, 2);
+        GridData gridData2 = new GridData(GridData.FILL_HORIZONTAL);
         gridData2.grabExcessHorizontalSpace = true;
-        gridData2.horizontalAlignment = GridData.FILL;
-        gridData2.verticalAlignment = GridData.FILL;
-        gridData2.horizontalSpan = 2;
         gridData2.grabExcessVerticalSpace = true;
+        gridData2.horizontalSpan = 2;
+        gridData2.minimumHeight=200;
         @SuppressWarnings("unused")
         Label filler1 = new Label(rightHandComposite, SWT.NONE);
         textArea = new Text(rightHandComposite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
         textArea.setLayoutData(gridData2);
+        
+        GridData gridData3 = new GridData(GridData.FILL_HORIZONTAL);
+        gridData3.grabExcessHorizontalSpace = true;
+        gridData3.grabExcessVerticalSpace = true;
+        gridData3.horizontalSpan = 2;
+        gridData3.minimumHeight=200;
+        @SuppressWarnings("unused")
+        Label filler2 = new Label(rightHandComposite, SWT.NONE);
         userLogsTextArea = new Text(rightHandComposite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
-        userLogsTextArea.setLayoutData(gridData2);
+        userLogsTextArea.setLayoutData(gridData3);
     }
 
     public Tree getTree() {
