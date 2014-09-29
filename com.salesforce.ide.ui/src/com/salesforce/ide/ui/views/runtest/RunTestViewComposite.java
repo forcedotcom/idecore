@@ -46,6 +46,7 @@ public class RunTestViewComposite extends Composite {
     protected CLabel cLabel = null, cLabel1 = null;
     protected Scale scale = null;
     private Text textArea = null;
+    private Text userLogsTextArea = null;
     protected RunTestView runView;
     protected IProject project = null;
     private LoggingComposite loggingComposite;
@@ -96,6 +97,7 @@ public class RunTestViewComposite extends Composite {
                 resultsTree.removeAll();
                 if (textArea != null) {
                     textArea.setText("");
+                    userLogsTextArea.setText("");
                 }
             }
         });
@@ -152,7 +154,7 @@ public class RunTestViewComposite extends Composite {
                 new LoggingComposite(rightHandComposite, runView.getLoggingService(), SWT.NONE, false,
                         LoggingInfo.SupportedFeatureEnum.RunTest);
 
-        GridData gridData2 = new GridData();
+        GridData gridData2 = new GridData(1, 2);
         gridData2.grabExcessHorizontalSpace = true;
         gridData2.horizontalAlignment = GridData.FILL;
         gridData2.verticalAlignment = GridData.FILL;
@@ -162,6 +164,8 @@ public class RunTestViewComposite extends Composite {
         Label filler1 = new Label(rightHandComposite, SWT.NONE);
         textArea = new Text(rightHandComposite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
         textArea.setLayoutData(gridData2);
+        userLogsTextArea = new Text(rightHandComposite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
+        userLogsTextArea.setLayoutData(gridData2);
     }
 
     public Tree getTree() {
@@ -170,6 +174,10 @@ public class RunTestViewComposite extends Composite {
 
     public Text getTextArea() {
         return textArea;
+    }
+    
+    public Text getUserLogsTextArea() {
+        return userLogsTextArea;
     }
 
     public void enableComposite() {

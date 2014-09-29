@@ -56,15 +56,15 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected SashForm sashForm = null;
     protected Composite cmpSource = null;
     protected Composite cmpResult = null;
-    protected Composite cmpResultOnly = null;
     protected Button btnExecute = null;
     protected StyledText txtSourceInput = null;
     protected StyledText txtResult = null;
-    protected StyledText txtResultOnly = null;
     protected Composite cmpProject = null;
     protected Combo cboProject = null;
     protected ExecuteAnonymousController executeAnonymousController = null;
     protected LoggingComposite loggingComposite;
+    protected Composite cmpUserDebugLogs = null;
+    protected StyledText txtUserDebugLogs = null;
     private static final int DEFAULT_PROJ_SELECTION = 0;
 
     Color color = new Color(Display.getCurrent(), 240, 240, 240);
@@ -118,7 +118,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         sashForm.setLayoutData(gridData3);
         createSourceComposite();
         createResultComposite();
-        createResultOnlyComposite();
+        createUserLogsComposite();
     }
 
     private void createLoggingComposite() {
@@ -152,7 +152,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
             }
         });
 
-        // Apex input text field
+        // Apex input text field        
         txtSourceInput = new StyledText(cmpSource, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         txtSourceInput.setEnabled(false);
         txtSourceInput.setLayoutData(getInputResultsGridData(2));
@@ -187,13 +187,12 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         }
 
         txtResult.setText("Executing code...");
-        txtResultOnly.setText("Executing code...");
+        txtUserDebugLogs.setText("Executing code...");
         txtResult.update();
-        txtResultOnly.update();
+        txtUserDebugLogs.update();
 
         final String code = txtSourceInput.getText();
-        // Execute the code in a different thread to allow debugging (since DBGP
-        // takes up the main thread)
+        // Execute the code in a different thread to allow debugging (since DBGP takes up the main thread)
         WorkspaceJob job = new WorkspaceJob("Execute-Anonymous") {
             @Override
             public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
@@ -216,17 +215,17 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         txtResult.setBackground(color);
         txtResult.setLayoutData(getInputResultsGridData(1));
     }
-
-    private void createResultOnlyComposite() {
-        cmpResultOnly = new Composite(sashForm, SWT.NONE);
-        cmpResultOnly.setLayout(new GridLayout(1, false));
+    
+    private void createUserLogsComposite() {
+        cmpUserDebugLogs = new Composite(sashForm, SWT.NONE);
+        cmpUserDebugLogs.setLayout(new GridLayout(1, false));
 
         CLabel lblResult = new CLabel(cmpResult, SWT.NONE);
-        lblResult.setText("Debug Only:");
+        lblResult.setText("User Debug Logs:");
 
-        txtResultOnly = new StyledText(cmpResult, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
-        txtResultOnly.setBackground(color);
-        txtResultOnly.setLayoutData(getInputResultsGridData(1));
+        txtUserDebugLogs = new StyledText(cmpResult, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
+        txtUserDebugLogs.setBackground(color);
+        txtUserDebugLogs.setLayoutData(getInputResultsGridData(1));
 
     }
 
@@ -341,7 +340,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                 if (executeAnonymousResult.getCompiled()) {
                     if (executeAnonymousResult.getSuccess()) {
                         txtResult.setText("Anonymous execution was successful.\n\n");
-                        txtResultOnly.setText("Anonymous execution was successful.\n\n");
+                        txtUserDebugLogs.setText("Anonymous execution was successful.\n\n");
                         if (executeAnonymousResult.getDebugInfo() != null) {
                             String finalResult = "";
                             String debugResult = executeAnonymousResult.getDebugInfo().getDebugLog();
@@ -358,7 +357,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                                 }
                             }
                             txtResult.setText(txtResult.getText() + executeAnonymousResult.getDebugInfo().getDebugLog());
-                            txtResultOnly.setText(finalResult);
+                            txtUserDebugLogs.setText(finalResult);
                         }
                     } else {
                         Utils.openError("Error Occurred", executeAnonymousResult.getExceptionMessage());
@@ -367,7 +366,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                             errorMessage.append(executeAnonymousResult.getDebugInfo().getDebugLog());
                         }
                         txtResult.setText(errorMessage.toString());
-                        txtResultOnly.setText(errorMessage.toString());
+                        txtUserDebugLogs.setText(errorMessage.toString());
                     }
                 } else {
                     StringBuilder strBuilder = new StringBuilder("Compile error at line ");
@@ -375,7 +374,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                             .append(executeAnonymousResult.getColumn()).append("\n")
                             .append(executeAnonymousResult.getCompileProblem());
                     txtResult.setText(strBuilder.toString());
-                    txtResultOnly.setText(strBuilder.toString());
+                    txtUserDebugLogs.setText(strBuilder.toString());
                 }
             }
         });
