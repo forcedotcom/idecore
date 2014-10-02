@@ -352,7 +352,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<value>first</value>
 		<value>includes</value>
 		<value>last</value>
-		<value>order</value>
 		<value>sharing</value>
 		<value>with</value>
 		<value>without</value>
