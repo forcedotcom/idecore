@@ -195,6 +195,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<value>array</value>
 		<value>as</value>
 		<value>asc</value>
+		<value>ASC</value>
 		<value>autonomous</value>
 		<value>begin</value>
 		<value>bigdecimal</value>
@@ -224,6 +225,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<value>default</value>
 		<value>delete</value>
 		<value>desc</value>
+		<value>DESC</value>
 		<value>division</value>
 		<value>do</value>
 		<value>else</value>
@@ -267,6 +269,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<value>last_week</value>
 		<value>like</value>
 		<value>limit</value>
+		<value>LIMIT</value>
 		<value>list</value>
 		<value>long</value>
 		<value>loop</value>
@@ -287,6 +290,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<value>on</value>
 		<value>or</value>
 		<value>order</value>
+		<value>ORDER</value>
 		<value>outer</value>
 		<value>override</value>
 		<value>phrase</value>
