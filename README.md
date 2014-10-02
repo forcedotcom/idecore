@@ -20,6 +20,11 @@ Refer to the wiki pages for this repository. You can access those pages
 by clicking on the wiki icon in the navigation on the right of this
 page.
 
+Contributing
+------------
+
+Please refer to [this][3] wiki page.
+
 [1]: https://developer.salesforce.com/page/Force.com_IDE
 [2]: http://wiki.eclipse.org/EPL
-
+[3]: https://github.com/forcedotcom/idecore/wiki/Contributing-Code
