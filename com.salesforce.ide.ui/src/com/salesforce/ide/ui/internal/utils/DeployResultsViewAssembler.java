@@ -363,16 +363,17 @@ public class DeployResultsViewAssembler {
         return componentType;
     }
 
-    @SuppressWarnings("unchecked")
     private void sortCodeCoverageResults(ICodeCoverageResultExt[] codeCoverageResults) {
         if (Utils.isEmpty(codeCoverageResults)) {
             return;
         }
 
-        Arrays.sort(codeCoverageResults, new Comparator() {
-            public int compare(final Object o1, final Object o2) {
-                return ((ICodeCoverageResultExt) o1).getNumLocationsNotCovered() > ((ICodeCoverageResultExt) o2)
-                        .getNumLocationsNotCovered() ? 0 : 1;
+        Arrays.sort(codeCoverageResults, new Comparator<ICodeCoverageResultExt>() {
+            @Override
+            public int compare(ICodeCoverageResultExt o1, ICodeCoverageResultExt o2) {
+                String s1 = getDisplayName(o1.getNamespace(), o1.getName());
+                String s2 = getDisplayName(o2.getNamespace(), o2.getName());
+                return s1.compareTo(s2);
             }
         });
     }
