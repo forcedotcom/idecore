@@ -215,6 +215,20 @@ public class BuilderController extends Controller {
                 }
                 return true;
             }
+            
+            // Don't track changes anywhere except the "src" folder
+            if (resource.getType() == IResource.FOLDER
+                    && resource.getParent() instanceof IProject
+                    && !resource.getName().equals(Constants.SOURCE_FOLDER_NAME)
+                    ) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Resource '"
+                            + resource.getProjectRelativePath().toPortableString()
+                            + "' and children excluded from build.");
+                }
+                // Skip children
+                return false;
+            }
 
             if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().isBuildableResource(resource)) {
                 if (logger.isDebugEnabled()) {
