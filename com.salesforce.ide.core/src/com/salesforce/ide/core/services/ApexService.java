@@ -40,6 +40,10 @@ public class ApexService extends BaseService {
     public ExecuteAnonymousResultExt executeAnonymous(String code, IProject project) {
         LogInfo[] apexLogInfo =
                 getLoggingService().getAllApexApiLogInfo(project, LoggingInfo.SupportedFeatureEnum.ExecuteAnonymous);
+        return executeAnonymous(code, apexLogInfo, project);
+    }
+
+    public ExecuteAnonymousResultExt executeAnonymous(String code, LogInfo[] apexLogInfo, IProject project) {
         int readTimeout = getProjectService().getReadTimeoutInMilliSeconds(project);
         Connection connection = null;
         try {
