@@ -465,6 +465,11 @@ public class Utils {
 				&& Constants.SYS_SETTING_SFDC_INTERNAL_VALUE.equals(mode) ? true : false;
 	}
 
+    public static boolean isXForceProxy() {
+        String forceProxy = System.getProperty(Constants.SYS_SETTING_X_FORCE_PROXY);
+        return Utils.isNotEmpty(forceProxy) && Constants.SYS_SETTING_SFDC_INTERNAL_VALUE.equals(forceProxy) ? true : false;
+    }
+
 	public static String getDefaultSystemApiVersion() {
 		String apiVersion = System
 				.getProperty(Constants.SYS_SETTING_DEFAULT_API_VERSION);
