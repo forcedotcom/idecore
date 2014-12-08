@@ -7,6 +7,8 @@ contributed code to Force.com IDE throughout the years. This list was gleaned th
 * Bhadri Narayanan Venkatesan (bvenkatesan)
 * Chris Wall (cwall)
 * Dave Caroll (dcarroll)
+* Gerard Sexton (wildcatgerry)
+* Keith Clarke (KeithClarke)
 * Matt Change (fchang)
 * Gordon Mendonsa (gmendonsa)
 * Nick Chen (nchen)
