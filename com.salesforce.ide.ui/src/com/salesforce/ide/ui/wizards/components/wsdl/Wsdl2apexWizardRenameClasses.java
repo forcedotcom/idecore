@@ -43,7 +43,7 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
 
     public Wsdl2apexWizardRenameClasses() {
         super("createFile");
-        setTitle("Create File");
+        setTitle("Create file");
         setDescription("Create the Apex class");
     }
 
@@ -180,8 +180,8 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
         gridData.horizontalSpan = 3;
         instructions.setLayoutData(gridData);
         instructions
-                .setText("Please fill in what you want the apex class names to be.\nBelow are the namespaces parsed from the WSDL file"
-                        + "and the suggested names for \neach namespace.\n");
+                .setText("The following are the namespaces parsed from the WSDL and their corresponding Apex class names.\n"
+                        + "If desired, you can rename these classes.");
 
         sc.setContent(container);
         sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
