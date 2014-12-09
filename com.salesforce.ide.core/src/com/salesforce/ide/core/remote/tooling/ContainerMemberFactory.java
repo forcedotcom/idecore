@@ -86,7 +86,7 @@ public final class ContainerMemberFactory implements ComponentHandler<SObject> {
     }
 
     private XmlInputStream createCorrespondingXmlInputStream(Component metadata) throws Exception, PullParserException {
-        String body = replaceNamespace(metadata.getBody(), "urn:tooling.soap.sforce.com");
+        String body = replaceNamespace(metadata.getBody(), "urn:metadata.tooling.soap.sforce.com");
         XmlInputStream xis = new XmlInputStream();
         xis.setInput(new ByteArrayInputStream(body.getBytes()), "UTF-8");
         return xis;
@@ -148,8 +148,8 @@ public final class ContainerMemberFactory implements ComponentHandler<SObject> {
 
     /**
      * Sets the metadata on the containerMember reflectively. We do it this way because the containerMembers are
-     * generated from the WSDL and do not implement a commmon interface/hierarchy. If we don't use reflection, we end up
-     * with a lot of boilerplate code. The downside of refletion is that it can be slower - though this is not in a
+     * generated from the WSDL and do not implement a common interface/hierarchy. If we don't use reflection, we end up
+     * with a lot of boilerplate code. The downside of reflection is that it can be slower - though this is not in a
      * critical code path.
      * 
      * @param containerMember
