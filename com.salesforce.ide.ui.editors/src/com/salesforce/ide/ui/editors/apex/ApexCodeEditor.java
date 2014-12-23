@@ -117,6 +117,8 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
     private ApexSourceViewerConfiguration apexSourceViewerConfiguration = null;
 
     private final Object fReconcilerLock = new Object();
+    
+    public final ApexCodeEditorMap codeEditorMap = new ApexCodeEditorMap();
 
     public Object getReconcilerLock() {
         return fReconcilerLock;
