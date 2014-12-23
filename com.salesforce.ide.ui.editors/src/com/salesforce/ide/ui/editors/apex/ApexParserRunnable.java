@@ -94,7 +94,7 @@ public class ApexParserRunnable implements ISafeRunnable {
                             (ApexContentOutlinePage) apexReconcilingStrategy.fTextEditor
                                     .getAdapter(IContentOutlinePage.class);
                     outline.update(fCompilationUnit);
-                    apexReconcilingStrategy.fTextEditor.codeEditorMap.mapExpandedTreeElements(outline.getTreeViewer());
+                    apexReconcilingStrategy.fTextEditor.getEditorMap().mapExpandedTreeElements(outline.getTreeViewer());
                 }
             });
         }

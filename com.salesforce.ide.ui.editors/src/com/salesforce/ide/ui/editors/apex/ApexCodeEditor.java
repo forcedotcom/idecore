@@ -118,7 +118,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
 
     private final Object fReconcilerLock = new Object();
     
-    public final ApexCodeEditorMap codeEditorMap = new ApexCodeEditorMap();
+    private ApexCodeEditorMap codeEditorMap;
 
     public Object getReconcilerLock() {
         return fReconcilerLock;
@@ -130,6 +130,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         initializeEditor();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.addResourceChangeListener(outlineUpdateResourceListener);
+        this.codeEditorMap = new ApexCodeEditorMap();
     }
 
     // M E T H O D S
@@ -145,6 +146,10 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
 
     public void setProject(IProject project) {
         this.project = project;
+    }
+    
+    public ApexCodeEditorMap getEditorMap() {
+    	return this.codeEditorMap;
     }
 
     /**
