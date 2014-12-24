@@ -45,7 +45,7 @@ import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextPro
  * @author nchen
  * 
  */
-final class BlockMemberFilter extends BlockMember.SwitchBlockWithDefault {
+class BlockMemberFilter extends BlockMember.SwitchBlockWithDefault {
 
     final private List<Object> children;
 
@@ -129,6 +129,5 @@ final class BlockMemberFilter extends BlockMember.SwitchBlockWithDefault {
     @Override
     protected void _default(BlockMember x) {
         children.add(x);
-
     }
 }

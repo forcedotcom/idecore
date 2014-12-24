@@ -16,26 +16,28 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
-
 import apex.jorje.data.ast.BlockMember;
 import apex.jorje.data.ast.ClassDecl;
 import apex.jorje.data.ast.CompilationUnit;
+import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 import apex.jorje.data.ast.EnumDecl;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.InterfaceDecl;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+
 /**
- * TODO: Factor this out so that there is no dependency on the UI for easy unit testing 
- * TODO: Should probably share the same parse tree as the editor and not have to parse again
+ * TODO: Factor this out so that there is no dependency on the UI for easy unit testing
  * 
  * @author nchen
  * 
  */
 public class ApexOutlineContentProvider implements ITreeContentProvider {
-    private CompilationUnit fCompilationUnit;
     private static final Object[] NO_CHILDREN = new Object[0];
+
+    private CompilationUnit fCompilationUnit;
+    private boolean displayingTopLevelTrigger = true;
 
     @Override
     public void dispose() {}
@@ -44,16 +46,32 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof CompilationUnit) {
             fCompilationUnit = (CompilationUnit) newInput;
+            displayingTopLevelTrigger = true;
         }
     }
 
     @Override
     public Object[] getElements(Object inputElement) {
-
         if (hasValidCompilationUnit()) {
-            RootElementFilter switchBlock = new RootElementFilter();
-            fCompilationUnit._switch(switchBlock);
-            return switchBlock.getRootElements();
+            if (inputElement instanceof TriggerDeclUnit) {
+                // This part is complicated due to an implementation detail with triggers.
+                // Unlike its counterparts (Class, Enum, etc) there is no TriggerDecl under TriggerDeclUnit
+                // We want to display the top level Trigger node, while also processing its subnodes.
+                // The main idea here is that we want the node to play two roles: the first time, display the node itself,
+                // the second time, display its children.
+                if (displayingTopLevelTrigger) {
+                    displayingTopLevelTrigger = false;
+                    RootElementFilter switchBlock = new RootElementFilter();
+                    fCompilationUnit._switch(switchBlock);
+                    return switchBlock.getRootElements();
+                } else {
+                    return childrenOf((TriggerDeclUnit) inputElement);
+                }
+            } else {
+                RootElementFilter switchBlock = new RootElementFilter();
+                fCompilationUnit._switch(switchBlock);
+                return switchBlock.getRootElements();
+            }
         }
 
         return NO_CHILDREN;
@@ -74,6 +92,8 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
             return childrenOf(((ClassDecl) parentElement));
         } else if (parentElement instanceof InterfaceDecl) {
             return childrenOf(((InterfaceDecl) parentElement));
+        } else if (parentElement instanceof TriggerDeclUnit) {
+            return childrenOf((TriggerDeclUnit) parentElement);
         } else if (parentElement instanceof BlockMember) {
             return childrenOf((BlockMember) parentElement);
         }
@@ -85,7 +105,7 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
             // Basically just the identifiers
             return validIdentifiers(enumDecl.members.values).toArray(Identifier.class);
         }
-        
+
         return NO_CHILDREN;
     }
 
@@ -116,6 +136,14 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
         return NO_CHILDREN;
     }
 
+    private Object[] childrenOf(TriggerDeclUnit triggerDeclUnit) {
+        if (triggerDeclUnit.members != null && triggerDeclUnit.members.values != null) {
+            List<BlockMember> values = triggerDeclUnit.members.values;
+            return validTriggerBlockMembers(values);
+        }
+        return NO_CHILDREN;
+    }
+
     public static Object[] validBlockMembers(List<BlockMember> values) {
         final List<Object> children = new ArrayList<Object>();
         for (BlockMember member : values) {
@@ -124,6 +152,17 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
             }
         }
         // Basically just the class members
+        return children.toArray();
+    }
+
+    public static Object[] validTriggerBlockMembers(List<BlockMember> values) {
+        final List<Object> children = new ArrayList<Object>();
+        for (BlockMember member : values) {
+            if (member != null) { // the parser can produce partial jADT with null members
+                member._switch(new TriggerMemberFilter(children));
+            }
+        }
+        // Basically just the main members, minus any statements
         return children.toArray();
     }
 
