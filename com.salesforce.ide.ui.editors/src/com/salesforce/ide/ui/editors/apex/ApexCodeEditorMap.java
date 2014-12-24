@@ -174,8 +174,10 @@ public class ApexCodeEditorMap extends ApexOutlineContentProvider {
 	 * @param treeViewer
 	 */
 	public void mapExpandedTreeElements(TreeViewer treeViewer) {
-		Object[] expandedElements = treeViewer.getExpandedElements();
-		handle(null, expandedElements[0]);
+		if (treeViewer != null) {
+			Object[] expandedElements = treeViewer.getExpandedElements();
+			handle(null, expandedElements[0]);
+		}
 	}
 	
 	/**
