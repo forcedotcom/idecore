@@ -81,7 +81,7 @@ public class ApexParserRunnable implements ISafeRunnable {
     }
 
     protected void reportParseErrors() {
-        fMarkerHandler.handleSyntaxErrors(fParser.getSyntaxErrors());
+        fMarkerHandler.handleSyntaxErrors(fParser.getParseErrors());
     }
 
     protected void updateOutlineViewIfPossible() {

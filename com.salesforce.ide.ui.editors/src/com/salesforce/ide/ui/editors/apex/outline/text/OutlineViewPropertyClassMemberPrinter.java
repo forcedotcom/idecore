@@ -15,16 +15,16 @@ import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.StandardPrinterFactory;
+import apex.jorje.services.printers.PrinterFactory;
 
 final class OutlineViewPropertyClassMemberPrinter implements Printer<PropertyMember> {
 
-    private Printer<TypeRef> typeRefPrinter;
-    private Printer<Identifier> identifierPrinter;
+    private final Printer<TypeRef> typeRefPrinter;
+    private final Printer<Identifier> identifierPrinter;
 
-    public OutlineViewPropertyClassMemberPrinter(StandardPrinterFactory printerFactory) {
-        this.typeRefPrinter = printerFactory.typeRefPrinter();
-        this.identifierPrinter = printerFactory.identifierPrinter();
+    public OutlineViewPropertyClassMemberPrinter(PrinterFactory printerfactory) {
+        this.typeRefPrinter = printerfactory.typeRefPrinter();
+        this.identifierPrinter = printerfactory.identifierPrinter();
     }
 
     @Override
