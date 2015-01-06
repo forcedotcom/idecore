@@ -34,7 +34,8 @@ Bundle-ClassPath: .,
  lib/wsdl2Apex-1.0.jar
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
-Export-Package: com.google.common.annotations,
+Export-Package: antlr,
+ com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,
  com.google.common.collect,
@@ -78,6 +79,7 @@ Export-Package: com.google.common.annotations,
  com.salesforce.ide.core.remote.tooling,
  com.salesforce.ide.core.services,
  com.salesforce.ide.wsdl2apex.core,
+ org.antlr.runtime,
  org.apache.commons.lang,
  org.aspectj.lang,
  org.springframework.core
