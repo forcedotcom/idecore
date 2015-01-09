@@ -57,8 +57,10 @@ public class ApexModelManager {
                     try {
                         ApexParserImpl parser = ApexParserFactory.create(new InputStreamReader(file.getContents()));
                         return parser.compilationUnit();
-                    } catch (CoreException | RecognitionException e) {
-                        throw new InvalidCompilationUnitException(e);
+                    } catch (CoreException ce ) {
+                        throw new InvalidCompilationUnitException(ce);
+                    } catch (RecognitionException re) {
+                        throw new InvalidCompilationUnitException(re);
                     }
                 }
             });
