@@ -31,6 +31,13 @@ import com.salesforce.ide.core.internal.utils.XmlConstants;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexObject;
 
+/**
+ * 
+ * This is the old way of getting the completions. It's a misnomer to call it "ApexModel". I'm leaving this around for
+ * now since there are some good test cases that rely on this. After I convert them, I will remove this.
+ * 
+ */
+@Deprecated
 public class ApexModel {
 
     private static final Logger logger = Logger.getLogger(ApexModel.class);

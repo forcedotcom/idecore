@@ -118,8 +118,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
 
     private final Object fReconcilerLock = new Object();
     
-    private ApexCodeEditorMap codeEditorMap;
-
     public Object getReconcilerLock() {
         return fReconcilerLock;
     }
@@ -130,7 +128,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         initializeEditor();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.addResourceChangeListener(outlineUpdateResourceListener);
-        this.codeEditorMap = new ApexCodeEditorMap();
     }
 
     // M E T H O D S
@@ -148,10 +145,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         this.project = project;
     }
     
-    public ApexCodeEditorMap getEditorMap() {
-    	return this.codeEditorMap;
-    }
-
     /**
      * The <code>JavaEditor</code> implementation of this <code>AbstractTextEditor</code> method extend the actions to
      * add those specific to the receiver

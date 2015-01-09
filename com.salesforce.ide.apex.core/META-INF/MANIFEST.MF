@@ -3,21 +3,37 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.salesforce.ide.apex.core;singleton:=true
 Bundle-Version: 33.0.0.qualifier
-Bundle-Activator: com.salesforce.ide.apex.core.Activator
+Bundle-Activator: com.salesforce.ide.apex.core.ApexCore
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
- com.salesforce.ide.core;bundle-version="33.0.0"
+ com.salesforce.ide.core;bundle-version="33.0.0",
+ org.eclipse.core.resources;bundle-version="3.8.0",
+ com.salesforce.ide.api;bundle-version="33.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/antlr-3.5.2-complete.jar,
  lib/apex-jorje-data-1.0-SNAPSHOT.jar,
  lib/apex-jorje-parser-1.0-SNAPSHOT.jar,
  lib/apex-jorje-services-1.0-SNAPSHOT.jar,
+ lib/apex-jorje-semantic-1.0-SNAPSHOT.jar,
  .
 Export-Package: apex.jorje.data,
  apex.jorje.data.ast,
  apex.jorje.data.errors,
  apex.jorje.parser.impl,
+ apex.jorje.semantic.ast,
+ apex.jorje.semantic.ast.compilation,
+ apex.jorje.semantic.ast.expression,
+ apex.jorje.semantic.ast.member,
+ apex.jorje.semantic.ast.statement,
+ apex.jorje.semantic.ast.visitor,
+ apex.jorje.semantic.compiler,
+ apex.jorje.semantic.exception,
+ apex.jorje.semantic.symbol.resolver,
+ apex.jorje.semantic.symbol.type,
  apex.jorje.services,
  apex.jorje.services.exception,
- apex.jorje.services.printers
+ apex.jorje.services.printers,
+ com.salesforce.ide.apex.core,
+ com.salesforce.ide.apex.internal.core
+Import-Package: org.apache.log4j
