@@ -31,8 +31,9 @@ Bundle-ClassPath: .,
  lib/asm-all-5.0.3.jar,
  lib/commons-lang-2.3.jar,
  lib/commons-logging.jar,
- lib/guava-16.0.1.jar,
- lib/wsdl2Apex-1.0.jar
+ lib/wsdl2Apex-1.0.jar,
+ lib/guava-18.0.jar,
+ lib/joda-time-2.6.jar
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
 Export-Package: antlr,
@@ -84,6 +85,13 @@ Export-Package: antlr,
  org.antlr.runtime,
  org.apache.commons.lang,
  org.aspectj.lang,
+ org.joda.time,
+ org.joda.time.base,
+ org.joda.time.chrono,
+ org.joda.time.convert,
+ org.joda.time.field,
+ org.joda.time.format,
+ org.joda.time.tz,
  org.objectweb.asm,
  org.springframework.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
