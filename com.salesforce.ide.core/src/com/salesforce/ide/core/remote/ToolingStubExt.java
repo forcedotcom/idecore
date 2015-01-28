@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.sforce.soap.tooling.DeleteResult;
+import com.sforce.soap.tooling.QueryLocator;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SObject;
 import com.sforce.soap.tooling.SaveResult;
@@ -94,6 +95,18 @@ public class ToolingStubExt {
 
         try {
             result = toolingConnection.query(queryString);
+        } catch (ConnectionException e) {
+            ForceExceptionUtils.throwTranslatedException(e, connection);
+        }
+
+        return result;
+    }
+    
+    public QueryResult queryMore(String queryLocator) throws ForceRemoteException {
+        QueryResult result = null;
+
+        try {
+            result = toolingConnection.queryMore(queryLocator);
         } catch (ConnectionException e) {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }
