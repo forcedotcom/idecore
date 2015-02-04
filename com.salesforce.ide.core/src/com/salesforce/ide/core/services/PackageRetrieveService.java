@@ -1181,9 +1181,9 @@ public class PackageRetrieveService extends BasePackageService {
 
 class RetrieveResultAdapter implements IFileBasedResultAdapter {
 
-    private AsyncResult asyncResult;
+    private final AsyncResult asyncResult;
     private RetrieveResult retrieveResult;
-    private MetadataStubExt metadataStubExt;
+    private final MetadataStubExt metadataStubExt;
 
     public RetrieveResultAdapter(AsyncResult asyncResult, MetadataStubExt metadataStubExt) {
         this.asyncResult = asyncResult;

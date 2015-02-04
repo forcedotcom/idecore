@@ -52,6 +52,7 @@ import com.salesforce.ide.core.internal.utils.ZipUtils.ZipStats;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.core.services.ProjectService;
+import com.salesforce.ide.core.services.hooks.SyncServiceListenerBroadcaster;
 import com.sforce.soap.metadata.FileProperties;
 
 /**
@@ -1205,7 +1206,10 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             if (logger.isDebugEnabled()) {
                 logger.debug("Saved [" + savedCount + "] components to project " + project.getName());
             }
+
+            SyncServiceListenerBroadcaster.broadcast(componentList);
         }
+        
     }
 
     private boolean handleReadOnlyException(CoreException coreException, Component component) {

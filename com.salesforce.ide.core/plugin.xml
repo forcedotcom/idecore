@@ -6,6 +6,7 @@
 -->
 
 <plugin>
+   <extension-point id="syncServices" name="Force.com IDE Sync Services" schema="schema/syncServices.exsd"/>
 
     <!--   N A T U R E S   &   B U I L D E R S   -->
     <!-- default -->

@@ -54,7 +54,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
     private final static String HANDLE_TEMPORARY_PROBLEMS = PreferenceConstants.EDITOR_EVALUTE_TEMPORARY_PROBLEMS;
 
     /** Internal property changed listener */
-    private IPropertyChangeListener fPropertyListener;
+    private final IPropertyChangeListener fPropertyListener;
 
     /** Annotation model listener added to all created CU annotation models */
 
@@ -66,6 +66,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         setParentDocumentProvider(provider);
 
         fPropertyListener = new IPropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if (HANDLE_TEMPORARY_PROBLEMS.equals(event.getProperty()))
                     enableHandlingTemporaryProblems();
@@ -130,15 +131,15 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             List<IProblem> fReportedProblems;
         }
 
-        private ThreadLocal<ProblemRequestorState> fProblemRequestorState = new ThreadLocal<ProblemRequestorState>();
+        private final ThreadLocal<ProblemRequestorState> fProblemRequestorState = new ThreadLocal<ProblemRequestorState>();
         private int fStateCount = 0;
 
-        private List<Annotation> fGeneratedAnnotations = new ArrayList<Annotation>();
+        private final List<Annotation> fGeneratedAnnotations = new ArrayList<Annotation>();
         private IProgressMonitor fProgressMonitor;
         private boolean fIsActive = false;
         private boolean fIsHandlingTemporaryProblems;
 
-        private ReverseMap fReverseMap = new ReverseMap();
+        private final ReverseMap fReverseMap = new ReverseMap();
         private List<Annotation> fPreviouslyOverlaid = null;
         private List<Annotation> fCurrentlyOverlaid = new ArrayList<Annotation>();
         private Thread fActiveThread;
@@ -146,7 +147,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         public ApexAnnotationModel(IResource resource) {
             super(resource);
         }
-
+        
         @Override
         protected MarkerAnnotation createMarkerAnnotation(IMarker marker) {
             //            if (JavaMarkerAnnotation.isJavaAnnotation(marker))
@@ -171,12 +172,14 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             return new Position(start, length);
         }
 
+        @Override
         public void beginReporting() {
             ProblemRequestorState state = fProblemRequestorState.get();
             if (state == null)
                 internalBeginReporting(false);
         }
 
+        @Override
         public void beginReportingSequence() {
             ProblemRequestorState state = fProblemRequestorState.get();
             if (state == null)
@@ -192,6 +195,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         private void internalBeginReporting(boolean insideReportingSequence) {
         }
 
+        @Override
         public void acceptProblem(IProblem problem) {
             if (fIsHandlingTemporaryProblems || problem.getID() == JavaSpellingReconcileStrategy.SPELLING_PROBLEM_ID) {
                 ProblemRequestorState state =fProblemRequestorState.get();
@@ -200,12 +204,14 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             }
         }
 
+        @Override
         public void endReporting() {
             ProblemRequestorState state = fProblemRequestorState.get();
             if (state != null && !state.fInsideReportingSequence)
                 internalEndReporting(state);
         }
 
+        @Override
         public void endReportingSequence() {
             ProblemRequestorState state = fProblemRequestorState.get();
             if (state != null && state.fInsideReportingSequence)
@@ -346,6 +352,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see IProblemRequestor#isActive()
          */
+        @Override
         public synchronized boolean isActive() {
             return fIsActive && fActiveThread == Thread.currentThread();
         }
@@ -353,6 +360,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see IProblemRequestorExtension#setProgressMonitor(IProgressMonitor)
          */
+        @Override
         public void setProgressMonitor(IProgressMonitor monitor) {
             fProgressMonitor = monitor;
         }
@@ -360,6 +368,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see IProblemRequestorExtension#setIsActive(boolean)
          */
+        @Override
         public synchronized void setIsActive(boolean isActive) {
             Assert.isLegal(!isActive || Display.getCurrent() == null); // must not be enabled from UI threads
             fIsActive = isActive;
@@ -372,6 +381,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see IProblemRequestorExtension#setIsHandlingTemporaryProblems(boolean)
          */
+        @Override
         public void setIsHandlingTemporaryProblems(boolean enable) {
             if (fIsHandlingTemporaryProblems != enable) {
                 fIsHandlingTemporaryProblems = enable;
@@ -438,6 +448,15 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             }
             super.removeAnnotation(annotation, fireModelChanged);
         }
+
+        // WARNING: Needed so we can expose the annotation model to the debugger
+        ///////////////////////////////////////////////////////////////
+        public void addMyMarkerAnnotation(IMarker marker) {
+            synchronized(getLockObject()) {
+                addMarkerAnnotation(marker);
+                fireModelChanged();
+            }
+        }
     }
 
     /**
@@ -464,6 +483,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see org.eclipse.jface.text.quickassist.IQuickFixableAnnotation#setQuickFixable(boolean)
          */
+        @Override
         public void setQuickFixable(boolean state) {
             fIsQuickFixable = state;
             fIsQuickFixableStateSet = true;
@@ -472,6 +492,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see org.eclipse.jface.text.quickassist.IQuickFixableAnnotation#isQuickFixableStateSet()
          */
+        @Override
         public boolean isQuickFixableStateSet() {
             return fIsQuickFixableStateSet;
         }
@@ -479,6 +500,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
         /*
          * @see org.eclipse.jface.text.quickassist.IQuickFixableAnnotation#isQuickFixable()
          */
+        @Override
         public boolean isQuickFixable() {
             Assert.isTrue(isQuickFixableStateSet());
             return fIsQuickFixable;
@@ -497,7 +519,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             Object fValue;
         }
 
-        private List<Entry> fList = new ArrayList<Entry>(2);
+        private final List<Entry> fList = new ArrayList<Entry>(2);
         private int fAnchor = 0;
 
         public ReverseMap() {}
