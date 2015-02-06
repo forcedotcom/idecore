@@ -135,9 +135,9 @@ public class ToolingDeployService extends BaseService {
         MarkerUtils.getInstance().clearDirty(resources);
     }
 
-    public void clearCompileErrorMarkers(ComponentList list) {
+    public void clearSaveErrorMarkers(ComponentList list) {
         IResource[] resources = obtainListOfAffectedResources(list);
-        MarkerUtils.getInstance().clearCompileMarkers(resources);
+        MarkerUtils.getInstance().clearSaveMarkers(resources);
     }
 
     public void createSaveLocallyOnlyMarkers(ComponentList list) {

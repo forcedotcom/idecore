@@ -1908,7 +1908,7 @@ public class ProjectService extends BaseService {
         }
 
         // clear all existing save markers on deployed resources
-        MarkerUtils.getInstance().clearSaveMarkers(projectPackageList.getAllComponentResources(false));
+        MarkerUtils.getInstance().clearSaveMarkers(projectPackageList.getAllComponentResources(false).toArray(new IResource[0]));
 
         DeployMessageExtractor messageExtractor = new DeployMessageExtractor(deployResultHandler);
 

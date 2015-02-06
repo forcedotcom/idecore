@@ -32,9 +32,9 @@ import com.sforce.soap.tooling.DeployMessage;
 public class ContainerAsyncRequestMessageHandler {
     private final Logger logger = Logger.getLogger(ToolingDeployService.class);
 
-    private ContainerAsyncRequest car; // We need this to get the status, compile failures and/or errors
+    private final ContainerAsyncRequest car; // We need this to get the status, compile failures and/or errors
 
-    private ComponentList list; // We need this to map back to the actual file resource
+    private final ComponentList list; // We need this to map back to the actual file resource
 
     public ContainerAsyncRequestMessageHandler(ComponentList list, ContainerAsyncRequest car) {
         this.list = list;
@@ -79,14 +79,14 @@ public class ContainerAsyncRequestMessageHandler {
             MarkerUtils markerUtils = getMarkerUtils();
             if (failure.getLineNumber() > 0) { // Has line number
                 if (failure.getColumnNumber() > 1) { // Has column number
-                    markerUtils.applyCompileErrorMarker(cmp.getFileResource(), failure.getLineNumber(),
+                    markerUtils.applySaveErrorMarker(cmp.getFileResource(), failure.getLineNumber(),
                         failure.getColumnNumber(), failure.getColumnNumber() + 1, failure.getProblem());
                 } else {
-                    markerUtils.applyCompileErrorMarker(cmp.getFileResource(), failure.getLineNumber(), 1, 1,
+                    markerUtils.applySaveErrorMarker(cmp.getFileResource(), failure.getLineNumber(), 1, 1,
                         failure.getProblem());
                 }
             } else {
-                markerUtils.applyCompileErrorMarker(cmp.getFileResource(), failure.getProblem());
+                markerUtils.applySaveErrorMarker(cmp.getFileResource(), failure.getProblem());
             }
         }
     }
@@ -94,7 +94,7 @@ public class ContainerAsyncRequestMessageHandler {
     protected void handleCompletedCase() {
         ToolingDeployService toolingDeployService = getToolingDeployService();
         toolingDeployService.clearSaveLocallyOnlyMarkers(list);
-        toolingDeployService.clearCompileErrorMarkers(list);
+        toolingDeployService.clearSaveErrorMarkers(list);
     }
 
     protected void handleInvalidatedCase() {
