@@ -15,11 +15,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
@@ -188,9 +187,9 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
         final String code = txtSourceInput.getText();
         // Execute the code in a different thread to allow debugging (since DBGP takes up the main thread)
-        WorkspaceJob job = new WorkspaceJob("Execute-Anonymous") {
+        Job job = new Job("Execute-Anonymous") {
             @Override
-            public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+            protected IStatus run(IProgressMonitor monitor) {
                 ExecuteAnonymousResultExt result = executeAnonymousController.executeExecuteAnonymous(code);
                 handleExecuteResults(result);
                 return Status.OK_STATUS;
