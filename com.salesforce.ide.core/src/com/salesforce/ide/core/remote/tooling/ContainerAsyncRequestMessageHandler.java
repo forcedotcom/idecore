@@ -11,6 +11,7 @@
 package com.salesforce.ide.core.remote.tooling;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.widgets.Display;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
@@ -62,8 +63,26 @@ public class ContainerAsyncRequestMessageHandler {
     }
 
     protected void handleErrorCase() {
-        String errorMsg = car.getErrorMsg();
-        getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), errorMsg); //$NON-NLS-1$
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), car.getErrorMsg()); //$NON-NLS-1$
+            }
+        });
+    }
+
+    protected void handleInvalidatedCase() {
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), //$NON-NLS-1$
+                    Messages.getString("ContainerAsyncMessagesHandler.DeploymentChangedInProgress.message")); //$NON-NLS-1$
+
+            }
+            
+        });
     }
 
     protected void handleFailedCase() {
@@ -95,11 +114,6 @@ public class ContainerAsyncRequestMessageHandler {
         ToolingDeployService toolingDeployService = getToolingDeployService();
         toolingDeployService.clearSaveLocallyOnlyMarkers(list);
         toolingDeployService.clearSaveErrorMarkers(list);
-    }
-
-    protected void handleInvalidatedCase() {
-        getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), //$NON-NLS-1$
-            Messages.getString("ContainerAsyncMessagesHandler.DeploymentChangedInProgress.message")); //$NON-NLS-1$
     }
 
     // FOR TESTING/MOCKING
