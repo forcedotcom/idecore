@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.refactoring;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -23,7 +22,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
  * @author cwall
  */
 public class DeleteUndoChange extends BaseChange {
-    private static final Logger logger = Logger.getLogger(DeleteUndoChange.class);
 
     //   C O N S T R U C T O R
     public DeleteUndoChange() {

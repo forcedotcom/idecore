@@ -30,7 +30,6 @@ public class PackageTreeNode extends TreeNode {
     int state = MultiCheckboxButton.ENABLED;
     boolean wildcardSelected;
     boolean filtered;
-    private Object trueValue;
 
     public PackageTreeNode(Object value) {
         super(value);

@@ -29,7 +29,7 @@ public class EquinoxAuthorization implements IAuthorizationService {
 	private static final String FORCE_PROJECT = "Force Projects";
 	private ISecurePreferences root;
 
-	public void addAuthorizationInfo(String AUTH_URL, IProject project, String AUTH_TYPE, Map credentialMap) {
+	public void addAuthorizationInfo(String AUTH_URL, IProject project, String AUTH_TYPE, Map<String, String> credentialMap) {
 		root = SecurePreferencesFactory.getDefault();
 		ISecurePreferences node = root.node(FORCE_PROJECT + "/" + project.getName());
 		try {
@@ -53,11 +53,11 @@ public class EquinoxAuthorization implements IAuthorizationService {
 		return null;
 	}
 
-	public Map getCredentialMap(URL url, String projectName, String authType) {
+	public Map<String, String> getCredentialMap(URL url, String projectName, String authType) {
 		try {
 			ISecurePreferences root = SecurePreferencesFactory.getDefault();
 			ISecurePreferences node = root.node(FORCE_PROJECT + "/" + projectName);
-			Map credentialMap = new HashMap();
+			Map<String, String> credentialMap = new HashMap<String, String>();
 			credentialMap.put(PROP_PASSWORD, node.get(PROP_PASSWORD, ""));
 			credentialMap.put(PROP_TOKEN, node.get(PROP_TOKEN, ""));
 			return credentialMap;

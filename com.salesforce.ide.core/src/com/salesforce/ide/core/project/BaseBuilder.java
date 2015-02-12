@@ -54,7 +54,7 @@ public abstract class BaseBuilder extends IncrementalProjectBuilder {
             throws CoreException {
         super.setInitializationData(config, propertyName, data);
         if (data instanceof Hashtable) {
-            Hashtable<String, String> parameters = (Hashtable) data;
+            Hashtable<String, String> parameters = Hashtable.class.cast(data);
             try {
                 String controllerId = parameters.get(BEAN_ID);
                 if (Utils.isEmpty(controllerId)) {

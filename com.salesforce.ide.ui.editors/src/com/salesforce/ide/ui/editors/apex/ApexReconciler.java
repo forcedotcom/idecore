@@ -27,11 +27,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class ApexReconciler extends MonoReconciler {
 
-	private ITextEditor fTextEditor;
-
     public ApexReconciler(ITextEditor fTextEditor, IReconcilingStrategy strategy, boolean isIncremental) {
 		super(strategy, isIncremental);
-		this.fTextEditor = fTextEditor;
 	}
 
 }

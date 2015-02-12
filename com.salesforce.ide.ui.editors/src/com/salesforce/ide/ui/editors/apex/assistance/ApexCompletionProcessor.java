@@ -36,7 +36,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
  * Example Java completion processor.
  */
 public class ApexCompletionProcessor implements IContentAssistProcessor {
-    //private static final Logger logger = Logger.getLogger(ApexCompletionProcessor.class);
 
     protected static ICompletionProposal[] currentList;
     private static String fileName = null;

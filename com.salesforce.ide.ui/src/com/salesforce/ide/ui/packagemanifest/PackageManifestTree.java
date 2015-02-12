@@ -996,7 +996,6 @@ public class PackageManifestTree extends FilteredTree {
 
     private void removeComponentTypeNode(ComponentTypeNode componentTypeNode) {
         String typeName = componentTypeNode.getComponent().getComponentType();
-        Node typeNode = PackageManifestDocumentUtils.getComponentNode(doc, typeName);
 
         for (PackageTreeNode child : componentTypeNode.getChildList()) {
             if (child instanceof CustomObjectTypeNode) {
