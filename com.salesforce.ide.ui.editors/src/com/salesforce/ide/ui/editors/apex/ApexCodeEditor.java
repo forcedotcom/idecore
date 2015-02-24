@@ -303,9 +303,8 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      *            the required type
      * @return an adapter for the required type or <code>null</code>
      */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object getAdapter(Class required) {
+	@Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (fOutlinePage == null) {
                 fOutlinePage = new ApexContentOutlinePage();

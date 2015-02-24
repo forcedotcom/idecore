@@ -30,7 +30,6 @@ public class ApexReconcilingStrategy implements IReconcilingStrategy, IReconcili
     static final Logger logger = Logger.getLogger(ApexReconcilingStrategy.class);
 
     ApexCodeEditor fTextEditor;
-    private IProgressMonitor fProgressMonitor;
 
     public ApexReconcilingStrategy(ApexCodeEditor fTextEditor) {
         this.fTextEditor = fTextEditor;
@@ -38,7 +37,7 @@ public class ApexReconcilingStrategy implements IReconcilingStrategy, IReconcili
 
     @Override
     public void setProgressMonitor(IProgressMonitor fProgressMonitor) {
-        this.fProgressMonitor = fProgressMonitor;
+        /* nothing to do */
     }
 
     @Override

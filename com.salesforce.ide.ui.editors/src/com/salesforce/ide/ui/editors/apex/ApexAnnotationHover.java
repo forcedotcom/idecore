@@ -38,16 +38,15 @@ public class ApexAnnotationHover extends DefaultAnnotationHover {
     /*
      * Formats several message as HTML text.
      */
-    @Override
-    @SuppressWarnings( { "unchecked" })
-    protected String formatMultipleMessages(List messages) {
+	@Override
+    protected String formatMultipleMessages(@SuppressWarnings("rawtypes") List messages) {
         StringBuffer buffer = new StringBuffer();
         HTMLPrinter.addPageProlog(buffer);
         HTMLPrinter.addParagraph(buffer, HTMLPrinter
                 .convertToHTMLContent(JavaUIMessages.JavaAnnotationHover_multipleMarkersAtThisLine));
 
         HTMLPrinter.startBulletList(buffer);
-        Iterator e = messages.iterator();
+        Iterator<?> e = messages.iterator();
         while (e.hasNext())
             HTMLPrinter.addBullet(buffer, HTMLPrinter.convertToHTMLContent((String) e.next()));
         HTMLPrinter.endBulletList(buffer);
