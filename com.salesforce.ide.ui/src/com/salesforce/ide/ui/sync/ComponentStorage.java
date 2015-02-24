@@ -48,8 +48,8 @@ public class ComponentStorage implements IStorage {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		return null;
 	}
 }

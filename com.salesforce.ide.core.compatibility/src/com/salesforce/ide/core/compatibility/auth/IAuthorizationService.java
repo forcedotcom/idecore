@@ -34,7 +34,7 @@ public interface IAuthorizationService {
 	 * @param authType
 	 * @param credentialMap
 	 */
-	void addAuthorizationInfo(String url, IProject project, String authType, Map credentialMap);
+	void addAuthorizationInfo(String url, IProject project, String authType, Map<String, String> credentialMap);
 
 	/**
 	 * Returns the map of credentials stored in secure storage
@@ -43,7 +43,7 @@ public interface IAuthorizationService {
 	 * @param authType
 	 * @return credentialMap
 	 */
-	Map getCredentialMap(URL url, String projectName, String authType);
+	Map<String, String> getCredentialMap(URL url, String projectName, String authType);
 
 	/**
 	 * Returns the password saved in secure storage.

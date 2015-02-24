@@ -17,11 +17,16 @@ Force.com IDE Copyright (c) 2008 Salesforce.com
             <menu
                 id="com.salesforce.ide.ui.menu.tools"
                 label="Force&amp;.com"
+                icon="icons/appExDevIco16.png"
                 path="additions">
                 <separator name="group2"/>
             </menu>
             <!-- despite the little warning on 'enablement', 'test' *is* supported -->
             <enablement>
+                <or>
+                    <instanceof value="org.eclipse.core.resources.IProject"/>
+                    <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+                </or>
                 <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
             </enablement>
             <action

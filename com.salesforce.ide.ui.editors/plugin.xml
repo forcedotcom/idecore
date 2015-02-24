@@ -12,9 +12,10 @@
             id="com.salesforce.ide.ui.menu.mergeFields"
             targetID="org.eclipse.wst.sse.ui.StructuredTextEditor.EditorContext">
             <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="%menu.label"
-                path="additions">
+                  icon="icons/appExDevIco16.png"
+                  id="com.salesforce.ide.ui.menu.tools"
+                  label="%menu.label"
+                  path="additions">
                 <separator name="group0" />
             </menu>
             <action

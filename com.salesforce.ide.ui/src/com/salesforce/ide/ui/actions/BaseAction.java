@@ -87,7 +87,6 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
         selectedResources.add(selectedResource);
     }
 
-    @SuppressWarnings("unchecked")
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             setSelection(selection);
@@ -101,7 +100,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
 
         if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
             List<IResource> selectedResources = new ArrayList<IResource>();
-            for (Iterator iterator = ((IStructuredSelection) selection).iterator(); iterator.hasNext();) {
+            for (Iterator<?> iterator = ((IStructuredSelection) selection).iterator(); iterator.hasNext();) {
                 Object selectedObject = iterator.next();
                 if (!(selectedObject instanceof IResource)) {
                     continue;

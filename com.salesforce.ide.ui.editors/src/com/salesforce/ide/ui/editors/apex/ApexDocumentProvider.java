@@ -78,10 +78,9 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
     /**
      * Switches the state of problem acceptance according to the value in the preference store.
      */
-    @SuppressWarnings( { "unchecked" })
     protected void enableHandlingTemporaryProblems() {
         boolean enable = isHandlingTemporaryProblems();
-        for (Iterator iter = getFileInfosIterator(); iter.hasNext();) {
+        for (Iterator<?> iter = getFileInfosIterator(); iter.hasNext();) {
             FileInfo info = (FileInfo) iter.next();
             if (info.fModel instanceof IProblemRequestorExtension) {
                 IProblemRequestorExtension extension = (IProblemRequestorExtension) info.fModel;

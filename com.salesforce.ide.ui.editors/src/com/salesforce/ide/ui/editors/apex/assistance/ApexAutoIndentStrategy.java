@@ -11,6 +11,8 @@
 package com.salesforce.ide.ui.editors.apex.assistance;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
@@ -18,6 +20,8 @@ import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
@@ -30,9 +34,44 @@ import com.salesforce.ide.ui.editors.internal.utils.EditorMessages;
 public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     private static final Logger logger = Logger.getLogger(ApexAutoIndentStrategy.class);
+    
+    private String indent;
 
     public ApexAutoIndentStrategy() {
-
+        
+        indent = indentStringFromEditorsUIPreferences();
+    }
+    
+    /**
+     * Returns the String to use for indenting based on the General/Editors/Text Editors preferences
+     * that are respected by the underlying platform editing code.
+     * 
+     * @return the String to use for indenting
+     */
+    private String indentStringFromEditorsUIPreferences() {
+        
+        IPreferencesService ps = Platform.getPreferencesService();
+        boolean spacesForTabs = ps.getBoolean(
+                EditorsUI.PLUGIN_ID,
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS,
+                false,
+                null
+                );
+        if (spacesForTabs) {
+            int tabWidth = ps.getInt(
+                    EditorsUI.PLUGIN_ID,
+                    AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH,
+                    4,
+                    null
+                    );
+            StringBuilder sb = new StringBuilder(tabWidth);
+            for (int i = 0; i < tabWidth; i++) {
+                sb.append(" ");
+            }
+            return sb.toString();
+        } else {
+            return "\t";
+        }
     }
 
     /*
@@ -287,7 +326,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             if (getBracketCount(document, 0, docLength, false) > 0 && closeBraces
                     && (document.getChar(lastChar) == '{')) {
                 buf.append(document.get(start, whiteend - start));
-                buf.append('\t');
+                buf.append(indent);
                 command.caretOffset = command.offset + buf.length();
                 command.shiftsCaret = false;
                 buf.append('\n');
@@ -302,7 +341,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             } else {
                 buf.append(document.get(start, whiteend - start));
                 if (getBracketCount(document, start, command.offset, true) > 0) {
-                    buf.append('\t');
+                    buf.append(indent);
                 }
             }
             command.text = buf.toString();

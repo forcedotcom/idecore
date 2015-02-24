@@ -69,7 +69,75 @@
     <!--   C O N T E N T   T Y P E S   -->
     <extension point="org.eclipse.core.runtime.contentTypes"
             id="com.salesforce.ide.core.contentTypes">
-       
+
+       <content-type
+            id="com.salesforce.ide.core.contentType.settings"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Settings.fileExtension"
+            name="%Settings.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%MobileSettings.componentType"/>
+                <parameter name="element" value="{%xmlns}%Settings.componentType"/>
+                <!--
+                 | The following is a (possibly incomplete) list of root elements
+                 | that I have seen in files with a ".settings" extension.
+                 +-->
+                <parameter name="element" value="{%xmlns}AccountSettings"/>
+                <parameter name="element" value="{%xmlns}ActivitiesSettings"/>
+                <parameter name="element" value="{%xmlns}AddressSettings"/>
+                <parameter name="element" value="{%xmlns}BusinessHoursSettings"/>
+                <parameter name="element" value="{%xmlns}CaseSettings"/>
+                <parameter name="element" value="{%xmlns}ChatterAnswersSettings"/>
+                <parameter name="element" value="{%xmlns}CompanySettings"/>
+                <parameter name="element" value="{%xmlns}ContractSettings"/>
+                <parameter name="element" value="{%xmlns}IdeasSettings"/>
+                <parameter name="element" value="{%xmlns}OpportunitySettings"/>
+                <parameter name="element" value="{%xmlns}OrderSettings"/>
+                <parameter name="element" value="{%xmlns}ProductSettings"/>
+                <parameter name="element" value="{%xmlns}QuoteSettings"/>
+                <parameter name="element" value="{%xmlns}SecuritySettings"/>
+            </describer>
+        </content-type>
+
+       <content-type
+            id="com.salesforce.ide.core.contentType.sharingRules"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%SharingRules.fileExtension"
+            name="SharingRules"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%AccountSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%AccountTerritorySharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%CampaignSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%CaseSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%ContactSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%CustomObjectSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%LeadSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%OpportunitySharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%UserSharingRules.componentType"/>
+                <parameter name="element" value="{%xmlns}%AccountOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%AccountCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%AccountTerritorySharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%CampaignOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%CampaignCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%CaseOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%CaseCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%ContactOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%ContactCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%CustomObjectOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%CustomObjectCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%LeadOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%LeadCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%OpportunityOwnerSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%OpportunityCriteriaBasedSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%UserMembershipSharingRule.componentType"/>
+                <parameter name="element" value="{%xmlns}%UserCriteriaBasedSharingRule.componentType"/>
+            </describer>
+        </content-type>
+
        <content-type
             id="com.salesforce.ide.core.contentType.analyticSnapshot"
             base-type="org.eclipse.core.runtime.xml"
@@ -77,8 +145,8 @@
             name="%AnalyticSnapshot.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%AnalyticSnapshot.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%AnalyticSnapshot.componentType"/>
             </describer>
         </content-type>
             
@@ -89,8 +157,8 @@
             name="%RemoteSiteSetting.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%RemoteSiteSetting.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%RemoteSiteSetting.componentType"/>
             </describer>            
         </content-type>
         
@@ -142,8 +210,8 @@
             name="%CustomApplication.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomApplication.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomApplication.componentType"/>
             </describer>
         </content-type>
 
@@ -154,8 +222,8 @@
             name="%CustomDataType.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomDataType.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomDataType.componentType"/>
             </describer>
         </content-type>
 
@@ -166,8 +234,8 @@
             name="%CustomLabels.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomLabels.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomLabels.componentType"/>
             </describer>
         </content-type>
 
@@ -178,8 +246,8 @@
             name="%CustomObject.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomObject.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomObject.componentType"/>
             </describer>
         </content-type>
 
@@ -190,8 +258,8 @@
             name="%CustomObjectTranslation.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomObjectTranslation.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomObjectTranslation.componentType"/>
             </describer>
         </content-type>
 
@@ -202,8 +270,8 @@
             name="%CustomPageWebLink.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomPageWebLink.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomPageWebLink.componentType"/>
             </describer>
         </content-type>
 
@@ -214,8 +282,8 @@
             name="%CustomSite.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomSite.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomSite.componentType"/>
             </describer>
         </content-type>
         
@@ -226,8 +294,8 @@
             name="%Dashboard.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Dashboard.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Dashboard.componentType"/>
             </describer>
         </content-type>
 
@@ -238,8 +306,8 @@
             name="%DataCategoryGroup.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%DataCategoryGroup.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%DataCategoryGroup.componentType"/>
             </describer>
         </content-type>
         
@@ -250,8 +318,8 @@
             name="%EntitlementTemplate.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-            <parameter name="element" value="%EntitlementTemplate.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter name="element" value="{%xmlns}%EntitlementTemplate.componentType"/>
             </describer>
         </content-type>
         
@@ -270,8 +338,8 @@
             name="%Layout.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Layout.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Layout.componentType"/>
             </describer>
         </content-type>
 
@@ -282,8 +350,8 @@
             name="%Letterhead.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Letterhead.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Letterhead.componentType"/>
             </describer>
         </content-type>
 
@@ -294,8 +362,8 @@
             name="%HomePageComponent.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%HomePageComponent.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%HomePageComponent.componentType"/>
             </describer>
         </content-type>
 
@@ -306,8 +374,8 @@
             name="%HomePageLayout.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%HomePageLayout.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%HomePageLayout.componentType"/>
             </describer>
         </content-type>
 
@@ -318,8 +386,8 @@
             name="%CustomTab.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%CustomTab.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%CustomTab.componentType"/>
             </describer>
         </content-type>
 
@@ -339,8 +407,8 @@
             name="%Portal.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Portal.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Portal.componentType"/>
             </describer>
         </content-type>
 
@@ -351,8 +419,8 @@
             name="%Profile.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Profile.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Profile.componentType"/>
             </describer>
         </content-type>
 
@@ -363,8 +431,8 @@
             name="%PermissionSet.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%PermissionSet.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%PermissionSet.componentType"/>
             </describer>
         </content-type>
 
@@ -375,8 +443,8 @@
             name="%Report.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Report.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Report.componentType"/>
             </describer>
         </content-type>
 
@@ -387,8 +455,8 @@
             name="%ReportType.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%ReportType.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%ReportType.componentType"/>
             </describer>
         </content-type>
 
@@ -409,8 +477,8 @@
             name="%Translations.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Translations.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Translations.componentType"/>
             </describer>
         </content-type>
 
@@ -421,8 +489,8 @@
             name="%Workflow.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%Workflow.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Workflow.componentType"/>
             </describer>
         </content-type>
 
@@ -433,8 +501,8 @@
             name="%AppMenu.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%AppMenu.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%AppMenu.componentType"/>
             </describer>
         </content-type>
 
@@ -445,10 +513,83 @@
             name="%SharingSet.displayName"
             priority="normal"
             default-charset="UTF-8">
-            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
-                <parameter name="element" value="%SharingSet.componentType"/>
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%SharingSet.componentType"/>
             </describer>
         </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.assignmentRules"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%AssignmentRules.fileExtension"
+            name="%AssignmentRules.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%AssignmentRules.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.community"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Community.fileExtension"
+            name="%Community.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Community.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.flow"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Flow.fileExtension"
+            name="%Flow.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Flow.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.queue"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="queue"
+            name="Queue"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}Queue"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.quickAction"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%QuickAction.fileExtension"
+            name="%QuickAction.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%QuickAction.componentType"/>
+            </describer>
+        </content-type>
+
+        <content-type
+            id="com.salesforce.ide.core.contentType.role"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="%Role.fileExtension"
+            name="%Role.displayName"
+            priority="normal"
+            default-charset="UTF-8">
+            <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+                <parameter name="element" value="{%xmlns}%Role.componentType"/>
+            </describer>
+        </content-type>
+
     </extension>
 
 

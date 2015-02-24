@@ -1664,7 +1664,7 @@ public class ProjectService extends BaseService {
             String token = (String) credentialMap.get(Constants.PROP_TOKEN);
             // identification of old storage
             if (password.equals("") && token.equals("")) {
-                Map oldCrendtialMap = migrateOldAuthInfoAndGetNewCredentials(url, project, AUTH_TYPE);
+                Map<String,String> oldCrendtialMap = migrateOldAuthInfoAndGetNewCredentials(url, project, AUTH_TYPE);
                 if (oldCrendtialMap != null) {
                     password = (String) oldCrendtialMap.get(Constants.PROP_PASSWORD);
                     token = (String) oldCrendtialMap.get(Constants.PROP_TOKEN);
@@ -1679,9 +1679,9 @@ public class ProjectService extends BaseService {
         return forceProject;
     }
 
-    private Map migrateOldAuthInfoAndGetNewCredentials(URL url, IProject project, String authType) {
+    private Map<String,String> migrateOldAuthInfoAndGetNewCredentials(URL url, IProject project, String authType) {
         //get the existing password and security token
-        Map authorizationInfo = Platform.getAuthorizationInfo(url, project.getName(), authType);
+        Map<String,String> authorizationInfo = Platform.getAuthorizationInfo(url, project.getName(), authType);
         //This adds the authorization information to new migrated project using default mechanism
         if (authorizationInfo != null) {
             getAuthorizationService().addAuthorizationInfo(url.toString(), project, authType, authorizationInfo);

@@ -117,12 +117,11 @@ public class MarkerUtils {
      * 
      * @param resource
      */
-    @SuppressWarnings("unchecked")
     public void applyDirty(IResource resource, String markerId, String msg) {
         if (isDirty(resource, markerId)) {
             return;
         }
-        Map attributes = new HashMap(4);
+        Map<String, Object> attributes = new HashMap<String, Object>(4);
 
         attributes.put(IMarker.MESSAGE, msg);
         // marker line numbers are 1-based: we set the marker arbitrarily on the first line

@@ -163,8 +163,7 @@ public class VisualForceMultiPageEditor extends BaseComponentMultiPageEditorPart
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Object getAdapter(Class key) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         Object adapter = super.getAdapter(key);
         if (adapter == null) {
             adapter = getSourcePage().getAdapter(key);

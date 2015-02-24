@@ -34,8 +34,7 @@ public class UpgradeBuilder extends BaseBuilder {
 
     //  M E T H O D S
     @Override
-    @SuppressWarnings("unchecked")
-    protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(int kind, Map<String,String> args, IProgressMonitor monitor) throws CoreException {
         if (logger.isDebugEnabled()) {
             logger.debug("Upgrade build kick-off");
         }

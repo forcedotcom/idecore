@@ -10,15 +10,12 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.assistance;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.XmlConstants;
 
 public class ApexArgument {
-
-    private static Logger logger = Logger.getLogger(ApexArgument.class);
 
     private String name = "param";
     private String type = "Unknown";
