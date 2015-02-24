@@ -12,6 +12,9 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/antlr-3.5.2-complete.jar,
+ lib/joda-time-2.6.jar,
+ lib/javax.xml.rpc-3.1.2.2.jar,
+ lib/axis-1.4.jar,
  lib/apex-jorje-data-1.0-SNAPSHOT.jar,
  lib/apex-jorje-parser-1.0-SNAPSHOT.jar,
  lib/apex-jorje-services-1.0-SNAPSHOT.jar,
@@ -36,5 +39,14 @@ Export-Package: apex.jorje.data,
  apex.jorje.services.exception,
  apex.jorje.services.printers,
  com.salesforce.ide.apex.core,
- com.salesforce.ide.apex.internal.core
+ com.salesforce.ide.apex.internal.core,
+ javax.xml.rpc.encoding,
+ org.apache.axis.constants,
+ org.joda.time,
+ org.joda.time.base,
+ org.joda.time.chrono,
+ org.joda.time.convert,
+ org.joda.time.field,
+ org.joda.time.format,
+ org.joda.time.tz
 Import-Package: org.apache.log4j

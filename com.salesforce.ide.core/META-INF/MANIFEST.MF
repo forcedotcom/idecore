@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
-Bundle-SymbolicName: com.salesforce.ide.core; singleton:=true
+Bundle-SymbolicName: com.salesforce.ide.core;singleton:=true
 Bundle-Version: 33.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.core.ForceIdeCorePlugin
 Bundle-Vendor: %providerName
@@ -18,7 +18,10 @@ Require-Bundle: com.salesforce.ide.api;bundle-version="[33.0.0,34.0.0)",
  org.apache.xerces;bundle-version="2.9.0",
  com.salesforce.ide.core.compatibility;bundle-version="[33.0.0,34.0.0)",
  com.salesforce.ide.core.compatibility.auth.equinox;bundle-version="[33.0.0,34.0.0)"
-Import-Package: org.apache.log4j, org.apache.log4j.xml, org.apache.log4j.lf5.util,org.apache.log4j.spi
+Import-Package: org.apache.log4j,
+ org.apache.log4j.lf5.util,
+ org.apache.log4j.spi,
+ org.apache.log4j.xml
 Bundle-ClassPath: .,
  lib/aopalliance.jar,
  lib/aspectjrt.jar,
@@ -29,11 +32,10 @@ Bundle-ClassPath: .,
  lib/spring-core.jar,
  lib/cglib-nodep-2.1_3.jar,
  lib/asm-all-5.0.3.jar,
- lib/commons-lang-2.3.jar,
  lib/commons-logging.jar,
  lib/wsdl2Apex-1.0.jar,
- lib/guava-18.0.jar,
- lib/joda-time-2.6.jar
+ lib/commons-lang3-3.3.2.jar,
+ lib/guava-18.0.jar
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
 Export-Package: antlr,
@@ -84,15 +86,8 @@ Export-Package: antlr,
  com.salesforce.ide.core.services.hooks,
  com.salesforce.ide.wsdl2apex.core,
  org.antlr.runtime,
- org.apache.commons.lang,
+ org.apache.commons.lang3,
  org.aspectj.lang,
- org.joda.time,
- org.joda.time.base,
- org.joda.time.chrono,
- org.joda.time.convert,
- org.joda.time.field,
- org.joda.time.format,
- org.joda.time.tz,
  org.objectweb.asm,
  org.springframework.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
