@@ -37,7 +37,7 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
     private final ThreadLocal<CharacterLogger> characterLogger = new ThreadLocal<CharacterLogger>();
     
     public MetadataDebuggingInfoHandler() {
-    	log.set(new StringBuilder());
+    	
     }
 
     /**
@@ -71,6 +71,7 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
         if (qName.equalsIgnoreCase("DebugLog")) {
             isDebugLog.set(true);
             isDebugLogFound.set(true);
+            log.set(new StringBuilder());
             characterLogger.set(new CharacterLogger() { @Override public void appendCharacters(ThreadLocal<StringBuilder> log, char[] ch, int start, int length) {
             	log.get().append(ch, start, length);
             }});
