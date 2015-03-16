@@ -17,11 +17,9 @@ public class CustomObjectNameResolver {
     private static final String KNOWLEDGE_ARTICLE_SUFFIX = "__kav";
     private final Predicate<Pair<String>>[] predicatesToCheck;
 
-    @SuppressWarnings("unchecked")
     public static CustomObjectNameResolver getCheckerForStandardObject() {
         return new CustomObjectNameResolver(isValidTypePredicate, validStandardObjectPredicate);
     }
-    @SuppressWarnings("unchecked")
     public static CustomObjectNameResolver getCheckerForCustomObject(){
         return new CustomObjectNameResolver(isValidTypePredicate, validCustomObjectPredicate);
     }
@@ -56,6 +54,7 @@ public class CustomObjectNameResolver {
         }
     };
     
+    @SafeVarargs
     private CustomObjectNameResolver(Predicate<Pair<String>>... predicates) {
         this.predicatesToCheck = predicates;
     }

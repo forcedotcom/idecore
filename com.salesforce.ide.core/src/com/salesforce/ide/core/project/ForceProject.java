@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.core.project;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;

@@ -522,10 +522,10 @@ public class Utils {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Manifest cache file (does"
 							+ (file.exists() ? " " : " not ") + "exist): "
-							+ file.toURL().toExternalForm());
+							+ file.toURI().toURL().toExternalForm());
 				}
 
-				return file.toURL();
+				return file.toURI().toURL();
 			} catch (MalformedURLException e) {
 				logger.warn("Unable to get url from file: " + e.getMessage());
 			}

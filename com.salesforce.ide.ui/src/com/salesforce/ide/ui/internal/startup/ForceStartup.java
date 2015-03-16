@@ -63,8 +63,8 @@ public class ForceStartup implements IStartup {
                 if (state != Bundle.STOPPING || state != Bundle.UNINSTALLED) {
                     String title = UIMessages.getString("Force.Startup.Compatibility.Warning.title");
 
-                    String bundleName = (String) bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_NAME);
-                    String bundleVersion = (String) bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_VERSION);
+                    String bundleName = bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_NAME);
+                    String bundleVersion = bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_VERSION);
                     String dialogMsg =
                             UIMessages.getString("Force.Startup.Compatibility.Warning.message", new String[] {
                                     bundleName, bundleVersion });

@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.sforce.soap.tooling.DeleteResult;
-import com.sforce.soap.tooling.QueryLocator;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SObject;
 import com.sforce.soap.tooling.SaveResult;

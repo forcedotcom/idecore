@@ -2301,7 +2301,7 @@ public class ProjectService extends BaseService {
             applyWarningsToAssociatedComponents(projectPackageList, component);
 
             try {
-                component.getFileResource().findMarkers(MarkerUtils.getInstance().MARKER_RUN_TEST_FAILURE, true,
+                component.getFileResource().findMarkers(MarkerUtils.MARKER_RUN_TEST_FAILURE, true,
                     IResource.DEPTH_INFINITE);
             } catch (CoreException e) {
                 String logMessage = Utils.generateCoreExceptionLog(e);
