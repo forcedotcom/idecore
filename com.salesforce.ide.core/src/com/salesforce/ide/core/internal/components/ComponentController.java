@@ -367,7 +367,7 @@ public class ComponentController extends Controller {
                     } catch (Exception e) {
                         logger.warn("Unable to update cache with new component "
                                 + componentWizardModel.getDisplayName(), e);
-                        return new Status(Status.INFO, ForceIdeCorePlugin.PLUGIN_ID, Status.INFO,
+                        return new Status(IStatus.INFO, ForceIdeCorePlugin.PLUGIN_ID, IStatus.INFO,
                             "Unable to update cache with new component " + componentWizardModel.getDisplayName(), e);
                     }
 
@@ -379,7 +379,7 @@ public class ComponentController extends Controller {
                 } else {
                     logger.warn("Unable to update cache with new component " + componentWizardModel.getDisplayName()
                         + " - cache is not found");
-                    return new Status(Status.INFO, ForceIdeCorePlugin.PLUGIN_ID, Status.INFO,
+                    return new Status(IStatus.INFO, ForceIdeCorePlugin.PLUGIN_ID, IStatus.INFO,
                         "Unable to update cache with new component " + componentWizardModel.getDisplayName()
                         + " - cache is not found", null);
                 }

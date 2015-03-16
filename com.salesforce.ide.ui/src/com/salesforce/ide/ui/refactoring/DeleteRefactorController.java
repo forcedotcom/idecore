@@ -336,7 +336,7 @@ public class DeleteRefactorController extends BaseRefactorController {
 
                     } catch (Exception e) {
                         logger.warn("Unable to update cache with deleted component(s)", e);
-                        return new Status(Status.INFO, ForceIdeCorePlugin.PLUGIN_ID, Status.INFO,
+                        return new Status(IStatus.INFO, ForceIdeCorePlugin.PLUGIN_ID, IStatus.INFO,
                                 "Unable to update cache with with deleted component(s)", e);
                     }
 
@@ -347,7 +347,7 @@ public class DeleteRefactorController extends BaseRefactorController {
                     }
                 } else {
                     logger.warn("Unable to update cache with with deleted component(s)  - cache is not found");
-                    return new Status(Status.INFO, ForceIdeCorePlugin.PLUGIN_ID, Status.INFO,
+                    return new Status(IStatus.INFO, ForceIdeCorePlugin.PLUGIN_ID, IStatus.INFO,
                             "Unable to update cache with with deleted component(s)  - cache is not found", null);
                 }
 

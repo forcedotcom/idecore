@@ -357,8 +357,8 @@ public class PackageManifestTree extends FilteredTree {
         super(parent, treeStyle, new ManifestTreeFilter(), false);
         this.controller = controller;
 
-        profileObjectStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
-        filterStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+        profileObjectStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
+        filterStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
 
         checkFilter = new HideNonCheckedFilter();
         createMultiStatus();
@@ -1617,7 +1617,7 @@ public class PackageManifestTree extends FilteredTree {
                 if (!isUnChecked(objectNode)) {
                     if (!profileObjectStatus.getMessage().equals(Messages.PackageManifestTree_checkWarning_text)) {
                         profileObjectStatus =
-                                new Status(Status.WARNING, getClass().getName(), Status.WARNING,
+                                new Status(IStatus.WARNING, getClass().getName(), IStatus.WARNING,
                                         Messages.PackageManifestTree_checkWarning_text, null);
                         return true;
                     }
@@ -1630,7 +1630,7 @@ public class PackageManifestTree extends FilteredTree {
                 if (!isUnChecked(customNode)) {
                     if (!profileObjectStatus.getMessage().equals(Messages.PackageManifestTree_checkWarning_text)) {
                         profileObjectStatus =
-                                new Status(Status.WARNING, getClass().getName(), Status.WARNING,
+                                new Status(IStatus.WARNING, getClass().getName(), IStatus.WARNING,
                                         Messages.PackageManifestTree_checkWarning_text, null);
                         return true;
                     }
@@ -1641,7 +1641,7 @@ public class PackageManifestTree extends FilteredTree {
         }
 
         if (!Utils.isEmpty(profileObjectStatus.getMessage())) {
-            profileObjectStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+            profileObjectStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
             return true;
         }
 
@@ -1657,7 +1657,7 @@ public class PackageManifestTree extends FilteredTree {
         if (isFiltered() && ((PackageManifestTreeViewer) getTreeViewer()).checkedAndFiltered) {
             if (!filterStatus.getMessage().equals(Messages.PackageManifestTree_filterWarning_text)) {
                 filterStatus =
-                        new Status(Status.WARNING, getClass().getName(), Status.WARNING,
+                        new Status(IStatus.WARNING, getClass().getName(), IStatus.WARNING,
                                 Messages.PackageManifestTree_filterWarning_text, null);
                 return true;
             }
@@ -1666,7 +1666,7 @@ public class PackageManifestTree extends FilteredTree {
         }
 
         if (!Utils.isEmpty(filterStatus.getMessage())) {
-            filterStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+            filterStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
             return true;
         }
 
@@ -1678,13 +1678,13 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     private void createMultiStatus() {
-        status = new MultiStatus(getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+        status = new MultiStatus(getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
 
-        if (profileObjectStatus.getSeverity() != Status.OK) {
+        if (profileObjectStatus.getSeverity() != IStatus.OK) {
             status.add(profileObjectStatus);
         }
 
-        if (filterStatus.getSeverity() != Status.OK) {
+        if (filterStatus.getSeverity() != IStatus.OK) {
             status.add(filterStatus);
         }
     }
