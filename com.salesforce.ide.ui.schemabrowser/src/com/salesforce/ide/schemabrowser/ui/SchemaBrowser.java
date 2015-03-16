@@ -1080,9 +1080,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
             SubProgressMonitor spm = new SubProgressMonitor(monitor, 1);
             spm.beginTask("Getting relationship definitions...", fields.length);
             for (Field element : fields) {
-                if (spm != null) {
-                    spm.worked(1);
-                }
+                spm.worked(1);
                 spm.subTask("Getting " + element.getLabel() + " definition...");
                 TreeItem thisChild =
                         createTreeItemChild(childFields, element.getLabel(), true, 0, false, childFieldType);

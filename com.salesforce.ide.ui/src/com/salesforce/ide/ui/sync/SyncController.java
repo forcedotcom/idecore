@@ -530,8 +530,7 @@ public class SyncController extends Controller {
                     if (resource == null || ContainerDelegate.getInstance().getServiceLocator().getProjectService().isDefaultPackageManifestFile(resource)
                             || !ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(resource)) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Excluding '" + resource != null ? resource.getName() : component
-                                    .getMetadataFilePath()
+                            logger.debug("Excluding '" + (resource != null ? resource.getName() : component.getMetadataFilePath())
                                     + "' resource - resource is null and/or resource is not a "
                                     + Constants.PLUGIN_NAME
                                     + " managed resource");

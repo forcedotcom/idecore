@@ -1145,7 +1145,7 @@ public class PackageRetrieveService extends BasePackageService {
             logger.debug("Retrieve result contains zip of size ["
                     + (resultExt.getZipFile() != null ? resultExt.getZipFile().length : 0) + "]");
             StringBuffer strBuff = new StringBuffer("Retrieved the following components in package(s) '");
-            if (resultExt != null && resultExt.getProjectPackageList() != null) {
+            if (resultExt.getProjectPackageList() != null) {
                 String[] packageNames = resultExt.getProjectPackageList().getPackageNames();
                 for (int i = 0; i < packageNames.length; i++) {
                     strBuff.append(packageNames[i]);

@@ -99,9 +99,7 @@ public class UpgradeComponentConflictsPage extends BaseUpgradePage {
                     } catch (Exception e) {
                         throw new InvocationTargetException(e);
                     } finally {
-                        if (monitor != null) {
-                            monitor.done();
-                        }
+                        monitor.done();
                     }
                 }
             });

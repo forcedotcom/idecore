@@ -149,9 +149,7 @@ public class UIUtils {
             data.widthHint = Math.max(widthHint, minSize.x);
             button.setLayoutData(data);
         } finally {
-            if (gc != null) {
-                gc.dispose();
-            }
+            gc.dispose();
         }
 
     }

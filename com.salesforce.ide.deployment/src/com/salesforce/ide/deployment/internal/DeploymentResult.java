@@ -200,9 +200,7 @@ public class DeploymentResult {
 
         IRunTestsResultExt runResults = new RunTestsResultExt(deployResultHandler.getDeployResult().getDetails().getRunTestResult());
         String resultsLog = null;
-        if (runResults != null) {
-            resultsLog = runResults.toLog();
-        }
+        resultsLog = runResults.toLog();
         return resultsLog;
     }
 }

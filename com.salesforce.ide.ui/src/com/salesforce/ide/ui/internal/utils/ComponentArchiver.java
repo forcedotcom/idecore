@@ -96,9 +96,7 @@ public class ComponentArchiver {
                     tmpStats = ZipUtils.zipFile(filePath, component.getBody(), zipFileStream, Integer.MAX_VALUE);
                 }
 
-                if (stats != null) {
-                    stats.addStats(tmpStats);
-                }
+                stats.addStats(tmpStats);
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Updated zip stats:\n" + stats.toString());

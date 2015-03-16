@@ -159,9 +159,7 @@ public class ProjectUpdateOperation extends ProjectCreateOperation {
                 }
             }
 
-            if (monitor != null) {
-                monitor.done();
-            }
+            monitor.done();
         }
     }
 }

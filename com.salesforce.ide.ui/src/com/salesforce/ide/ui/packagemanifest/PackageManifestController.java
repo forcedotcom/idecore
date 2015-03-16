@@ -298,9 +298,7 @@ public class PackageManifestController extends Controller {
                 } catch (Throwable e) {
                     throw new InvocationTargetException(e);
                 } finally {
-                    if (monitor != null) {
-                        monitor.done();
-                    }
+                    monitor.done();
                 }
             }
         });
@@ -584,9 +582,7 @@ public class PackageManifestController extends Controller {
                 } catch (Throwable e) {
                     throw new InvocationTargetException(e);
                 } finally {
-                    if (monitor != null) {
-                        monitor.done();
-                    }
+                    monitor.done();
                 }
             }
         });

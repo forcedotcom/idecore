@@ -363,9 +363,7 @@ public class ProjectOrganizationPage extends BaseProjectCreatePage {
                 } catch (Throwable e) {
                     throw new InvocationTargetException(e);
                 } finally {
-                    if (monitor != null) {
-                        monitor.done();
-                    }
+                    monitor.done();
                 }
             }
         });
