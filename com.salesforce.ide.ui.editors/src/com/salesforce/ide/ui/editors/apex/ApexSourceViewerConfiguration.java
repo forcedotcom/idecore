@@ -42,7 +42,6 @@ import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -102,10 +101,6 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         apexCompletionProcessor = new ApexCompletionProcessor();
 
         apexCodeColorProvider = ForceIdeEditorsPlugin.getApexCodeColorProvider();
-        // register part listener for editor tab change (update fileName that
-        // ApexCompletionProcessor associated w/)
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService()
-                .addPartListener(ApexCompletionProcessor.getPartListener());
     }
 
     public void init(IProject project) {
@@ -211,7 +206,6 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
         if (apexCompletionProcessor != null) {
             assistant.setContentAssistProcessor(apexCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-            apexCompletionProcessor.setContentAssistant(assistant);
         }
 
         assistant.setContentAssistProcessor(new ApexDocCompletionProcessor(), ApexPartitionScanner.APEX_DOC);

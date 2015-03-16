@@ -194,9 +194,6 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
             model.addGroup(group);
             model.forceInstall();
 
-            level.fOffset = offset;
-            level.fLength = 2;
-
             // set up position tracking for our magic peers
             if (fBracketLevelStack.size() == 1) {
                 document.addPositionCategory(CATEGORY);
@@ -284,8 +281,6 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
     public void resume(LinkedModeModel environment, int flags) {}
 
     private static class BracketLevel {
-        int fOffset;
-        int fLength;
         LinkedModeUI fUI;
         Position fFirstPosition;
         Position fSecondPosition;
@@ -364,15 +359,6 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
             } catch (BadPositionCategoryException e) {
                 // ignore and return
             }
-        }
-
-        /**
-         * Returns the position category.
-         * 
-         * @return the position category
-         */
-        public String getCategory() {
-            return fCategory;
         }
     }
 

@@ -18,7 +18,6 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -29,8 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchPartReference;
 
 /**
  * Example Java completion processor.
@@ -38,9 +35,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     protected static ICompletionProposal[] currentList;
-    private static String fileName = null;
     protected IProject project;
-    private ContentAssistant assistant;
     
     /**
      * Simple content assist tip closer. The tip is valid in a range of 5 characters around its popup location.
@@ -87,10 +82,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     public void setProject(IProject project) {
         this.project = project;
-    }
-
-    public void setContentAssistant(ContentAssistant assistant) {
-        this.assistant = assistant;
     }
 
     /*
@@ -227,44 +218,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     public void clearState() {
         currentList = null;
-    }
-
-    public static IPartListener2 getPartListener() {
-        return new IPartListener2() {
-            @Override
-            public void partActivated(IWorkbenchPartReference partRef) {
-                // TODO: export string
-                if (partRef.getId().equals("com.salesforce.ide.ui.editors.apex")) {
-                    ApexCompletionProcessor.setFileName(partRef.getPartName());
-                }
-            }
-
-            @Override
-            public void partBroughtToTop(IWorkbenchPartReference partRef) {}
-
-            @Override
-            public void partClosed(IWorkbenchPartReference partRef) {}
-
-            @Override
-            public void partDeactivated(IWorkbenchPartReference partRef) {}
-
-            @Override
-            public void partHidden(IWorkbenchPartReference partRef) {}
-
-            @Override
-            public void partInputChanged(IWorkbenchPartReference partRef) {}
-
-            @Override
-            public void partOpened(IWorkbenchPartReference partRef) {}
-
-            @Override
-            public void partVisible(IWorkbenchPartReference partRef) {}
-
-        };
-    }
-
-    protected static void setFileName(String fileName) {
-        ApexCompletionProcessor.fileName = fileName;
     }
 
 }
