@@ -64,7 +64,6 @@ import com.salesforce.ide.upgrade.internal.utils.UpgradeMessages;
  * 
  * @author cwall
  */
-@SuppressWarnings("restriction")
 public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
 
     private Tree treeComponentConflicts = null;
