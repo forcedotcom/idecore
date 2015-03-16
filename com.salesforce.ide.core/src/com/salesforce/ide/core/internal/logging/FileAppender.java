@@ -110,7 +110,7 @@ public class FileAppender extends RollingFileAppender {
      * @throws IOException - IO Error happened or the state location was not set
      */
     @Override
-    public void setFile(String fileName,boolean append,boolean bufferedIO,int bufferSize) throws IOException {
+    public synchronized void setFile(String fileName,boolean append,boolean bufferedIO,int bufferSize) throws IOException {
         if (this.stateLocation == null) {
             throw new IOException("Missing Plugin State Location.");
         }
