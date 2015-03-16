@@ -40,7 +40,6 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -179,7 +178,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         return new IInformationControlCreator() {
             @Override
             public IInformationControl createInformationControl(Shell parent) {
-                return new DefaultInformationControl(parent, SWT.NONE, new HTMLTextPresenter(true));
+                return new DefaultInformationControl(parent, new HTMLTextPresenter(true));
             }
         };
     }

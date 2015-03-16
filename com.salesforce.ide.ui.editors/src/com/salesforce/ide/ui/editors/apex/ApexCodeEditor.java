@@ -27,8 +27,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.internal.ui.text.JavaPairMatcher;
-import org.eclipse.jdt.internal.ui.text.PreferencesAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -64,6 +65,7 @@ import org.eclipse.ui.editors.text.ITextEditorHelpContextIds;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.ShowInContext;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -359,8 +361,8 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
         List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
 
-        stores.add(ForceIdeEditorsPlugin.getDefault().getPreferenceStore());
-        stores.add(new PreferencesAdapter(ForceIdeEditorsPlugin.getDefault().getPluginPreferences()));
+        stores.add(new ScopedPreferenceStore(InstanceScope.INSTANCE, ForceIdeEditorsPlugin.PLUGIN_ID));
+        stores.add(new ScopedPreferenceStore(DefaultScope.INSTANCE, ForceIdeEditorsPlugin.PLUGIN_ID));
         stores.add(EditorsUI.getPreferenceStore());
 
         return new ChainedPreferenceStore(stores.toArray(new IPreferenceStore[stores.size()]));

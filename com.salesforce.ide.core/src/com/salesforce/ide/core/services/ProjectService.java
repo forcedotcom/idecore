@@ -226,7 +226,7 @@ public class ProjectService extends BaseService {
             throw new IllegalArgumentException("Resource cannot be null");
         }
 
-        List<IResource> resources = new ArrayList<IResource>(1);
+        List<IResource> resources = new ArrayList<>(1);
         resources.add(resource);
         return getProjectContents(resources, monitor);
     }
@@ -357,7 +357,7 @@ public class ProjectService extends BaseService {
      * @return
      */
     public List<IProject> getForceProjects() {
-        List<IProject> forceProjects = new ArrayList<IProject>();
+        List<IProject> forceProjects = new ArrayList<>();
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         if (Utils.isNotEmpty(projects)) {
             for (IProject project : projects) {
@@ -509,7 +509,7 @@ public class ProjectService extends BaseService {
             return null;
         }
 
-        List<IFolder> componentFolders = new ArrayList<IFolder>();
+        List<IFolder> componentFolders = new ArrayList<>();
         for (IResource sourceFolderResource : sourceFolderResources) {
             if (sourceFolderResource.getType() != IResource.FOLDER) {
                 continue;
@@ -789,7 +789,7 @@ public class ProjectService extends BaseService {
             return allResources;
         }
 
-        List<IResource> ret_filesList = new ArrayList<IResource>();
+        List<IResource> ret_filesList = new ArrayList<>();
         for (IResource resource : allResources) {
             if (resource.getType() == IResource.PROJECT) {
                 addAllFilesOnly((IProject) resource, ret_filesList);
@@ -860,7 +860,7 @@ public class ProjectService extends BaseService {
             return null;
         }
 
-        List<IResource> specificResources = new ArrayList<IResource>(resources.size());
+        List<IResource> specificResources = new ArrayList<>(resources.size());
         for (IResource resource : resources) {
             if (resource.getType() == type) {
                 specificResources.add(resource);
@@ -1658,16 +1658,16 @@ public class ProjectService extends BaseService {
             logger.error("Invalid URL ", e);
         }
 
-        Map<?, ?> credentialMap = getAuthorizationService().getCredentialMap(url, project.getName(), AUTH_TYPE);
+        Map<String, String> credentialMap = getAuthorizationService().getCredentialMap(url, project.getName(), AUTH_TYPE);
         if (credentialMap != null) {
-            String password = (String) credentialMap.get(Constants.PROP_PASSWORD);
-            String token = (String) credentialMap.get(Constants.PROP_TOKEN);
+            String password = credentialMap.get(Constants.PROP_PASSWORD);
+            String token = credentialMap.get(Constants.PROP_TOKEN);
             // identification of old storage
             if (password.equals("") && token.equals("")) {
-                Map<String,String> oldCrendtialMap = migrateOldAuthInfoAndGetNewCredentials(url, project, AUTH_TYPE);
+                Map<String, String> oldCrendtialMap = migrateOldAuthInfoAndGetNewCredentials(url, project, AUTH_TYPE);
                 if (oldCrendtialMap != null) {
-                    password = (String) oldCrendtialMap.get(Constants.PROP_PASSWORD);
-                    token = (String) oldCrendtialMap.get(Constants.PROP_TOKEN);
+                    password = oldCrendtialMap.get(Constants.PROP_PASSWORD);
+                    token = oldCrendtialMap.get(Constants.PROP_TOKEN);
                 }
             }
             forceProject.setPassword(password);
@@ -1679,9 +1679,11 @@ public class ProjectService extends BaseService {
         return forceProject;
     }
 
-    private Map<String,String> migrateOldAuthInfoAndGetNewCredentials(URL url, IProject project, String authType) {
+    @SuppressWarnings("deprecation")
+    private Map<String, String> migrateOldAuthInfoAndGetNewCredentials(URL url, IProject project, String authType) {
         //get the existing password and security token
-        Map<String,String> authorizationInfo = Platform.getAuthorizationInfo(url, project.getName(), authType);
+        @SuppressWarnings("unchecked")
+        Map<String, String> authorizationInfo = Platform.getAuthorizationInfo(url, project.getName(), authType);
         //This adds the authorization information to new migrated project using default mechanism
         if (authorizationInfo != null) {
             getAuthorizationService().addAuthorizationInfo(url.toString(), project, authType, authorizationInfo);
@@ -1739,7 +1741,7 @@ public class ProjectService extends BaseService {
         setBoolean(project, Constants.PROP_PREFER_TOOLING_DEPLOYMENT, forceProject.getPreferToolingDeployment());
         setInt(project, Constants.PROP_READ_TIMEOUT, forceProject.getReadTimeoutSecs());
 
-        Map<String, String> credentialMap = new HashMap<String, String>();
+        Map<String, String> credentialMap = new HashMap<>();
         credentialMap.put(Constants.PROP_PASSWORD, forceProject.getPassword());
         credentialMap.put(Constants.PROP_TOKEN, forceProject.getToken());
 

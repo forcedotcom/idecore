@@ -105,7 +105,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
         return new IInformationControlCreator() {
             @Override
             public IInformationControl createInformationControl(Shell parent) {
-                return new DefaultInformationControl(parent, SWT.WRAP, presenter);
+                return new DefaultInformationControl(parent, presenter);
             }
         };
     }

@@ -266,7 +266,7 @@ public class LogView extends ViewPart implements ILogListener {
                 }
                 return false;
             }
-        });
+        }, false);
 
         logFilteredTree.setInitialText(UIMessages.getString("FilterInitialText"));
         logTree = logFilteredTree.getViewer().getTree();

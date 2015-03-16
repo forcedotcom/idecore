@@ -131,7 +131,7 @@ public class PackageManifestController extends Controller {
             } else {
                 if (logger.isDebugEnabled()) {
                     try {
-                        logger.debug("Cleared manifest cache " + oldCache.toURL().toExternalForm()); //$NON-NLS-1$
+                        logger.debug("Cleared manifest cache " + oldCache.toURI().toURL().toExternalForm()); //$NON-NLS-1$
                     } catch (MalformedURLException e) {}
                 }
                 oldCache.delete();
@@ -192,7 +192,7 @@ public class PackageManifestController extends Controller {
             File file = new File(url.getFile());
             if (logger.isDebugEnabled()) {
                 try {
-                    logger.debug("Cleared manifest cache " + file.toURL().toExternalForm()); //$NON-NLS-1$
+                    logger.debug("Cleared manifest cache " + file.toURI().toURL().toExternalForm()); //$NON-NLS-1$
                 } catch (MalformedURLException e) {}
             }
             file.delete();

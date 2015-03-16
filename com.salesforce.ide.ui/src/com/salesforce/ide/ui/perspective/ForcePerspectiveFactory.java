@@ -48,7 +48,6 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
 
         IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea);
         folder.addView(JavaUI.ID_PACKAGES);
-        folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 
         IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.7, editorArea);
         outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
@@ -67,7 +66,6 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
         layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
         layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
         layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
-        layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 
         // new wizards
         IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();

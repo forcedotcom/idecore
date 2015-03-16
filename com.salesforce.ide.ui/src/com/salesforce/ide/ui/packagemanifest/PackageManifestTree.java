@@ -354,7 +354,7 @@ public class PackageManifestTree extends FilteredTree {
     	this(parent, treeStyle, new PackageManifestController());
     }
     public PackageManifestTree(Composite parent, int treeStyle, PackageManifestController controller) throws ForceProjectException {
-        super(parent, treeStyle, new ManifestTreeFilter());
+        super(parent, treeStyle, new ManifestTreeFilter(), false);
         this.controller = controller;
 
         profileObjectStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
