@@ -573,7 +573,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         }
     }
 
-    private TreeItem getPrimaryFieldsNode(TreeItem customObjectNode) {
+    private static TreeItem getPrimaryFieldsNode(TreeItem customObjectNode) {
         TreeItem fieldsNode = null;
         for (int i = 0; i < customObjectNode.getItemCount(); i++) {
             TreeItem nodeChild = customObjectNode.getItem(i);
@@ -589,7 +589,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return fieldsNode;
     }
 
-    private TreeItem getChildRelationshipsNode(TreeItem customObjectNode) {
+    private static TreeItem getChildRelationshipsNode(TreeItem customObjectNode) {
         TreeItem childRNode = null;
         for (int i = 0; i < customObjectNode.getItemCount(); i++) {
             String nodeLabel = customObjectNode.getItem(i).getText();
@@ -601,7 +601,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return childRNode;
     }
 
-    private TreeItem getReferenceToNode(TreeItem primaryField) {
+    private static TreeItem getReferenceToNode(TreeItem primaryField) {
         TreeItem referenceToNode = null;
         TreeItem returnNode = null;
 
@@ -622,7 +622,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return returnNode;
     }
 
-    private TreeItem getReferenceToObjectFieldsNode(TreeItem referenceToObjectNode) {
+    private static TreeItem getReferenceToObjectFieldsNode(TreeItem referenceToObjectNode) {
         TreeItem lookupFieldsNode = null;
         for (int k = 0; k < referenceToObjectNode.getItemCount(); k++) {
             TreeItem objectChildNode = referenceToObjectNode.getItem(k);
@@ -759,7 +759,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return slca;
     }
 
-    private TreeItem getTopOfBranch(TreeItem childItem) {
+    private static TreeItem getTopOfBranch(TreeItem childItem) {
         Boolean isTopLevel = (Boolean) childItem.getData(IS_TOP_LEVEL);
         TreeItem parent;
         if (isTopLevel.booleanValue()) {

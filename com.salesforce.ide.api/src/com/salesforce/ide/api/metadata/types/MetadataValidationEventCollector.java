@@ -93,7 +93,7 @@ public class MetadataValidationEventCollector extends ValidationEventCollector {
         }
     }
 
-    private String getSeverity(int severity) {
+    private static String getSeverity(int severity) {
         switch (severity) {
         case ValidationEvent.FATAL_ERROR:
             return "FATAL";

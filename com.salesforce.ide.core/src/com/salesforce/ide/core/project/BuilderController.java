@@ -93,12 +93,12 @@ public class BuilderController extends Controller {
         }
     }
 
-    private boolean isDeployableThroughToolingAPI(ComponentList saveComponentList, ForceProject forceProject) {
+    private static boolean isDeployableThroughToolingAPI(ComponentList saveComponentList, ForceProject forceProject) {
         return saveComponentList.isDeployableThroughContainerAsyncRequest()
                 && Float.parseFloat(forceProject.getEndpointApiVersion()) >= FIRST_TOOLING_API_VERSION;
     }
 
-    private void buildThroughTooling(ComponentList saveComponentList, IProject project, ForceProject forceProject,
+    private static void buildThroughTooling(ComponentList saveComponentList, IProject project, ForceProject forceProject,
             IProgressMonitor monitor) {
         if (logger.isDebugEnabled()) {
             logger.debug("***   B U I L D I N G (Tooling API)  ***");
@@ -165,7 +165,7 @@ public class BuilderController extends Controller {
     }
 
     //   U T I L I T I E S
-    private void markAllDirty(IFile[] files, String msg) {
+    private static void markAllDirty(IFile[] files, String msg) {
         if (Utils.isNotEmpty(files)) {
             for (IFile file : files) {
                 MarkerUtils markerUtils = MarkerUtils.getInstance();

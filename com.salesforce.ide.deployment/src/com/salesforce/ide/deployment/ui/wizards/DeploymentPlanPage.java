@@ -129,7 +129,7 @@ public class DeploymentPlanPage extends BaseDeploymentPage {
     }
 
     // compares destination artifacts with deployment candidates
-    private void performDestinationComparison(final DeploymentController deploymentWizardController)
+    private static void performDestinationComparison(final DeploymentController deploymentWizardController)
             throws InvocationTargetException, InterruptedException {
 
         IProgressService service = PlatformUI.getWorkbench().getProgressService();

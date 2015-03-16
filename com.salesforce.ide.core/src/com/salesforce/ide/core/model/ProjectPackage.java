@@ -466,7 +466,7 @@ public class ProjectPackage {
         }
     }
 
-    private byte[] getZipRoot(boolean manifestsOnly) throws IOException {
+    private static byte[] getZipRoot(boolean manifestsOnly) throws IOException {
         byte[] zipAsBytes = null;
         return zipAsBytes;
     }

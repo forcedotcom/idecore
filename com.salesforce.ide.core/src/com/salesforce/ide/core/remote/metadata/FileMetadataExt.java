@@ -369,7 +369,7 @@ public class FileMetadataExt {
 		return filePropertiesMap;
 	}
 
-	private void logMap(Map<String, List<FileProperties>> filePropertiesMap) {
+	private static void logMap(Map<String, List<FileProperties>> filePropertiesMap) {
 		if (logger.isDebugEnabled()) {
 			TreeSet<String> tmpComponentTypes = new TreeSet<String>(
 					String.CASE_INSENSITIVE_ORDER);

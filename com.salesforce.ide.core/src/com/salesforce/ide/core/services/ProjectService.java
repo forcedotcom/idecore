@@ -149,7 +149,7 @@ public class ProjectService extends BaseService {
         }
     }
 
-    private String extractEndpointVersion(String endpoint) {
+    private static String extractEndpointVersion(String endpoint) {
         if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
@@ -2194,7 +2194,7 @@ public class ProjectService extends BaseService {
     }
 
     // REVIEWME: a deploy message should be sent for aborted source/metadata saves
-    private void applyWarningsToAssociatedComponents(ProjectPackageList projectPackageList, Component component) {
+    private static void applyWarningsToAssociatedComponents(ProjectPackageList projectPackageList, Component component) {
         if (!component.isMetadataComposite()) {
             return;
         }

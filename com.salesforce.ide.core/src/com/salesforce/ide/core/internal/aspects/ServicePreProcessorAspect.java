@@ -118,7 +118,7 @@ public class ServicePreProcessorAspect implements Ordered {
         }
     }
 
-    private void logRetrieve(RetrieveRequest retrieveRequest) {
+    private static void logRetrieve(RetrieveRequest retrieveRequest) {
         if (logger.isDebugEnabled()) {
             StringBuffer strBuff = new StringBuffer();
             boolean defaultPackage = (retrieveRequest.getUnpackaged() != null ? true : false);

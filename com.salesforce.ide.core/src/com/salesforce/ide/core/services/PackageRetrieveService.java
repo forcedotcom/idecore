@@ -762,7 +762,7 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveResultExt;
     }
 
-    private void logRefreshFilePaths(String[] filePaths) {
+    private static void logRefreshFilePaths(String[] filePaths) {
         for (int i = 0; i < filePaths.length; i++) {
             logger.debug("file path [" + i + "], " + filePaths[i] + " is added to setSpecificFile for retrieve");
         }

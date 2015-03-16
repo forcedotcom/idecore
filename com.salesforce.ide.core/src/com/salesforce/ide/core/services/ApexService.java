@@ -93,7 +93,7 @@ public class ApexService extends BaseService {
         }
     }
 
-    private ExecuteAnonymousResult errorExecuteAnonymousResult(ConnectorConfig apexCfg, Exception exception) {
+    private static ExecuteAnonymousResult errorExecuteAnonymousResult(ConnectorConfig apexCfg, Exception exception) {
         ExecuteAnonymousResult er = new ExecuteAnonymousResult();
         er.setCompiled(true);
         er.setSuccess(false);

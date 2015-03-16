@@ -206,7 +206,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
         return refactoringStatus;
     }
 
-    private void addBullet(StringBuffer buffer, String... msgs) {
+    private static void addBullet(StringBuffer buffer, String... msgs) {
         buffer.append("<li>"); //$NON-NLS-1$
         for (String msg : msgs) {
             buffer.append(msg);

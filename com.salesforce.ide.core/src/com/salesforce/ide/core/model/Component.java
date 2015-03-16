@@ -956,7 +956,7 @@ public class Component extends ComponentResource {
         }
     }
 
-    private Method getSetterMethod(Component component, String methodName) throws ClassNotFoundException {
+    private static Method getSetterMethod(Component component, String methodName) throws ClassNotFoundException {
         Method setterMethod = null;
         Class<?> componentClass = Class.forName(component.getClass().getName());
         Method[] methods = componentClass.getMethods();
@@ -1016,7 +1016,7 @@ public class Component extends ComponentResource {
     /**
      * @return
      */
-    private boolean hasChanged(Component remoteComponent, List<Predicate<Component>> predicates) {
+    private static boolean hasChanged(Component remoteComponent, List<Predicate<Component>> predicates) {
         for (Predicate<Component> predicate : predicates) {
             if (!predicate.apply(remoteComponent)) {
                 return false;

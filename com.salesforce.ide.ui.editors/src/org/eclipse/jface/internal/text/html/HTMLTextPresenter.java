@@ -87,7 +87,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 		fCounter += length;
 	}
 
-	private String getIndent(String line) {
+	private static String getIndent(String line) {
 		int length= line.length();
 
 		int i= 0;
@@ -174,7 +174,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 		}
 	}
 
-	private String trim(StringBuffer buffer, TextPresentation presentation) {
+	private static String trim(StringBuffer buffer, TextPresentation presentation) {
 
 		int length= buffer.length();
 

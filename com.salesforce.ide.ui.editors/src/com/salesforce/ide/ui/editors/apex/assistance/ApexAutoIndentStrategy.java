@@ -96,7 +96,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * @return <code>true</code> if <code>txt</code> ends with one of the document's line delimiters,
      *         <code>false</code> otherwise
      */
-    private boolean endsWithDelimiter(IDocument d, String txt) {
+    private static boolean endsWithDelimiter(IDocument d, String txt) {
         String[] delimiters = d.getLegalLineDelimiters();
         if (delimiters != null) {
             return TextUtilities.endsWith(delimiters, txt) > -1;
@@ -158,7 +158,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * @throws BadLocationException
      *             in case the positions are invalid in the document
      */
-    private int getBracketCount(IDocument document, int start, int end, boolean ignoreCloseBrackets)
+    private static int getBracketCount(IDocument document, int start, int end, boolean ignoreCloseBrackets)
             throws BadLocationException {
 
         int begin = start;
@@ -229,7 +229,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * @throws BadLocationException
      *             in case <code>position</code> and <code>end</code> are invalid in the document
      */
-    private int getCommentEnd(IDocument document, int position, int end) throws BadLocationException {
+    private static int getCommentEnd(IDocument document, int position, int end) throws BadLocationException {
         int currentPosition = position;
         while (currentPosition < end) {
             char curr = document.getChar(currentPosition);
@@ -279,7 +279,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * @throws BadLocationException
      *             in case <code>position</code> is invalid in the document
      */
-    private int getStringEnd(IDocument document, int position, int end, char character) throws BadLocationException {
+    private static int getStringEnd(IDocument document, int position, int end, char character) throws BadLocationException {
         int currentPosition = position;
         while (currentPosition < end) {
             char currentCharacter = document.getChar(currentPosition);

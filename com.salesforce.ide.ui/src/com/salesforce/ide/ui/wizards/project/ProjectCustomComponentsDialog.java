@@ -102,7 +102,7 @@ public class ProjectCustomComponentsDialog extends SelectionDialog {
         });
     }
 
-    private IStatus getMostSevereStatus(IStatus[] allStatus) {
+    private static IStatus getMostSevereStatus(IStatus[] allStatus) {
         if (Utils.isEmpty(allStatus)) {
             return null;
         }

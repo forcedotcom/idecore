@@ -85,7 +85,7 @@ public final class ContainerMemberFactory implements ComponentHandler<SObject> {
         return null;
     }
 
-    private XmlInputStream createCorrespondingXmlInputStream(Component metadata) throws Exception, PullParserException {
+    private static XmlInputStream createCorrespondingXmlInputStream(Component metadata) throws Exception, PullParserException {
         String body = replaceNamespace(metadata.getBody(), "urn:metadata.tooling.soap.sforce.com");
         XmlInputStream xis = new XmlInputStream();
         xis.setInput(new ByteArrayInputStream(body.getBytes()), "UTF-8");
@@ -158,7 +158,7 @@ public final class ContainerMemberFactory implements ComponentHandler<SObject> {
      *            The component that contains the metadata as its body
      * @throws Exception
      */
-    void setMetadata(Object containerMember, Component metadataComponent) throws Exception {
+    static void setMetadata(Object containerMember, Component metadataComponent) throws Exception {
         Method[] methods = containerMember.getClass().getMethods();
         Method setMetadataMethod = null;
 
@@ -179,7 +179,7 @@ public final class ContainerMemberFactory implements ComponentHandler<SObject> {
         }
     }
 
-    String replaceNamespace(String originalContents, String newTopLevelNamespace) throws Exception {
+    static String replaceNamespace(String originalContents, String newTopLevelNamespace) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document doc = builder.parse(new InputSource(new StringReader(originalContents)));
@@ -194,7 +194,7 @@ public final class ContainerMemberFactory implements ComponentHandler<SObject> {
         return writer.getBuffer().toString();
     }
 
-    Component getCorrespondingMetaComponentIfAny(Component cmp, ComponentList cmps) {
+    static Component getCorrespondingMetaComponentIfAny(Component cmp, ComponentList cmps) {
         String fileName = String.format("%s.%s", cmp.getFullName(), cmp.getMetadataFileExtension());
         return cmps.getComponentByFileName(fileName);
     }

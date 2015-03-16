@@ -220,7 +220,7 @@ public class StopWatch {
         return sb.toString();
     }
 
-    private void headerPrettyPrint(StringBuffer strBuff) {
+    private static void headerPrettyPrint(StringBuffer strBuff) {
         strBuff.append("-----------------------------------------\n").append("ms     avg     %     Task name (cnt)\n")
         .append("-----------------------------------------\n");
     }

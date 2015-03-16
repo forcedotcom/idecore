@@ -136,7 +136,7 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
         return NO_CHILDREN;
     }
 
-    private Object[] childrenOf(TriggerDeclUnit triggerDeclUnit) {
+    private static Object[] childrenOf(TriggerDeclUnit triggerDeclUnit) {
         if (triggerDeclUnit.members != null && triggerDeclUnit.members.values != null) {
             List<BlockMember> values = triggerDeclUnit.members.values;
             return validTriggerBlockMembers(values);

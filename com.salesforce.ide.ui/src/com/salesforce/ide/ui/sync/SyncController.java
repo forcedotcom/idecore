@@ -509,7 +509,7 @@ public class SyncController extends Controller {
 
     // add remote components to sync candidate list.
     // this captures components that were created remotely and do not exist w/in the existing project
-    private void addRemoteSyncCandidates(Set<IResource> syncCandidates, ProjectPackageList projectPackageList) {
+    private static void addRemoteSyncCandidates(Set<IResource> syncCandidates, ProjectPackageList projectPackageList) {
         if (syncCandidates == null || Utils.isEmpty(projectPackageList)) {
             logger.warn("No remote resources to add - sync candiates null or project package list null/empty");
             return;
@@ -556,7 +556,7 @@ public class SyncController extends Controller {
         }
     }
 
-    private void addFileResource(Set<IResource> syncCandidates, IFile file) {
+    private static void addFileResource(Set<IResource> syncCandidates, IFile file) {
         // we're only interested in files that pertain to given org - not installed packages & package manifest
         if (syncCandidates == null || file == null || ContainerDelegate.getInstance().getServiceLocator().getProjectService().isDefaultPackageManifestFile(file)
                 || !ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(file)) {
@@ -570,7 +570,7 @@ public class SyncController extends Controller {
         addResource(syncCandidates, file);
     }
 
-    private void addResource(Set<IResource> syncCandidates, IResource resource) {
+    private static void addResource(Set<IResource> syncCandidates, IResource resource) {
         // add resource to candidates
         boolean exits = syncCandidates.add(resource);
         if (exits) {
@@ -1079,11 +1079,11 @@ public class SyncController extends Controller {
         return !changed;
     }
 
-    private boolean isDefaultPackageManifest(Component component) {
+    private static boolean isDefaultPackageManifest(Component component) {
         return (component.isPackageManifest() && Constants.DEFAULT_PACKAGED_NAME.equals(component.getName()));
     }
 
-    private void logResources(Set<IResource> forceFolders) {
+    private static void logResources(Set<IResource> forceFolders) {
         if (logger.isDebugEnabled() && Utils.isNotEmpty(forceFolders)) {
             StringBuffer strBuff = new StringBuffer();
             strBuff.append("Assembled the following resources ").append("[").append(forceFolders.size()).append(
@@ -1120,7 +1120,7 @@ public class SyncController extends Controller {
 
     }
 
-    private List<IResource> getResourcesByType(List<IResource> resources, int type) {
+    private static List<IResource> getResourcesByType(List<IResource> resources, int type) {
         if (Utils.isEmpty(resources)) {
             return null;
         }
@@ -1134,7 +1134,7 @@ public class SyncController extends Controller {
         return specificResources;
     }
 
-    private IResource getFolder(List<IResource> resources, String name) {
+    private static IResource getFolder(List<IResource> resources, String name) {
         if (Utils.isEmpty(resources)) {
             return null;
         }

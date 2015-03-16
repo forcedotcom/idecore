@@ -200,7 +200,7 @@ public class ProjectCustomComponentsComposite extends Composite {
         layout(true, true);
     }
 
-    private void updateStatusWork(IStatus status, StatusLineLink statusLine) {
+    private static void updateStatusWork(IStatus status, StatusLineLink statusLine) {
         if (statusLine != null && !statusLine.isDisposed()) {
             statusLine.setErrorStatus(status);
         }

@@ -188,7 +188,7 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
         createEnvironmentControls(grpOrg, projectCreateWizardFlag);
     }
 
-    private void createSignupLink(final Group grpOrg) {
+    private static void createSignupLink(final Group grpOrg) {
         Link lnkProxySettings = new Link(grpOrg, SWT.NONE);
         lnkProxySettings.setText(UIMessages.getString(UIConstants.LABEL_SIGNUP_LINK));
         lnkProxySettings.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 0));

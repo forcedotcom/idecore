@@ -137,7 +137,7 @@ public class ResourceTester extends PropertyTester {
         return false;
     }
 
-    private boolean testPathContains(Object receiver, String property, Object[] args, Object expectedValue) {
+    private static boolean testPathContains(Object receiver, String property, Object[] args, Object expectedValue) {
         String fullpath = null;
         IResource resource = null;
         if (receiver instanceof IResource) {
@@ -163,7 +163,7 @@ public class ResourceTester extends PropertyTester {
         return false;
     }
 
-    private boolean testPathStartsWith(Object receiver, String property, Object[] args, Object expectedValue) {
+    private static boolean testPathStartsWith(Object receiver, String property, Object[] args, Object expectedValue) {
         String fullpath = null;
         IResource resource = null;
         if (receiver instanceof IResource) {

@@ -108,7 +108,7 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
 
     // P L U G I N I N I T S
 
-    private void init() {
+    private static void init() {
         initApplicationContext();
         initEditorResources();
         System.out.println("Initiated '" + PLUGIN_ID + "' plugin, version " //$NON-NLS-1$  //$NON-NLS-2$
@@ -116,7 +116,7 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
     }
 
     // initialize application container
-    private void initApplicationContext() {
+    private static void initApplicationContext() {
         if (logger != null && logger.isDebugEnabled()) {
             stopWatch.start("ForceIdeEditorsPlugin.initApplicationContext"); //$NON-NLS-1$
         }
@@ -133,7 +133,7 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
             }
         }
     }
-    private void initEditorResources() {
+    private static void initEditorResources() {
         apexCodeColorProvider = new ApexCodeColorProvider();
     }
 

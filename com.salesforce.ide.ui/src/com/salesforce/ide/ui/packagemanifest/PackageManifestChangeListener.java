@@ -155,7 +155,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
         }
     }
 
-    private Package getPackage(IResource resource) {
+    private static Package getPackage(IResource resource) {
         try {
             return pmf.getPackageManifestFromFile((IFile) resource);
         } catch (Exception e) {
@@ -173,7 +173,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
         }
     };
 
-    private boolean isEqual(Package p1, Package p2) {
+    private static boolean isEqual(Package p1, Package p2) {
         List<PackageTypeMembers> p1Types = p1.getTypes();
         List<PackageTypeMembers> p2Types = p2.getTypes();
 

@@ -329,7 +329,7 @@ public class PackageDeployService extends BasePackageService {
         return getZip(obj, false);
     }
 
-    private byte[] getZip(Object obj, boolean manifestsOnly) throws DeployException {
+    private static byte[] getZip(Object obj, boolean manifestsOnly) throws DeployException {
         byte[] zip = null;
         try {
             if (obj instanceof ProjectPackageList) {

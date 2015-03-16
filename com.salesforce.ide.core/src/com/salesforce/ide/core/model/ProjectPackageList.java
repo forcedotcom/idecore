@@ -395,7 +395,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     // FIXME: this does not handle instances where the package name is the same name as the folder-based
     // component's default folder (<package>/<default-folder>/<customer-folder>/<component-full-name>).
     // for example "documents/documents/documents/doc.txt
-    private boolean startsWithPackageName(List<String> folderNames, String name) {
+    private static boolean startsWithPackageName(List<String> folderNames, String name) {
         if (Utils.isNotEmpty(name) && name.contains("/") && name.split("/").length > 2) {
             if (Utils.isNotEmpty(folderNames)) {
                 for (String folderName : folderNames) {
@@ -544,7 +544,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     // if component is not package.xml, check if the type exists in designate list.  if folder, check sub type
-    private boolean isDesiredComponentType(List<String> designatedSaveComponentTypes, Component component) {
+    private static boolean isDesiredComponentType(List<String> designatedSaveComponentTypes, Component component) {
         if (component.isPackageManifest() || Utils.isEmpty(designatedSaveComponentTypes)) {
             return true;
         }
@@ -833,7 +833,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         return null;
     }
 
-    private boolean isEqualStripSourcePrefix(String filepathA, String filepathB) {
+    private static boolean isEqualStripSourcePrefix(String filepathA, String filepathB) {
         if (Utils.isEmpty(filepathA) || Utils.isEmpty(filepathB)) {
             return false;
         }
@@ -1212,7 +1212,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         
     }
 
-    private boolean handleReadOnlyException(CoreException coreException, Component component) {
+    private static boolean handleReadOnlyException(CoreException coreException, Component component) {
         boolean skipAllReadOnlyExceptions = false;
         if (ForceExceptionUtils.isReadOnlyException(coreException) && !skipAllReadOnlyExceptions) {
             String message = ForceExceptionUtils.getStrippedExceptionMessage(coreException.getMessage());
@@ -1234,7 +1234,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         return skipAllReadOnlyExceptions;
     }
 
-    private void handleSaveException(Exception exception, Component component) throws InterruptedException {
+    private static void handleSaveException(Exception exception, Component component) throws InterruptedException {
         String message = ForceExceptionUtils.getStrippedExceptionMessage(exception.getMessage());
         logger.warn("Unable to save " + component.getFullDisplayName() + " to file - " + message);
         StringBuffer strBuff = new StringBuffer(Messages.getString("Components.SaveResourceError.message"));
@@ -1251,7 +1251,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         }
     }
 
-    private boolean isDesignatedSaveComponentType(List<String> designatedSaveComponentTypes, Component component) {
+    private static boolean isDesignatedSaveComponentType(List<String> designatedSaveComponentTypes, Component component) {
         return designatedSaveComponentTypes.contains(component.getComponentType())
                 || (Utils.isNotEmpty(component.getSecondaryComponentType()) && designatedSaveComponentTypes
                         .contains(component.getSecondaryComponentType()));

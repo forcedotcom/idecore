@@ -68,7 +68,7 @@ public class DefaultProxy extends AbstractProxy {
     @Override
     public void setProxiesEnabled(boolean proxiesEnabled) {}
 
-    private String getSysProperty(String key) {
+    private static String getSysProperty(String key) {
         Properties sysProps = System.getProperties();
         if (sysProps != null) {
             String value = sysProps.getProperty(key);

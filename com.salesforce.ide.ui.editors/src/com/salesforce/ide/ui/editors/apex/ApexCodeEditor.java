@@ -305,7 +305,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      *            the required type
      * @return an adapter for the required type or <code>null</code>
      */
-	@Override
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (fOutlinePage == null) {
@@ -358,8 +358,8 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      * @return the preference store for this editor
      *
      */
-    private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
-        List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
+    private static IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
+        List<IPreferenceStore> stores = new ArrayList<>(3);
 
         stores.add(new ScopedPreferenceStore(InstanceScope.INSTANCE, ForceIdeEditorsPlugin.PLUGIN_ID));
         stores.add(new ScopedPreferenceStore(DefaultScope.INSTANCE, ForceIdeEditorsPlugin.PLUGIN_ID));
@@ -612,7 +612,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      * Updates the selection in the editor's widget with the selection of the outline page.
      */
     class OutlineSelectionChangedListener extends AbstractSelectionChangedListener {
-        OutlineViewDispatcher<HighlightRange> dispatcher = new OutlineViewDispatcher<HighlightRange>(new OutlineViewSelectionHandler(
+        OutlineViewDispatcher<HighlightRange> dispatcher = new OutlineViewDispatcher<>(new OutlineViewSelectionHandler(
                 ApexCodeEditor.this));
 
         @Override

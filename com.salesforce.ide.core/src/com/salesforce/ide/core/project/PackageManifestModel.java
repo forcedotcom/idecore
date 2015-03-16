@@ -155,7 +155,7 @@ public class PackageManifestModel {
         }
     }
 
-    private PackageTypeMembers getPackageTypeMembers(PackageTypeMembers projectPackageComponentType,
+    private static PackageTypeMembers getPackageTypeMembers(PackageTypeMembers projectPackageComponentType,
             Package cachePackageManifest) {
         for (PackageTypeMembers cachePackageComponentType : cachePackageManifest.getTypes()) {
             if (projectPackageComponentType.getName().equals(cachePackageComponentType.getName())) {

@@ -80,7 +80,7 @@ public class StatusLineLink extends Composite {
         lnkMessage.setLayoutData(dataSelectContents);
     }
 
-    private Image findImage(IStatus status) {
+    private static Image findImage(IStatus status) {
         if (status.isOK()) {
             return null;
         } else if (status.matches(IStatus.ERROR)) {

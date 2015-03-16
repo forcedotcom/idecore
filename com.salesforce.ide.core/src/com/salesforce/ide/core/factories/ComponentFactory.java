@@ -686,7 +686,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return null;
     }
 
-    private void setFolderName(Component component, String[] pathParts) {
+    private static void setFolderName(Component component, String[] pathParts) {
         if (Utils.isEmpty(pathParts) || pathParts.length < 2) {
             return;
         }
@@ -1157,7 +1157,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return component;
     }
 
-    private void setCompositeComponentAttributes(Component compositeComponent, Component component) {
+    private static void setCompositeComponentAttributes(Component compositeComponent, Component component) {
         compositeComponent.setId(component.getId());
         compositeComponent.setMetadataComposite(true);
         compositeComponent.setFilePath(component.getCompositeMetadataFilePath());
@@ -1183,7 +1183,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return loadComponentProperties(projectPackage, component, filePath, file, fileMetadataHandler);
     }
 
-    private Component loadComponentProperties(ProjectPackage projectPackage, Component component, String filePath,
+    private static Component loadComponentProperties(ProjectPackage projectPackage, Component component, String filePath,
             byte[] file, FileMetadataExt fileMetadataHandler) throws FactoryException {
         if (component == null) {
             logger.error("Component cannot be null for filepath '" + filePath + "'");
@@ -1217,11 +1217,11 @@ public class ComponentFactory extends ApplicationContextFactory {
         return component;
     }
 
-    private void setRemoteProperties(Component component, FileMetadataExt fileMetadataHandler) {
+    private static void setRemoteProperties(Component component, FileMetadataExt fileMetadataHandler) {
         setRemoteProperties(component, component.getMetadataFilePath(), fileMetadataHandler);
     }
 
-    private void setRemoteProperties(Component component, String filePath, FileMetadataExt fileMetadataHandler) {
+    private static void setRemoteProperties(Component component, String filePath, FileMetadataExt fileMetadataHandler) {
         if (component == null || fileMetadataHandler == null || Utils.isEmpty(filePath)) {
             logger.error("Component, filePath,and/or FileMetadataHandler cannot be null");
             throw new IllegalArgumentException("Component, filePath,and/or FileMetadataHandler cannot be null");
@@ -1242,7 +1242,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         }
     }
 
-    private void handleComponentMetadata(ProjectPackage projectPackage, Component component,
+    private static void handleComponentMetadata(ProjectPackage projectPackage, Component component,
             FileMetadataExt fileMetadataHandler) throws FactoryException {
         if (projectPackage == null || component == null || fileMetadataHandler == null) {
             logger.error("Component, project package, and/or FileMetadataHandler cannot be null");
@@ -1278,7 +1278,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         }
     }
 
-    private boolean isComponentMetadataMatch(String filePath, IComponent component) {
+    private static boolean isComponentMetadataMatch(String filePath, IComponent component) {
         if (Utils.isEmpty(filePath) || component == null || Utils.isEmpty(component.getFileExtension())) {
             return false;
         }

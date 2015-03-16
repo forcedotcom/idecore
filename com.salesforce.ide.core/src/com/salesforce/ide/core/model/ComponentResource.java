@@ -350,7 +350,7 @@ public abstract class ComponentResource implements IComponent {
      * @param file
      * @throws CoreException
      */
-    private void removeCaseSensitiveDupFile(IFile file) throws CoreException {
+    private static void removeCaseSensitiveDupFile(IFile file) throws CoreException {
         Resource fileResource = (Resource) file;
         // now look for a matching case variant in the tree
         IResource variant = fileResource.findExistingResourceVariant(fileResource.getFullPath());
@@ -643,7 +643,7 @@ public abstract class ComponentResource implements IComponent {
 
     }
 
-    protected final long generateChecksum(String str) {
+    protected final static long generateChecksum(String str) {
         long checksumValue = 0;
         if (Utils.isNotEmpty(str)) {
             CRC32 checksum = new CRC32();
@@ -657,7 +657,7 @@ public abstract class ComponentResource implements IComponent {
         return checksumValue;
     }
 
-    protected final long generateChecksum(IFile file) {
+    protected final static long generateChecksum(IFile file) {
         long checksumValue = INIT_CHECKSUM;
         if (file != null) {
             try {
@@ -671,7 +671,7 @@ public abstract class ComponentResource implements IComponent {
         return checksumValue;
     }
 
-    protected final long generateChecksum(byte[] file) {
+    protected final static long generateChecksum(byte[] file) {
         long checksumValue = 0;
         if (Utils.isNotEmpty(file)) {
             CRC32 checksum = new CRC32();
@@ -681,7 +681,7 @@ public abstract class ComponentResource implements IComponent {
         return checksumValue;
     }
 
-    protected final byte[] compress(byte[] input) {
+    protected final static byte[] compress(byte[] input) {
         // Create the compressor with highest level of compression
         Deflater compressor = new Deflater();
         compressor.setLevel(Deflater.BEST_COMPRESSION);

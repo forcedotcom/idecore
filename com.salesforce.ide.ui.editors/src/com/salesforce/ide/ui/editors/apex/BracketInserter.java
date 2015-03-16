@@ -80,7 +80,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
         fCloseAngularBrackets = enabled;
     }
 
-    private boolean isAngularIntroducer(String identifier) {
+    private static boolean isAngularIntroducer(String identifier) {
         return identifier.length() > 0
                 && (Character.isUpperCase(identifier.charAt(0)) || identifier.startsWith("final") //$NON-NLS-1$
                         || identifier.startsWith("public") //$NON-NLS-1$

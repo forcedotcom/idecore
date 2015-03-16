@@ -773,7 +773,7 @@ public class DeploymentController extends Controller {
         }
     }
 
-    private DeploymentComponent createNewDeploymentComponent(Component component,
+    private static DeploymentComponent createNewDeploymentComponent(Component component,
             List<String> remoteEnabledComponentTypes) {
         DeploymentComponent deploymentComponent = new DeploymentComponent(component);
         // make sure type is permissible in destination and remote add is supported
@@ -813,7 +813,7 @@ public class DeploymentController extends Controller {
         return deploymentComponent;
     }
 
-    private DeploymentComponent createDeleteDeploymentComponent(Component component) {
+    private static DeploymentComponent createDeleteDeploymentComponent(Component component) {
         DeploymentComponent deploymentComponent = new DeploymentComponent(component);
         if (component.isRemoteDeleteable()) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.DELETED);

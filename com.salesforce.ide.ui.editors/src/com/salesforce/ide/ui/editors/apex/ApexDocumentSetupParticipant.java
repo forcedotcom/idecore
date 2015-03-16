@@ -24,7 +24,7 @@ public class ApexDocumentSetupParticipant implements IDocumentSetupParticipant {
         init();
     }
 
-    private void init() {
+    private static void init() {
         if (apexPartitionScanner == null) {
             apexPartitionScanner = new ApexPartitionScanner();
         }

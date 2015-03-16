@@ -484,7 +484,7 @@ public class ShowInBrowserAction extends BaseAction implements IShowInTarget {
         return strBuff.toString();
     }
 
-    private String encode(String str) {
+    private static String encode(String str) {
         if (Utils.isEmpty(str)) {
             return str;
         }

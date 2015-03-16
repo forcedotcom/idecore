@@ -308,7 +308,7 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
         }
     }
 
-    private void refreshProject(final RefreshResourceAction action) throws InvocationTargetException,
+    private static void refreshProject(final RefreshResourceAction action) throws InvocationTargetException,
             InterruptedException {
         final IProgressService service = PlatformUI.getWorkbench().getProgressService();
         service.run(false, false, new IRunnableWithProgress() {
@@ -328,7 +328,7 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
         });
     }
 
-    private IProgressMonitor getNullProgressMonitor() {
+    private static IProgressMonitor getNullProgressMonitor() {
         return new NullProgressMonitor();
     }
 

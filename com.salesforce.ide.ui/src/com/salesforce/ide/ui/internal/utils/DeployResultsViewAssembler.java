@@ -170,7 +170,7 @@ public class DeployResultsViewAssembler {
         }
     }
 
-    private void handleDeploySuccessMessages(Collection<DeployMessage> messages) {
+    private static void handleDeploySuccessMessages(Collection<DeployMessage> messages) {
         if (logger.isDebugEnabled()) {
             for (DeployMessage deployMessage : messages) {
                 logger.debug("Deployment of '" + getDisplayName(deployMessage)
@@ -357,14 +357,14 @@ public class DeployResultsViewAssembler {
         }
     }
 
-    private String apexPrefixCheck(String componentType) {
+    private static String apexPrefixCheck(String componentType) {
         if (Utils.isNotEmpty(componentType) && !componentType.startsWith(Constants.APEX_PREFIX)) {
             componentType = Constants.APEX_PREFIX + componentType;
         }
         return componentType;
     }
 
-    private void sortCodeCoverageResults(ICodeCoverageResultExt[] codeCoverageResults) {
+    private static void sortCodeCoverageResults(ICodeCoverageResultExt[] codeCoverageResults) {
         if (Utils.isEmpty(codeCoverageResults)) {
             return;
         }
@@ -379,7 +379,7 @@ public class DeployResultsViewAssembler {
         });
     }
 
-    private String getDisplayName(DeployMessage deployMessage) {
+    private static String getDisplayName(DeployMessage deployMessage) {
         // REVIEWME: full name or file name?
         return deployMessage.getFileName();
     }
@@ -400,7 +400,7 @@ public class DeployResultsViewAssembler {
                         + codeCoverageResult.getType() + ")");
     }
 
-    private String getDisplayName(String namespace, String name) {
+    private static String getDisplayName(String namespace, String name) {
         StringBuffer strBuff = new StringBuffer();
 
         // prepend namespace
@@ -413,7 +413,7 @@ public class DeployResultsViewAssembler {
         return strBuff.toString();
     }
 
-    private String getDeployAction(DeployMessage deployMessage) {
+    private static String getDeployAction(DeployMessage deployMessage) {
         if (deployMessage.isCreated()) {
             return "created";
         } else if (deployMessage.isDeleted()) {
@@ -425,7 +425,7 @@ public class DeployResultsViewAssembler {
         }
     }
 
-    private TreeItem getChildTreeItem(TreeItem parentTreeItem, String name) {
+    private static TreeItem getChildTreeItem(TreeItem parentTreeItem, String name) {
         if (parentTreeItem.getItemCount() > 0) {
             TreeItem[] childTreeItems = parentTreeItem.getItems();
             for (TreeItem childTreeItem : childTreeItems) {
@@ -460,7 +460,7 @@ public class DeployResultsViewAssembler {
         stacktraceTreeItem.setText(stacktrace);
     }
 
-    private ApexCodeLocation getLocationFromStackLine(String name, String stackTrace) {
+    private static ApexCodeLocation getLocationFromStackLine(String name, String stackTrace) {
         if (Utils.isEmpty(name) || Utils.isEmpty(stackTrace)) {
             logger.warn("Unable to get location from stacktrace - name and/or stacktrace is null");
             return null;

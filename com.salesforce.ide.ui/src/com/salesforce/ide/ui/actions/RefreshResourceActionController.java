@@ -527,7 +527,7 @@ public class RefreshResourceActionController extends ActionController {
         return false;
     }
 
-    private boolean checkForOpenFileWork(IFile file) {
+    private static boolean checkForOpenFileWork(IFile file) {
         IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
         if (Utils.isNotEmpty(windows)) {
             // loop thru open windows to check if file is open if open, check w/ user

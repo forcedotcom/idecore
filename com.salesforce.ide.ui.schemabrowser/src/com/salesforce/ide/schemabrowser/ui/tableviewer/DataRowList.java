@@ -105,7 +105,7 @@ public class DataRowList {
         }
     }
 
-    private Vector<XmlObject> recordToVector(SObject record) {
+    private static Vector<XmlObject> recordToVector(SObject record) {
         // A couple of special cases to handle:
         // If the record.getType() == record.getField(Xml.ELEM_TYPE) then we
         // skip

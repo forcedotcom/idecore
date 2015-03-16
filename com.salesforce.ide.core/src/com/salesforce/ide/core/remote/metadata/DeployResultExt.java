@@ -116,7 +116,7 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		this.debugLog = debugLog;
 	}
 	
-	private DeployMessage[] getMessages(DeployResult deployResult){
+	private static DeployMessage[] getMessages(DeployResult deployResult){
         DeployMessage[] componentSuccesses = deployResult.getDetails().getComponentSuccesses();
         DeployMessage[] componentFailures = deployResult.getDetails().getComponentFailures();
         DeployMessage[] combined = new DeployMessage[componentSuccesses.length + componentFailures.length];

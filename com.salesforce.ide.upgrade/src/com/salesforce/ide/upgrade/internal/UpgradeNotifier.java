@@ -278,7 +278,7 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
         }
     }
 
-    private void addViewListener(final UpgradeNotifier upgradeNotifier, final IViewPart viewPart) {
+    private static void addViewListener(final UpgradeNotifier upgradeNotifier, final IViewPart viewPart) {
         // display alert
         Display.getDefault().asyncExec(new Runnable() {
             @Override
@@ -335,7 +335,7 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
         }
     }
 
-    private IFile getFile(IEditorPart editorPart) {
+    private static IFile getFile(IEditorPart editorPart) {
         if (editorPart instanceof IFileEditorInput) {
             return ((IFileEditorInput) editorPart).getFile();
         } else if (editorPart instanceof XMLMultiPageEditorPart

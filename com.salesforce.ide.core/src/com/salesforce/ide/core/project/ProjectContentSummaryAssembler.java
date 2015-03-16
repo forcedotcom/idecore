@@ -219,7 +219,7 @@ public class ProjectContentSummaryAssembler {
         return packageManifest;
     }
 
-    private PackageTypeMembers getPackageTypeMembers(PackageTypeMembers projectPackageComponentType,
+    private static PackageTypeMembers getPackageTypeMembers(PackageTypeMembers projectPackageComponentType,
             Package cachePackageManifest) {
         for (PackageTypeMembers cachePackageComponentType : cachePackageManifest.getTypes()) {
             if (projectPackageComponentType.getName().equals(cachePackageComponentType.getName())) {
@@ -626,7 +626,7 @@ public class ProjectContentSummaryAssembler {
         return summary.toString();
     }
 
-    private String getDisplayName(Component component, boolean appendSubscribeText) {
+    private static String getDisplayName(Component component, boolean appendSubscribeText) {
         String displayName = null;
         final String type = component.getComponentType();
         if (Constants.CUSTOM_OBJECT.equals(type)
@@ -648,7 +648,7 @@ public class ProjectContentSummaryAssembler {
         return displayName;
     }
 
-    private PackageTypeMembers getPackageTypeMembers(Package packageManifest, String typeName) {
+    private static PackageTypeMembers getPackageTypeMembers(Package packageManifest, String typeName) {
         List<PackageTypeMembers> types = packageManifest.getTypes();
         for (PackageTypeMembers type : types) {
             if (typeName.equals(type.getName())) {
@@ -659,7 +659,7 @@ public class ProjectContentSummaryAssembler {
         return null;
     }
 
-    private String getSummaryIndention(int num) {
+    private static String getSummaryIndention(int num) {
         StringBuffer summary = new StringBuffer(SUMMARY_INDENTION);
         if (num > 1) {
             for (int i = 1; i < num; i++) {

@@ -165,7 +165,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         return super.read();
     }
 
-    private TextAttribute getBoldTextAttribute(Color color) {
+    private static TextAttribute getBoldTextAttribute(Color color) {
         TextAttribute textAttribute = new TextAttribute(color, null, SWT.BOLD);
         return textAttribute;
     }

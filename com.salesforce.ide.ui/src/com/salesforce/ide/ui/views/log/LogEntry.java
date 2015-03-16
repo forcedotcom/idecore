@@ -128,7 +128,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         return getSeverityText();
     }
 
-    private String getSeverityText(int severity) {
+    private static String getSeverityText(int severity) {
         switch (severity) {
         case IStatus.ERROR:
             return Messages.ERROR;
@@ -200,7 +200,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         }
     }
 
-    private int parseInteger(String token) {
+    private static int parseInteger(String token) {
         try {
             return Integer.parseInt(token);
         } catch (NumberFormatException e) {

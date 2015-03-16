@@ -63,7 +63,7 @@ public class ApexElementImageDescriptor extends JavaElementImageDescriptor {
         drawBottomRight();
     }
 
-    private ImageData getImageData(ImageDescriptor descriptor) {
+    private static ImageData getImageData(ImageDescriptor descriptor) {
         ImageData data = descriptor.getImageData(); // see bug 51965: getImageData can return null
         if (data == null) {
             data = DEFAULT_IMAGE_DATA;

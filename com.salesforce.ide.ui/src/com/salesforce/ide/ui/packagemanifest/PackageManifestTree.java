@@ -244,7 +244,7 @@ public class PackageManifestTree extends FilteredTree {
         return null;
     }
 
-    private String getComponentName(PackageTreeNode packageTreeNode) {
+    private static String getComponentName(PackageTreeNode packageTreeNode) {
         if (packageTreeNode instanceof ComponentNode) {
 
             ComponentTypeNode componentTypeNode = getComponentTypeNode(packageTreeNode);
@@ -799,7 +799,7 @@ public class PackageManifestTree extends FilteredTree {
         }
     }
 
-    private ComponentTypeNode getComponentTypeNode(TreeNode node) {
+    private static ComponentTypeNode getComponentTypeNode(TreeNode node) {
         while (!(node instanceof ComponentTypeNode)) {
             node = node.getParent();
         }
@@ -1173,31 +1173,31 @@ public class PackageManifestTree extends FilteredTree {
         }
     }
 
-    private boolean isWildCardSupported(TreeNode node) {
+    private static boolean isWildCardSupported(TreeNode node) {
         ComponentTypeNode comp = getComponentTypeNode(node);
         return comp.getComponent().isWildCardSupported();
     }
 
-    private boolean isWildCardSelected(PackageTreeNode node) {
+    private static boolean isWildCardSelected(PackageTreeNode node) {
         if (isWildCardSupported(node)) {
             return getComponentTypeNode(node).isWildcardSelected();
         }
         return false;
     }
 
-    private boolean isUnChecked(PackageTreeNode node) {
+    private static boolean isUnChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isUnChecked(node.getState());
     }
 
-    private boolean isBlackChecked(PackageTreeNode node) {
+    private static boolean isBlackChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isBlackChecked(node.getState());
     }
 
-    private boolean isGrayChecked(PackageTreeNode node) {
+    private static boolean isGrayChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isGrayChecked(node.getState());
     }
 
-    private boolean isSchroedingerChecked(PackageTreeNode node) {
+    private static boolean isSchroedingerChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isSchroedinger(node.getState());
     }
 
