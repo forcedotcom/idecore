@@ -701,26 +701,27 @@ public class UpgradeController extends Controller {
         if (path.contains(".jar!")) {
             String jarPath = path.substring(path.indexOf(":") + 1, path.lastIndexOf("!"));
             logger.info("Inspecting jar:\n " + jarPath);
-            JarInputStream jarFile = new JarInputStream(new FileInputStream(jarPath));
-            while (true) {
-                JarEntry jarEntry = jarFile.getNextJarEntry();
-                if (jarEntry == null) {
-                    break;
-                }
+            try (final JarInputStream jarFile = new JarInputStream(new FileInputStream(jarPath))) {
+                while (true) {
+                    JarEntry jarEntry = jarFile.getNextJarEntry();
+                    if (jarEntry == null) {
+                        break;
+                    }
 
-                if (jarEntry.getName().startsWith(pkgname.replaceAll("\\.", "/"))
-                        && jarEntry.getName().endsWith(".class")) {
-                    String className = jarEntry.getName().substring(jarEntry.getName().lastIndexOf("/") + 1,
-                            jarEntry.getName().lastIndexOf("."));
-                    className = pkgname + "." + className;
-                    try {
-                        // classes.add(Class.forName(className));
-                        classes.add(Class.forName(className, true, this.getClass().getClassLoader()));
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Added ide internal change class: " + className);
+                    if (jarEntry.getName().startsWith(pkgname.replaceAll("\\.", "/"))
+                            && jarEntry.getName().endsWith(".class")) {
+                        String className = jarEntry.getName().substring(jarEntry.getName().lastIndexOf("/") + 1,
+                                jarEntry.getName().lastIndexOf("."));
+                        className = pkgname + "." + className;
+                        try {
+                            // classes.add(Class.forName(className));
+                            classes.add(Class.forName(className, true, this.getClass().getClassLoader()));
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Added ide internal change class: " + className);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            logger.warn("Unable to add ide internal change class '" + className + "': " + e.getMessage());
                         }
-                    } catch (ClassNotFoundException e) {
-                        logger.warn("Unable to add ide internal change class '" + className + "': " + e.getMessage());
                     }
                 }
             }

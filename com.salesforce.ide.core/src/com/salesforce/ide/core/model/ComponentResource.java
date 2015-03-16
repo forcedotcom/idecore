@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.QualifiedNames;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProjectException;
@@ -693,20 +694,19 @@ public abstract class ComponentResource implements IComponent {
         // You cannot use an array that's the same size as the orginal because
         // there is no guarantee that the compressed data will be smaller than
         // the uncompressed data.
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
+        try (final QuietCloseable<ByteArrayOutputStream> c = QuietCloseable.make(new ByteArrayOutputStream(input.length))) {
+            final ByteArrayOutputStream bos = c.get();
 
-        // Compress the data
-        byte[] buf = new byte[1024];
-        while (!compressor.finished()) {
-            int count = compressor.deflate(buf);
-            bos.write(buf, 0, count);
+            // Compress the data
+            byte[] buf = new byte[1024];
+            while (!compressor.finished()) {
+                int count = compressor.deflate(buf);
+                bos.write(buf, 0, count);
+            }
+
+            // Get the compressed data
+            return bos.toByteArray();
         }
-        try {
-            bos.close();
-        } catch (IOException e) {}
-
-        // Get the compressed data
-        return bos.toByteArray();
     }
 
     protected void monitorCheck(IProgressMonitor monitor) throws InterruptedException {

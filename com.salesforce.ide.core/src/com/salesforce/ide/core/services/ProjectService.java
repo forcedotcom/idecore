@@ -12,7 +12,6 @@ package com.salesforce.ide.core.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -59,6 +58,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DeployMessageExtractor;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.QualifiedNames;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ApexCodeLocation;
 import com.salesforce.ide.core.model.Component;
@@ -1869,14 +1869,15 @@ public class ProjectService extends BaseService {
         }
 
         // save or update contents
-        InputStream stream = new ByteArrayInputStream(content.getBytes());
-        if (file.exists()) {
-            file.setContents(stream, true, true, new SubProgressMonitor(monitor, 1));
-        } else {
-            file.create(stream, true, new SubProgressMonitor(monitor, 1));
-        }
+        try (final QuietCloseable<ByteArrayInputStream> c = QuietCloseable.make(new ByteArrayInputStream(content.getBytes()))) {
+            final ByteArrayInputStream stream = c.get();
 
-        stream.close();
+            if (file.exists()) {
+                file.setContents(stream, true, true, new SubProgressMonitor(monitor, 1));
+            } else {
+                file.create(stream, true, new SubProgressMonitor(monitor, 1));
+            }
+        }
 
         if (logger.isDebugEnabled()) {
             logger.debug("Saved file [" + content.length() + "] to file '"

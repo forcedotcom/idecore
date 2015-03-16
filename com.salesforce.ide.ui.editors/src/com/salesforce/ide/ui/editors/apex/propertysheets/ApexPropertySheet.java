@@ -90,9 +90,10 @@ public abstract class ApexPropertySheet extends MetadataFormPage {
         String value = apiText.getValue();
         Matcher matcher = apiVersion.matcher(value);
         if (matcher.matches()) {
-            Scanner scanner = new Scanner(value).useDelimiter("\\."); //$NON-NLS-1$
-            int apiVersion = scanner.nextInt();
-            return (double) apiVersion;
+            try (final Scanner scanner = new Scanner(value)) {
+                int apiVersion = scanner.useDelimiter("\\.").nextInt(); //$NON-NLS-1$
+                return (double) apiVersion;
+            }
         }
         return null;
     }

@@ -46,6 +46,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.MessageDialogRunnable;
 import com.salesforce.ide.core.internal.utils.Messages;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.ZipUtils;
 import com.salesforce.ide.core.internal.utils.ZipUtils.ZipStats;
@@ -314,27 +315,28 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public byte[] getZip(boolean manifestsOnly) throws IOException {
-        byte[] zipAsBytes = null;
-        // streams to contain components
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(bos);
+        try (final QuietCloseable<ByteArrayOutputStream> c0 = QuietCloseable.make(new ByteArrayOutputStream())) {
+            final ByteArrayOutputStream bos = c0.get();
 
-        // new zip stats to gather info about zip
-        ZipStats stats = new ZipStats();
-        for (ProjectPackage projectPackage : this) {
-            projectPackage.addComponentsToZip(stats, zos, manifestsOnly);
+            try (final QuietCloseable<ZipOutputStream> c = QuietCloseable.make(new ZipOutputStream(bos))) {
+                final ZipOutputStream zos = c.get();
+    
+                // new zip stats to gather info about zip
+                ZipStats stats = new ZipStats();
+                for (ProjectPackage projectPackage : this) {
+                    projectPackage.addComponentsToZip(stats, zos, manifestsOnly);
+                }
+        
+                final byte[] zipAsBytes = bos.toByteArray();
+        
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Zip stats for entire project package list:\n" + stats.toString());
+                    ZipUtils.writeDeployZipToTempDir(zipAsBytes);
+                }
+        
+                return zipAsBytes;
+            }
         }
-
-        // close zip stream and get bytes
-        zos.close();
-        zipAsBytes = bos.toByteArray();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Zip stats for entire project package list:\n" + stats.toString());
-            ZipUtils.writeDeployZipToTempDir(zipAsBytes);
-        }
-
-        return zipAsBytes;
     }
 
     public void parseZip(byte[] zipFile, IProgressMonitor monitor) throws IOException {
@@ -350,9 +352,9 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
         List<String> folderNames = projectService.getComponentFactory().getFolderNamesForFolderComponents();
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(zipFile);
-        ZipInputStream zis = new ZipInputStream(bis);
-        try {
+        try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
+            final ZipInputStream zis = c.get();
+
             for (;;) {
                 ZipEntry ze = zis.getNextEntry();
                 if (ze == null) {
@@ -385,8 +387,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
                 projectPackage.addFilePathZipMapping(name, fileContent);
             }
-        } finally {
-            zis.close();
         }
 
         monitorWork(monitor);

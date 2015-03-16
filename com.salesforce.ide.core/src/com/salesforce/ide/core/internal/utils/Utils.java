@@ -572,9 +572,8 @@ public class Utils {
 			return props;
 		}
 
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(propFile);
+		try (final QuietCloseable<FileInputStream> c = QuietCloseable.make(new FileInputStream(propFile))) {
+		    final FileInputStream fis = c.get();
 			if (fis.available() > 0) {
 				logger.debug("Loading properties found in prop file '"
 						+ propFilePath + "'");
@@ -584,17 +583,8 @@ public class Utils {
 				logger.debug("No content found in prop file '" + propFilePath
 						+ "'");
 			}
-
 		} catch (Exception e) {
 			logger.warn("Unable to load prop file '" + propFilePath + "'", e);
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					logger.error("Unable to close stream");
-				}
-			}
 		}
 
 		return props;
@@ -775,12 +765,11 @@ public class Utils {
 		// "4");
 		Source src = new DOMSource(doc);
 
-		FileOutputStream stream = new FileOutputStream(f, false);
-		OutputStreamWriter writer = new OutputStreamWriter(stream,
-				Constants.FORCE_DEFAULT_ENCODING_CHARSET);
-		Result result = new StreamResult(writer);
-		xform.transform(src, result);
-		writer.close();
+        try (final QuietCloseable<OutputStreamWriter> c = QuietCloseable.make(new OutputStreamWriter(new FileOutputStream(f, false), Constants.FORCE_DEFAULT_ENCODING_CHARSET))) {
+            final OutputStreamWriter writer = c.get();
+    		Result result = new StreamResult(writer);
+    		xform.transform(src, result);
+        }
 	}
 
 	public static Document loadDocument(URL fileUrl) {
@@ -897,39 +886,24 @@ public class Utils {
 		String contentStr = null;
 		if (file != null && file.exists()) {
 			StringBuffer strBuff = new StringBuffer();
-			BufferedReader reader = null;
-			InputStream contents = null;
-			try {
-				contents = file.getContents();
-				reader = new BufferedReader(new InputStreamReader(contents,
-						Constants.UTF_8));
-				String line = reader.readLine();
-				if (line != null) {
-					strBuff.append(line);
-				}
-				while ((line = reader.readLine()) != null) {
-					strBuff.append(Constants.NEW_LINE);
-					strBuff.append(line);
-				}
+
+	        try (final QuietCloseable<BufferedReader> c = QuietCloseable.make(new BufferedReader(new InputStreamReader(file.getContents(), Constants.UTF_8)))) {
+	            final BufferedReader reader = c.get();
+
+                String line = reader.readLine();
+                if (line != null) {
+                    strBuff.append(line);
+                }
+                while ((line = reader.readLine()) != null) {
+                    strBuff.append(Constants.NEW_LINE);
+                    strBuff.append(line);
+                }
 			} catch (IOException e) {
-				logger.error("Unable to load body from file " + file.getName(),
-						e);
+				logger.error("Unable to load body from file " + file.getName(), e);
 				throw e;
 			} catch (CoreException e) {
 				throw e;
-			} finally {
-				try {
-					if (reader != null) {
-						reader.close();
-					}
-                } catch (IOException e) {}
-
-				try {
-					if (contents != null) {
-						contents.close();
-					}
-                } catch (IOException e) {}
-			}
+	        }
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded body size ["
@@ -948,19 +922,22 @@ public class Utils {
 		return getStringFromBytes(getBytesFromStream(is, length));
 	}
 
-	public static byte[] getBytesFromStream(InputStream is, long length)
-			throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		byte[] buffer = new byte[1024];
-		int len;
+	public static byte[] getBytesFromStream(InputStream is, long length) throws IOException {
+	    try (final QuietCloseable<InputStream> c0 = QuietCloseable.make(is)) {
+	        final InputStream in = c0.get();
 
-		while ((len = is.read(buffer)) >= 0) {
-			out.write(buffer, 0, len);
-		}
+	        try (final QuietCloseable<ByteArrayOutputStream> c = QuietCloseable.make(new ByteArrayOutputStream())) {
+	            final ByteArrayOutputStream out = c.get();
+	            byte[] buffer = new byte[1024];
+	            int len;
+	    
+	            while ((len = in.read(buffer)) >= 0) {
+	                out.write(buffer, 0, len);
+	            }
 
-		is.close();
-		out.close();
-		return out.toByteArray();
+	            return out.toByteArray();
+	        }
+	    }
 	}
 
 	public static String getStringFromBytes(byte[] bytes) {

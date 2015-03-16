@@ -51,6 +51,7 @@ import com.salesforce.ide.core.internal.jobs.LoadSObjectsJob;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Messages;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.remote.Connection;
@@ -819,12 +820,13 @@ public class ProjectController extends Controller {
             return;
         }
 
-        InputStream stream = Utils.openContentStream(Constants.CONTENT_PLACE_HOLDER);
-        monitor.worked(1);
-        file.create(stream, true, monitor);
+        try (final QuietCloseable<InputStream> c = QuietCloseable.make(Utils.openContentStream(Constants.CONTENT_PLACE_HOLDER))) {
+            final InputStream stream = c.get();
 
-        monitor.worked(1);
-        stream.close();
+            monitor.worked(1);
+            file.create(stream, true, monitor);
+            monitor.worked(1);
+        }
     }
 
     public void disableBuilder() throws CoreException {

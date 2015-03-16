@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.salesforce.ide.core.internal.utils.OperationStats;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.MetadataStubExt;
@@ -132,8 +133,9 @@ public abstract class BasePackageService extends BaseService {
     protected List<String> getFilePaths(byte[] zipFile) throws IOException {
         List<String> filePaths = new ArrayList<String>();
         if (Utils.isNotEmpty(zipFile)) {
-            ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipFile));
-            try {
+            try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
+                final ZipInputStream zis = c.get();
+
                 for (;;) {
                     ZipEntry ze = zis.getNextEntry();
                     if (ze == null) {
@@ -147,8 +149,6 @@ public abstract class BasePackageService extends BaseService {
 
                     filePaths.add(name);
                 }
-            } finally {
-                zis.close();
             }
 
             if (Utils.isNotEmpty(filePaths)) {

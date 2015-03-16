@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 
 public class LogViewShell {
@@ -230,21 +231,12 @@ public class LogViewShell {
                     return;
                 }
 
-                BufferedWriter buffWriter = null;
-                try {
-                    FileWriter fileWriter = new FileWriter(fileName);
-                    buffWriter = new BufferedWriter(fileWriter);
+                try (final QuietCloseable<BufferedWriter> c = QuietCloseable.make(new BufferedWriter(new FileWriter(fileName)))) {
+                    final BufferedWriter buffWriter = c.get();
                     buffWriter.write(textToWrite);
-                    buffWriter.close();
                 } catch (IOException e) {
                     logger.error("Unable to write to file [" + fileName + "]", e);
                     return;
-                } finally {
-                    if (buffWriter != null) {
-                        try {
-                            buffWriter.close();
-                        } catch (IOException e) {}
-                    }
                 }
             }
         });

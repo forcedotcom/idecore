@@ -105,9 +105,9 @@ public class ZipUtils {
 
         List<String> filepaths = new ArrayList<String>();
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(zipFile);
-        ZipInputStream zis = new ZipInputStream(bis);
-        try {
+        try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
+            final ZipInputStream zis = c.get();
+
             for (;;) {
                 ZipEntry ze = zis.getNextEntry();
                 if (ze == null) {
@@ -123,8 +123,6 @@ public class ZipUtils {
                     logger.debug("Found filepath '" + name + "' in zip");
                 }
             }
-        } finally {
-            zis.close();
         }
         return filepaths;
     }
@@ -162,14 +160,12 @@ public class ZipUtils {
                     }
                     entryName = entryName.substring(entryName.indexOf("/") + 1);
                 }
-                File file = new File(path, entry.getName());
-                FileOutputStream os = new FileOutputStream(file);
-                try {
+                try (final QuietCloseable<FileOutputStream> c = QuietCloseable.make(new FileOutputStream(new File(path, entry.getName())))) {
+                    final FileOutputStream os = c.get();
+
                     ReadableByteChannel src = Channels.newChannel(is);
                     FileChannel dest = os.getChannel();
                     copy(src, dest);
-                } finally {
-                    os.close();
                 }
             }
             stats.addEntry(entry);
@@ -365,10 +361,10 @@ public class ZipUtils {
                 logger.debug("Deleted zip file");
             }
         }
-        try {
-            FileOutputStream fos = new FileOutputStream(tmpZipFile);
+        try (final QuietCloseable<FileOutputStream> c = QuietCloseable.make(new FileOutputStream(tmpZipFile))) {
+            final FileOutputStream fos = c.get();
+
             fos.write(zipFile);
-            fos.close();
         } catch (FileNotFoundException e) {
             logger.error("Unable to write zip", e);
         } catch (IOException e) {

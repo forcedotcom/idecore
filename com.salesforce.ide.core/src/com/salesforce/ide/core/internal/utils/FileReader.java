@@ -85,9 +85,9 @@ public class FileReader {
             return Constants.EMPTY_STRING;
         }
 
-        InputStream in = null;
-        try {
-            in = new FileInputStream(templateFile);
+        try (final QuietCloseable<FileInputStream> c = QuietCloseable.make(new FileInputStream(templateFile))) {
+            final InputStream in = c.get();
+
             byte[] buffer = new byte[256];
             int bytes_read;
             int tb = 0;
@@ -112,14 +112,6 @@ public class FileReader {
         } catch (IOException e) {
             logger.warn("Unable to read template file.  Returning empty string.", e);
             return Constants.EMPTY_STRING;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    logger.error("Unable to close template input stream");
-                }
-            }
         }
     }
 

@@ -16,6 +16,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
 
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.sforce.soap.metadata.RetrieveResult;
@@ -97,9 +98,11 @@ public class RetrieveResultExt implements IMetadataResultExt {
     	}
 
     	try {
-			if (getZipFile() != null) {
-				ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(getZipFile()));
-				try {
+			final byte[] zipFile = getZipFile();
+            if (zipFile != null) {
+                try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
+                    final ZipInputStream zis = c.get();
+
 					for (;;) {
 						ZipEntry ze = zis.getNextEntry();
 						if (ze == null) {
@@ -114,8 +117,6 @@ public class RetrieveResultExt implements IMetadataResultExt {
 							}
 						}
 					}
-				} finally {
-					zis.close();
 				}
 			}
 		} catch (Exception e) {
@@ -134,9 +135,11 @@ public class RetrieveResultExt implements IMetadataResultExt {
     public int getZipFileCount() {
     	int fileCount = 0;
     	try {
-			if (getZipFile() != null) {
-				ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(getZipFile()));
-				try {
+			final byte[] zipFile = getZipFile();
+            if (zipFile != null) {
+                try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
+                    final ZipInputStream zis = c.get();
+
 					for (;;) {
 						ZipEntry ze = zis.getNextEntry();
 						if (ze == null) {
@@ -147,8 +150,6 @@ public class RetrieveResultExt implements IMetadataResultExt {
 							fileCount++;
 						}
 					}
-				} finally {
-					zis.close();
 				}
 			}
 		} catch (Exception e) {
