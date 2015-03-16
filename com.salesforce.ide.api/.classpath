@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/wsc_toolingwsdl.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/wsc_apexwsdl.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/force-ide-metadata.jar" sourcepath="lib/force-ide-metadata.jar"/>
@@ -10,6 +8,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/wsc.jar" sourcepath="lib/wsc.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-discovery.jar" sourcepath="com.salesforce.ide.apisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar" sourcepath="com.salesforce.ide.apisrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/wsc_apexwsdl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wsc_metadatawsdl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wsc_toolingwsdl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
