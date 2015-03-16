@@ -450,6 +450,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
 
         Collections.sort(packageManifest.getTypes(), new Comparator<PackageTypeMembers>() {
+            @Override
             public int compare(PackageTypeMembers o1, PackageTypeMembers o2) {
                 return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
             }
@@ -466,6 +467,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
 
         Collections.sort(types, new Comparator<PackageTypeMembers>() {
+            @Override
             public int compare(PackageTypeMembers o1, PackageTypeMembers o2) {
                 return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
             }

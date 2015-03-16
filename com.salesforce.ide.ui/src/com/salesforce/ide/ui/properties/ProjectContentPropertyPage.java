@@ -312,6 +312,7 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
             InterruptedException {
         final IProgressService service = PlatformUI.getWorkbench().getProgressService();
         service.run(false, false, new IRunnableWithProgress() {
+            @Override
             public void run(final IProgressMonitor monitor) throws InvocationTargetException {
                 monitor.beginTask("Refreshing project...", IProgressMonitor.UNKNOWN);
                 try {

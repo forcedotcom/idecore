@@ -177,6 +177,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
     @Override
     public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
+            @Override
             public IInformationControl createInformationControl(Shell parent) {
                 return new DefaultInformationControl(parent, SWT.NONE, new HTMLTextPresenter(true));
             }
@@ -226,13 +227,16 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         }
 
         assistant.addCompletionListener(new ICompletionListener() {
+            @Override
             public void assistSessionEnded(ContentAssistEvent event) {
                 ((ApexCompletionProcessor) event.assistant.getContentAssistProcessor(IDocument.DEFAULT_CONTENT_TYPE))
                         .clearState();
             }
 
+            @Override
             public void assistSessionStarted(ContentAssistEvent event) {}
 
+            @Override
             public void selectionChanged(ICompletionProposal proposal, boolean smartToggle) {}
         });
 

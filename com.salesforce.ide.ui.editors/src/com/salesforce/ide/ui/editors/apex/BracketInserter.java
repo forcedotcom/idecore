@@ -96,6 +96,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
     /*
      * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
      */
+    @Override
     public void verifyKey(VerifyEvent event) {
 
         // early pruning to slow down normal typing as little as possible
@@ -229,6 +230,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
     /*
      * @see org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.jface.text.link.LinkedModeModel, int)
      */
+    @Override
     public void left(LinkedModeModel environment, int flags) {
 
         final BracketLevel level = fBracketLevelStack.pop();
@@ -243,6 +245,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
             IDocumentExtension extension = (IDocumentExtension) document;
             extension.registerPostNotificationReplace(null, new IDocumentExtension.IReplace() {
 
+                @Override
                 public void perform(IDocument d, IDocumentListener owner) {
                     if ((level.fFirstPosition.isDeleted || level.fFirstPosition.length == 0)
                             && !level.fSecondPosition.isDeleted
@@ -271,11 +274,13 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
     /*
      * @see org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse.jface.text.link.LinkedModeModel)
      */
+    @Override
     public void suspend(LinkedModeModel environment) {}
 
     /*
      * @see org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse.jface.text.link.LinkedModeModel, int)
      */
+    @Override
     public void resume(LinkedModeModel environment, int flags) {}
 
     private static class BracketLevel {
@@ -308,6 +313,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
         /*
          * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.text.DocumentEvent)
          */
+        @Override
         public void update(DocumentEvent event) {
 
             int eventOffset = event.getOffset();
@@ -387,6 +393,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
         /*
          * @see org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy#doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager, org.eclipse.swt.events.VerifyEvent, int, int)
          */
+        @Override
         public ExitFlags doExit(LinkedModeModel model, VerifyEvent event, int offset, int length) {
 
             if (fSize == fStack.size() && !isMasked(offset)) {

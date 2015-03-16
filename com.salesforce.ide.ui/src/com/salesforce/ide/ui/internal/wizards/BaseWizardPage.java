@@ -68,6 +68,7 @@ public abstract class BaseWizardPage extends WizardPage {
         IProgressService service = PlatformUI.getWorkbench().getProgressService();
         try {
             service.run(false, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException {
                     monitor.beginTask("Validating connection", 2);
                     monitor.worked(1);

@@ -165,7 +165,7 @@ public class QueryTableViewer {
         table.setHeaderVisible(true);
         table.setToolTipText("Double click on parent or child cells (when present) to see the related records");
 
-        ArrayList<String> _columnNames = new ArrayList<String>();
+        ArrayList<String> _columnNames = new ArrayList<>();
 
         if (qr != null && qr.getSize() > 0) {
             if (Utils.isNotEmpty(qr.getRecords())) {
@@ -301,6 +301,7 @@ public class QueryTableViewer {
      * ITaskListViewer interface since it must register changeListeners with the ExampleTaskList
      */
     class SchemaContentProvider implements IStructuredContentProvider, IDataRowListViewer {
+        @Override
         public void inputChanged(Viewer v, Object oldInput, Object newInput) {
             if (newInput != null) {
                 ((DataRowList) newInput).addChangeListener(this);
@@ -310,11 +311,13 @@ public class QueryTableViewer {
             }
         }
 
+        @Override
         public void dispose() {
             taskList.removeChangeListener(this);
         }
 
         // Return the tasks as an array of Objects
+        @Override
         public Object[] getElements(Object parent) {
             return taskList.getTasks().toArray();
         }
@@ -324,6 +327,7 @@ public class QueryTableViewer {
          *
          * @see ITaskListViewer#addTask(ExampleTask)
          */
+        @Override
         public void addTask(DataRow task) {
             tableViewer.add(task);
         }
@@ -333,6 +337,7 @@ public class QueryTableViewer {
          *
          * @see ITaskListViewer#removeTask(ExampleTask)
          */
+        @Override
         public void removeTask(DataRow task) {
             tableViewer.remove(task);
         }
@@ -342,6 +347,7 @@ public class QueryTableViewer {
          *
          * @see ITaskListViewer#updateTask(ExampleTask)
          */
+        @Override
         public void updateTask(DataRow task) {
             tableViewer.update(task, null);
         }

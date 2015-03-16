@@ -60,6 +60,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
     }
 
     //   M E T H O D S
+    @Override
     public Object getParent(Object o) {
         return parent;
     }
@@ -116,10 +117,12 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         return getSeverityText(severity);
     }
 
+    @Override
     public ImageDescriptor getImageDescriptor(Object arg0) {
         return null;
     }
 
+    @Override
     public String getLabel(Object obj) {
         return getSeverityText();
     }
@@ -272,6 +275,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         }
     }
 
+    @Override
     public Object[] getChildren(Object parent) {
         return children.toArray();
     }

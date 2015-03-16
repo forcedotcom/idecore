@@ -47,6 +47,7 @@ public class OpenBrowserToExternalSiteAction extends BaseAction implements IWork
         this.url = url;
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         setShell(window.getShell());
     }
@@ -55,6 +56,7 @@ public class OpenBrowserToExternalSiteAction extends BaseAction implements IWork
         this.selection = selection;
     }
 
+    @Override
     public void dispose() {
     }
 

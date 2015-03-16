@@ -55,6 +55,7 @@ public class ResourceTester extends PropertyTester {
         componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
     }
 
+    @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         if (receiver == null || !(receiver instanceof IResource)) {
             return false;

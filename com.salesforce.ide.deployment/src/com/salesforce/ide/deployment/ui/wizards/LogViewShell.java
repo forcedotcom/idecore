@@ -129,6 +129,7 @@ public class LogViewShell {
         ToolItem btnCopy = new ToolItem(barCommands, SWT.PUSH | SWT.BORDER);
         btnCopy.setText("Copy to Clipboard");
         btnCopy.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 clipboard = new Clipboard(shell.getDisplay());
                 Text txtArea = (Text) tabLogView.getSelection()[0].getControl();
@@ -139,6 +140,7 @@ public class LogViewShell {
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -198,6 +200,7 @@ public class LogViewShell {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 StringBuffer strBuff = new StringBuffer(txtSummaryArea.getText());
                 strBuff.append("\n\n").append(txtDebugArea.getText());
@@ -216,6 +219,7 @@ public class LogViewShell {
                 writeToFile(fileName, strBuff.toString());
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -249,6 +253,7 @@ public class LogViewShell {
         ToolItem btnClose = new ToolItem(barCommands, SWT.PUSH | SWT.BORDER);
         btnClose.setText("Close");
         btnClose.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (clipboard != null) {
                     clipboard.dispose();
@@ -256,6 +261,7 @@ public class LogViewShell {
                 shell.setVisible(false);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

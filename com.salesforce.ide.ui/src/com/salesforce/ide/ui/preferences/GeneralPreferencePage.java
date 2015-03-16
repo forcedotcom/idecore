@@ -52,7 +52,8 @@ public class GeneralPreferencePage extends PreferencePage implements
 
 	}
 
-	public void init(IWorkbench workbench) {
+	@Override
+    public void init(IWorkbench workbench) {
 		setPreferenceStore(ForceIdeUIPlugin.getDefault().getPreferenceStore());
 	}
 

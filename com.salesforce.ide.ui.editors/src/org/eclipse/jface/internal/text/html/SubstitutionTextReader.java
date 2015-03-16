@@ -105,7 +105,8 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 	/**
 	 * @see Reader#read()
 	 */
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		int c;
 		do {
 
@@ -127,6 +128,7 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 	/**
 	 * @see Reader#ready()
 	 */
+    @Override
     public boolean ready() throws IOException {
 		return fReader.ready();
 	}
@@ -134,14 +136,16 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 	/**
 	 * @see Reader#close()
 	 */
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 		fReader.close();
 	}
 
 	/**
 	 * @see Reader#reset()
 	 */
-	public void reset() throws IOException {
+	@Override
+    public void reset() throws IOException {
 		fReader.reset();
 		fWasWhiteSpace= true;
 		fCharAfterWhiteSpace= -1;

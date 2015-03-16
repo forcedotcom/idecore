@@ -29,7 +29,8 @@ public class EquinoxAuthorization implements IAuthorizationService {
 	private static final String FORCE_PROJECT = "Force Projects";
 	private ISecurePreferences root;
 
-	public void addAuthorizationInfo(String AUTH_URL, IProject project, String AUTH_TYPE, Map<String, String> credentialMap) {
+	@Override
+    public void addAuthorizationInfo(String AUTH_URL, IProject project, String AUTH_TYPE, Map<String, String> credentialMap) {
 		root = SecurePreferencesFactory.getDefault();
 		ISecurePreferences node = root.node(FORCE_PROJECT + "/" + project.getName());
 		try {
@@ -43,7 +44,8 @@ public class EquinoxAuthorization implements IAuthorizationService {
 
 	}
 
-	public String getPassword(IProject project, String AUTH_URL, String AUTH_TYPE) {
+	@Override
+    public String getPassword(IProject project, String AUTH_URL, String AUTH_TYPE) {
 		ISecurePreferences node = root.node(FORCE_PROJECT + "/" + project.getName());
 		try {
 			return node.get(PROP_PASSWORD, "");
@@ -53,7 +55,8 @@ public class EquinoxAuthorization implements IAuthorizationService {
 		return null;
 	}
 
-	public Map<String, String> getCredentialMap(URL url, String projectName, String authType) {
+	@Override
+    public Map<String, String> getCredentialMap(URL url, String projectName, String authType) {
 		try {
 			ISecurePreferences root = SecurePreferencesFactory.getDefault();
 			ISecurePreferences node = root.node(FORCE_PROJECT + "/" + projectName);

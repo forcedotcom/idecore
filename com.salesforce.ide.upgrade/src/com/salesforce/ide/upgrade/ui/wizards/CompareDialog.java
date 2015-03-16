@@ -45,6 +45,7 @@ public class CompareDialog extends ResizableDialog implements IPropertyChangeLis
         setHelpContextId(ICompareContextIds.COMPARE_DIALOG);
     }
 
+    @Override
     public boolean close() {
         if (super.close()) {
             if (fCompareEditorInput != null)
@@ -57,10 +58,12 @@ public class CompareDialog extends ResizableDialog implements IPropertyChangeLis
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, false);
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         
     }
@@ -68,6 +71,7 @@ public class CompareDialog extends ResizableDialog implements IPropertyChangeLis
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
+    @Override
     protected Control createDialogArea(Composite parent2) {
 
         Composite parent = (Composite) super.createDialogArea(parent2);
@@ -85,6 +89,7 @@ public class CompareDialog extends ResizableDialog implements IPropertyChangeLis
     /*
      * (non-Javadoc) Method declared on Window.
      */
+    @Override
     public int open() {
 
         int rc = super.open();
@@ -92,6 +97,7 @@ public class CompareDialog extends ResizableDialog implements IPropertyChangeLis
         if (rc == OK && fCompareEditorInput.isSaveNeeded()) {
 
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
+                @Override
                 public void execute(IProgressMonitor pm) throws CoreException {
                     fCompareEditorInput.saveChanges(pm);
                 }

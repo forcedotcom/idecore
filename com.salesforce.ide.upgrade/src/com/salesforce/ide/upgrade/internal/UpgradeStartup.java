@@ -17,6 +17,7 @@ public class UpgradeStartup implements IStartup {
 
     private static final Logger logger = Logger.getLogger(UpgradeStartup.class);
 
+    @Override
     public void earlyStartup() {
         if (logger.isDebugEnabled()) {
             logger.debug("Started upgrade plugin to inspect open Force.com projects");

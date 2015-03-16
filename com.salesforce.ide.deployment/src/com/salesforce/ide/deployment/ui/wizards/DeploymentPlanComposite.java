@@ -300,6 +300,7 @@ public class DeploymentPlanComposite extends BaseDeploymentComposite {
             this.sortOrder = sortOrder;
         }
 
+        @Override
         public Object[] getElements(Object inputElement) {
             DeploymentPayload tmpDeploymentPayload = (DeploymentPayload) inputElement;
 
@@ -323,10 +324,12 @@ public class DeploymentPlanComposite extends BaseDeploymentComposite {
             return deploymentComponentSet.toArray();
         }
 
+        @Override
         public void dispose() {
         // not implemented
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // not implemented
         }
@@ -336,10 +339,12 @@ public class DeploymentPlanComposite extends BaseDeploymentComposite {
         List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
 
         // TODO: when we get action images
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             DeploymentComponent deploymentComponent = (DeploymentComponent) element;
             switch (columnIndex) {
@@ -360,19 +365,23 @@ public class DeploymentPlanComposite extends BaseDeploymentComposite {
             return "";
         }
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
             listeners.add(listener);
         }
 
+        @Override
         public void dispose() {
         // not implemented
         }
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             // not implemented
             return false;
         }
 
+        @Override
         public void removeListener(ILabelProviderListener listener) {
             listeners.remove(listener);
         }

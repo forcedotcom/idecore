@@ -56,10 +56,12 @@ public class StatusLineLink extends Composite {
         updateLinkLayout();
 
         lnkMessage.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 UIUtils.displayHelp(helpContextId);
             }

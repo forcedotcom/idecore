@@ -30,6 +30,7 @@ public class CellLabelProvider extends LabelProvider implements ITableLabelProvi
      *
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
      */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         String result = "";
         if (((DataRow) element).getRecord() != null) {
@@ -70,6 +71,7 @@ public class CellLabelProvider extends LabelProvider implements ITableLabelProvi
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         return null;
     }

@@ -63,6 +63,7 @@ public class RunTestLoggingPropertyComposite extends BaseComposite {
 		scale.setMaximum(3);
 		scale.setPageIncrement(1);
 		scale.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 int level = scale.getSelection();
                 lblLevel.setText(LoggingLevel.getLevelText(level));

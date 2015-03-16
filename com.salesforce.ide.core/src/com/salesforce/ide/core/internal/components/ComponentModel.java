@@ -108,10 +108,12 @@ public abstract class ComponentModel implements IModel {
         this.componentFactory = componentFactory;
     }
 
+    @Override
     public IProject getProject() {
         return project;
     }
 
+    @Override
     public void setProject(IProject project) {
         this.project = project;
     }

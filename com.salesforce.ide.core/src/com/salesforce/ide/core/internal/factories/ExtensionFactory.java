@@ -46,6 +46,7 @@ public class ExtensionFactory implements IExecutableExtension, IExecutableExtens
     private Object bean = null;
     private String beanRef = null;
 
+    @Override
     public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
             throws CoreException {
         beanRef = (String) data;
@@ -66,6 +67,7 @@ public class ExtensionFactory implements IExecutableExtension, IExecutableExtens
         }
     }
 
+    @Override
     public Object create() throws CoreException {
 
         if (bean == null) {

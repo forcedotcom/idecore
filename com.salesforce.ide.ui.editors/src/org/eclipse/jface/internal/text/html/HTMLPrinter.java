@@ -38,7 +38,8 @@ public class HTMLPrinter {
 					/*
 					 * @see java.lang.Runnable#run()
 					 */
-					public void run() {
+					@Override
+                    public void run() {
 						BG_COLOR_RGB= display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB();
 					}
 				});

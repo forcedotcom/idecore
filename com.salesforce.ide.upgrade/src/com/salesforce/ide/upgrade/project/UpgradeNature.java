@@ -29,10 +29,12 @@ public class UpgradeNature extends BaseNature {
     // This id is API, do not change without breaking compatibility with existing workspace projects
     public static final String NATURE_ID = Constants.FORCE_PLUGIN_PREFIX + ".nature.upgrade";
 
+    @Override
     public void configure() throws CoreException {
         configure(UpgradeBuilder.BUILDER_ID);
     }
 
+    @Override
     public void deconfigure() throws CoreException {
         deconfigure(UpgradeBuilder.BUILDER_ID);
     }

@@ -225,6 +225,7 @@ public class DeployResultsViewAssembler {
         }
 
         Collections.sort(warnings, new Comparator<CodeCoverageWarning>() {
+            @Override
             public int compare(final CodeCoverageWarning w1, final CodeCoverageWarning w2) {
                 if (Utils.isEmpty(w1.getName())) {
                     return -1;

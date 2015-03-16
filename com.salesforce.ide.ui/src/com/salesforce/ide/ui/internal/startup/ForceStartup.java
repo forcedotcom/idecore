@@ -46,6 +46,7 @@ public class ForceStartup implements IStartup {
     private static Map<IResource, Package> manifestCache = new HashMap<IResource, Package>();
     public static boolean PACKAGE_MANIFEST_LISTENER_FLAG = Utils.isManifestListenerEnabled();
 
+    @Override
     public void earlyStartup() {
         if (!Utils.isSkipCompatibilityCheck()) {
             Bundle bundle = Platform.getBundle(Constants.PREV_IDE_BUNDLE_NAME);
@@ -79,6 +80,7 @@ public class ForceStartup implements IStartup {
         }
 
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 IPerspectiveDescriptor[] perspectives =
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getOpenPerspectives();

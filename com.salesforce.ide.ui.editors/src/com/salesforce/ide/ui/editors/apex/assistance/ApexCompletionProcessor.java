@@ -52,6 +52,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
         /*
          * @see IContextInformationValidator#isContextInformationValid(int)
          */
+        @Override
         public boolean isContextInformationValid(int offset) {
             return true; // Math.abs(fInstallOffset - offset) < 5;
         }
@@ -59,6 +60,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
         /*
          * @see IContextInformationValidator#install(IContextInformation, ITextViewer, int)
          */
+        @Override
         public void install(IContextInformation info, ITextViewer viewer, int offset) {
             fInstallOffset = offset;
         }
@@ -67,6 +69,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
          * @see org.eclipse.jface.text.contentassist.IContextInformationPresenter#updatePresentation(int,
          *      TextPresentation)
          */
+        @Override
         public boolean updatePresentation(int documentPosition, TextPresentation presentation) {
             return false;
         }
@@ -93,12 +96,14 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
     	return new ICompletionProposal[0];
     }
     
     public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
+            @Override
             public IInformationControl createInformationControl(Shell parent) {
                 return new DefaultInformationControl(parent, SWT.WRAP, presenter);
             }
@@ -107,6 +112,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     static final DefaultInformationControl.IInformationPresenter presenter =
             new DefaultInformationControl.IInformationPresenter() {
+                @Override
                 public String updatePresentation(Display display, String infoText, TextPresentation presentation,
                         int maxWidth, int maxHeight) {
                     int start = -1;
@@ -140,6 +146,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
         /*
          * IContextInformation[] result= new IContextInformation[5]; for (int i= 0; i < result.length; i++) result[i]=
@@ -155,6 +162,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[] { '.', '(' };
     }
@@ -162,6 +170,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return new char[] { '#' };
     }
@@ -169,6 +178,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public IContextInformationValidator getContextInformationValidator() {
         return contextValidator;
     }
@@ -176,6 +186,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public String getErrorMessage() {
         return null;
     }
@@ -220,6 +231,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     public static IPartListener2 getPartListener() {
         return new IPartListener2() {
+            @Override
             public void partActivated(IWorkbenchPartReference partRef) {
                 // TODO: export string
                 if (partRef.getId().equals("com.salesforce.ide.ui.editors.apex")) {
@@ -227,18 +239,25 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
                 }
             }
 
+            @Override
             public void partBroughtToTop(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partClosed(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partDeactivated(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partHidden(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partInputChanged(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partOpened(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partVisible(IWorkbenchPartReference partRef) {}
 
         };

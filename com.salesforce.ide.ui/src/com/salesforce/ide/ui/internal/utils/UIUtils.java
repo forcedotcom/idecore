@@ -158,6 +158,7 @@ public class UIUtils {
 
     public static void addPerspectiveListener(final PerspectiveAdapter perspectivListener) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
                 if (window != null) {
@@ -169,6 +170,7 @@ public class UIUtils {
 
     public static void removePerspectiveListener(final PerspectiveAdapter perspectivListener) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
                 if (window != null) {

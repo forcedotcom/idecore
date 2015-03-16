@@ -688,6 +688,7 @@ public class SyncController extends Controller {
 
         try {
             ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     try {
                         for (SyncInfo syncInfo : syncInfos) {
@@ -741,6 +742,7 @@ public class SyncController extends Controller {
 
         try {
             ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     try {
                         for (SyncInfo syncInfo : syncInfos) {

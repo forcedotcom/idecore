@@ -68,6 +68,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
         // REVIEWME: what to do w/ ResourceChangeChecker and/or ValidateEditChecker
 
         Display.getDefault().syncExec(new Runnable() {
+            @Override
             public void run() {
                 Set<IResource> deletedResources =
                         deleteChange.getRefactorController().getRefactorModel().getChangeResources();
@@ -106,18 +107,21 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
                     }
 
                     Collections.sort(portals, new Comparator<IResource>() {
+                        @Override
                         public int compare(IResource o1, IResource o2) {
                             return o1.getName().compareToIgnoreCase(o2.getName());
                         }
                     });
 
                     Collections.sort(sites, new Comparator<IResource>() {
+                        @Override
                         public int compare(IResource o1, IResource o2) {
                             return o1.getName().compareToIgnoreCase(o2.getName());
                         }
                     });
 
                     Collections.sort(workflows, new Comparator<IResource>() {
+                        @Override
                         public int compare(IResource o1, IResource o2) {
                             return o1.getName().compareToIgnoreCase(o2.getName());
                         }
@@ -271,6 +275,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
         return Constants.PLUGIN_NAME + " Delete Resource Participant";
     }
 
+    @Override
     public void addElement(Object element, RefactoringArguments arguments) {
         if (element instanceof IResource == false || ((IResource) element).getType() != IResource.FILE) {
             return;

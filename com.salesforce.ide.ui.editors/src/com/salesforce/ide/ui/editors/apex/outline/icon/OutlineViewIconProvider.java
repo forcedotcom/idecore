@@ -69,6 +69,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
         return getTypeImage(accessorFlags_JVM, accessorFlags_JDT, false);
     }
 
+    @Override
     public Image handle(ClassDecl element) {
         AccessorFlags flags = computeAccessorFlags(element.modifiers);
         int accessorFlags_JVM = flags.accessorFlags_JVM;
@@ -92,6 +93,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
         return ForceImages.get(ForceImages.JDT_CLASS, accessorFlags_JVM, decoratedDesc);
     }
 
+    @Override
     public Image handle(InterfaceDecl element) {
         AccessorFlags flags = computeAccessorFlags(element.modifiers);
         int accessorFlags_JVM = flags.accessorFlags_JVM;

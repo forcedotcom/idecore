@@ -59,6 +59,7 @@ public class ApexContentOutlinePage extends ContentOutlinePage {
         }
     }
 
+    @Override
     public TreeViewer getTreeViewer() {
     	return super.getTreeViewer();
     }

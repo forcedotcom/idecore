@@ -61,6 +61,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         // pre delete operations
         if (event.getType() == IResourceChangeEvent.PRE_DELETE && event.getResource() != null
@@ -78,6 +79,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
             // handle post-delete operations
             final Set<IProject> deletedProjects = new HashSet<IProject>();
             IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+                @Override
                 public boolean visit(IResourceDelta delta) {
                     if (delta.getKind() == IResourceDelta.REMOVED && delta.getResource() != null
                             && delta.getResource().getType() == IResource.PROJECT) {

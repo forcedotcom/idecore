@@ -23,6 +23,7 @@ public class CodeLocationExt implements ICodeLocationExt  {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeLocationExt#getColumn()
     */
+    @Override
     public int getColumn() {
         return codeLocation.getColumn();
     }
@@ -30,6 +31,7 @@ public class CodeLocationExt implements ICodeLocationExt  {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeLocationExt#getLine()
     */
+    @Override
     public int getLine() {
         return codeLocation.getLine();
     }
@@ -37,6 +39,7 @@ public class CodeLocationExt implements ICodeLocationExt  {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeLocationExt#getNumExecutions()
     */
+    @Override
     public int getNumExecutions() {
         return codeLocation.getNumExecutions();
     }
@@ -44,6 +47,7 @@ public class CodeLocationExt implements ICodeLocationExt  {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeLocationExt#getTime()
     */
+    @Override
     public double getTime() {
         return codeLocation.getTime();
     }

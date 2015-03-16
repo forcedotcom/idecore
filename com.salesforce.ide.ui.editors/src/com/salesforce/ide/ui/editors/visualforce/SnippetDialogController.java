@@ -160,6 +160,7 @@ public class SnippetDialogController extends Controller {
             Field[] fields = describeSObjectResult.getFields();
             if (Utils.isNotEmpty(fields)) {
                 Arrays.sort(fields, new Comparator<Field>() {
+                    @Override
                     public int compare(Field o1, Field o2) {
                         String name1 = (o1).getLabel();
                         String name2 = (o2).getLabel();

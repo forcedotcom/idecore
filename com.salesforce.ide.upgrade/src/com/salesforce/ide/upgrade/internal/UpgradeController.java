@@ -639,6 +639,7 @@ public class UpgradeController extends Controller {
     // sort IDE internal class execution by their order value
     private void sortIdeInternals() {
         Collections.sort(ideInternalUpgrades, new Comparator<IInternalUpgrade>() {
+            @Override
             public int compare(IInternalUpgrade o1, IInternalUpgrade o2) {
                 if (o1 == o2) {
                     return 0;
@@ -728,6 +729,7 @@ public class UpgradeController extends Controller {
             File directory = new File(path);
             if (directory.exists()) {
                 File[] files = directory.listFiles(new FilenameFilter() {
+                    @Override
                     public boolean accept(File dir, String name) {
                         return name.endsWith(".class");
                     }
@@ -735,6 +737,7 @@ public class UpgradeController extends Controller {
 
                 if (Utils.isNotEmpty(files)) {
                     Arrays.sort(files, new Comparator<File>() {
+                        @Override
                         public int compare(File o1, File o2) {
                             return o1.getName().compareTo(o2.getName());
                         }

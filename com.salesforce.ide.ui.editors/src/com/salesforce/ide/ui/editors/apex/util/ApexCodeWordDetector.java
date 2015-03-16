@@ -20,6 +20,7 @@ public class ApexCodeWordDetector implements IWordDetector {
     /*
      * (non-Javadoc) Method declared on IWordDetector.
      */
+    @Override
     public boolean isWordPart(char character) {
         return Character.isJavaIdentifierPart(character);
     }
@@ -27,6 +28,7 @@ public class ApexCodeWordDetector implements IWordDetector {
     /*
      * (non-Javadoc) Method declared on IWordDetector.
      */
+    @Override
     public boolean isWordStart(char character) {
         return Character.isJavaIdentifierStart(character);
     }

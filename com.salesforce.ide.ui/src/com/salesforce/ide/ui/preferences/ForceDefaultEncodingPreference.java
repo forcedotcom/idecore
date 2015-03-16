@@ -30,7 +30,8 @@ public class ForceDefaultEncodingPreference implements IStartup {
 	public static PerspectiveAdapter perspectivListener;
 	public static String encodingOfPrevPerspective;
 
-	public void earlyStartup() {
+	@Override
+    public void earlyStartup() {
 	    encodingOfPrevPerspective = ResourcesPlugin.getEncoding();
 	    
 		perspectivListener = new PerspectiveAdapter()

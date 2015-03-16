@@ -67,10 +67,12 @@ public class UpgradeAction extends BaseAction implements IWorkbenchWindowActionD
         }
     }
 
+    @Override
     public void dispose() {
 
     }
 
+    @Override
     public void init(IWorkbenchWindow window) {
         setWorkbenchWindow(window);
     }

@@ -40,6 +40,7 @@ public class ExecuteAnonymousView extends BaseViewPart {
 
     private void createSelectionListener() {
         fPostSelectionListener = new ISelectionListener() {
+            @Override
             public void selectionChanged(IWorkbenchPart part, ISelection selection) {
                 IProject project = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProject(selection);
                 if (project != null && ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedProject(project)) {

@@ -87,6 +87,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
         selectedResources.add(selectedResource);
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             setSelection(selection);
@@ -124,6 +125,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
         return getProjectService().filterChildren(selectedResources);
     }
 
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
         this.workbenchWindow = targetPart.getSite().getWorkbenchWindow();
@@ -194,6 +196,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
     }
 
     // actual work execution; subclasses impl lifecycle methods
+    @Override
     public final void run(IAction action) {
         init();
 

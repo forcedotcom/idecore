@@ -23,6 +23,7 @@ public class RetrieveMessageExt implements IMessageExt {
     private static final Logger logger = Logger.getLogger(RetrieveMessageExt.class);
 
     private static Comparator<RetrieveMessage> messageComparator = new Comparator<RetrieveMessage>() {
+        @Override
         public int compare(RetrieveMessage o1, RetrieveMessage o2) {
             if (o1 == o2) {
                 return 0;
@@ -58,6 +59,7 @@ public class RetrieveMessageExt implements IMessageExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.handlers.IMessageHandler#getMessageStrings()
     */
+    @Override
     public String[] getMessageStrings() {
         String[] messageStrings = null;
         if (Utils.isNotEmpty(messages)) {
@@ -72,6 +74,7 @@ public class RetrieveMessageExt implements IMessageExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.handlers.IMessageHandler#getFileNames()
     */
+    @Override
     public String[] getFileNames() {
         String[] fileNamesStrings = null;
         if (Utils.isNotEmpty(messages)) {
@@ -86,6 +89,7 @@ public class RetrieveMessageExt implements IMessageExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.handlers.IMessageHandler#getDisplayMessages()
     */
+    @Override
     public String[] getDisplayMessages() {
         String[] displayMessages = null;
         if (Utils.isNotEmpty(messages)) {
@@ -97,6 +101,7 @@ public class RetrieveMessageExt implements IMessageExt {
         return displayMessages;
     }
 
+    @Override
     public int getMessageCount() {
         return messages != null ? messages.length : 0;
     }

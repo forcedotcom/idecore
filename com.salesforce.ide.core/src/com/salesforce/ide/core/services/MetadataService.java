@@ -538,6 +538,7 @@ public class MetadataService extends BaseService {
         final Collection<FileProperties> withoutCustomObjects =
                 Collections2.filter(new ArrayList<FileProperties>(Arrays.asList(fileMetadataExt.getFileProperties())), new Predicate<FileProperties>() {
 
+                    @Override
                     public boolean apply(FileProperties fp) {
                         final String type = fp.getType();
                         return !(filterComponentTypesSet.contains(type)
@@ -549,6 +550,7 @@ public class MetadataService extends BaseService {
         final Collection<FileProperties> withoutCustomAndStandardObject =
                 Collections2.filter(withoutCustomObjects, new Predicate<FileProperties>() {
 
+                    @Override
                     public boolean apply(FileProperties fp) {
                         final String type = fp.getType();
                         return !(filterComponentTypesSet.contains(type)
@@ -559,6 +561,7 @@ public class MetadataService extends BaseService {
         final Collection<FileProperties> withoutOtherToBeFilteredTypes =
             Collections2.filter(withoutCustomAndStandardObject, new Predicate<FileProperties>() {
 
+                @Override
                 public boolean apply(FileProperties fp) {
                     final String type = fp.getType();
                     return !(filterComponentTypesSet.contains(type));

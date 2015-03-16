@@ -93,10 +93,12 @@ public class LogAppender extends AppenderSkeleton {
         return Platform.getLog(b);
     }
 
+    @Override
     public void close() {
 
     }
 
+    @Override
     public boolean requiresLayout() {
         return false;
     }

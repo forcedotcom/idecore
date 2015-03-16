@@ -61,14 +61,16 @@ public class RetrieveResultExt implements IMetadataResultExt {
 		return retrieveResult;
 	}
 
-	public RetrieveMessageExt getMessageHandler() {
+	@Override
+    public RetrieveMessageExt getMessageHandler() {
 		if (retrieveResult != null && messageHandler == null) {
 			messageHandler = new RetrieveMessageExt(retrieveResult.getMessages());
 		}
 		return messageHandler;
 	}
 
-	public int getMessageCount() {
+	@Override
+    public int getMessageCount() {
 		int count = 0;
 		if (retrieveResult != null && Utils.isNotEmpty(retrieveResult.getMessages())) {
 			count = retrieveResult.getMessages().length;
@@ -76,7 +78,8 @@ public class RetrieveResultExt implements IMetadataResultExt {
 		return count;
 	}
 
-	public boolean hasMessages() {
+	@Override
+    public boolean hasMessages() {
 		return getMessageCount() > 0;
 	}
 

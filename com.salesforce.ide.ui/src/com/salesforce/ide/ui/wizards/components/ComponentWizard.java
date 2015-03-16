@@ -107,6 +107,7 @@ public abstract class ComponentWizard extends BaseWizard implements IComponentCr
 
     protected abstract ComponentWizardPage getComponentWizardPageInstance();
 
+    @Override
     public ComponentModel getComponentWizardModel() {
         return getComponentController().getComponentWizardModel();
     }

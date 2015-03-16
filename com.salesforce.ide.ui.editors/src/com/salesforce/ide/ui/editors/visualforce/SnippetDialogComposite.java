@@ -146,8 +146,10 @@ public class SnippetDialogComposite extends BaseComposite {
         listObjects = new List(groupMergeFields, SWT.V_SCROLL);
         listObjects.setLayoutData(gridData2);
         listObjects.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {}
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 try {
                     getSnippetDialogController().loadFieldList(listFields, listObjects.getSelection()[0]);
@@ -160,13 +162,16 @@ public class SnippetDialogComposite extends BaseComposite {
         listFields = new List(groupMergeFields, SWT.V_SCROLL);
         listFields.setLayoutData(gridData1);
         listFields.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {}
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 selectedField = assembleMergeField(listFields.getSelection()[0]);
             }
         });
         listFields.addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
                 selectedField = assembleMergeField(listFields.getSelection()[0]);
                 if (addFieldToDocument()) {
@@ -174,8 +179,10 @@ public class SnippetDialogComposite extends BaseComposite {
                 }
             }
 
+            @Override
             public void mouseDown(MouseEvent e) {}
 
+            @Override
             public void mouseUp(MouseEvent e) {}
         });
 
@@ -193,10 +200,13 @@ public class SnippetDialogComposite extends BaseComposite {
         @SuppressWarnings("unused")
         Label filler1 = new Label(groupMergeFields, SWT.NONE);
         btnInsertField.addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClick(MouseEvent e) {}
 
+            @Override
             public void mouseDown(MouseEvent e) {}
 
+            @Override
             public void mouseUp(MouseEvent e) {
                 if (addFieldToDocument()) {
                     hostDialog.close();
@@ -206,14 +216,17 @@ public class SnippetDialogComposite extends BaseComposite {
         listSnippets = new List(groupMergeFields, SWT.V_SCROLL);
         listSnippets.setLayoutData(gridData21);
         listSnippets.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {}
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String snippet = getSnippetDialogController().getSnippet(listSnippets.getSelection()[0]);
                 selectedSnippet = "{!INCLUDE(" + snippet + ")}";
             }
         });
         listSnippets.addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
                 String snippet = getSnippetDialogController().getSnippet(listSnippets.getSelection()[0]);
                 selectedSnippet = "{!INCLUDE(" + snippet + ")}";
@@ -222,18 +235,23 @@ public class SnippetDialogComposite extends BaseComposite {
                 }
             }
 
+            @Override
             public void mouseDown(MouseEvent e) {}
 
+            @Override
             public void mouseUp(MouseEvent e) {}
         });
         btnInsertSnippet = new Button(groupMergeFields, SWT.NONE);
         btnInsertSnippet.setText("Insert Snippet");
         btnInsertSnippet.setLayoutData(gridData3);
         btnInsertSnippet.addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClick(MouseEvent e) {}
 
+            @Override
             public void mouseDown(MouseEvent e) {}
 
+            @Override
             public void mouseUp(MouseEvent e) {
                 if (addSnippetToDocument()) {
                     hostDialog.close();

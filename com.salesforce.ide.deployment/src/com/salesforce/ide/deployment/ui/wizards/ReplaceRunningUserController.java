@@ -68,6 +68,7 @@ public class ReplaceRunningUserController extends Controller {
         IProgressService service = PlatformUI.getWorkbench().getProgressService();
         try {
             service.run(false, true, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Validating runningUser for dashboard components...", 3);
                     try {

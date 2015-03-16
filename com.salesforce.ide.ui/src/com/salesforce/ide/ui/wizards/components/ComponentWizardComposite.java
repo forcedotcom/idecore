@@ -60,6 +60,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
     }
 
     //   M E T H O D S
+    @Override
     public void setComponentWizardPage(IComponentWizardPage componentWizardPage) {
         this.componentWizardPage = componentWizardPage;
     }
@@ -88,10 +89,12 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         cmbPackageNames = new Combo(grpPackage, SWT.BORDER | SWT.READ_ONLY);
         cmbPackageNames.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 4, 0));
         cmbPackageNames.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 getComponentWizardPage().validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -125,6 +128,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtName.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
@@ -145,6 +149,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtName.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
@@ -165,6 +170,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtLabel.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
@@ -190,8 +196,10 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtLabel.addFocusListener(new FocusListener() {
+            @Override
             public void focusGained(FocusEvent event) { /* not implemented */}
 
+            @Override
             public void focusLost(FocusEvent event) {
                 if (isLabelNotEmpty() && !isNameNotEmpty()) {
                     String agumentedText = Utils.generateNameFromLabel(getLabelString());
@@ -205,6 +213,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
             }
         });
         txtLabel.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 getComponentWizardPage().validateUserInput();
                 getComponentWizardPage().setComponentNameChanged(true);
@@ -222,6 +231,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
             txtPluralLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
             txtPluralLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
             txtPluralLabel.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     getComponentWizardPage().validateUserInput();
                 }
@@ -247,6 +257,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtName.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
@@ -268,6 +279,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         cmbObjects = new Combo(containingGroup != null ? containingGroup : composite, SWT.DROP_DOWN | SWT.READ_ONLY);
         cmbObjects.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 0));
         cmbObjects.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 getComponentWizardPage().validateUserInput();
             }
@@ -277,10 +289,12 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         btnRefreshObjects.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 0));
         btnRefreshObjects.setText("Refresh Objects");
         btnRefreshObjects.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 ((ComponentWizardPage) getComponentWizardPage()).refreshObjects();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -308,6 +322,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         }
     }
 
+    @Override
     public void disableAllControls() {
         disableComponentNameFields();
 
@@ -344,14 +359,17 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         setSize(new Point(490, 174));
     }
 
+    @Override
     public Text getTxtName() {
         return txtName;
     }
 
+    @Override
     public String getComponentName() {
         return getNameString();
     }
 
+    @Override
     public String getNameString() {
         return getText(txtName);
     }
@@ -368,6 +386,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         return txtLabel;
     }
 
+    @Override
     public String getLabelString() {
         return getText(txtLabel);
     }
@@ -396,6 +415,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         setText(label, txtPluralLabel);
     }
 
+    @Override
     public void disableComponentNameFields() {
         txtName.setEnabled(false);
 
@@ -408,16 +428,19 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         }
     }
 
+    @Override
     @Deprecated
     public void disableComponentPackageNameField() {
         cmbPackageNames.setEnabled(false);
     }
 
+    @Override
     @Deprecated
     public String getPackageName() {
         return Utils.isEmpty(getText(cmbPackageNames)) ? Constants.EMPTY_STRING : getText(cmbPackageNames);
     }
 
+    @Override
     @Deprecated
     public Combo getCmbPackageName() {
         return cmbPackageNames;
@@ -443,6 +466,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         return Utils.isEmpty(getText(cmbObjects)) ? Constants.EMPTY_STRING : getText(cmbObjects);
     }
 
+    @Override
     public Combo getCmbTemplateNames() {
         return cmbTemplateNames;
     }

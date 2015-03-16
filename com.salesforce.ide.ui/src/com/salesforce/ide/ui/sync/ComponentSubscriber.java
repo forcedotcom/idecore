@@ -145,6 +145,7 @@ public class ComponentSubscriber extends Subscriber {
         final ISynchronizeManager manager = TeamUI.getSynchronizeManager();
         Display display = PlatformUI.getWorkbench().getDisplay();
         display.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 ISynchronizeView view = manager.showSynchronizeViewInActivePage();
                 ISynchronizeParticipant participant = view.getParticipant();

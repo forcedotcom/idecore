@@ -47,6 +47,7 @@ public abstract class BaseWizard extends Wizard implements INewWizard {
         controller.getModel().setProject(project);
     }
 
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.workbench = workbench;
         this.selection = selection;

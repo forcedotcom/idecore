@@ -21,10 +21,12 @@ public class OnlineNature extends BaseNature {
     // This id is API, do not change without breaking compatibility with existing workspace projects
     public static final String NATURE_ID = Constants.FORCE_PLUGIN_PREFIX + ".nature.online";
 
+    @Override
     public void configure() throws CoreException {
         configure(OnlineBuilder.BUILDER_ID);
     }
 
+    @Override
     public void deconfigure() throws CoreException {
         deconfigure(OnlineBuilder.BUILDER_ID);
     }

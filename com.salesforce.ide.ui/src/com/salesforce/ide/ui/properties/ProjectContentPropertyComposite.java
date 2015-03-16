@@ -74,10 +74,12 @@ public class ProjectContentPropertyComposite extends ProjectProjectContentCompos
             createProjectManifestEditorBtn(UIMessages
                     .getString("ProjectProperties.ProjectContent.CustomComponentsChange.label"));
             btnCustomComponentsOpen.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                     projectContentPropertyPage.setUpdated(true);
                 }
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     widgetDefaultSelected(e);
                 }

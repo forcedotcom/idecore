@@ -25,29 +25,34 @@ public class CustomObjectNameResolver {
     }
     
     private static final Predicate<Pair<String>> validCustomObjectPredicate = new Predicate<Pair<String>>() {
+        @Override
         public boolean apply(Pair<String> arg0) {
             return !doesNotEndWithValidCustomObjectSuffix.apply(arg0) || isWildCard.apply(arg0);
         }
     };
     private static final Predicate<Pair<String>> validStandardObjectPredicate = new Predicate<Pair<String>>() {
+        @Override
         public boolean apply(Pair<String> arg0) {
             return doesNotEndWithValidCustomObjectSuffix.apply(arg0) && !isWildCard.apply(arg0);
         }
     };
     
     private static final Predicate<Pair<String>> doesNotEndWithValidCustomObjectSuffix = new Predicate<Pair<String>>() {
+        @Override
         public boolean apply(Pair<String> arg0) {
             return !(arg0.getName().endsWith(Constants.CUSTOM_OBJECT_SUFFIX) || arg0.getName().endsWith(KNOWLEDGE_ARTICLE_SUFFIX));
         }
     };
     
     private static final Predicate<Pair<String>> isWildCard = new Predicate<Pair<String>>() {
+        @Override
         public boolean apply(Pair<String> arg0) {
             return arg0.getName().equals(Constants.SUBSCRIBE_TO_ALL);
         }
     };
 
     private static final Predicate<Pair<String>> isValidTypePredicate = new Predicate<Pair<String>>() {
+        @Override
         public boolean apply(Pair<String> arg0) {
             return Constants.CUSTOM_OBJECT.equals(arg0.getType())
                     || Constants.STANDARD_OBJECT.equals(arg0.getType());

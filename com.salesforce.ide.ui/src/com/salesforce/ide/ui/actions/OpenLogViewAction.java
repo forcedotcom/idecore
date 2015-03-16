@@ -27,10 +27,13 @@ public class OpenLogViewAction implements IWorkbenchWindowActionDelegate {
 
     public OpenLogViewAction() {}
 
+    @Override
     public void dispose() {}
 
+    @Override
     public void init(IWorkbenchWindow iworkbenchwindow) {}
 
+    @Override
     public void run(IAction action) {
         try {
             IWorkbenchWindow window = ForceIdeUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
@@ -43,6 +46,7 @@ public class OpenLogViewAction implements IWorkbenchWindowActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(IAction iaction, ISelection iselection) {}
 
 }

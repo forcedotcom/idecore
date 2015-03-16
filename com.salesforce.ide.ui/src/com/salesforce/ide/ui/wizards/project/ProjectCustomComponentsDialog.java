@@ -73,6 +73,7 @@ public class ProjectCustomComponentsDialog extends SelectionDialog {
 
         customComponentsComposite.getProjectPackageManifestTree().addStatusChangedListener(
             new IStatusChangedListener() {
+                @Override
                 public void statusChanged(Status status) {
                     updateStatus(status);
                 }
@@ -87,11 +88,13 @@ public class ProjectCustomComponentsDialog extends SelectionDialog {
 
         Button btnOk = getOkButton();
         btnOk.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 packageManifestModel.setManifestDocument(customComponentsComposite.getProjectPackageManifestTree()
                         .getDocument());
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

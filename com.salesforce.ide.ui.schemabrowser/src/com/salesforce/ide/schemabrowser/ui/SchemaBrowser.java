@@ -197,6 +197,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
     private void wireUpComposite() {
         schemaEditorComposite.getButtonRun().addMouseListener(new org.eclipse.swt.events.MouseListener() {
+            @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
                 try {
                     PlatformUI.getWorkbench().getProgressService().run(false, true, runQuery);
@@ -208,24 +209,30 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 }
             }
 
+            @Override
             public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent e) {}
 
+            @Override
             public void mouseDown(org.eclipse.swt.events.MouseEvent e) {}
         });
 
         schemaEditorComposite.getButtonRefresh().addMouseListener(new org.eclipse.swt.events.MouseListener() {
+            @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
                 initialize();
             }
 
+            @Override
             public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent e) {}
 
+            @Override
             public void mouseDown(org.eclipse.swt.events.MouseEvent e) {}
         });
         createTree(schemaEditorComposite);
     }
 
     IRunnableWithProgress runQuery = new IRunnableWithProgress() {
+        @Override
         public void run(IProgressMonitor monitor) throws InvocationTargetException {
             try {
                 IProject project = file.getProject();
@@ -328,6 +335,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
         Tree tree = this.schemaEditorComposite.getTree();
         tree.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.item instanceof TreeItem) {
                     selectedItem = (TreeItem) event.item;
@@ -338,12 +346,14 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
         });
         tree.addTreeListener(new org.eclipse.swt.events.TreeListener() {
+            @Override
             public void treeExpanded(org.eclipse.swt.events.TreeEvent e) {
                 final TreeItem selectedItem = (TreeItem) e.item;
                 Boolean isTopLevel = (Boolean) selectedItem.getData(IS_TOP_LEVEL);
                 if ((isTopLevel != null) && isTopLevel.booleanValue()) {
                     if (selectedItem.getItemCount() == 1) {
                         Runnable lt = new Runnable() {
+                            @Override
                             public void run() {
                                 ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                 mon.getProgressMonitor();
@@ -359,6 +369,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                             }
                         };
                         Runnable lb = new Runnable() {
+                            @Override
                             public void run() {
                                 ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                 mon.getProgressMonitor();
@@ -379,6 +390,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                         if (type.equals(SchemaBrowser.CHILD_RELATIONSHIP_NODE)
                                 && selectedItem.getData(LOADED).equals(Boolean.FALSE)) {
                             Runnable getThisChildSchema = new Runnable() {
+                                @Override
                                 public void run() {
                                     ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                     mon.getProgressMonitor();
@@ -395,6 +407,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                         } else if (SchemaBrowser.LOOKUP_RELATIONSHIP_NODE.equals(type)
                                 && Boolean.FALSE.equals(selectedItem.getData(LOADED))) {
                             Runnable getThisChildSchema = new Runnable() {
+                                @Override
                                 public void run() {
                                     ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                     mon.getProgressMonitor();
@@ -414,12 +427,14 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 wasExpanded = true;
             }
 
+            @Override
             public void treeCollapsed(org.eclipse.swt.events.TreeEvent e) {
                 wasExpanded = true;
             }
         });
 
         tree.addMouseListener(new org.eclipse.swt.events.MouseListener() {
+            @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
                 if (!wasExpanded) {
                     if (selectedItem != null) {
@@ -444,6 +459,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                                         if ((selectedItem.getData(LOADED) != null)
                                                 && Boolean.FALSE.equals(selectedItem.getData(LOADED))) {
                                             Runnable getThisChildSchema = new Runnable() {
+                                                @Override
                                                 public void run() {
                                                     ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                                     mon.getProgressMonitor();
@@ -461,6 +477,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                                     } else if (SchemaBrowser.LOOKUP_RELATIONSHIP_NODE.equals(type)
                                             && Boolean.FALSE.equals(selectedItem.getData(LOADED))) {
                                         Runnable getThisChildSchema = new Runnable() {
+                                            @Override
                                             public void run() {
                                                 ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                                 mon.getProgressMonitor();
@@ -507,8 +524,10 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 wasExpanded = false;
             }
 
+            @Override
             public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent e) {}
 
+            @Override
             public void mouseDown(org.eclipse.swt.events.MouseEvent e) {}
         });
         initialize();

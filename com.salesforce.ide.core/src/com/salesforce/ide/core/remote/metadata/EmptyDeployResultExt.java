@@ -15,43 +15,53 @@ import com.sforce.soap.metadata.RunTestsResult;
 
 public class EmptyDeployResultExt implements IDeployResultExt {
 
-	public String getDebugLog() {
+	@Override
+    public String getDebugLog() {
 		return null;
 	}
 
-	public DeployResult getDeployResult() {
+	@Override
+    public DeployResult getDeployResult() {
 		return null;
 	}
 
-	public int getMessageCount() {
+	@Override
+    public int getMessageCount() {
 		return 0;
 	}
 
-	public DeployMessageExt getMessageHandler() {
+	@Override
+    public DeployMessageExt getMessageHandler() {
 		return null;
 	}
 
-	public RetrieveResultExt getRetrieveResultHandler() {
+	@Override
+    public RetrieveResultExt getRetrieveResultHandler() {
 		return null;
 	}
 
-	public RunTestsResult getRunTestsResult() {
+	@Override
+    public RunTestsResult getRunTestsResult() {
 		return null;
 	}
 
-	public RunTestsResultExt getRunTestsResultHandler() {
+	@Override
+    public RunTestsResultExt getRunTestsResultHandler() {
 		return null;
 	}
 
-	public boolean hasMessages() {
+	@Override
+    public boolean hasMessages() {
 		return false;
 	}
 
-	public boolean hasRetriveResult() {
+	@Override
+    public boolean hasRetriveResult() {
 		return false;
 	}
 
-	public boolean isSuccess() {
+	@Override
+    public boolean isSuccess() {
 		return false;
 	}
 

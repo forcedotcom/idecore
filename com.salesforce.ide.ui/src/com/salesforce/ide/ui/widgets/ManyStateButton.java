@@ -48,6 +48,7 @@ public class ManyStateButton extends Canvas {
     }
 
     private class ManyStatePaintListener implements PaintListener {
+        @Override
         public void paintControl(PaintEvent event) {
             int imageWidth = 0;
 

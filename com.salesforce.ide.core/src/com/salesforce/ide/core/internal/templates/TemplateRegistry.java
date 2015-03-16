@@ -303,6 +303,7 @@ public class TemplateRegistry {
         File[] templates = null;
         if (directory.exists()) {
             templates = directory.listFiles(new FilenameFilter() {
+                @Override
                 public boolean accept(File dir, String name) {
                     return Utils.isNotEmpty(name) && name.endsWith("." + templateExtension);
                 }

@@ -28,6 +28,7 @@ public abstract class BaseChangeNatureAction extends BaseAction {
 
     class Decorator extends LabelProvider implements ILightweightLabelDecorator {
 
+        @Override
         public void decorate(Object element, IDecoration decoration) {
         }
 
@@ -42,6 +43,7 @@ public abstract class BaseChangeNatureAction extends BaseAction {
             }
 
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 @SuppressWarnings("synthetic-access")
                 public void run() {
                     fireLabelProviderChanged(ev);
@@ -62,6 +64,7 @@ public abstract class BaseChangeNatureAction extends BaseAction {
     public void updateDecorators() {
         // let the workbench generate events to update all resources affected by a decorator
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void run() {
                 if (logger.isDebugEnabled()) {

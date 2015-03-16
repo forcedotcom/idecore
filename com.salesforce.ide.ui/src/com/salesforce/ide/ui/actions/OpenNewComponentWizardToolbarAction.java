@@ -29,12 +29,14 @@ public class OpenNewComponentWizardToolbarAction
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
      */
+    @Override
     public void dispose() {
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
      */
+    @Override
     public void init(IWorkbenchWindow window) {
         setShell(window.getShell());
     }

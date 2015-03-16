@@ -52,6 +52,7 @@ public class ApexElementImageDescriptor extends JavaElementImageDescriptor {
     /*
      * Method declared in CompositeImageDescriptor
      */
+    @Override
     protected void drawCompositeImage(int width, int height) {
         super.drawCompositeImage(width, height);
         ImageData bg = getImageData(fBaseImage);

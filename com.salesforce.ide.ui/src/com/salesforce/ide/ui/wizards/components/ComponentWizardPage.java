@@ -71,30 +71,37 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         return getComponentController().getComponentWizardModel().getComponent();
     }
 
+    @Override
     public String getPageName() {
         return "Create " + getComponent().getDisplayName();
     }
 
+    @Override
     public String getComponentTypeName() {
         return componentWizard.getComponentTypeDisplayName();
     }
 
+    @Override
     public String getWizardDescription() {
         return "This wizard creates a new " + getComponentTypeName() + ".";
     }
 
+    @Override
     public String getWizardTitle() {
         return "Create New " + getComponentTypeName();
     }
 
+    @Override
     public boolean hasComponentNameChanged() {
         return componentNameChanged;
     }
 
+    @Override
     public void setComponentNameChanged(boolean componentNameChanged) {
         this.componentNameChanged = componentNameChanged;
     }
 
+    @Override
     public void createControl(Composite parent) {
         initialize(parent);
         setControl(componentWizardComposite);
@@ -138,6 +145,7 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         setControl((Control) composite);
     }
 
+    @Override
     public void validateUserInput() {
         if (componentWizard.getContainer() instanceof WizardDialog) {
             if (((WizardDialog) componentWizard.getContainer()).getReturnCode() == Window.CANCEL) {
@@ -283,6 +291,7 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         IProgressService service = PlatformUI.getWorkbench().getProgressService();
         try {
             service.run(true, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Verifying name uniqueness", 3);
                     monitor.subTask("Checking against existing " + getComponent().getDisplayName() + "s...");

@@ -195,10 +195,12 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
         final String urlStr = UIConstants.NEW_ORG_CREATE_LINK;
         lnkProxySettings.setData(urlStr);
         lnkProxySettings.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 try {
                     URL url = new URL((String) e.widget.getData());
@@ -232,11 +234,13 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
         }
 
         cmbEnvironment.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 enableServerEntryControls();
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -349,10 +353,12 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
         lnkProxySettings.setText(UIMessages.getString(UIConstants.PROXY_LABEL));
         lnkProxySettings.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 5, 0));
         lnkProxySettings.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 ProxyManager proxyManager = PreferenceManager.getInstance().getProxyManager();
                 PreferenceDialog dialog = null;
@@ -410,6 +416,7 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
 
     protected void addOrgModifyListener(Control control) {
         control.addListener(SWT.Modify, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 handleOrgChange();
             }
@@ -418,6 +425,7 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
 
     protected void addOrgModifyListener(Combo combo) {
         combo.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 handleOrgChange();
             }
@@ -426,10 +434,12 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
 
     protected void addOrgSelectionListener(Button btn) {
         btn.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 handleOrgChange();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

@@ -56,6 +56,7 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
      * and the suggested names are in text widgets
      */
 
+    @Override
     public void onEnterPage() {
         setErrorMessage(null);
         setPageComplete(true);
@@ -91,6 +92,7 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
             t.setText(allClassNames.get(classNS));
             allText.add(t);
             t.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     if (allText.contains(e.getSource())) {
                         int replaceIndex = allText.indexOf(e.getSource());

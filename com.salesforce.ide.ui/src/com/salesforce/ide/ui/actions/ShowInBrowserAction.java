@@ -147,6 +147,7 @@ public class ShowInBrowserAction extends BaseAction implements IShowInTarget {
         return finalUrl;
     }
 
+    @Override
     public boolean show(ShowInContext context) {
         if (context == null) {
             return false;

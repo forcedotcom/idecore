@@ -63,6 +63,7 @@ public class GenericComponentWizardComposite extends ComponentWizardComposite {
         lblTemplateOverview.setLayoutData(gridData);
 
         parent.addListener(SWT.Resize, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Rectangle rect = parent.getClientArea();
                 GridData gridData = (GridData) lblTemplateOverview.getLayoutData();

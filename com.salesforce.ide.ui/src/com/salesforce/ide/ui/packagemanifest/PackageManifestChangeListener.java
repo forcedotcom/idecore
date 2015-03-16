@@ -54,6 +54,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
     private static Logger logger = Logger.getLogger(PackageManifestChangeListener.class);
     private static PackageManifestFactory pmf = new PackageManifestFactory();
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         //we are only interested in POST_CHANGE events
         if (event.getType() != IResourceChangeEvent.POST_CHANGE)
@@ -62,6 +63,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
 
         final Set<IResource> changed = new HashSet<IResource>();
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+            @Override
             public boolean visit(IResourceDelta delta) {
                 int kind = delta.getKind();
 
@@ -107,6 +109,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
                         final Package newPackage = getPackage(resource);
 
                         Display.getDefault().asyncExec(new Runnable() {
+                            @Override
                             public void run() {
                                 try {
                                     // remove ourself so that we don't receive new events while processing old ones 
@@ -164,6 +167,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
     }
 
     private static Comparator<PackageTypeMembers> typeComparator = new Comparator<PackageTypeMembers>() {
+        @Override
         public int compare(PackageTypeMembers o1, PackageTypeMembers o2) {
             return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
         }

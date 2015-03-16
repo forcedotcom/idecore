@@ -77,6 +77,7 @@ public class RunTestView extends BaseViewPart {
 
     private void setSelectionListener() {
         fPostSelectionListener = new ISelectionListener() {
+            @Override
             public void selectionChanged(IWorkbenchPart part, ISelection selection) {
                 project = getProjectService().getProject(selection);
                 if (selection instanceof IStructuredSelection) {
@@ -179,6 +180,7 @@ public class RunTestView extends BaseViewPart {
         IProgressService service = PlatformUI.getWorkbench().getProgressService();
         try {
             service.run(false, true, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Running tests...", 4);
                     try {

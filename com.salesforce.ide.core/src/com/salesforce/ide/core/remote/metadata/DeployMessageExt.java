@@ -32,6 +32,7 @@ public class DeployMessageExt implements IMessageExt {
     }
 
     private final Comparator<DeployMessage> messageComparator = new Comparator<DeployMessage>() {
+        @Override
         public int compare(DeployMessage o1, DeployMessage o2) {
             switch (sortOrder) {
             case SORT_RESULT:
@@ -88,6 +89,7 @@ public class DeployMessageExt implements IMessageExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.handlers.IMessageHandler#getMessageStrings()
     */
+    @Override
     public String[] getMessageStrings() {
         String[] messageStrings = null;
         if (Utils.isNotEmpty(messages)) {
@@ -110,6 +112,7 @@ public class DeployMessageExt implements IMessageExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.handlers.IMessageHandler#getFileNames()
     */
+    @Override
     public String[] getFileNames() {
         String[] fileNamesStrings = null;
         if (Utils.isNotEmpty(messages)) {
@@ -124,6 +127,7 @@ public class DeployMessageExt implements IMessageExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.handlers.IMessageHandler#getDisplayMessages()
     */
+    @Override
     public String[] getDisplayMessages() {
         String[] displayMessages = null;
         if (Utils.isNotEmpty(messages)) {
@@ -135,6 +139,7 @@ public class DeployMessageExt implements IMessageExt {
         return displayMessages;
     }
 
+    @Override
     public int getMessageCount() {
         return messages != null ? messages.length : 0;
     }

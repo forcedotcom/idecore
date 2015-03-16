@@ -479,6 +479,7 @@ public class ChangeRefactorController extends BaseRefactorController {
 
         try {
             ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     try {
                         destinationProjectPackageList.saveResources(new SubProgressMonitor(monitor, 3));

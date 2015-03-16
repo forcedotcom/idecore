@@ -32,7 +32,8 @@ public class FileMetadataExt {
 			.getLogger(FileMetadataExt.class);
 
 	protected static final Comparator<FileProperties> SORT_BY_TYPE = new Comparator<FileProperties>() {
-		public int compare(FileProperties o1, FileProperties o2) {
+		@Override
+        public int compare(FileProperties o1, FileProperties o2) {
 			return String.CASE_INSENSITIVE_ORDER.compare(o1.getType(), o2
 					.getType());
 		}
@@ -406,7 +407,8 @@ public class FileMetadataExt {
 
 	public void sort() {
 		sort(new Comparator<FileProperties>() {
-			public int compare(FileProperties o1, FileProperties o2) {
+			@Override
+            public int compare(FileProperties o1, FileProperties o2) {
 				return String.CASE_INSENSITIVE_ORDER.compare(o1.getFileName(),
 						o2.getFileName());
 			}

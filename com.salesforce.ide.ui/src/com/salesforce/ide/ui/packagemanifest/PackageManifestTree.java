@@ -447,6 +447,7 @@ public class PackageManifestTree extends FilteredTree {
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         treeViewer.getControl().setLayoutData(data);
         treeViewer.getControl().addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 refreshJob.cancel();
             }
@@ -540,6 +541,7 @@ public class PackageManifestTree extends FilteredTree {
         });
 
         getTreeViewer().addCheckStateListener(new ICheckStateListener() {
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 PackageTreeNode node = (PackageTreeNode) event.getElement();
                 handleItemSelection(node);
@@ -685,14 +687,17 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     protected class ManifestContentProvider implements ITreeContentProvider {
+        @Override
         public Object[] getElements(Object inputElement) {
             return controller.getEnabledCompTypeTreeNodes();
         }
 
+        @Override
         public void dispose() {
 
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
         }
@@ -700,6 +705,7 @@ public class PackageManifestTree extends FilteredTree {
         // TODO the commented code below was for previous implementation which
         // lazily called metadata api
         // this may need to be brought back for large orgs...
+        @Override
         public Object[] getChildren(Object parentElement) {
             if (parentElement instanceof ComponentTypeNode) {
                 ComponentTypeNode node = (ComponentTypeNode) parentElement;
@@ -730,6 +736,7 @@ public class PackageManifestTree extends FilteredTree {
             return new Object[0];
         }
 
+        @Override
         public Object getParent(Object element) {
             if (element instanceof PackageTreeNode) {
                 return ((PackageTreeNode) element).getParent();
@@ -738,6 +745,7 @@ public class PackageManifestTree extends FilteredTree {
             return null;
         }
 
+        @Override
         public boolean hasChildren(Object element) {
             if (element instanceof PackageTreeNode) {
                 PackageTreeNode node = (PackageTreeNode) element;
@@ -753,6 +761,7 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     protected class ManifestLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex == 0) {
                 if (element instanceof PackageTreeNode) {
@@ -763,6 +772,7 @@ public class PackageManifestTree extends FilteredTree {
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             switch (columnIndex) {
             case 0:

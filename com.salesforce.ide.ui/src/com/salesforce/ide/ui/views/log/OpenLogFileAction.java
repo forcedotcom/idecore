@@ -71,6 +71,7 @@ public class OpenLogFileAction extends Action {
         }
 
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 try {

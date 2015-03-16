@@ -189,6 +189,7 @@ public class LogView extends ViewPart implements ILogListener {
 
         // batch entries when view is hidden; display batched entries when view is visible
         getSite().getPage().addPartListener(new org.eclipse.ui.IPartListener2() {
+            @Override
             public void partHidden(IWorkbenchPartReference partRef) {
                 if (!(partRef instanceof IViewReference)) {
                     return;
@@ -202,6 +203,7 @@ public class LogView extends ViewPart implements ILogListener {
                 batchEntries = true;
             }
 
+            @Override
             public void partVisible(IWorkbenchPartReference partRef) {
                 if (!(partRef instanceof IViewReference)) {
                     return;
@@ -219,16 +221,22 @@ public class LogView extends ViewPart implements ILogListener {
                 batchEntries = false;
             }
 
+            @Override
             public void partActivated(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partDeactivated(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partBroughtToTop(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partInputChanged(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partOpened(IWorkbenchPartReference partRef) {}
 
+            @Override
             public void partClosed(IWorkbenchPartReference partRef) {}
         });
 
@@ -370,6 +378,7 @@ public class LogView extends ViewPart implements ILogListener {
         return logEntries.size();
     }
 
+    @Override
     public void logging(IStatus status, String plugin) {
         // skip non-Force.com log events
         if (Utils.isEmpty(status.getPlugin()) || !status.getPlugin().contains(Constants.FORCE_PLUGIN_PREFIX)) {
@@ -434,6 +443,7 @@ public class LogView extends ViewPart implements ILogListener {
         Display display = logTree.getDisplay();
         if (display != null) {
             display.asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     if (!logTree.isDisposed()) {
                         TreeViewer viewer = logFilteredTree.getViewer();
@@ -467,6 +477,7 @@ public class LogView extends ViewPart implements ILogListener {
     private void setComparator(byte sortType) {
         if (sortType == DATE) {
             logComparator = new Comparator<LogEntry>() {
+                @Override
                 public int compare(LogEntry entry1, LogEntry entry2) {
                     long date1 = (entry1).getDate().getTime();
                     long date2 = (entry2).getDate().getTime();
@@ -487,6 +498,7 @@ public class LogView extends ViewPart implements ILogListener {
             };
         } else if (sortType == MESSAGE) {
             logComparator = new Comparator<LogEntry>() {
+                @Override
                 public int compare(LogEntry entry1, LogEntry entry2) {
                     return String.CASE_INSENSITIVE_ORDER.compare(entry1.getMessage(true), entry2.getMessage(true))
                             * messageOrder;
@@ -494,6 +506,7 @@ public class LogView extends ViewPart implements ILogListener {
             };
         } else {
             logComparator = new Comparator<LogEntry>() {
+                @Override
                 public int compare(LogEntry entry1, LogEntry entry2) {
                     if (entry1.getSeverity() == entry2.getSeverity()) {
                         return 0;
@@ -576,24 +589,30 @@ public class LogView extends ViewPart implements ILogListener {
             this.logView = logView;
         }
 
+        @Override
         public void dispose() {}
 
+        @Override
         public Object[] getChildren(Object element) {
             return ((LogEntry) element).getChildren(element);
         }
 
+        @Override
         public Object[] getElements(Object element) {
             return logView.getElements();
         }
 
+        @Override
         public Object getParent(Object element) {
             return ((LogEntry) element).getParent(element);
         }
 
+        @Override
         public boolean hasChildren(Object element) {
             return ((LogEntry) element).getChildren(element).length > 0;
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
         public boolean isDeleted(Object element) {
@@ -612,6 +631,7 @@ public class LogView extends ViewPart implements ILogListener {
             super.dispose();
         }
 
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
         	LogEntry entry = (LogEntry) element;
             if (columnIndex == 0) {
@@ -631,6 +651,7 @@ public class LogView extends ViewPart implements ILogListener {
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
         if (!(element instanceof LogEntry)) {
                 return "Log statement not found";
@@ -689,6 +710,7 @@ public class LogView extends ViewPart implements ILogListener {
 			return sb.toString();
         }
 
+        @Override
         public Font getFont(Object element, int columnIndex) {
             return null;
         }
