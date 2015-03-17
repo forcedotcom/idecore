@@ -68,7 +68,7 @@ public class FileMetadataExt {
 
 	public void addFileProperties(FileProperties[] tmpFileProperties) {
 		if (Utils.isNotEmpty(fileProperties)) {
-			Set<FileProperties> newfileProperties = new HashSet<FileProperties>();
+			Set<FileProperties> newfileProperties = new HashSet<>();
 
 			for (FileProperties fileProperty : fileProperties) {
 				newfileProperties.add(fileProperty);
@@ -115,7 +115,7 @@ public class FileMetadataExt {
 			return null;
 		}
 
-		List<FileProperties> filePropertiesList = new ArrayList<FileProperties>();
+		List<FileProperties> filePropertiesList = new ArrayList<>();
 		for (FileProperties tmpFileProperties : fileProperties) {
 			for (String directory : directories) {
 				if (tmpFileProperties.getFileName().startsWith(directory)) {
@@ -138,7 +138,7 @@ public class FileMetadataExt {
 			return null;
 		}
 
-		List<FileProperties> filePropertiesList = new ArrayList<FileProperties>();
+		List<FileProperties> filePropertiesList = new ArrayList<>();
 		for (FileProperties tmpFileProperties : fileProperties) {
 			for (String extension : extensions) {
 				if (tmpFileProperties.getFileName().endsWith(extension)) {
@@ -171,7 +171,7 @@ public class FileMetadataExt {
 			return null;
 		}
 
-		List<FileProperties> filePropertiesList = new ArrayList<FileProperties>();
+		List<FileProperties> filePropertiesList = new ArrayList<>();
 		for (FileProperties tmpFileProperties : fileProperties) {
 			for (String componentType : componentTypes) {
 				if (tmpFileProperties.getType().equals(componentType)) {
@@ -195,7 +195,7 @@ public class FileMetadataExt {
 			return null;
 		}
 
-		List<FileProperties> filePropertiesList = new ArrayList<FileProperties>();
+		List<FileProperties> filePropertiesList = new ArrayList<>();
 		for (FileProperties tmpFileProperties : fileProperties) {
 			if (tmpFileProperties.getType().equals(componentType)) {
 				if (logger.isDebugEnabled()) {
@@ -215,7 +215,7 @@ public class FileMetadataExt {
 			return null;
 		}
 
-		List<String> componentNames = new ArrayList<String>();
+		List<String> componentNames = new ArrayList<>();
 		for (FileProperties fileProp : fileProperties) {
 			if (fileProp.getType().equals(componentType)
 					&& !(CustomObjectNameResolver.getCheckerForStandardObject()).check(fileProp.getFullName(), componentType)) {
@@ -235,7 +235,7 @@ public class FileMetadataExt {
 			return null;
 		}
 
-		List<FileProperties> filePropertiesList = new ArrayList<FileProperties>();
+		List<FileProperties> filePropertiesList = new ArrayList<>();
 		for (FileProperties tmpFileProperties : fileProperties) {
 			for (String id : ids) {
 				if (tmpFileProperties.getId().equals(id)) {
@@ -267,7 +267,7 @@ public class FileMetadataExt {
 		}
 
 		sort(SORT_BY_TYPE);
-		Set<String> componentTypes = new HashSet<String>();
+		Set<String> componentTypes = new HashSet<>();
 		for (FileProperties tmpFileProperties : fileProperties) {
 			String componentType = tmpFileProperties.getType();
 
@@ -283,7 +283,7 @@ public class FileMetadataExt {
 			}
 		}
 
-		return new TreeSet<String>(componentTypes);
+		return new TreeSet<>(componentTypes);
 	}
 
 	/**
@@ -309,45 +309,40 @@ public class FileMetadataExt {
 	 */
 	public Map<String, List<FileProperties>> getFilePropertiesMap(
 			List<String> additionalComponentTypes) {
-		Map<String, List<FileProperties>> filePropertiesMap = new HashMap<String, List<FileProperties>>();
+		Map<String, List<FileProperties>> filePropertiesMap = new HashMap<>();
 		if (!hasFileProperties()) {
 			return filePropertiesMap;
 		}
 
-		List<String> localComponentTypes = null;
-		if (additionalComponentTypes != null) {
-			localComponentTypes = new ArrayList<String>(
-					additionalComponentTypes);
-		}
+        List<String> localComponentTypes = null;
+        if (additionalComponentTypes != null) {
+            localComponentTypes = new ArrayList<>(additionalComponentTypes);
+        }
 
 		sort(SORT_BY_TYPE);
 
-		List<FileProperties> filePropertiesList = null;
 		String componentType = null;
 		for (FileProperties fp : fileProperties) {
 			componentType = fp.getType();
 
-			if (Utils.isNotEmpty(localComponentTypes)) {
-				if (localComponentTypes.contains(componentType)) {
-					localComponentTypes.remove(componentType);
-				}
+			if (null != localComponentTypes) {
+                localComponentTypes.remove(componentType);
 			}
 
 			if (CustomObjectNameResolver.getCheckerForStandardObject().check(fp.getFullName(), fp.getType())) {
 				componentType = Constants.STANDARD_OBJECT;
 			}
 
-			if (!filePropertiesMap.containsKey(componentType)) {
-				filePropertiesList = new ArrayList<FileProperties>();
+	        List<FileProperties> filePropertiesList = filePropertiesMap.get(componentType);
+            if (null == filePropertiesList) {
+				filePropertiesList = new ArrayList<>();
 				filePropertiesMap.put(componentType, filePropertiesList);
-			} else {
-				filePropertiesList = filePropertiesMap.get(componentType);
 			}
 
 			filePropertiesList.add(fp);
 		}
 
-		if (Utils.isNotEmpty(localComponentTypes)) {
+		if (null != localComponentTypes) {
 			if (!filePropertiesMap.containsKey(Constants.CUSTOM_OBJECT)) {
 				localComponentTypes.add(Constants.CUSTOM_OBJECT);
 			}
@@ -371,7 +366,7 @@ public class FileMetadataExt {
 
 	private static void logMap(Map<String, List<FileProperties>> filePropertiesMap) {
 		if (logger.isDebugEnabled()) {
-			TreeSet<String> tmpComponentTypes = new TreeSet<String>(
+			TreeSet<String> tmpComponentTypes = new TreeSet<>(
 					String.CASE_INSENSITIVE_ORDER);
 			tmpComponentTypes.addAll(filePropertiesMap.keySet());
 			StringBuffer strBuff = new StringBuffer(

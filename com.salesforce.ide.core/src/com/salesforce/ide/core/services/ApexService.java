@@ -79,7 +79,7 @@ public class ApexService extends BaseService {
             return new ExecuteAnonymousResultExt(apex.executeAnonymous(code), apex.getDebuggingInfo());
         } catch (ConnectionException e) {
             ExecuteAnonymousResult er = errorExecuteAnonymousResult(connectorConfig, e);
-            ExecuteAnonymousResultExt erx = new ExecuteAnonymousResultExt(er, apex.getDebuggingInfo());
+            ExecuteAnonymousResultExt erx = new ExecuteAnonymousResultExt(er, null == apex ? null : apex.getDebuggingInfo());
             DebuggingInfo_element dbi = new DebuggingInfo_element();
             dbi.setDebugLog(e.getMessage());
             erx.setDebugInfo(dbi);

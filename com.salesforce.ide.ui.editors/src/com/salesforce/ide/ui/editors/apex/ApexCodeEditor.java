@@ -629,12 +629,10 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         StyledText textWidget = null;
 
         ISourceViewer sourceViewer = getSourceViewer();
+        if (null == sourceViewer) return;
 
-        if (sourceViewer != null)
-            textWidget = sourceViewer.getTextWidget();
-
-        if (textWidget == null)
-            return;
+        textWidget = sourceViewer.getTextWidget();
+        if (null == textWidget) return;
 
         try {
             int offset = range.startOffset;

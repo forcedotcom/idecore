@@ -61,7 +61,7 @@ public class ReportTypeModel extends ComponentModel {
             logger.warn("Unable to get describeObject for " + reportType.getBaseObject(), e);
         }
 
-        if (Utils.isEmpty(primaryObject)) {
+        if (null == primaryObject) {
             logger.error("Unable to load additional component attributes for Report Type '" + reportType.getLabel()
                     + "' due to unable to locate primary object '" + reportType.getBaseObject()
                     + "' from DescribeObjectRegistry");

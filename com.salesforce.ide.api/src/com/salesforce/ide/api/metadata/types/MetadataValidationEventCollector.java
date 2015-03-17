@@ -77,7 +77,7 @@ public class MetadataValidationEventCollector extends ValidationEventCollector {
 
     public void logValidationMessages(String name) {
         List<String> validationMessages = getValidationMessages();
-        if (validationMessages != null && validationMessages.isEmpty()) {
+        if (validationMessages == null || validationMessages.isEmpty()) {
             if (logger.isInfoEnabled()) {
                 logger.info(name + " has no validation issues");
             }

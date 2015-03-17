@@ -417,8 +417,9 @@ public class PackageManifestFactory extends BaseFactory {
         } catch (InterruptedException e) {
             logger.warn("Operation canceled by user");
         } catch (Exception e) {
+            String logDisplay = null == connection ? "" : connection.getLogDisplay();
             logger.error("Generic package manifest created - unable to get enabled object types from "
-                    + connection.getLogDisplay(), e);
+                    + logDisplay, e);
         }
 
         return packageManifest;

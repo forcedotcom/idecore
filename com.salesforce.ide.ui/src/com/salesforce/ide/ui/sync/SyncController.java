@@ -555,8 +555,10 @@ public class SyncController extends Controller {
     }
 
     private static void addFileResource(Set<IResource> syncCandidates, IFile file) {
+        if (null == file) return;
+
         // we're only interested in files that pertain to given org - not installed packages & package manifest
-        if (syncCandidates == null || file == null || ContainerDelegate.getInstance().getServiceLocator().getProjectService().isDefaultPackageManifestFile(file)
+        if (syncCandidates == null || ContainerDelegate.getInstance().getServiceLocator().getProjectService().isDefaultPackageManifestFile(file)
                 || !ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(file)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Skipping resource '" + file.getName() + "' as managed resource");
@@ -1020,13 +1022,13 @@ public class SyncController extends Controller {
                 logger.debug("Is base variant a remote component? " + baseComponentVariant.isRemote());
             }
             changed = localComponent.hasLocalChanged();
+
+            if (logger.isInfoEnabled()) {
+                logger.info("Local " + localComponent.getFullDisplayName() + " body is " + (changed ? "OUT" : "IN")
+                        + " of sync with original body.");
+            }
         } else {
             logger.warn("Local component is null.");
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Local " + localComponent.getFullDisplayName() + " body is " + (changed ? "OUT" : "IN")
-                    + " of sync with original body.");
         }
 
         // if changed, then we return that file and variant are not equal

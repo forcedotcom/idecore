@@ -242,7 +242,9 @@ public class ZipUtils {
     }
 
     protected static void handleDuplicateEntryException(ZipEntry zipEntry, IOException e) throws IOException {
-        if (e != null && e instanceof ZipException) {
+        if (null == e) return;
+
+        if (e instanceof ZipException) {
             if (Utils.isNotEmpty(e.getMessage()) && e.getMessage().contains("duplicate entry")) {
                 logger.warn("Zip already contains '" + zipEntry.getName() + "' - skipping duplicate");
             }

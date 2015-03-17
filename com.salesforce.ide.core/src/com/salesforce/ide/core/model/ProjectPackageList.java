@@ -680,8 +680,9 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 }
 
                 if (compositeComponent == null) {
+                    final String path = null == compositeComponentFile ? "" : compositeComponentFile.getProjectRelativePath().toPortableString();
                     logger.warn("Component metadata not created for '"
-                            + compositeComponentFile.getProjectRelativePath().toPortableString() + "' for component "
+                            + path + "' for component "
                             + component.getFullDisplayName());
                     return;
                 }

@@ -215,6 +215,7 @@ public class ProjectService extends BaseService {
     public void flagSkipBuilder(IProject project) throws CoreException {
         if (project == null) {
             logger.error("Unable to set skip builder flag - project is null");
+            return;
         }
 
         project.setSessionProperty(QualifiedNames.QN_SKIP_BUILDER, true);
@@ -619,7 +620,7 @@ public class ProjectService extends BaseService {
             ComponentList registeredComponents =
                     getComponentFactory().getEnabledRegisteredComponents(enabledComponentTypes);
             for (IComponent registeredComponent : registeredComponents) {
-                if (Utils.isNotEmpty(enabledComponentTypes)
+                if (null != enabledComponentTypesList
                         && !enabledComponentTypesList.contains(registeredComponent.getComponentType())) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Skipping component type '" + registeredComponent.getComponentType()
@@ -657,7 +658,9 @@ public class ProjectService extends BaseService {
 
     public ComponentList getComponentsForComponentFolder(IFolder folder, boolean traverse, boolean includeBody)
             throws CoreException, FactoryException {
-        if (folder == null || !folder.exists() || Utils.isEmpty(folder.members())) {
+        if (null == folder) return null;
+
+        if (!folder.exists() || Utils.isEmpty(folder.members())) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Component folder '" + folder.getName() + "' does not exist or does not "
                         + "contain components");
@@ -1263,7 +1266,7 @@ public class ProjectService extends BaseService {
                     + "': " + logMessage);
         }
 
-        if (Utils.isEmpty(members)) {
+        if (null == members || 0 == members.length) {
             if (logger.isInfoEnabled()) {
                 logger.info("Package manifest not found in folder '"
                         + folder.getProjectRelativePath().toPortableString() + "'");

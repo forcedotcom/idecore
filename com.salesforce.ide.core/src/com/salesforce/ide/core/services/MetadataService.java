@@ -401,7 +401,7 @@ public class MetadataService extends BaseService {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Generated [" + (Utils.isNotEmpty(listMetadataQueryArray) ? listMetadataQueryArray.length : 0)
+            logger.debug("Generated [" + (null != listMetadataQueryArray ? listMetadataQueryArray.length : 0)
                     + "] file metadata queries");
         }
 
@@ -448,7 +448,7 @@ public class MetadataService extends BaseService {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Generated [" + (Utils.isNotEmpty(listMetadataQueryArray) ? listMetadataQueryArray.length : 0)
+            logger.debug("Generated [" + (null != listMetadataQueryArray ? listMetadataQueryArray.length : 0)
                     + "] file metadata queries");
         }
 

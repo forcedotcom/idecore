@@ -142,13 +142,15 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
 
     //   P R O J E C T   E V A L U A T I O N
     protected void evaluateProject(final IProject project) {
+        if (null == project) return;
+
         if (!enabled) {
             logger.warn("Upgrade notifier disabled");
             return;
         }
 
         try {
-            if (project != null && project.isOpen() && !notifiedProjectNames.contains(project.getName())
+            if (project.isOpen() && !notifiedProjectNames.contains(project.getName())
                     && project.hasNature(UpgradeNature.NATURE_ID)) {
 
                 // display alert

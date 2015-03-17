@@ -344,7 +344,7 @@ public class PackageDeployService extends BasePackageService {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Got zip file of size [" + (Utils.isNotEmpty(zip) ? zip.length : null)
+            logger.debug("Got zip file of size [" + (null != zip ? zip.length : null)
                     + "] for project package");
         }
 

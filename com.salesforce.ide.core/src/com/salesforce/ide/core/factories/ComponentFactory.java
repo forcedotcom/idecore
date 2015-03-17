@@ -573,19 +573,15 @@ public class ComponentFactory extends ApplicationContextFactory {
         String id = null;
 
         // use parts for further investigation, if needed, and to determine if component is a folder component
-        String[] pathParts = null;
-        if (tmpfilePath.contains(Constants.FOWARD_SLASH)) {
-            pathParts = tmpfilePath.split(Constants.FOWARD_SLASH);
-        }
+        String[] pathParts = tmpfilePath.split(Constants.FOWARD_SLASH);
+        assert null != pathParts;
+        assert 0 < pathParts.length;
 
         // quick wins: package.xml and inspect file extension
         if (filePath.endsWith(Constants.PACKAGE_MANIFEST_FILE_NAME)) {
             id = Constants.PACKAGE_MANIFEST;
         } else {
-            String fileExtension =
-                    Utils.getExtensionFromFilePath(Utils.isNotEmpty(pathParts) ? pathParts[pathParts.length - 1]
-                            : tmpfilePath);
-            
+            String fileExtension = Utils.getExtensionFromFilePath(pathParts[pathParts.length - 1]);
             if (Utils.isNotEmpty(fileExtension)) {
             	if (Constants.RULE_EXTENSIONS.contains(fileExtension)) {
             		id = getComponentTypeByFolderName(pathParts[0]);
@@ -911,9 +907,10 @@ public class ComponentFactory extends ApplicationContextFactory {
         String filePath =
                 folder.getProjectRelativePath().toPortableString() + Constants.DEFAULT_METADATA_FILE_EXTENSION;
         IFile folderMetadataFile = folder.getProject().getFile(filePath);
+        assert null != folderMetadataFile; // Just to appease the compiler. API ensures value is never null.
 
         Component component = null;
-        if (folderMetadataFile != null && folderMetadataFile.exists()) {
+        if (folderMetadataFile.exists()) {
             component = getComponentFromFile(folderMetadataFile, true);
             if (component == null) {
                 logger.warn("Unable to get component metadata from file '"

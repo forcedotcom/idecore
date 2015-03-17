@@ -521,10 +521,10 @@ public class ProjectPackage {
 
             if (stats != null) {
                 stats.addStats(tmpStats);
-            }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Updated zip stats:\n" + stats.toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Updated zip stats:\n" + stats.toString());
+                }
             }
         }
 
@@ -561,10 +561,10 @@ public class ProjectPackage {
 
         if (stats != null) {
             stats.addStats(tmpStats);
-        }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Updated zip stats:\n" + stats.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Updated zip stats:\n" + stats.toString());
+            }
         }
     }
 
@@ -619,8 +619,8 @@ public class ProjectPackage {
                 }
 
                 if (compositeComponent == null) {
-                    logger.warn("Component metadata not created for '"
-                            + compositeComponentFile.getProjectRelativePath().toPortableString() + "' for component "
+                    final String path = null == compositeComponentFile ? "" : compositeComponentFile.getProjectRelativePath().toPortableString();
+                    logger.warn("Component metadata not created for '" + path + "' for component "
                             + component.getFullDisplayName());
                     return;
                 }

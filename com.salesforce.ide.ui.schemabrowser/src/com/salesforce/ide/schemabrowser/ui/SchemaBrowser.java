@@ -1107,7 +1107,9 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 createTreeItemChild(child, "Cascade Delete", false, 0, false);
             }
             if (cr.getRelationshipName() != null) {
-                monitor.subTask(cr.getRelationshipName());
+                if (monitor != null) {
+                    monitor.subTask(cr.getRelationshipName());
+                }
                 createTreeItemChild(child, "Relationship Name: " + cr.getRelationshipName(), false, 0, false);
                 createTreeItemChild(child, "Related Field: " + cr.getField(), false, 0, false);
             }

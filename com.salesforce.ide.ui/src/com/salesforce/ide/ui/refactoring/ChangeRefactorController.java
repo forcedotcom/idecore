@@ -346,7 +346,7 @@ public class ChangeRefactorController extends BaseRefactorController {
             monitorCheck(monitor);
         }
 
-        if (Utils.isNotEmpty(restrictedComponentFolders)) {
+        if (null != restrictedComponentFolders && !restrictedComponentFolders.isEmpty()) {
             StringBuffer strBuff = new StringBuffer();
             for (IFolder restrictedComponentFolder : restrictedComponentFolders) {
                 strBuff.append("'").append(restrictedComponentFolder.getName()).append("' ");

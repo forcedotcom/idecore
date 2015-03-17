@@ -255,7 +255,8 @@ public class BuilderPayload {
                     monitor);
 
         if (retrieveResultHandler == null) {
-            logger.warn("Unable to perform conflict check - retrieve handler null for " + connection.getLogDisplay()
+            String logDisplay = null == connection ? "" : connection.getLogDisplay();
+            logger.warn("Unable to perform conflict check - retrieve handler null for " + logDisplay
                 + " and project package " + projectPackageList);
             return;
         }
