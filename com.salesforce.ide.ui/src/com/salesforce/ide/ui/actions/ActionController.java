@@ -47,7 +47,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.core.services.PackageRetrieveService;
@@ -66,7 +65,7 @@ public abstract class ActionController {
     protected boolean isInSync = true;
 
     //   C O N S T R U C T O R S
-    public ActionController() throws ForceProjectException {
+    public ActionController() {
         super();
     }
 
@@ -351,16 +350,9 @@ public abstract class ActionController {
         return new Thread() {
             @Override
             public void run() {
-                SyncAction syncAction = null;
-                try {
-                    syncAction = new SyncAction();
-                    syncAction.setProject(project);
-                    syncAction.run(null);
-                } catch (ForceProjectException e) {
-                    logger.error(UIMessages.getString("DeploymentAction.SyncCheck.error"), e);
-                    Utils.openError(e, UIMessages.getString("DeploymentAction.SyncCheckError.title"), UIMessages
-                        .getString("DeploymentAction.SyncCheckError.message"));
-                }
+                SyncAction syncAction = new SyncAction();
+                syncAction.setProject(project);
+                syncAction.run(null);
             }
         };
     }

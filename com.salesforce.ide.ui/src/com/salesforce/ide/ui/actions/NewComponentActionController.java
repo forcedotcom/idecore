@@ -19,11 +19,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
@@ -43,11 +41,11 @@ public class NewComponentActionController extends ActionController {
 
     private Resources resources;
 
-    public NewComponentActionController() throws ForceProjectException {
+    public NewComponentActionController() {
         this(new Resources());
     }
     
-    public NewComponentActionController(Resources resources) throws ForceProjectException {
+    public NewComponentActionController(Resources resources) {
         this.resources = resources;
     }
 
@@ -143,14 +141,7 @@ public class NewComponentActionController extends ActionController {
             return null;
         }
 
-        Component component = null;
-        try {
-            component = getComponentFactory().getComponentByComponentType(componentType);
-        } catch (FactoryException e) {
-            logger.warn("Unable to derive component folder - unable to get object type from action id '" + actionId
-                    + "'");
-        }
-
+        Component component = getComponentFactory().getComponentByComponentType(componentType);
         if (component == null) {
             logger.warn("Unable to derive component folder");
         }

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex;
 
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.visualforce.VisualForceMultiPageEditor;
 
 /**
@@ -21,7 +20,7 @@ import com.salesforce.ide.ui.editors.visualforce.VisualForceMultiPageEditor;
 */
 public class ApexPageMultiPageEditor extends VisualForceMultiPageEditor {
 
-    public ApexPageMultiPageEditor() throws ForceProjectException {
+    public ApexPageMultiPageEditor() {
         super();
     }
 

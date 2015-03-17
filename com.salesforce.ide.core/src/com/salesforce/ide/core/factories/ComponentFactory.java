@@ -359,7 +359,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return Utils.isNotEmpty(componentRegistry) && componentRegistry.hasComponentType(componentType);
     }
 
-    public String getComponentTypeByFolderName(String folderName) throws FactoryException {
+    public String getComponentTypeByFolderName(String folderName) {
         if (Utils.isEmpty(folderName)) {
             logger.error("Folder name is null");
             throw new IllegalArgumentException("Folder name cannot be null");
@@ -374,7 +374,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return component.getComponentType();
     }
 
-    public List<String> getComponentFolderNames(String[] componentTypes) throws FactoryException {
+    public List<String> getComponentFolderNames(String[] componentTypes) {
         if (Utils.isEmpty(componentTypes)) {
             return null;
         }
@@ -391,7 +391,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return folderNames;
     }
 
-    public String getComponentFolderName(String componentType) throws FactoryException {
+    public String getComponentFolderName(String componentType) {
         if (Utils.isEmpty(componentType)) {
             return null;
         }
@@ -431,9 +431,8 @@ public class ComponentFactory extends ApplicationContextFactory {
      *
      * @param extension
      * @return
-     * @throws FactoryException
      */
-    public Component getComponentByExtension(String extension) throws FactoryException {
+    public Component getComponentByExtension(String extension) {
         if (Utils.isEmpty(extension)) {
             logger.error("Extension cannot be null");
             throw new IllegalArgumentException("Extension cannot be null");
@@ -468,7 +467,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return component;
     }
 
-    public String getComponentByIdByExtension(String extension) throws FactoryException {
+    public String getComponentByIdByExtension(String extension) {
         if (Utils.isEmpty(extension)) {
             logger.error("Extension cannot be null");
             throw new IllegalArgumentException("Extension cannot be null");
@@ -495,9 +494,8 @@ public class ComponentFactory extends ApplicationContextFactory {
      *
      * @param componentType
      * @return
-     * @throws FactoryException
      */
-    public Component getComponentByComponentType(String componentType) throws FactoryException {
+    public Component getComponentByComponentType(String componentType) {
         if (Utils.isEmpty(componentType)) {
             logger.error("Component type cannot be null");
             throw new IllegalArgumentException("Object type cannot be null");
@@ -523,7 +521,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return component;
     }
 
-    public Component getComponentByComponentTypeClass(MetadataExt metadataExt) throws FactoryException, JAXBException {
+    public Component getComponentByComponentTypeClass(MetadataExt metadataExt) throws JAXBException {
         if (metadataExt == null) {
             logger.error("MetadataExt instance cannot be null");
             throw new IllegalArgumentException("MetadataExt instance cannot be null");
@@ -549,11 +547,10 @@ public class ComponentFactory extends ApplicationContextFactory {
      *
      * @param filePath
      * @return
-     * @throws FactoryException
      */
     // REVIEWME: the following method was primarly based on the default folder name for determining component type.
     // instead, why not use file extension?
-    public Component getComponentByFilePath(String filePath) throws FactoryException {
+    public Component getComponentByFilePath(String filePath) {
 
         if (Utils.isEmpty(filePath)) {
             logger.error("Filepath cannot be null");
@@ -698,7 +695,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         component.setParentFolderNameIfComponentMustBeInFolder(folderName);
     }
 
-    public boolean isFolderComponent(String filePath) throws FactoryException {
+    public boolean isFolderComponent(String filePath) {
         if (Utils.isEmpty(filePath)) {
             logger.error("Filepath cannot be null");
             throw new IllegalArgumentException("Filepath cannot be null");
@@ -722,7 +719,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return false;
     }
 
-    public boolean isFolderComponent(Component component, String[] filePath) throws FactoryException {
+    public boolean isFolderComponent(Component component, String[] filePath) {
         if (component == null || Utils.isEmpty(filePath)) {
             return false;
         }
@@ -807,9 +804,8 @@ public class ComponentFactory extends ApplicationContextFactory {
      *
      * @param folderName
      * @return
-     * @throws FactoryException
      */
-    public Component getComponentByFolderName(String folderName) throws FactoryException {
+    public Component getComponentByFolderName(String folderName) {
         if (Utils.isEmpty(folderName)) {
             logger.error("Folder name cannot be null");
             throw new IllegalArgumentException("Folder name cannot be null");
@@ -980,7 +976,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return componentList;
     }
 
-    private void setFolderComponentDefaults(Component componentMetadata) throws FactoryException {
+    private void setFolderComponentDefaults(Component componentMetadata) {
         if (Constants.FOLDER.equals(componentMetadata.getComponentType())
                 && Utils.isNotEmpty(componentMetadata.getSecondaryComponentType())) {
             Component component = getComponentByComponentType(componentMetadata.getSecondaryComponentType());
@@ -1125,8 +1121,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         return compositeComponent;
     }
 
-    public MetadataExt getMetadataExt(Component component) throws JAXBException, InstantiationException,
-            IllegalAccessException {
+    public MetadataExt getMetadataExt(Component component) throws JAXBException {
         if (component == null || component.getFileResource() == null || !component.getFileResource().exists()) {
             throw new IllegalArgumentException("Component and/or file resource cannot be null and must exist");
         }
@@ -1169,7 +1164,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public Component createComponent(ProjectPackage projectPackage, String filePath, byte[] file,
-            FileMetadataExt fileMetadataHandler) throws FactoryException {
+            FileMetadataExt fileMetadataHandler) {
 
         // strip package name from filepath, if applicable
         String tmpFilePath = filePath;
@@ -1184,7 +1179,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     private static Component loadComponentProperties(ProjectPackage projectPackage, Component component, String filePath,
-            byte[] file, FileMetadataExt fileMetadataHandler) throws FactoryException {
+            byte[] file, FileMetadataExt fileMetadataHandler) {
         if (component == null) {
             logger.error("Component cannot be null for filepath '" + filePath + "'");
             throw new IllegalArgumentException("Component cannot be null for filepath '" + filePath + "'");
@@ -1243,7 +1238,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     private static void handleComponentMetadata(ProjectPackage projectPackage, Component component,
-            FileMetadataExt fileMetadataHandler) throws FactoryException {
+            FileMetadataExt fileMetadataHandler) {
         if (projectPackage == null || component == null || fileMetadataHandler == null) {
             logger.error("Component, project package, and/or FileMetadataHandler cannot be null");
             throw new IllegalArgumentException("Component, project package, and/or FileMetadataHandler cannot be null");
@@ -1309,17 +1304,17 @@ public class ComponentFactory extends ApplicationContextFactory {
         }
     }
 
-    public boolean hasAssociatedComponentTypes(String componentType) throws FactoryException {
+    public boolean hasAssociatedComponentTypes(String componentType) {
         Component component = getComponentByComponentType(componentType);
         return Utils.isEmpty(component) ? false : component.hasAssociatedComponentTypes();
     }
 
-    public List<String> getSubComponentTypes(String componentType) throws FactoryException {
+    public List<String> getSubComponentTypes(String componentType) {
         Component component = getComponentByComponentType(componentType);
         return Utils.isEmpty(component) ? null : component.getSubComponentTypes();
     }
 
-    public boolean hasSubComponentTypesForComponentType(String componentType) throws FactoryException {
+    public boolean hasSubComponentTypesForComponentType(String componentType) {
         Component component = getComponentByComponentType(componentType);
         return Utils.isEmpty(component) ? false : component.hasSubComponentTypes();
     }
@@ -1331,13 +1326,9 @@ public class ComponentFactory extends ApplicationContextFactory {
         if (Utils.isNotEmpty(componentTypes)) {
             Component component = null;
             for (String componentType : componentTypes) {
-                try {
-                    component = getComponentByComponentType(componentType);
-                    if (component != null && component.hasSubComponentTypes()) {
-                        childComponentTypes.addAll(component.getSubComponentTypes());
-                    }
-                } catch (FactoryException e) {
-                    logger.error("Unable to get child components for component types '" + componentType + "'", e);
+                component = getComponentByComponentType(componentType);
+                if (component != null && component.hasSubComponentTypes()) {
+                    childComponentTypes.addAll(component.getSubComponentTypes());
                 }
             }
         }
@@ -1352,13 +1343,9 @@ public class ComponentFactory extends ApplicationContextFactory {
         if (Utils.isNotEmpty(componentTypes)) {
             Component component = null;
             for (String componentType : componentTypes) {
-                try {
-                    component = getComponentByComponentType(componentType);
-                    if (component != null && component.hasSubComponentTypes()) {
-                        parentComponentTypes.add(component.getComponentType());
-                    }
-                } catch (FactoryException e) {
-                    logger.error("Unable to get child components for component types '" + componentType + "'", e);
+                component = getComponentByComponentType(componentType);
+                if (component != null && component.hasSubComponentTypes()) {
+                    parentComponentTypes.add(component.getComponentType());
                 }
             }
         }

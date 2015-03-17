@@ -56,7 +56,7 @@ import com.salesforce.ide.core.services.ServiceException;
 import com.salesforce.ide.core.services.ServiceTimeoutException;
 import com.sforce.soap.metadata.FileProperties;
 
-public class ComponentController extends Controller {
+public abstract class ComponentController extends Controller {
     private static final Logger logger = Logger.getLogger(ComponentController.class);
 
     protected DeployResultExt deployResultHandler = null;
@@ -102,7 +102,7 @@ public class ComponentController extends Controller {
         this.deployResultHandler = deployResultExt;
     }
 
-    public Component getNewComponentByComponentType(String componentType) throws FactoryException {
+    public Component getNewComponentByComponentType(String componentType) {
         return ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(componentType);
     }
 
@@ -114,8 +114,7 @@ public class ComponentController extends Controller {
         model = null;
     }
 
-    public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException,
-    FactoryException {
+    public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException {
         if (getComponentWizardModel().getProject() == null) {
             logger.error("Unable to check " + getComponentWizardModel().getComponent().getDisplayName()
                 + " permissions - project is null");
@@ -135,8 +134,7 @@ public class ComponentController extends Controller {
         return componentEnabled;
     }
 
-    public boolean isNameUnique(IProgressMonitor monitor) throws ForceConnectionException, FactoryException,
-    ServiceException, ForceRemoteException, InterruptedException {
+    public boolean isNameUnique(IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return (isNameUniqueLocalCheck() && isNameUniqueRemoteCheck(monitor));
     }
 
@@ -146,19 +144,19 @@ public class ComponentController extends Controller {
                 (componentToCheck != null) ? (new StringBuffer(Constants.SOURCE_FOLDER_NAME).append(File.separator)
                         .append(componentToCheck.getDefaultFolder())).toString() : null;
 
-                        final String fileName =
-                                (componentToCheck != null) ? (new StringBuffer(componentToCheck.getName()).append(".")
-                                        .append(componentToCheck.getFileExtension())).toString() : null;
+        final String fileName =
+                (componentToCheck != null) ? (new StringBuffer(componentToCheck.getName()).append(".")
+                        .append(componentToCheck.getFileExtension())).toString() : null;
 
-                                        final String componentName_Absolute =
-                                                (dirPath != null && fileName != null) ? (new StringBuffer(dirPath).append(fileName)).toString() : null;
+        final String componentName_Absolute =
+                (dirPath != null && fileName != null) ? (new StringBuffer(dirPath).append(fileName)).toString() : null;
 
-                                                if (logger.isInfoEnabled()) {
-                                                    logger.info("Ensure local uniqueness for '"
-                                                            + (Utils.isEmpty(componentName_Absolute) ? "" : componentName_Absolute.toString()) + "'");
-                                                }
+        if (logger.isInfoEnabled()) {
+            logger.info("Ensure local uniqueness for '"
+                    + (null == componentName_Absolute ? "" : componentName_Absolute.toString()) + "'");
+        }
 
-                                                return (!componentToCheck.isCaseSensitive()) ? checkInFolder(dirPath, fileName) : true;
+        return (null != componentToCheck && !componentToCheck.isCaseSensitive()) ? checkInFolder(dirPath, fileName) : true;
     }
 
     protected boolean checkInFolder(final String dirPath, final String fileName) {
@@ -198,7 +196,7 @@ public class ComponentController extends Controller {
     }
 
     public boolean isNameUniqueRemoteCheck(IProgressMonitor monitor) throws InsufficientPermissionsException,
-    ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+    ForceConnectionException, ForceRemoteException, InterruptedException {
         if (!isProjectOnlineEnabled()) {
             logger.warn("Remote unique name check aborted - project is not online enabled");
             return true;
@@ -223,8 +221,7 @@ public class ComponentController extends Controller {
      * @return true if it doesn't exist on server
      */
     protected boolean checkIfComponentExistsOnServer(IProgressMonitor monitor, final Component component)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException,
-            InsufficientPermissionsException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException, InsufficientPermissionsException {
         final FileMetadataExt listMetadataRetrieveResult = fireListMetadataQuery(monitor, component);
         boolean notFoundOnServer = true;
         if (listMetadataRetrieveResult.hasFileProperties()) {
@@ -240,8 +237,7 @@ public class ComponentController extends Controller {
     }
 
     protected FileMetadataExt fireListMetadataQuery(IProgressMonitor monitor, final Component component)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException,
-            InsufficientPermissionsException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException, InsufficientPermissionsException {
         final FileMetadataExt listMetadataRetrieveResult =
                 ContainerDelegate.getInstance().getServiceLocator().getMetadataService().listMetadata(
                     ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(getComponentWizardModel().getProject()), component, monitor);
@@ -287,6 +283,7 @@ public class ComponentController extends Controller {
         projectPackageList.addComponents(components, false);
 
         // perform pre-save actions
+        defaultPreSaveProcess(getComponentWizardModel(), monitor);
         preSaveProcess(getComponentWizardModel(), monitor);
 
         // save to f/s - enables offline work
@@ -308,9 +305,13 @@ public class ComponentController extends Controller {
      *
      * @param componentWizardModel
      * @param monitor
+     * @throws InvocationTargetException 
      */
-    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, IOException {
+    protected abstract void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException;
+
+    protected final void defaultPreSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException {
         // test for remote uniqueness
         try {
             if (logger.isInfoEnabled()) {
@@ -331,7 +332,7 @@ public class ComponentController extends Controller {
             }
         } catch (InterruptedException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (RuntimeException | ForceConnectionException | ForceRemoteException e) {
             logger.error("Unable to test remote uniqueness", e);
         }
 
@@ -346,8 +347,7 @@ public class ComponentController extends Controller {
      * @param componentWizardModel
      * @param monitor
      */
-    protected void postSaveProcess(final ComponentModel componentWizardModel, final IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, IOException {
+    protected void postSaveProcess(final ComponentModel componentWizardModel, final IProgressMonitor monitor) {
         // manually update cache inserting new component in appropriate stanza
         Job updateCacheJob = new Job("Update list metadata cache") {
             @Override

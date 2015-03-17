@@ -105,7 +105,7 @@ public class ComponentArchiver {
         }
     }
 
-    private static boolean validInput(String zip_name, File zip_path, ComponentList components) throws IOException {
+    private static boolean validInput(String zip_name, File zip_path, ComponentList components) {
         if (Utils.isEmpty(zip_path) || !zip_path.exists()) {
             throw new IllegalArgumentException("Zip path '" + zip_path.getAbsolutePath() + "' does not exist");
         }

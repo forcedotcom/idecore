@@ -34,7 +34,6 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
@@ -62,7 +61,7 @@ public class ShowInBrowserAction extends BaseAction implements IShowInTarget {
     protected URL finalUrl = null;
 
     // C O N S T R U C T O R
-    public ShowInBrowserAction() throws ForceProjectException {
+    public ShowInBrowserAction() {
         super();
         if (logger.isInfoEnabled()) {
             logger.info(getClass().getSimpleName()
@@ -393,8 +392,7 @@ public class ShowInBrowserAction extends BaseAction implements IShowInTarget {
         openBrowser(strBuff.toString());
     }
 
-    private void handleComponentFolder(IFolder folder) throws ForceConnectionException, FactoryException,
-            PartInitException, MalformedURLException, InsufficientPermissionsException {
+    private void handleComponentFolder(IFolder folder) throws ForceConnectionException, PartInitException, MalformedURLException, InsufficientPermissionsException {
         Component component = getComponentFactory().getComponentByFolderName(folder.getName());
 
         if (component == null) {

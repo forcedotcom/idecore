@@ -31,7 +31,6 @@ import org.eclipse.team.ui.synchronize.SynchronizeModelOperation;
 import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 
 public class ComponentSyncParticipant extends SubscriberParticipant {
@@ -82,7 +81,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
     protected List<IResource> syncResources = null;
 
     //   C O N S T R U C T O R
-    public ComponentSyncParticipant(IProject project, IResource syncResource) throws TeamException {
+    public ComponentSyncParticipant(IProject project, IResource syncResource) {
         super();
         this.project = project;
         if (syncResource != null) {
@@ -91,7 +90,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         }
     }
 
-    public ComponentSyncParticipant(IProject project, List<IResource> syncResources) throws TeamException {
+    public ComponentSyncParticipant(IProject project, List<IResource> syncResources) {
         super();
         this.project = project;
         this.syncResources = syncResources;
@@ -134,13 +133,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
             syncResources.add(project);
         }
 
-        try {
-            componentSubscriber = new ComponentSubscriber(project, syncResources);
-        } catch (ForceProjectException e) {
-            logger.error("Unable to get instance of component subscriber", e);
-            throw new TeamException("Unable to get instance of component subscriber", e);
-        }
-
+        componentSubscriber = new ComponentSubscriber(project, syncResources);
         componentSubscriber.loadRemoteComponents(monitor);
 
         monitorWorkCheck(monitor);

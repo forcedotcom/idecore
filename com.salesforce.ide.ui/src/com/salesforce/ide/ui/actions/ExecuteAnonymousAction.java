@@ -10,38 +10,26 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.action.IAction;
 
-import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.views.executeanonymous.ExecuteAnonymousDialog;
 
 public class ExecuteAnonymousAction extends BaseAction {
-
-    private static final Logger logger = Logger.getLogger(ExecuteAnonymousAction.class);
     
     protected ExecuteAnonymousDialog dialog = null;
 
-    public ExecuteAnonymousAction() throws ForceProjectException {
+    public ExecuteAnonymousAction() {
         super();
     }
 
 
     @Override
     public void execute(IAction action) {
-        try {
-            prepareDialog();
-        } catch (ForceProjectException e) {
-            logger.error("Unable to open Execute Anonymous dialog", e);
-            Utils.openError(e, "Dialog Error", "Unable to open Execute Anonymous dialog: " + e.getMessage());
-            return;
-        }
-
+        prepareDialog();
         dialog.open();
     }
 
-    protected void prepareDialog() throws ForceProjectException {
+    protected void prepareDialog() {
         if (targetPart != null && targetPart.getSite() != null) {
             dialog = new ExecuteAnonymousDialog(project, targetPart.getSite().getShell());
         } else {

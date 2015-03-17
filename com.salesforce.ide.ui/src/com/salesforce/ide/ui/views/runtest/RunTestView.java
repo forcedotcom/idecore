@@ -32,7 +32,6 @@ import org.eclipse.ui.progress.IProgressService;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ApexCodeLocation;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.IRunTestsResultExt;
 import com.salesforce.ide.core.remote.metadata.IDeployResultExt;
 import com.salesforce.ide.core.remote.metadata.RunTestsResultExt;
@@ -57,7 +56,7 @@ public class RunTestView extends BaseViewPart {
     protected ISelectionListener fPostSelectionListener = null;
 
     // C O N S T R U C T O R S
-    public RunTestView() throws ForceProjectException {
+    public RunTestView() {
         super();
         setSelectionListener();
     }

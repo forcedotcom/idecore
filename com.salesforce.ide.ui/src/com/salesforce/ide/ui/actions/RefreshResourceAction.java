@@ -24,7 +24,6 @@ import org.eclipse.ui.progress.IProgressService;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.core.services.RetrieveException;
@@ -34,7 +33,7 @@ import com.salesforce.ide.ui.internal.startup.ForceStartup;
 public class RefreshResourceAction extends BaseAction {
     private static final Logger logger = Logger.getLogger(RefreshResourceAction.class);
 
-    public RefreshResourceAction() throws ForceProjectException {
+    public RefreshResourceAction() {
         super();
         actionController = new RefreshResourceActionController();
     }

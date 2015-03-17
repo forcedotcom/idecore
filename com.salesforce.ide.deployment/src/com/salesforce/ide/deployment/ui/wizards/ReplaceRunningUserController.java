@@ -46,7 +46,7 @@ public class ReplaceRunningUserController extends Controller {
     private DeploymentComponentSet replaceRunningUserSet;
     private final DeploymentController deploymentController;
 
-    public ReplaceRunningUserController(DeploymentController deploymentController) throws ForceProjectException {
+    public ReplaceRunningUserController(DeploymentController deploymentController) {
         super();
         this.deploymentController = deploymentController;
     }

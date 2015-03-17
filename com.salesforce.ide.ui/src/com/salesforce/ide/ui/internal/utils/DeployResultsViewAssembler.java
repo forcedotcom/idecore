@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DeployMessageExtractor;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -329,9 +328,6 @@ public class DeployResultsViewAssembler {
             String logMessage = Utils.generateCoreExceptionLog(e);
             logger.warn("Unable to find resource for '" + componentName + "( " + componentType + ")'  in package "
                     + project.getName() + ": " + logMessage, e);
-        } catch (FactoryException e) {
-            logger.warn("Unable to find resource for '" + componentName + "( " + componentType + ")'  in package "
-                    + project.getName(), e);
         }
         return file;
     }
@@ -386,15 +382,8 @@ public class DeployResultsViewAssembler {
 
     private String getDisplayName(ICodeCoverageResultExt codeCoverageResult) {
         String componentName = getDisplayName(codeCoverageResult.getNamespace(), codeCoverageResult.getName());
-        Component component = null;
-        try {
-            component =
-                    projectService.getComponentFactory().getComponentByComponentType(
-                        apexPrefixCheck(codeCoverageResult.getType()));
-        } catch (FactoryException e) {
-            logger.error("Unable to locate corresponding component based on CodeCoverageResult type '"
-                    + codeCoverageResult.getType() + "' ", e);
-        }
+        Component component = projectService.getComponentFactory().getComponentByComponentType(
+                    apexPrefixCheck(codeCoverageResult.getType()));
         return componentName
                 + (Utils.isNotEmpty(component) ? " (" + component.getComponentType() + ")" : " ("
                         + codeCoverageResult.getType() + ")");

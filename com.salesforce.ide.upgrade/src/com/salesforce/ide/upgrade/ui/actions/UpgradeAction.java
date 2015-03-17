@@ -21,7 +21,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.actions.BaseAction;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.upgrade.ui.wizards.UpgradeWizard;
@@ -34,7 +33,7 @@ import com.salesforce.ide.upgrade.ui.wizards.UpgradeWizard;
 public class UpgradeAction extends BaseAction implements IWorkbenchWindowActionDelegate {
     private static final Logger logger = Logger.getLogger(UpgradeAction.class);
 
-    public UpgradeAction() throws ForceProjectException {
+    public UpgradeAction() {
         super();
     }
 

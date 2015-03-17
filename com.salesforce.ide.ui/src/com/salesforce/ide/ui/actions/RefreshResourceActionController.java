@@ -43,7 +43,6 @@ import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ProjectPackageList;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
@@ -58,7 +57,7 @@ public class RefreshResourceActionController extends ActionController {
     private boolean refreshResult = true;
 
     //   C O N S T R U C T O R S
-    public RefreshResourceActionController() throws ForceProjectException {
+    public RefreshResourceActionController() {
         super();
     }
 
@@ -201,7 +200,7 @@ public class RefreshResourceActionController extends ActionController {
     // refresh folder
     private boolean refreshSourceFolder(IFolder folder, IProgressMonitor monitor) throws FactoryException,
             ForceConnectionException, CoreException, InterruptedException, IOException, ForceRemoteException,
-            InvocationTargetException, ServiceException, Exception {
+            ServiceException, Exception {
         if (folder == null || !folder.exists()) {
             return false;
         }
@@ -302,8 +301,7 @@ public class RefreshResourceActionController extends ActionController {
     }
 
     protected boolean retrieveInstalledPackages(IProject project, IProgressMonitor monitor)
-            throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException,
-            CoreException, InvocationTargetException, IOException, ServiceException, Exception {
+            throws InterruptedException, ForceConnectionException, ForceRemoteException, CoreException, IOException, ServiceException, Exception {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -357,7 +355,7 @@ public class RefreshResourceActionController extends ActionController {
 
     protected void handleSourceComponentFolderRefresh(IProgressMonitor monitor) throws InterruptedException,
             ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
-            InvocationTargetException, ServiceException, Exception {
+            ServiceException, Exception {
         monitorCheck(monitor);
         List<IResource> folders = getProjectService().getResourcesByType(selectedResources, IResource.FOLDER);
         List<String> componentTypes = new ArrayList<String>();

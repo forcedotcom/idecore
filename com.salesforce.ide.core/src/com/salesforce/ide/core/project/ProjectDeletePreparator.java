@@ -106,7 +106,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
     }
 
     // note: many operations may not be performed due to tree locking
-    protected void preProjectDelete(final IProject project, IProgressMonitor monitor) throws CoreException {
+    protected void preProjectDelete(final IProject project, IProgressMonitor monitor) {
         // set reference package content to writable so that no delete warnings appear
         IFolder referencedPackageFolder = serviceLocator.getProjectService().getReferencedPackagesFolder(project);
         if (referencedPackageFolder != null && referencedPackageFolder.exists()) {

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.actions;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
@@ -27,7 +26,6 @@ import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
@@ -43,7 +41,7 @@ public class AddNatureAction extends BaseChangeNatureAction {
     protected ProjectController projectController = null;
 
     // C O N S T R U C T O R
-    public AddNatureAction() throws ForceProjectException {
+    public AddNatureAction() {
         super();
         projectController = new ProjectController();
     }
@@ -74,11 +72,7 @@ public class AddNatureAction extends BaseChangeNatureAction {
 
         DialogUtils.getInstance().okMessage("Force.com Project Properties",
             UIMessages.getString("AddForceNature.Properties.message"), MessageDialog.WARNING);
-        try {
-            (new OpenForcePerspectiveAction()).run();
-        } catch (ForceProjectException e) {
-            logger.error("Unable to open Force Perspective", e);
-        }
+        (new OpenForcePerspectiveAction()).run();
     }
 
     public void applyNature() {
@@ -99,11 +93,7 @@ public class AddNatureAction extends BaseChangeNatureAction {
                     monitor.worked(1);
 
                     monitor.subTask(UIMessages.getString("ProjectCreateWizard.CreateOperation.GenerateSchema.label"));
-                    try {
-                        projectController.generateSchemaFile(monitor);
-                    } catch (IOException e) {
-                        logger.error("Unable to generate schema file");
-                    }
+                    projectController.generateSchemaFile(monitor);
                     monitor.worked(1);
 
                     if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().hasPackageManifest(project)) {

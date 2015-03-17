@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
@@ -29,7 +28,7 @@ public class ExecuteAnonymousDialog extends TitleAreaDialog {
     protected ExecuteAnonymousViewComposite executeAnonymousViewComposite = null;
     protected ExecuteAnonymousController executeAnonymousController = null;
 
-    public ExecuteAnonymousDialog(IProject project, Shell parentShell) throws ForceProjectException {
+    public ExecuteAnonymousDialog(IProject project, Shell parentShell) {
         super(parentShell);
         executeAnonymousController = new ExecuteAnonymousController(project);
     }

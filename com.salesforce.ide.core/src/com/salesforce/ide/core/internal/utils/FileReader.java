@@ -115,7 +115,7 @@ public class FileReader {
         }
     }
 
-    public static String getTemplateContent(InputStream in) throws IOException {
+    public static String getTemplateContent(InputStream in) {
         if (in == null) {
             logger.error("Unable to load template file - stream is null");
             return Constants.EMPTY_STRING;

@@ -501,7 +501,7 @@ public class Component extends ComponentResource {
     }
 
     // lookup method injection by container
-    public MetadataExt getDefaultMetadataExtInstance() throws InstantiationException, IllegalAccessException {
+    public MetadataExt getDefaultMetadataExtInstance() {
         return new MetadataExt();
     }
 
@@ -810,26 +810,24 @@ public class Component extends ComponentResource {
         this.builtInSubFolders = builtInSubFolders;
     }
 
-    public MetadataExt getMetadataExtFromBody() throws InstantiationException, IllegalAccessException, JAXBException {
+    public MetadataExt getMetadataExtFromBody() throws JAXBException {
         MetadataExt metadataExt = getDefaultMetadataExtInstance();
         return metadataExt.getComponentFromXML(body);
     }
 
     public MetadataExt getMetadataExtFromBody(boolean validate, ValidationEventHandler validationEventHandler)
-            throws InstantiationException, IllegalAccessException, JAXBException {
+            throws JAXBException {
         MetadataExt metadataExt = getDefaultMetadataExtInstance();
         return metadataExt.getComponentFromXML(body, validate, validationEventHandler);
     }
 
-    public Object getSubMetadataExtFromBody(Class<? extends MetadataExt> componentClass) throws InstantiationException,
-            IllegalAccessException, JAXBException, ClassNotFoundException, IllegalArgumentException,
+    public Object getSubMetadataExtFromBody(Class<? extends MetadataExt> componentClass) throws IllegalAccessException, JAXBException, IllegalArgumentException,
             InvocationTargetException {
         String className = componentClass.getSimpleName();
         return getSubMetadataExtFromBody(className);
     }
 
-    public Object getSubMetadataExtFromBody(String componentType) throws InstantiationException,
-            IllegalAccessException, JAXBException, ClassNotFoundException, IllegalArgumentException,
+    public Object getSubMetadataExtFromBody(String componentType) throws IllegalAccessException, JAXBException, IllegalArgumentException,
             InvocationTargetException {
         if (Utils.isEmpty(body) || Utils.isEmpty(componentType)) {
             logger.warn("Component body and/or to-be-retrieved component type are null or empty");

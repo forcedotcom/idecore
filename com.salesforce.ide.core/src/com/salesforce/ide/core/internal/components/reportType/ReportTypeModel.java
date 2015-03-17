@@ -23,6 +23,8 @@ import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.ForceConnectionException;
+import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
 import com.sforce.soap.partner.wsc.DescribeSObjectResult;
 import com.sforce.soap.partner.wsc.Field;
@@ -53,11 +55,9 @@ public class ReportTypeModel extends ComponentModel {
             // BaseObject here is plural form save from user inpurt in Ui
             primaryObject =
                     describeObjectRegistry.getCachedDescribeByPluralLabel(getProject(), reportType.getBaseObject());
-        } catch (InstantiationException e) {
-            logger.warn("Unable to instantiate default metadataExt instance for Report Type", e);
-        } catch (IllegalAccessException e) {
-            logger.warn("Unable to instantiate default metadataExt instance for Report Type", e);
-        } catch (Exception e) {
+        } catch (ForceConnectionException e) {
+            logger.warn("Unable to get describeObject for " + reportType.getBaseObject(), e);
+        } catch (ForceRemoteException e) {
             logger.warn("Unable to get describeObject for " + reportType.getBaseObject(), e);
         }
 

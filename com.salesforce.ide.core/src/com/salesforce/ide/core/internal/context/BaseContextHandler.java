@@ -149,11 +149,10 @@ public abstract class BaseContextHandler implements IContextHandler {
             logger.error("Unable to get bean for id '" + name + "'");
             logBeans();
             ForceExceptionUtils.throwNewForceProjectException("Unable to get bean for id '" + name + "'");
-        }
-
-        if (logger.isDebugEnabled()) {
+        } else if (logger.isDebugEnabled()) {
             logger.debug("Got bean of class '" + bean.getClass().getName() + "' for id '" + name + "'");
         }
+
         return bean;
     }
 
@@ -178,11 +177,10 @@ public abstract class BaseContextHandler implements IContextHandler {
             logger.warn("Unable to get bean for id '" + name + "'");
             logBeans();
             ForceExceptionUtils.throwNewForceProjectException("Unable to get bean for id '" + name + "'");
-        }
-
-        if (logger.isDebugEnabled()) {
+        } else if (logger.isDebugEnabled()) {
             logger.debug("Got bean of class '" + bean.getClass().getName() + "' for id '" + name + "'");
         }
+
         return bean;
     }
 

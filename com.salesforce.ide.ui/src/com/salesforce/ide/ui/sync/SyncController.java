@@ -68,7 +68,7 @@ public class SyncController extends Controller {
     private long fetchRemoteTime = -1;
 
     //   C O N S T R U C T O R S
-    public SyncController(IProject project, boolean filter, IResource... syncResources) throws ForceProjectException {
+    public SyncController(IProject project, boolean filter, IResource... syncResources) {
         super();
         model = new OrgModel(project);
         if (syncResources != null) {
@@ -81,15 +81,15 @@ public class SyncController extends Controller {
         }    	
     }
     
-    public SyncController(IProject project, IResource... syncResources) throws ForceProjectException {
+    public SyncController(IProject project, IResource... syncResources) {
     	this(project, false, syncResources);
     }
     
-    public SyncController(IProject project, List<IResource> syncResources) throws ForceProjectException {
+    public SyncController(IProject project, List<IResource> syncResources) {
     	this(project, syncResources.toArray(new IResource[0]));
     }
 
-    public SyncController(IProject project, List<IResource> syncResources, boolean filter) throws ForceProjectException {
+    public SyncController(IProject project, List<IResource> syncResources, boolean filter) {
     	this(project, filter, syncResources.toArray(new IResource[0]));
     }
 
@@ -129,8 +129,7 @@ public class SyncController extends Controller {
     }
 
     public void loadRemoteComponents(IProgressMonitor monitor) throws InterruptedException, ForceConnectionException,
-            FactoryException, CoreException, IOException, ForceRemoteException, InvocationTargetException,
-            ServiceException {
+            FactoryException, CoreException, IOException, ForceRemoteException, ServiceException {
         if (getProject() == null) {
             throw new IllegalArgumentException("Resources and/or project cannot be null");
         }
@@ -176,7 +175,7 @@ public class SyncController extends Controller {
     }
 
     protected void handleSourceRetrieve(IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
+            ForceConnectionException, ForceRemoteException, FactoryException, IOException,
             ServiceException {
         monitorCheck(monitor);
         if (Utils.isNotEmpty(getFolder(syncResources, Constants.SOURCE_FOLDER_NAME))) {
@@ -199,7 +198,7 @@ public class SyncController extends Controller {
 
     protected void handleComponentFolderRefresh(IProgressMonitor monitor) throws InterruptedException,
             ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
-            InvocationTargetException, ServiceException {
+            ServiceException {
         monitorCheck(monitor);
         List<IResource> folders = getResourcesByType(syncResources, IResource.FOLDER);
         List<String> componentTypes = new ArrayList<String>();
@@ -235,7 +234,7 @@ public class SyncController extends Controller {
 
     protected void handleSourceComponentFileRefresh(IProgressMonitor monitor) throws InterruptedException,
             ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
-            InvocationTargetException, ServiceException {
+            ServiceException {
         monitorCheck(monitor);
         List<IResource> files = getResourcesByType(syncResources, IResource.FILE);
         if (Utils.isNotEmpty(files)) {
@@ -409,7 +408,7 @@ public class SyncController extends Controller {
         return syncResources.toArray(new IResource[syncResources.size()]);
     }
 
-    public boolean isSupervised(IResource resource) throws TeamException {
+    public boolean isSupervised(IResource resource) {
         return ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(resource);
     }
 
@@ -469,7 +468,7 @@ public class SyncController extends Controller {
         return syncCandidates.toArray(new IResource[syncCandidates.size()]);
     }
 
-    private IResource[] getResources(IFile file) throws CoreException {
+    private IResource[] getResources(IFile file) {
         // we're only interested in files that pertain to given org - not referenced packages
         if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedResource(file)) {
             if (logger.isDebugEnabled()) {

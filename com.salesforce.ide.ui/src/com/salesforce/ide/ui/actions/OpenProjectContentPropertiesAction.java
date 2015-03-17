@@ -14,7 +14,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 
 import com.salesforce.ide.core.internal.utils.Constants;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 /**
  *
@@ -24,7 +23,7 @@ import com.salesforce.ide.core.project.ForceProjectException;
  */
 public class OpenProjectContentPropertiesAction extends BaseAction {
 
-    public OpenProjectContentPropertiesAction() throws ForceProjectException {
+    public OpenProjectContentPropertiesAction() {
         super();
     }
 

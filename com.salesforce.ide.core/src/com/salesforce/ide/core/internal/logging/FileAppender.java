@@ -54,8 +54,7 @@ public class FileAppender extends RollingFileAppender {
      * @param file file name
      * @param append true if file is to be appended
      */
-    public FileAppender(Layout layout,IPath stateLocation, String file, boolean append)
-            throws IOException {
+    public FileAppender(Layout layout,IPath stateLocation, String file, boolean append) {
         super();
         setLayout(layout);
         setStateLocation(stateLocation);
@@ -70,7 +69,7 @@ public class FileAppender extends RollingFileAppender {
      * @param stateLocation IPath containing the plug-in state location
      * @param file file name
      */
-    public FileAppender(Layout layout,IPath stateLocation, String file) throws IOException {
+    public FileAppender(Layout layout,IPath stateLocation, String file) {
         super();
         setLayout(layout);
         setStateLocation(stateLocation);

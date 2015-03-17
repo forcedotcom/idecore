@@ -55,8 +55,7 @@ public class MetadataFactory extends BaseFactory {
         return metadataStubExt;
     }
 
-    public MetadataStubExt refreshMetadataStubExt(Connection connection) throws ForceConnectionException,
-            ForceRemoteException {
+    public MetadataStubExt refreshMetadataStubExt(Connection connection) throws ForceRemoteException {
         final ForceProject forceProject = connection.getForceProject();
 
         final MetadataStubExt metadataStubExt = metadataStubs.get(forceProject);
@@ -108,7 +107,7 @@ public class MetadataFactory extends BaseFactory {
     }
 
     private static void cacheMetadataStubExt(ForceProject forceProject, MetadataStubExt metadataStubExt)
-            throws ForceConnectionException, ForceRemoteException {
+            throws ForceConnectionException {
         if (forceProject == null) {
             throw new ForceConnectionException(" project must be specific to get a connection.");
         }

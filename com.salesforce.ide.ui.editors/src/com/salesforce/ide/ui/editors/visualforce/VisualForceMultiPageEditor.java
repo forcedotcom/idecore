@@ -31,7 +31,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.internal.BaseComponentMultiPageEditorPart;
 import com.salesforce.ide.ui.editors.internal.utils.EditorMessages;
 
@@ -48,7 +47,7 @@ public class VisualForceMultiPageEditor extends BaseComponentMultiPageEditorPart
     private PropertyListener sourcePropertyListener = null;
     private PropertyListener metadataPropertyListener = null;
 
-    public VisualForceMultiPageEditor() throws ForceProjectException {
+    public VisualForceMultiPageEditor() {
         super();
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }

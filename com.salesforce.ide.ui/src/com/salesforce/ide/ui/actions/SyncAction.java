@@ -28,7 +28,6 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.ui.sync.ComponentSyncParticipant;
@@ -39,7 +38,7 @@ public class SyncAction extends BaseAction {
     protected static ComponentSyncParticipant syncParticipant = null;
 
     //   C O N S T R U C T O R S
-    public SyncAction() throws ForceProjectException {
+    public SyncAction() {
         super();
     }
 

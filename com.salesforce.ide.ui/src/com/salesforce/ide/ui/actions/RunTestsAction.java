@@ -17,14 +17,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.metadata.IDeployResultExt;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
@@ -41,7 +39,7 @@ public class RunTestsAction extends BaseAction {
 
     protected RunTestView runTestView = null;
 
-    public RunTestsAction() throws ForceProjectException {
+    public RunTestsAction() {
         super();
     }
 
@@ -108,7 +106,7 @@ public class RunTestsAction extends BaseAction {
         }
     }
 
-    protected void handleResults(IDeployResultExt result) throws PartInitException {
+    protected void handleResults(IDeployResultExt result) {
         if (result == null) {
             logger.error("Unable to handle run tests results - results are null");
             return;

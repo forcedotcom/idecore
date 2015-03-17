@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Listener;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.PackageManifestModel;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
@@ -66,14 +65,14 @@ public class ProjectCustomComponentsComposite extends Composite {
     protected StatusLineLink statusLine2 = null;
 
     public ProjectCustomComponentsComposite(Composite parent, int style, PackageManifestModel packageManifestModel,
-            Connection connection) throws ForceProjectException {
+            Connection connection) {
         super(parent, style);
         this.packageManifestModel = packageManifestModel;
         this.connection = connection;
         initialize();
     }
 
-    protected void initialize() throws ForceProjectException {
+    protected void initialize() {
         setLayout(new GridLayout(1, false));
 
         // adjust size of manifest tree
@@ -224,7 +223,7 @@ public class ProjectCustomComponentsComposite extends Composite {
         protected Button btnCollapseAll;
         protected Button btnRefresh;
 
-        public ProjectPackageManifestTree(Composite parent, int treeStyle) throws ForceProjectException {
+        public ProjectPackageManifestTree(Composite parent, int treeStyle) {
             super(parent, treeStyle);
 
             // if null, clears cache (during project create b/c file has not been created yet) 

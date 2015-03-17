@@ -279,13 +279,7 @@ public class DeleteRefactorController extends BaseRefactorController {
             entries.add(createWarningRefactoringStatusEntry(strBuff.toString()));
         } else {
             entries.add(createInfoRefactoringStatusEntry("Resources successfully deleted on server"));
-
-            try {
-                postDeleteProcess(projectPackageList, monitor);
-            } catch (InvocationTargetException e) {
-                logger.warn("Unable to update cache with with deleted component(s)", e);
-            }
-
+            postDeleteProcess(projectPackageList, monitor);
             clearCaches(projectPackageList);
         }
 
@@ -300,8 +294,7 @@ public class DeleteRefactorController extends BaseRefactorController {
         return entries;
     }
 
-    protected void postDeleteProcess(final ProjectPackageList projectPackageList, final IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException {
+    protected void postDeleteProcess(final ProjectPackageList projectPackageList, final IProgressMonitor monitor) {
         // manually update cache inserting new component in appropriate stanza
         Job updateCacheJob = new Job("Update list metadata cache") {
             @Override

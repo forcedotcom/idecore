@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.widgets.Display;
 
 import com.salesforce.ide.core.internal.utils.Constants;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
 
 public abstract class BaseChangeNatureAction extends BaseAction {
@@ -52,11 +51,11 @@ public abstract class BaseChangeNatureAction extends BaseAction {
         }
     }
 
-    public BaseChangeNatureAction() throws ForceProjectException {
+    public BaseChangeNatureAction() {
         super();
     }
 
-    public BaseChangeNatureAction(IProject project) throws ForceProjectException {
+    public BaseChangeNatureAction(IProject project) {
         super();
         this.project = project;
     }

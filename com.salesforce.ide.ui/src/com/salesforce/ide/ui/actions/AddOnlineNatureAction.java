@@ -17,7 +17,6 @@ import org.eclipse.jface.action.IAction;
 
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 /**
@@ -29,11 +28,11 @@ public class AddOnlineNatureAction extends BaseChangeNatureAction {
 
     private static final Logger logger = Logger.getLogger(AddOnlineNatureAction.class);
 
-    public AddOnlineNatureAction() throws ForceProjectException {
+    public AddOnlineNatureAction() {
         super();
     }
 
-    public AddOnlineNatureAction(IProject project) throws ForceProjectException {
+    public AddOnlineNatureAction(IProject project) {
         super();
         this.project = project;
     }

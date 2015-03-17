@@ -35,7 +35,6 @@ import org.eclipse.ui.PlatformUI;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 public class ComponentSubscriber extends Subscriber {
@@ -45,7 +44,7 @@ public class ComponentSubscriber extends Subscriber {
     protected IProject project = null;
     protected SyncController syncController = null;
 
-    public ComponentSubscriber(IProject project, List<IResource> syncResources) throws ForceProjectException {
+    public ComponentSubscriber(IProject project, List<IResource> syncResources) {
         super();
         this.project = project;
         syncController = new SyncController(project, syncResources);

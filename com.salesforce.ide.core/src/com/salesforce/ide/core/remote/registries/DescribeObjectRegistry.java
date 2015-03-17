@@ -558,8 +558,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
         return describeSObjectNames;
     }
 
-    public DescribeSObjectResult getCachedDescribeSObjectByApiName(String projectName, String apiName)
-            throws ForceConnectionException, ForceRemoteException {
+    public DescribeSObjectResult getCachedDescribeSObjectByApiName(String projectName, String apiName) {
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
         if (Utils.isNotEmpty(describeCache)) {

@@ -399,7 +399,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return ForceIdeEditorsPlugin.getDefault().getPreferenceStore();
     }
 
-    protected int findLastNonWhiteSpace(IDocument document, int offset, int end) throws BadLocationException {
+    protected int findLastNonWhiteSpace(IDocument document, int offset, int end) {
         try {
             IRegion region = document.getLineInformationOfOffset(offset);
 

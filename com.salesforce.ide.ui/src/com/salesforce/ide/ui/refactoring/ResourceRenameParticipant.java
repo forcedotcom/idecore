@@ -20,7 +20,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 
 import com.salesforce.ide.core.internal.utils.Constants;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 /**
  * Refactoring renames are not supported by the Force.com IDE.  This class invalidates refactor rename requests by always
@@ -58,12 +57,7 @@ public class ResourceRenameParticipant extends RenameParticipant {
             logger.debug("***" + getName() + " initiated ***");
         }
 
-        try {
-            renameChange = new RenameChange();
-        } catch (ForceProjectException e) {
-         // catch exception because exceptions cause the participant to become deactivated for future refactorings
-            logger.error("Unable to create delete instance", e);
-        }
+        renameChange = new RenameChange();
 
         return true;
     }
@@ -71,12 +65,7 @@ public class ResourceRenameParticipant extends RenameParticipant {
     @Override
     public Change createChange(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
         if (renameChange == null) {
-            try {
-                renameChange = new RenameChange();
-            } catch (ForceProjectException e) {
-                // catch exception because exceptions cause the participant to become deactivated for future refactorings
-                logger.error("Unable to create delete instance", e);
-            }
+            renameChange = new RenameChange();
         }
         return renameChange;
     }

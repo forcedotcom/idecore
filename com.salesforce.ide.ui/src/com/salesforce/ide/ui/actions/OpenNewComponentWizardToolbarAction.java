@@ -17,12 +17,10 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.salesforce.ide.core.project.ForceProjectException;
-
 public class OpenNewComponentWizardToolbarAction
     extends OpenNewProjectWizardAction implements IWorkbenchWindowActionDelegate  {
 
-    public OpenNewComponentWizardToolbarAction() throws ForceProjectException {
+    public OpenNewComponentWizardToolbarAction() {
         super();
     }
 

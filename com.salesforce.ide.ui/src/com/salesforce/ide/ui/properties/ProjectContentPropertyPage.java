@@ -41,7 +41,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
 import com.salesforce.ide.ui.actions.RefreshResourceAction;
@@ -63,7 +62,7 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
     private String originalSummary = null;
     private boolean updated = false;
 
-    public ProjectContentPropertyPage() throws ForceProjectException {
+    public ProjectContentPropertyPage() {
         super();
     }
 

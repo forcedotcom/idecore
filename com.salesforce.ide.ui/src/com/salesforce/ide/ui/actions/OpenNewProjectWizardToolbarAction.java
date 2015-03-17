@@ -13,11 +13,9 @@ package com.salesforce.ide.ui.actions;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.salesforce.ide.core.project.ForceProjectException;
-
 public class OpenNewProjectWizardToolbarAction extends NewComponentAction implements IWorkbenchWindowActionDelegate  {
 
-    public OpenNewProjectWizardToolbarAction() throws ForceProjectException {
+    public OpenNewProjectWizardToolbarAction() {
         super();
     }
 

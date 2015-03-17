@@ -24,7 +24,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.SalesforceEndpoints;
 import com.salesforce.ide.core.services.LoggingService;
 import com.salesforce.ide.core.services.ProjectService;
@@ -34,7 +33,7 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 public abstract class BasePropertyPage extends PropertyPage implements IWorkbenchPropertyPage {
 
-    public BasePropertyPage() throws ForceProjectException {
+    public BasePropertyPage() {
         super();
     }
 

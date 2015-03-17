@@ -104,11 +104,11 @@ public class Utils {
 	public static final String TEST_CONTEXT_PROP = "TestContext";
 
 	public static boolean isEmpty(Object obj) {
-		return obj == null;
+		return null == obj;
 	}
 
 	public static boolean isNotEmpty(Object obj) {
-		return !isEmpty(obj);
+		return null != obj;
 	}
 
 	public static boolean isEmpty(Object[] objs) {
@@ -116,7 +116,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(Object[] objs) {
-		return !isEmpty(objs);
+	    return objs != null && 0 < objs.length;
 	}
 
 	public static boolean isEmpty(byte[] objs) {
@@ -124,7 +124,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(byte[] objs) {
-		return !isEmpty(objs);
+		return objs != null && 0 < objs.length;
 	}
 
 	public static boolean isEmpty(Collection<?> col) {
@@ -132,7 +132,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(Collection<?> col) {
-		return !isEmpty(col);
+	    return col != null && !col.isEmpty();
 	}
 
 	public static boolean isEmpty(List<?> col) {
@@ -140,7 +140,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(List<?> col) {
-		return !isEmpty(col);
+		return col != null && !col.isEmpty();
 	}
 
 	public static boolean isEmpty(Map<?, ?> map) {
@@ -704,7 +704,7 @@ public class Utils {
 	}
 
 	public static Object getPropertyValue(Object obj, String propertyName)
-			throws ClassNotFoundException, IllegalArgumentException,
+			throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		if (obj == null || propertyName == null) {
 			return null;
@@ -719,8 +719,7 @@ public class Utils {
 		return propertyValue;
 	}
 
-	public static Method getGetterMethod(Class<?> clazz, String methodNameWithoutGetPrefix)
-			throws ClassNotFoundException {
+	public static Method getGetterMethod(Class<?> clazz, String methodNameWithoutGetPrefix) {
 		Method getterMethod = null;
 		Method[] methods = clazz.getDeclaredMethods();
 		if (isNotEmpty(methods)) {
@@ -861,7 +860,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(String str) {
-		return !isEmpty(str);
+		return str != null && 0 < str.length();
 	}
 
 	public static boolean startsWith(String str, String suffix) {
@@ -983,12 +982,14 @@ public class Utils {
 			tmpName = (String) obj;
 		}
 
-		if (isNotEmpty(tmpName) && tmpName.contains(".")) {
+		if (null == tmpName) return null;
+
+		if (tmpName.contains(".")) {
 			tmpName = tmpName.substring(0, tmpName.indexOf("."));
 		}
 
 		// strip "-meta" typically found on folder metadata files
-		if (isNotEmpty(tmpName) && tmpName.endsWith("-meta")) {
+		if (tmpName.endsWith("-meta")) {
 			tmpName = tmpName.substring(0, tmpName.indexOf("-meta"));
 		}
 

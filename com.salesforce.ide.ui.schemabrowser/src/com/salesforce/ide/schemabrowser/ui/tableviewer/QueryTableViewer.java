@@ -39,7 +39,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.SoqlEnum;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.XmlConstants;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
@@ -68,7 +67,7 @@ public class QueryTableViewer {
     }
 
     //   M E T H O D S
-    public ConnectionFactory getConnectionFactory() throws ForceProjectException {
+    public ConnectionFactory getConnectionFactory() {
         if (connectionFactory == null) {
             connectionFactory = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory();
         }
@@ -91,8 +90,7 @@ public class QueryTableViewer {
         this.parentComposite = parentComposite;
     }
 
-    public void initialize(Composite parent) throws ForceConnectionException, ForceProjectException,
-            ForceRemoteException {
+    public void initialize(Composite parent) throws ForceConnectionException, ForceRemoteException {
         addChildControls(parent);
     }
 
@@ -110,12 +108,10 @@ public class QueryTableViewer {
      * @return the shell that was created
      * @throws ConnectionException
      * @throws ConnectionException
-     * @throws ForceProjectException
      * @throws ForceConnectionException
      * @throws ForceRemoteException 
      */
-    private void addChildControls(final Composite composite) throws ForceConnectionException, ForceProjectException,
-            ForceRemoteException {
+    private void addChildControls(final Composite composite) throws ForceConnectionException, ForceRemoteException {
         parentComposite = composite;
         Connection connection = getConnectionFactory().getConnection(project);
         QueryResult qr = connection.query(SoqlEnum.getSchemaInitalizationQuery());

@@ -21,8 +21,6 @@ import org.springframework.core.Ordered;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.remote.ForceConnectionException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.sforce.soap.metadata.RetrieveRequest;
 
 public class ServicePreProcessorAspect implements Ordered {
@@ -41,14 +39,12 @@ public class ServicePreProcessorAspect implements Ordered {
         this.order = order;
     }
 
-    public void preProcessRetrieve(RetrieveRequest retrieveRequest) throws ForceConnectionException,
-            ForceRemoteException, InterruptedException, Throwable {
+    public void preProcessRetrieve(RetrieveRequest retrieveRequest) {
         sameNamedPackageCheck(retrieveRequest);
     }
 
     // checks if request contains > 1 package of the same name
-    private void sameNamedPackageCheck(RetrieveRequest retrieveRequest) throws ForceConnectionException,
-            ForceRemoteException, InterruptedException, Throwable {
+    private void sameNamedPackageCheck(RetrieveRequest retrieveRequest) {
         if (logger.isDebugEnabled()) {
             logger.debug("Checking for same named package in request...");
         }

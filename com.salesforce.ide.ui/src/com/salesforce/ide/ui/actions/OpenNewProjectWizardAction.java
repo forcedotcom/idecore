@@ -12,11 +12,9 @@ package com.salesforce.ide.ui.actions;
 
 import org.eclipse.jface.action.IAction;
 
-import com.salesforce.ide.core.project.ForceProjectException;
-
 public class OpenNewProjectWizardAction extends BaseAction {
 
-    public OpenNewProjectWizardAction() throws ForceProjectException {
+    public OpenNewProjectWizardAction() {
         super();
     }
 

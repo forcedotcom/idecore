@@ -39,7 +39,6 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.actions.RefreshResourceAction;
 import com.salesforce.ide.ui.internal.Messages;
 import com.salesforce.ide.ui.internal.startup.ForceStartup;
@@ -137,9 +136,6 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
                                         }
                                     }
 
-                                } catch (ForceProjectException e) {
-                                    logger.warn("An error occured while refreshing " + project.getName() + ": "
-                                            + ForceExceptionUtils.getRootCauseMessage(e));
                                 } finally {
                                     // add ourself since we removed above
                                     ForceStartup.addPackageManifestChangeListener();

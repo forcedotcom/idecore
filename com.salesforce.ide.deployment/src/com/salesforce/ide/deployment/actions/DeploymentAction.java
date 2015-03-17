@@ -23,7 +23,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.deployment.ForceIdeDeploymentPlugin;
 import com.salesforce.ide.ui.actions.BaseAction;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
@@ -31,7 +30,7 @@ import com.salesforce.ide.ui.internal.utils.UIUtils;
 public class DeploymentAction extends BaseAction implements IWorkbenchWindowActionDelegate {
     private static final Logger logger = Logger.getLogger(DeploymentAction.class);
 
-    public DeploymentAction() throws ForceProjectException {
+    public DeploymentAction() {
         super();
         actionController = new DeploymentActionController();
     }

@@ -382,10 +382,9 @@ public class ProjectService extends BaseService {
      * @param componentTypes
      * @return
      * @throws CoreException
-     * @throws FactoryException
      */
     public IFile getComponentFileByNameType(IProject project, String componentName, String[] componentTypes)
-            throws CoreException, FactoryException {
+            throws CoreException {
         if (Utils.isEmpty(componentName) || project == null || Utils.isEmpty(componentTypes)) {
             throw new IllegalArgumentException("Component name, types, and/or project cannot be null");
         }
@@ -406,7 +405,7 @@ public class ProjectService extends BaseService {
     }
 
     public IFile getComponentFileByNameType(IProject project, String componentName, String componentType)
-            throws CoreException, FactoryException {
+            throws CoreException {
         if (Utils.isEmpty(componentName) || project == null || Utils.isEmpty(componentType)) {
             throw new IllegalArgumentException("Package name, type, and/or project cannot be null");
         }
@@ -527,8 +526,7 @@ public class ProjectService extends BaseService {
         return componentFolders;
     }
 
-    public IFolder getComponentFolderByComponentType(IProject project, String componentType) throws CoreException,
-            FactoryException {
+    public IFolder getComponentFolderByComponentType(IProject project, String componentType) throws CoreException {
         Component component = getComponentFactory().getComponentByComponentType(componentType);
         if (component == null) {
             logger.warn("Unable to find component for type '" + componentType + "'");
@@ -984,7 +982,7 @@ public class ProjectService extends BaseService {
         applyOnlineNature(project, monitor);
     }
 
-    public void removeNatures(IProject project, IProgressMonitor monitor) throws CoreException {
+    public void removeNatures(IProject project, IProgressMonitor monitor) {
         OnlineNature.removeNature(project, monitor);
         monitorWork(monitor);
 
@@ -1052,13 +1050,7 @@ public class ProjectService extends BaseService {
         }
 
         Component component = null;
-        try {
-            component = getComponentFactory().getComponentByFilePath(file.getProjectRelativePath().toPortableString());
-        } catch (FactoryException e) {
-            logger.warn("Unable to get component for file '" + file.getProjectRelativePath().toPortableString() + "': "
-                    + e.getMessage());
-            return false;
-        }
+        component = getComponentFactory().getComponentByFilePath(file.getProjectRelativePath().toPortableString());
 
         if (component != null) {
             if (logger.isDebugEnabled()) {
@@ -1421,12 +1413,7 @@ public class ProjectService extends BaseService {
 
         String folderName = folder.getName();
         Component component = null;
-        try {
-            component = getComponentFactory().getComponentByFolderName(folderName);
-        } catch (FactoryException e) {
-            logger.warn("Unable to get component for folder name '" + folderName + "'", e);
-            return false;
-        }
+        component = getComponentFactory().getComponentByFolderName(folderName);
 
         if (component != null) {
             if (logger.isDebugEnabled()) {
@@ -1862,8 +1849,7 @@ public class ProjectService extends BaseService {
         }
     }
 
-    public IFile saveToFile(IFile file, String content, IProgressMonitor monitor) throws InvocationTargetException,
-            CoreException, IOException, InterruptedException {
+    public IFile saveToFile(IFile file, String content, IProgressMonitor monitor) throws CoreException {
 
         if (file == null || file.getType() != IResource.FILE || Utils.isEmpty(content)) {
             logger.warn("Unable to save file - file and/or content is null or empty");
@@ -1891,7 +1877,7 @@ public class ProjectService extends BaseService {
     // H A N D L E   R E T U R N E D   C O N T E N T   &   M E S S A G E S
     public boolean handleDeployResult(ProjectPackageList projectPackageList, DeployResultExt deployResultHandler,
             boolean save, IProgressMonitor monitor) throws CoreException, InterruptedException, IOException,
-            InvocationTargetException, Exception {
+            Exception {
         if (deployResultHandler == null || Utils.isEmpty(projectPackageList)) {
             throw new IllegalArgumentException("Project package list and/or deploy result cannot be null");
         }
@@ -2049,7 +2035,7 @@ public class ProjectService extends BaseService {
     }
 
     public boolean handleRetrieveResult(RetrieveResultExt retrieveResultHandler, boolean save, IProgressMonitor monitor)
-            throws InterruptedException, CoreException, IOException, InvocationTargetException, Exception {
+            throws InterruptedException, CoreException, IOException, Exception {
         if (retrieveResultHandler == null) {
             throw new IllegalArgumentException("Retrieve result cannot be null");
         }
@@ -2057,15 +2043,13 @@ public class ProjectService extends BaseService {
     }
 
     public boolean handleRetrieveResult(ProjectPackageList projectPackageList, RetrieveResultExt retrieveResultHandler,
-            boolean save, IProgressMonitor monitor) throws InterruptedException, CoreException, IOException,
-            InvocationTargetException {
+            boolean save, IProgressMonitor monitor) throws InterruptedException, CoreException, IOException {
         return handleRetrieveResult(projectPackageList, retrieveResultHandler, save, null, monitor);
     }
 
     public boolean handleRetrieveResult(final ProjectPackageList projectPackageList,
             RetrieveResultExt retrieveResultHandler, boolean save, final String[] toSaveComponentTypes,
-            IProgressMonitor monitor) throws InterruptedException, CoreException, IOException,
-            InvocationTargetException {
+            IProgressMonitor monitor) throws InterruptedException, CoreException, IOException {
         if (projectPackageList == null) {
             throw new IllegalArgumentException("Project package list cannot be null");
         }
@@ -2292,9 +2276,6 @@ public class ProjectService extends BaseService {
                     String logMessage = Utils.generateCoreExceptionLog(e);
                     logger.warn("Unable to get file resource for '" + runTestFailure.getName() + "' for failure "
                             + runTestFailure.getMessage() + ": " + logMessage, e);
-                } catch (FactoryException e) {
-                    logger.error("Unable to get file resource for '" + runTestFailure.getName() + "' for failure "
-                            + runTestFailure.getMessage(), e);
                 }
                 continue;
             }
@@ -2542,8 +2523,8 @@ public class ProjectService extends BaseService {
         return evaluateLocalAndRemote(localProjectPackageList, retrieveResultExt, monitor);
     }
 
-    public boolean isFileInSync(IFile file, IProgressMonitor monitor) throws CoreException, ForceConnectionException,
-            IOException, FactoryException, ServiceException, ForceRemoteException, InterruptedException {
+    public boolean isFileInSync(IFile file, IProgressMonitor monitor) throws ForceConnectionException,
+            IOException, ServiceException, ForceRemoteException, InterruptedException {
         if (file == null || file.getProject() == null) {
             throw new IllegalArgumentException("File and/or file's project cannot be null");
         }

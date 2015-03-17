@@ -27,7 +27,6 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.model.IModel;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 public abstract class ComponentModel implements IModel {
     private static final Logger logger = Logger.getLogger(ComponentModel.class);
@@ -46,28 +45,18 @@ public abstract class ComponentModel implements IModel {
         super();
     }
 
-    public void initComponent() throws ForceProjectException {
+    public void initComponent() {
         this.componentList = componentFactory.getComponentListInstance();
 
         if (component == null) {
-            try {
-                component = componentFactory.getComponentByComponentType(getComponentType());
-            } catch (FactoryException e) {
-                throw new ForceProjectException(e, "Unable to init component");
-            }
+            component = componentFactory.getComponentByComponentType(getComponentType());
         }
 
         component.setName(getDefaultName());
         component.setPackageName(Constants.DEFAULT_PACKAGED_NAME);
         component.intiNewBody(component.getDefaultTemplateString());
 
-        try {
-            metadataExt = component.getDefaultMetadataExtInstance();
-        } catch (InstantiationException e) {
-            throw new ForceProjectException(e, "Unable to init wizard model");
-        } catch (IllegalAccessException e) {
-            throw new ForceProjectException(e, "Unable to init wizard model");
-        }
+        metadataExt = component.getDefaultMetadataExtInstance();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Initialized " + component.getDisplayName() + " model and component controller");
@@ -189,7 +178,7 @@ public abstract class ComponentModel implements IModel {
      */
     public abstract void loadAdditionalComponentAttributes() throws FactoryException, JAXBException;
 
-    protected boolean saveMetadata(Component component) throws FactoryException, JAXBException {
+    protected boolean saveMetadata(Component component) throws JAXBException {
         if (component == null || metadataExt == null) {
             logger.error("Component and/or metadata object cannot be null");
             throw new IllegalArgumentException("Component and/or metadata object cannot be null");

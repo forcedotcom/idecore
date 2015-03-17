@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,9 +47,7 @@ import com.salesforce.ide.core.model.ProjectPackage;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
-import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.services.RetrieveException;
 import com.sforce.soap.metadata.RetrieveRequest;
 
@@ -73,7 +70,7 @@ public class PackageManifestFactory extends BaseFactory {
         this.defaultDisabledRetrieveComponentTypes = defaultDisabledRetrieveComponentTypes;
     }
 
-    public Component getPackageManifestComponentInstance() throws FactoryException {
+    public Component getPackageManifestComponentInstance() {
         return getComponentFactory().getComponentByComponentType(Constants.PACKAGE_MANIFEST);
     }
 
@@ -81,9 +78,8 @@ public class PackageManifestFactory extends BaseFactory {
      * Generate a default manifest with registered component types.
      *
      * @return
-     * @throws FactoryException
      */
-    public Package getDefaultPackageManifest() throws FactoryException {
+    public Package getDefaultPackageManifest() {
         return createDefaultPackageManifest();
     }
 
@@ -177,14 +173,12 @@ public class PackageManifestFactory extends BaseFactory {
         return packageManifest != null ? packageManifest.getFullName() : null;
     }
 
-    public void setDefaultPackageManifest(Connection connection, RetrieveRequest retrieveRequest)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException {
+    public void setDefaultPackageManifest(Connection connection, RetrieveRequest retrieveRequest) {
         Package packageManifest = getDefaultPackageManifest(connection);
         retrieveRequest.setUnpackaged(convert(packageManifest));
     }
 
-    public Package getDefaultPackageManifest(Connection connection) throws ForceConnectionException,
-            ForceRemoteException, InterruptedException {
+    public Package getDefaultPackageManifest(Connection connection) {
         return createPackageManifest(connection, Constants.DEFAULT_PACKAGED_NAME);
     }
 
@@ -764,7 +758,7 @@ public class PackageManifestFactory extends BaseFactory {
     }
 
     public Package addComponentListToManifest(ProjectPackage projectPackage, ComponentList componentList, boolean save)
-            throws FactoryException, IOException, InvocationTargetException, InterruptedException,
+            throws FactoryException, IOException, InterruptedException,
             ForceProjectException {
 
         Component packageManifestComponent = projectPackage.getPackageManifest();

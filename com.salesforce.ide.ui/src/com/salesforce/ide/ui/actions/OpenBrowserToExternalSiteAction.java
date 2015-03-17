@@ -20,7 +20,6 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 /**
  *
@@ -34,7 +33,7 @@ public class OpenBrowserToExternalSiteAction extends BaseAction implements IWork
     private String url = null;
 
     //   C O N S T R U C T O R S
-    public OpenBrowserToExternalSiteAction() throws ForceProjectException {
+    public OpenBrowserToExternalSiteAction() {
         super();
     }
 

@@ -42,7 +42,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.controller.Controller;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -92,7 +91,7 @@ public class PackageManifestController extends Controller {
     private final List<String> subTypes = new ArrayList<String>();
     private final Map<String, String> parentTypes = new HashMap<String, String>();
 
-    public PackageManifestController() throws ForceProjectException {
+    public PackageManifestController() {
         model = new OrgModel();
     }
 
@@ -245,9 +244,6 @@ public class PackageManifestController extends Controller {
             } catch (InterruptedException e) {
                 exceptionOccurred = true;
                 logger.debug(e);
-            } catch (FactoryException e) {
-                exceptionOccurred = true;
-                logger.debug(e);
             }
 
         } else if (ext == null || exceptionOccurred) {
@@ -265,7 +261,7 @@ public class PackageManifestController extends Controller {
         logAndDisplayWarnMsgIfNeeded(erroneousComponentTypes);
     }
 
-    private void fillTypeStructures(String key) throws FactoryException {
+    private void fillTypeStructures(String key) {
         if (!ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().isRegisteredComponentType(key)) {
             return;
         }
@@ -312,13 +308,12 @@ public class PackageManifestController extends Controller {
      * @throws ParserConfigurationException
      * @throws TransformerException
      * @throws IOException
-     * @throws FactoryException
      * @throws ForceConnectionException
      * @throws ForceRemoteException
      * @throws InterruptedException
      */
     protected void updateCacheWork(URL cacheUrl, IProgressMonitor monitor) throws ParserConfigurationException,
-    TransformerException, IOException, FactoryException, ForceConnectionException, ForceRemoteException,
+    TransformerException, IOException, ForceConnectionException, ForceRemoteException,
     InterruptedException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -462,7 +457,7 @@ public class PackageManifestController extends Controller {
         return builder.toString();
     }
 
-    public String getPathForComponentType(String componentType) throws FactoryException {
+    public String getPathForComponentType(String componentType) {
         return getComponentTypeName(ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
             .getComponentByComponentType(componentType));
     }
@@ -968,14 +963,10 @@ public class PackageManifestController extends Controller {
 
                     CustomObjectComponentNode componentNode = new CustomObjectComponentNode(compName);
 
-                    try {
-                        if (ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
-                                .isRegisteredComponentType(subName)) {
-                            componentNode.setComponent(ContainerDelegate.getInstance().getFactoryLocator()
-                                .getComponentFactory().getComponentByComponentType(subName));
-                        }
-                    } catch (FactoryException e) {
-                        logger.warn("Unable to aquire subtype " + subName + " from component factory", e); //$NON-NLS-1$  //$NON-NLS-2$
+                    if (ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
+                            .isRegisteredComponentType(subName)) {
+                        componentNode.setComponent(ContainerDelegate.getInstance().getFactoryLocator()
+                            .getComponentFactory().getComponentByComponentType(subName));
                     }
 
                     customObjectFolderNode.addChild(componentNode);

@@ -11,7 +11,6 @@
 package com.salesforce.ide.schemabrowser.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -47,22 +46,19 @@ import org.eclipse.ui.PlatformUI;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
+import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.schemabrowser.ui.tableviewer.QueryTableViewer;
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
-import com.sforce.soap.partner.fault.wsc.InvalidSObjectFault;
-import com.sforce.soap.partner.fault.wsc.UnexpectedErrorFault;
 import com.sforce.soap.partner.wsc.ChildRelationship;
 import com.sforce.soap.partner.wsc.DescribeSObjectResult;
 import com.sforce.soap.partner.wsc.Field;
 import com.sforce.soap.partner.wsc.PicklistEntry;
 import com.sforce.soap.partner.wsc.QueryResult;
-import com.sforce.ws.ConnectionException;
 
 /**
  * TODO: Can this be made into a single page editor?
@@ -142,7 +138,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
             new Hashtable<String, DescribeSObjectResult>();
 
     // C O N S T R U C T O R S
-    public SchemaBrowser() throws ForceProjectException {
+    public SchemaBrowser() {
         super();
         queryTableViewer = new QueryTableViewer();
     }
@@ -186,8 +182,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         }
     }
 
-    private Composite createPage(Composite composite) throws ForceConnectionException, ForceProjectException,
-            ForceRemoteException {
+    private Composite createPage(Composite composite) throws ForceConnectionException, ForceRemoteException {
         schemaEditorComposite =
                 new SchemaEditorComposite(getContainer(), SWT.NONE, file.getProject(), queryTableViewer);
         wireUpComposite();
@@ -248,10 +243,10 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 }
 
                 fillTable(qr, monitor, true);
-            } catch (ConnectionException e) {
+            } catch (InsufficientPermissionsException e) {
                 logger.error(e);
-                Utils.openError(e, false, "Failed to execute query");
-            } catch (Exception e) {
+                throw new InvocationTargetException(e);
+            } catch (ForceConnectionException e) {
                 logger.error(e);
                 throw new InvocationTargetException(e);
             } finally {
@@ -1194,7 +1189,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
     }
 
     private DescribeSObjectResult getCachedDescribe(String componentType) throws ForceConnectionException,
-            ForceProjectException, ForceRemoteException {
+            ForceRemoteException {
         if (!describeCache.containsKey(componentType.toLowerCase())) {
             IProject project = file.getProject();
             Connection connection = getConnectionFactory().getConnection(project);
@@ -1239,14 +1234,13 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         schemaEditorComposite.setCursor(null);
     }
 
-    private void clearDescribeCache(IProject project) throws ForceConnectionException, ForceRemoteException, ForceProjectException {
+    private void clearDescribeCache(IProject project) throws ForceConnectionException, ForceRemoteException {
         // Refresh the DescribeSObject cache and also the DescribeObjectRegistry
         describeCache.clear();
         ContainerDelegate.getInstance().getServiceLocator().getProjectService().getDescribeObjectRegistry().refresh(project);
     }
 
-    void fillTable(QueryResult qr, IProgressMonitor monitor, boolean clearTable) throws InvalidSObjectFault,
-            UnexpectedErrorFault, RemoteException {
+    void fillTable(QueryResult qr, IProgressMonitor monitor, boolean clearTable) {
         schemaEditorComposite.loadTable(qr);
         monitor.done();
     }

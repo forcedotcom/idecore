@@ -46,7 +46,6 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexAutoIndentStrategy;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner;
@@ -89,11 +88,8 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /**
      * Default constructor.
-     * 
-     * @throws ForceProjectException
      */
-    public ApexSourceViewerConfiguration(IPreferenceStore preferenceStore, ITextEditor editor)
-            throws ForceProjectException {
+    public ApexSourceViewerConfiguration(IPreferenceStore preferenceStore, ITextEditor editor) {
         super(preferenceStore);
         fTextEditor = editor;
         apexCodeScanner = (ApexCodeScanner) ContainerDelegate.getInstance().getBean(ApexCodeScanner.class);

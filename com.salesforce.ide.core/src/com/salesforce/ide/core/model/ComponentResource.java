@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
@@ -265,7 +264,7 @@ public abstract class ComponentResource implements IComponent {
     protected abstract void saveAdditionalFileProperties(IFile file);
 
     public IFile saveToFile(IProject project, ProjectPackage projectPackage, IProgressMonitor monitor)
-            throws InvocationTargetException, CoreException, IOException, InterruptedException, ForceProjectException {
+            throws CoreException, InterruptedException, ForceProjectException {
         monitor.subTask(getFileName());
         setProjectPackageProperties(projectPackage);
         resource = createFile(project, monitor);
@@ -282,8 +281,7 @@ public abstract class ComponentResource implements IComponent {
         }
     }
 
-    public IFile saveToFile(boolean saveProperties, IProgressMonitor monitor) throws InvocationTargetException,
-            CoreException, InterruptedException, ForceProjectException {
+    public IFile saveToFile(boolean saveProperties, IProgressMonitor monitor) throws CoreException, InterruptedException, ForceProjectException {
         monitorCheck(monitor);
 
         if (resource == null) {

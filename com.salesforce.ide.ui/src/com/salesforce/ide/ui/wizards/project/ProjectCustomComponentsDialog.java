@@ -12,7 +12,6 @@ package com.salesforce.ide.ui.wizards.project;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
@@ -29,7 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.PackageManifestModel;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
@@ -37,8 +35,6 @@ import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.packagemanifest.IStatusChangedListener;
 
 public class ProjectCustomComponentsDialog extends SelectionDialog {
-
-    private static Logger logger = Logger.getLogger(ProjectCustomComponentsDialog.class);
 
     protected Point shellSize = new Point(580, 700);
     protected ProjectCustomComponentsComposite customComponentsComposite = null;
@@ -59,14 +55,9 @@ public class ProjectCustomComponentsDialog extends SelectionDialog {
 
     @Override
     protected Control createDialogArea(Composite parent) {
-        try {
-            customComponentsComposite =
-                    new ProjectCustomComponentsComposite(parent, SWT.NULL, packageManifestModel, connection);
-            customComponentsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        } catch (ForceProjectException e) {
-            logger.error("Unable to create custom component composite", e);
-            return parent;
-        }
+        customComponentsComposite =
+                new ProjectCustomComponentsComposite(parent, SWT.NULL, packageManifestModel, connection);
+        customComponentsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // set dialog help context
         UIUtils.setHelpContext(customComponentsComposite, this.getClass().getSimpleName());

@@ -15,18 +15,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.OnlineNature;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 public class RemoveOnlineNatureAction extends BaseChangeNatureAction {
     private static final Logger logger = Logger.getLogger(RemoveOnlineNatureAction.class);
 
-    public RemoveOnlineNatureAction() throws ForceProjectException {
+    public RemoveOnlineNatureAction() {
         super();
     }
 
-    public RemoveOnlineNatureAction(IProject project) throws ForceProjectException {
+    public RemoveOnlineNatureAction(IProject project) {
         super();
         this.project = project;
     }

@@ -60,9 +60,8 @@ public class PackageDeployService extends BasePackageService {
      * @param checkOnly
      * 
      * @return
-     * @throws ForceConnectionException
      */
-    public DeployOptions getDeployOptions(boolean checkOnly) throws ForceConnectionException {
+    public DeployOptions getDeployOptions(boolean checkOnly) {
         DeployOptions deployOptions = makeDefaultDeployOptions(checkOnly);
         deployOptions.setRollbackOnError(true);
         deployOptions.setAutoUpdatePackage(false);
@@ -125,7 +124,7 @@ public class PackageDeployService extends BasePackageService {
     }
 
     public DeployResultExt deploy(Connection connection, ProjectPackageList projectPackageList, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException, ForceConnectionException {
+            throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(projectPackageList)) {
             throw new IllegalArgumentException("Connection and/or project package list cannot be null");
         }
@@ -140,7 +139,7 @@ public class PackageDeployService extends BasePackageService {
     }
 
     public DeployResultExt deploy(Connection connection, byte[] zipFile, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException, ForceConnectionException {
+            throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(zipFile)) {
             throw new IllegalArgumentException("Connection and/or file zip cannot be null");
         }
@@ -308,7 +307,7 @@ public class PackageDeployService extends BasePackageService {
     }
 
     private void adjustDeployOptions(MetadataStubExt metadataStubExt, DeployOptions deployOptions,
-            IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException {
+            IProgressMonitor monitor) throws ForceRemoteException, InterruptedException {
         DescribeMetadataResultExt describeMetadataResultExt =
                 getMetadataService().getDescribeMetadata(metadataStubExt, monitor);
         // assume that org is prod

@@ -18,7 +18,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.views.BaseViewPart;
 
@@ -28,7 +27,7 @@ public class ExecuteAnonymousView extends BaseViewPart {
     protected ISelectionListener fPostSelectionListener = null;
     protected ExecuteAnonymousController executeAnonymousController = null;
 
-    public ExecuteAnonymousView() throws ForceProjectException {
+    public ExecuteAnonymousView() {
         super();
         executeAnonymousController = new ExecuteAnonymousController();
         createSelectionListener();

@@ -38,7 +38,6 @@ import com.salesforce.ide.core.factories.ConnectionFactory;
 import com.salesforce.ide.core.factories.FactoryLocator;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.services.ProjectService;
 import com.salesforce.ide.core.services.ServiceLocator;
 
@@ -56,7 +55,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
     protected Shell shell = null;
 
     //   C O N S T R U C T O R
-    public BaseAction() throws ForceProjectException {
+    public BaseAction() {
         super();
 
         serviceLocator = ContainerDelegate.getInstance().getServiceLocator();

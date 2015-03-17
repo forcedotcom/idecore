@@ -25,7 +25,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
 import com.salesforce.ide.core.remote.ForceConnectionException;
@@ -51,7 +50,7 @@ public class ProjectUpdateOperation extends ProjectCreateOperation {
     }
 
     public void update(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException,
-            ForceConnectionException, ForceProjectException, InsufficientPermissionsException {
+            ForceConnectionException, InsufficientPermissionsException {
         ProjectModel projectModel = projectController.getProjectModel();
         ForceProject updatedProject = projectModel.getForceProject();
         IProject project = projectModel.getProject();

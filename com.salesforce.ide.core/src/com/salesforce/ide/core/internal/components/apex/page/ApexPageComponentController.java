@@ -10,12 +10,24 @@
  ******************************************************************************/
 package com.salesforce.ide.core.internal.components.apex.page;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import com.salesforce.ide.core.internal.components.ComponentController;
+import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.project.ForceProjectException;
 
 public class ApexPageComponentController extends ComponentController {
 
     public ApexPageComponentController() throws ForceProjectException {
         super(new ApexPageModel());
+    }
+
+    @Override
+    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException {
+        // TODO Auto-generated method stub
+        
     }
 }

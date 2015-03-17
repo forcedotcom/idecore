@@ -27,7 +27,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.controller.Controller;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
@@ -52,7 +51,7 @@ public class SnippetDialogController extends Controller {
     private String selectedSnippet = null;
 
     //   C O N S T R U C T O R S
-    public SnippetDialogController() throws ForceProjectException {
+    public SnippetDialogController() {
         super();
     }
 

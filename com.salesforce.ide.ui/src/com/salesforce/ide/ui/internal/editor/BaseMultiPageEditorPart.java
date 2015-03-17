@@ -33,7 +33,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.core.services.ProjectService;
 import com.salesforce.ide.core.services.ServiceLocator;
@@ -50,7 +49,7 @@ public abstract class BaseMultiPageEditorPart extends MultiPageEditorPart {
     protected FactoryLocator factoryLocator = null;
 
     // C O N S T R U C T O R S
-    public BaseMultiPageEditorPart() throws ForceProjectException {
+    public BaseMultiPageEditorPart() {
         super();
         setTitleImage(getImage());
         serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
@@ -81,15 +80,15 @@ public abstract class BaseMultiPageEditorPart extends MultiPageEditorPart {
         return factoryLocator;
     }
 
-    public ConnectionFactory getConnectionFactory() throws ForceProjectException {
+    public ConnectionFactory getConnectionFactory() {
         return factoryLocator.getConnectionFactory();
     }
 
-    public ComponentFactory getComponentFactory() throws ForceProjectException {
+    public ComponentFactory getComponentFactory() {
         return factoryLocator.getComponentFactory();
     }
 
-    public ProjectService getProjectService() throws ForceProjectException {
+    public ProjectService getProjectService() {
         return serviceLocator.getProjectService();
     }
 

@@ -82,7 +82,7 @@ public class UpgradeController extends Controller {
     private List<String> excludeFileExtensions = null;
     private final List<IInternalUpgrade> ideInternalUpgrades = new ArrayList<IInternalUpgrade>();
 
-    public UpgradeController() throws ForceProjectException, FactoryException {
+    public UpgradeController() {
         super();
         model = new UpgradeModel(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPlatformBrandName(), ContainerDelegate.getInstance().getServiceLocator().getProjectService().getIdeReleaseName(),
                 ContainerDelegate.getInstance().getServiceLocator().getProjectService().getIdeBrandName());
@@ -545,8 +545,7 @@ public class UpgradeController extends Controller {
 
     // refresh installed managed packages
     protected boolean upgradeManagedInstalledPackages(IProject project, IProgressMonitor monitor)
-            throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException,
-            CoreException, InvocationTargetException, IOException, ServiceException, Exception {
+            throws InterruptedException, ForceConnectionException, ForceRemoteException, CoreException, IOException, ServiceException, Exception {
         if (project == null) { throw new IllegalArgumentException("Project cannot be null"); }
 
         if (logger.isInfoEnabled()) {

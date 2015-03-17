@@ -53,7 +53,7 @@ public class BuilderController extends Controller {
     protected boolean bubbleExceptions = false;
     protected boolean success = false;
 
-    public BuilderController() throws ForceProjectException {
+    public BuilderController() {
         super();
     }
 
@@ -157,8 +157,7 @@ public class BuilderController extends Controller {
         .handleDeployResult(loadedProjectPackageList, deployResultHandler, true, monitor);
     }
 
-    protected DeployOptions makeDeployOptions(PackageDeployService packageDeployService)
-            throws ForceConnectionException {
+    protected DeployOptions makeDeployOptions(PackageDeployService packageDeployService) {
         final DeployOptions deployOptions = packageDeployService.makeDefaultDeployOptions(false);
         deployOptions.setIgnoreWarnings(true);
         return deployOptions;

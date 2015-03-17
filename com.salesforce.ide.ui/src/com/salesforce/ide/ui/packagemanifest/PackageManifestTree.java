@@ -57,11 +57,9 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.PackageManifestDocumentUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.ui.internal.ForceImages;
@@ -350,10 +348,10 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     // C O N S T R U C T O R S
-    public PackageManifestTree(Composite parent, int treeStyle) throws ForceProjectException {
+    public PackageManifestTree(Composite parent, int treeStyle) {
     	this(parent, treeStyle, new PackageManifestController());
     }
-    public PackageManifestTree(Composite parent, int treeStyle, PackageManifestController controller) throws ForceProjectException {
+    public PackageManifestTree(Composite parent, int treeStyle, PackageManifestController controller) {
         super(parent, treeStyle, new ManifestTreeFilter(), false);
         this.controller = controller;
 
@@ -1600,15 +1598,7 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     private boolean validateTypes() {
-        PackageTreeNode profileNode = null;
-
-        try {
-            profileNode =
-                    controller.getNode(controller.getPathForComponentType(Constants.PROFILE) + Constants.FOWARD_SLASH);
-        } catch (FactoryException e) {
-            logger.warn("Profile node cannot be found", e); //$NON-NLS-1$
-        }
-
+        PackageTreeNode profileNode = controller.getNode(controller.getPathForComponentType(Constants.PROFILE) + Constants.FOWARD_SLASH);
         PackageTreeNode objectNode = controller.getNode(Constants.STANDARD_OBJECT + Constants.FOWARD_SLASH);
         PackageTreeNode customNode = controller.getNode(Constants.CUSTOM_OBJECT + Constants.FOWARD_SLASH);
 

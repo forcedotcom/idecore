@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
@@ -337,12 +336,8 @@ public class MetadataStubExt {
             }
 			
     		Component component = null;
-			try {
-				component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
-                        .getComponentByComponentType(name);
-			} catch (FactoryException e) {
-				//If an exception is thrown, it isn't supported
-			}
+			component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
+                    .getComponentByComponentType(name);
 			//Check the md folder in the bean
 			if (component != null && object.isInFolder()) {
 				supportedNames.add(component.getFolderNameIfFolderTypeMdComponent());

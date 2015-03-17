@@ -26,7 +26,7 @@ import com.salesforce.ide.ui.actions.ActionController;
 public class DeploymentActionController extends ActionController {
     private static final Logger logger = Logger.getLogger(DeploymentAction.class);
 
-    public DeploymentActionController() throws ForceProjectException {
+    public DeploymentActionController() {
         super();
     }
 

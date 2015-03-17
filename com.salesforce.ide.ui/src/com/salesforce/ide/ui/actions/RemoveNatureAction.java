@@ -10,23 +10,18 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.ui.internal.utils.UIConstants;
 
 public class RemoveNatureAction extends BaseChangeNatureAction {
-    private static final Logger logger = Logger.getLogger(RemoveNatureAction.class);
 
-    public RemoveNatureAction() throws ForceProjectException {
+    public RemoveNatureAction() {
         super();
     }
 
-    public RemoveNatureAction(IProject project) throws ForceProjectException {
+    public RemoveNatureAction(IProject project) {
         super();
         this.project = project;
     }
@@ -45,14 +40,8 @@ public class RemoveNatureAction extends BaseChangeNatureAction {
     }
 
     public boolean removeNature() {
-        try {
-            getProjectService().removeNatures(project, null);
-            updateDecorators();
-        } catch (CoreException e) {
-            String logMessage = Utils.generateCoreExceptionLog(e);
-            logger.warn("Unable to remove " + UIConstants.PLUGIN_NAME + " natures: " + logMessage, e);
-            return false;
-        }
+        getProjectService().removeNatures(project, null);
+        updateDecorators();
         return true;
     }
 }
