@@ -161,8 +161,8 @@ public class NewComponentActionController extends ActionController {
             prepareAndOpenWizardDialog();
         } catch (Exception e) {
             logger.error("Unable to open New Force.com Component wizard for " + component.getComponentType(), e);
-            Utils.openError(e, UIMessages.getString("NewComponentAction.MessageBox.title"), UIMessages
-                    .getString("NewComponentAction.GeneralError.message"));
+            Utils.openError(e, UIMessages.getString("NewComponent.MessageBox.title"), UIMessages
+                    .getString("NewComponent.GeneralError.message"));
         }
     }
 
@@ -237,7 +237,7 @@ public class NewComponentActionController extends ActionController {
     
     public static class Resources {
         public String getDialogTitle_Error() {
-            return UIMessages.getString("NewComponentAction.MessageBox.title")+" Error";
+            return UIMessages.getString("NewComponent.MessageBox.title")+" Error";
         }
 
         public String getMessage_invalidDerivedComponent() {
@@ -253,11 +253,11 @@ public class NewComponentActionController extends ActionController {
         }
 
         public String getMessage_ReferencedPkg() {
-            return UIMessages.getString("NewComponentAction.ReferencedPackage.message");
+            return UIMessages.getString("NewComponent.ReferencedPackage.message");
         }
 
         public String getMessage_unknownFolderMessage() {
-            return UIMessages.getString("NewComponentAction.UnknownFolder.message");
+            return UIMessages.getString("NewComponent.UnknownFolder.message");
         }
         
     }

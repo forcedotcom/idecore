@@ -57,8 +57,6 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
 
         layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float) 0.75, editorArea);
 
-        layout.addActionSet(UIConstants.PLUGIN_PREFIX + ".actionset");
-
         // views
         layout.addShowViewShortcut(UIConstants.RUN_TEST_VIEW_ID);
         layout.addShowViewShortcut(UIConstants.DEBUG_LOG_VIEW_ID);
@@ -86,7 +84,5 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
 
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
-
-        layout.addActionSet(UIConstants.PLUGIN_PREFIX + ".actionset.help");
     }
 }

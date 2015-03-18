@@ -87,7 +87,7 @@ public class DeployResultsViewAssembler {
         if (deployResultHandler != null) {
             noResultsTreeItem.setText(UIMessages.getString("Deployment.ResultsView.NoResults.message"));
         } else {
-            noResultsTreeItem.setText(UIMessages.getString("RunTestsAction.ResultsView.NoResults.message"));
+            noResultsTreeItem.setText(UIMessages.getString("RunTestsHandler.ResultsView.NoResults.message"));
         }
     }
 

@@ -31,6 +31,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import com.salesforce.ide.api.metadata.types.Package;
 import com.salesforce.ide.api.metadata.types.PackageTypeMembers;
@@ -39,7 +40,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.ui.actions.RefreshResourceAction;
+import com.salesforce.ide.ui.handlers.RefreshResourceHandler;
 import com.salesforce.ide.ui.internal.Messages;
 import com.salesforce.ide.ui.internal.startup.ForceStartup;
 
@@ -110,35 +111,24 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
                         Display.getDefault().asyncExec(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    // remove ourself so that we don't receive new events while processing old ones 
-                                    // (RefreshResourceAction will touch package.xml causing an infinite dialog loop)
-                                    // TODO investigate whether new events should be combined with old events
-                                    ForceStartup.removePackageManifestChangeListener();
-                                    final Package oldPackage = ForceStartup.getManifestCache().get(resource);
+                                // TODO investigate whether new events should be combined with old events
+                                final Package oldPackage = ForceStartup.getManifestCache().get(resource);
 
-                                    if (!isEqual(oldPackage, newPackage)) {
-                                        ForceStartup.getManifestCache().put(resource, newPackage);
+                                if (!isEqual(oldPackage, newPackage)) {
+                                    ForceStartup.getManifestCache().put(resource, newPackage);
 
-                                        if (logger.isDebugEnabled()) {
-                                            logger.debug("Manifest resource '"
-                                                    + resource.getFullPath().toPortableString()
-                                                    + "' found to be refresh-able");
-                                        }
-
-                                        if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
-                                            Messages.PackageManifestChangeListener_dialog_title, NLS.bind(
-                                                Messages.PackageManifestChangeListener_dialog_message, resource
-                                                        .getFullPath(), project.getName()))) {
-                                            RefreshResourceAction action = new RefreshResourceAction();
-                                            action.selectionChanged(null, new StructuredSelection(project));
-                                            action.run(null);
-                                        }
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("Manifest resource '"
+                                                + resource.getFullPath().toPortableString()
+                                                + "' found to be refresh-able");
                                     }
 
-                                } finally {
-                                    // add ourself since we removed above
-                                    ForceStartup.addPackageManifestChangeListener();
+                                    if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
+                                        Messages.PackageManifestChangeListener_dialog_title, NLS.bind(
+                                            Messages.PackageManifestChangeListener_dialog_message, resource
+                                                    .getFullPath(), project.getName()))) {
+                                        RefreshResourceHandler.execute(PlatformUI.getWorkbench(), new StructuredSelection(project));
+                                    }
                                 }
                             }
                         });

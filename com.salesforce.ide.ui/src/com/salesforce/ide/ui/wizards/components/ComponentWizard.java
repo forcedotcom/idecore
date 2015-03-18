@@ -67,8 +67,8 @@ public abstract class ComponentWizard extends BaseWizard implements IComponentCr
         if (selection == null || structuredSelection.getFirstElement() == null
                 && (getComponentWizardModel() != null && getComponentWizardModel().getProject() == null)) {
             logger.warn("Unable to open new component wizard - folder and project are null.");
-            Utils.openWarn(null, UIMessages.getString("NewComponentAction.MessageBox.title"), UIMessages
-                    .getString("NewComponentAction.UnknownFolder.message"));
+            Utils.openWarn(null, UIMessages.getString("NewComponent.MessageBox.title"), UIMessages
+                    .getString("NewComponent.UnknownFolder.message"));
             return;
         }
 

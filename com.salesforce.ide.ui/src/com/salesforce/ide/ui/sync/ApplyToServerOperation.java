@@ -33,7 +33,7 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
 public class ApplyToServerOperation extends BaseComponentSynchronizeModelOperation {
     static final Logger logger = Logger.getLogger(ApplyToServerOperation.class);
 
-    public static final String OPERATION_TITLE = UIMessages.getString("SyncAction.ApplyLocalToOrganization.label");
+    public static final String OPERATION_TITLE = UIMessages.getString("SynchronizeHandler.ApplyLocalToOrganization.label");
 
     protected ApplyToServerOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
             ComponentSubscriber subscriber) {

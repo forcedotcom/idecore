@@ -168,441 +168,215 @@
               icon="icons/appExDevIco16.png"
               id="com.salesforce.ide.ui.wizards.createWsdl2Apex"
               name="Apex Class (from WSDL)"
-              preferredPerspective="com.salesforce.ide.perspective"
+              preferredPerspectives="com.salesforce.ide.perspective"
               project="false">
         </wizard>
     </extension>
 
 
     <!--   M E N U S  -->
-    <extension point="org.eclipse.ui.popupMenus">
-        <!-- work online -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.addOnlineNature"
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true">
-            <menu
-                  id="com.salesforce.ide.ui.menu.tools"
-                  label="Force&amp;.com"
-                  icon="icons/appExDevIco16.png"
-                  path="additions">
-                <separator name="group1" />
-            </menu>
-            <visibility>
-                <and>
-                    <objectState name="nature" value="com.salesforce.ide.nature.default" />
-                    <not>
-                        <objectState name="nature" value="com.salesforce.ide.nature.online" />
-                    </not>
-                </and>
-            </visibility>
-            <action
-                id="com.salesforce.ide.ui.actions.addOnlineNatureAction"
-                class="com.salesforce.ide.ui.actions.AddOnlineNatureAction"
-                enablesFor="1"
-                label="Wor&amp;k Online"
-                tooltip="%tooltip.3"
-                helpContextId="com.salesforce.ide.documentation.addOnlineNatureAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group1">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-        <!-- work offline -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.removeOnlineNature"
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group1" />
-            </menu>
-            <visibility>
-                <and>
-                    <objectState name="nature" value="com.salesforce.ide.nature.default" />
-                    <objectState name="nature" value="com.salesforce.ide.nature.online" />
-                </and>
-            </visibility>
-            <action
-                id="com.salesforce.ide.ui.actions.removeOnlineNatureAction"
-                class="com.salesforce.ide.ui.actions.RemoveOnlineNatureAction"
-                enablesFor="1"
-                label="Work O&amp;ffline"
-                tooltip="%tooltip.0"
-                helpContextId="com.salesforce.ide.documentation.removeOnlineNatureAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group1">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-        <!-- remove force nature -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.removeNature"
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group1" />
-            </menu>
-            <visibility>
-                <objectState name="nature" value="com.salesforce.ide.nature.default" />
-            </visibility>
-            <action
-                id="com.salesforce.ide.ui.actions.removeNatureAction"
-                class="com.salesforce.ide.ui.actions.RemoveNatureAction"
-                enablesFor="1"
-                label="Remo&amp;ve Force.com Nature"
-                tooltip="%tooltip.1"
-                helpContextId="com.salesforce.ide.documentation.removeNatureAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group1">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-        <!-- add force nature -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.addNature"
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group1" />
-            </menu>
-            <visibility>
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any">
+      <menu id="com.salesforce.ide.ui.menu.context" label="Force.com" mnemonic=".">
+        <visibleWhen checkEnabled="false">
+          <iterate operator="or">
+            <reference definitionId="com.salesforce.ide.projectFile"/>
+          </iterate>
+        </visibleWhen>
+        <separator name="group0" visible="true"/>
+        <command commandId="com.salesforce.ide.ui.command.addNature" helpContextId="com.salesforce.ide.documentation.addNatureAction" id="addNature" label="Add Force.com Nature" mnemonic="A" style="push" tooltip="%tooltip.0">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
                 <not>
-                    <objectState name="nature" value="com.salesforce.ide.nature.default" />
+                  <reference definitionId="com.salesforce.ide.projectFile"/>
                 </not>
-            </visibility>
-            <action
-                id="com.salesforce.ide.ui.actions.addNatureAction"
-                class="com.salesforce.ide.ui.actions.AddNatureAction"
-                enablesFor="1"
-                label="&amp;Add Force.com Nature"
-                tooltip="%tooltip.2"
-                helpContextId="com.salesforce.ide.documentation.addNatureAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group1">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-        <!-- sync -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.synchronize"
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group2" />
-            </menu>
-            <enablement>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-            </enablement>
-            <action
-                id="com.salesforce.ide.ui.actions.syncAction"
-                class="com.salesforce.ide.ui.actions.SyncAction"
-                label="S&amp;ynchronize with Server"
-                tooltip="%tooltip.6"
-                helpContextId="com.salesforce.ide.documentation.syncAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group2">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-        <!-- save to server -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.saveToServer"
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group2" />
-            </menu>
-            <enablement>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-            </enablement>
-            <action
-                id="com.salesforce.ide.ui.actions.saveToServerAction"
-                class="com.salesforce.ide.ui.actions.SaveToServerAction"
-                label="&amp;Save to Server"
-                tooltip="%tooltip.4"
-                helpContextId="com.salesforce.ide.documentation.saveToServerAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group2">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.refreshResource"
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IResource">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group2" />
-            </menu>
-            <enablement>
-                <or>
-                    <instanceof value="org.eclipse.core.resources.IProject"/>
-                    <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-                </or>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
-            </enablement>
-            <action
-                id="com.salesforce.ide.ui.actions.refreshResource"
-                class="com.salesforce.ide.ui.actions.RefreshResourceAction"
-                label="&amp;Refresh from Server"
-                tooltip="%tooltip.5"
-                helpContextId="com.salesforce.ide.documentation.refreshResource"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group2">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-
-		<!-- run tests -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.runTests"
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IResource">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group5" />
-            </menu>
-			<filter name="projectNature" value="com.salesforce.ide.nature.default"/>
-           <enablement>
-           	  <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRunTestEnabledResources">
-              </test>  
-           </enablement>
-            <action
-                id="com.salesforce.ide.ui.actions.runTests"
-                label="Run &amp;Tests"
-                tooltip="%tooltip.13"
-                helpContextId="com.salesforce.ide.documentation.runTests"
-                class="com.salesforce.ide.ui.actions.RunTestsAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group5">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-        
-        <!-- show in salesforce web -->
-        <objectContribution adaptable="true"
-            id="com.salesforce.ide.ui.menu.showInBrowser"
-            objectClass="org.eclipse.core.resources.IResource">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group6" />
-            </menu>
-            <visibility>
-                <and>
-                    <or>
-                        <objectClass name="org.eclipse.core.resources.IProject" />
-                        <objectState name="path" value="*/src" />
-                        <objectState name="path" value="*/src/*" />
-                    </or>
-                    <objectState name="projectNature" value="com.salesforce.ide.nature.default" />
-                    <not>
-                        <objectState name="name" value="%SchemaBrowser.fullName" />
-                    </not>
-                    <not>
-                        <objectState name="name" value="%PackageManifest.fileName" />
-                    </not>
-                    <not>
-                        <objectState name="name" value="%Layout.defaultFolder" />
-                    </not>
-                    <not>
-                        <objectState name="extension" value="%Layout.fileExtension" />
-                    </not> 
-                    <not>
-                       <objectState name="extension" value="%CustomObjectTranslation.fileExtension" />
-                    </not>
-                    <not>
-                       <objectState name="extension" value="%Translations.fileExtension" />
-                    </not>
-                </and>
-            </visibility>
-            <action
-                id="com.salesforce.ide.ui.actions.showInBrowser"
-                class="com.salesforce.ide.core.internal.factories.ExtensionFactory:showInBrowserAction"
-                label="Sho&amp;w in Salesforce Web"
-                tooltip="%tooltip.12"
-                enablesFor="1"
-                helpContextId="com.salesforce.ide.documentation.showInBrowser"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group6" />
-        </objectContribution>
-
-        <!-- execute anonymous -->
-        <objectContribution
-            id="com.salesforce.ide.ui.menu.executeAnonymous"
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IProject">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="tools" />
-            </menu>
-            <filter name="projectNature" value="com.salesforce.ide.nature.online" />
-            <action
-                id="com.salesforce.ide.ui.actions.executeAnonymousAction"
-                class="com.salesforce.ide.ui.actions.ExecuteAnonymousAction"
-                enablesFor="1"
-                label="&amp;Execute Anonymous..."
-                tooltip="%tooltip.15"
-                helpContextId="com.salesforce.ide.documentation.executeAnonymousAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/tools">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-        
-        <!-- project properties -->
-        <objectContribution
-              adaptable="true"
-              id="com.salesforce.ide.ui.menu.projectProperties"
-              objectClass="org.eclipse.core.resources.IProject">
-           <menu
-                 id="com.salesforce.ide.ui.menu.tools"
-                 label="Force&amp;.com"
-                 icon="icons/appExDevIco16.png"
-                 path="additions">
-              <separator name="group6">
-              </separator>
-           </menu>
-           <filter name="projectNature" value="com.salesforce.ide.nature.default"/>
-           <action
-                 class="com.salesforce.ide.ui.actions.OpenProjectPropertiesAction"
-                 enablesFor="1"
-                 helpContextId="com.salesforce.ide.documentation.openProjectPropertiesAction"
-                 id="com.salesforce.ide.ui.actions.openProjectProperties"
-                 label="&amp;Project Properties"
-                 menubarPath="com.salesforce.ide.ui.menu.tools/propertyGroup"
-                 tooltip="%tooltip.16">
-            </action>
-        </objectContribution>
-        
-        <!-- project content properties -->
-        <objectContribution
-              adaptable="true"
-              id="com.salesforce.ide.ui.menu.openProjectContentProperties"
-              objectClass="org.eclipse.core.resources.IResource">
-           <menu
-                 id="com.salesforce.ide.ui.menu.tools"
-                 label="Force&amp;.com"
-                 icon="icons/appExDevIco16.png"
-                 path="additions">
-              <separator name="group6"/>
-           </menu>
-           <filter name="projectNature" value="com.salesforce.ide.nature.default"/>
-           <enablement>
-              <or>
+                <adapt type="org.eclipse.core.resources.IProject">
                   <instanceof value="org.eclipse.core.resources.IProject"/>
-                  <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-              </or>
-              <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isPrjOrNonRefPkgFolders"/>
-           </enablement>
-           <action
-                 class="com.salesforce.ide.ui.actions.OpenProjectContentPropertiesAction"
-                 enablesFor="1"
-                 helpContextId="com.salesforce.ide.documentation.openProjectContentPropertiesAction"
-                 id="com.salesforce.ide.ui.actions.openProjectContentProperties"
-                 label="&amp;Add/Remove Metadata Components..."
-                 menubarPath="com.salesforce.ide.ui.menu.tools/propertyGroup"
-                 tooltip="%tooltip.17">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-        
-        
-        
-        
-        <objectContribution
-              adaptable="true"
-              id="com.salesforce.ide.ui.menu.wsdl2apex"
-              objectClass="org.eclipse.core.resources.IProject">
-           <menu
-                 id="com.salesforce.ide.ui.menu.tools"
-                 label="Force&amp;.com"
-                 path="additions">
-              <separator
-                    name="group4">
-              </separator>
-           </menu>
-           <action
-                 class="com.salesforce.ide.ui.actions.OpenProjectContentPropertiesAction"
-                 enablesFor="1"
-                 id="com.salesforce.ide.ui.actions.openProjectContentProperties"
-                 label="Create Apex class from Wsdl"
-                 menubarPath="com.salesforce.ide.ui.menu.tools/group4">
-           </action>
-           <filter
-                 name="projectNature"
-                 value="com.salesforce.ide.nature.default">
-           </filter>
-        </objectContribution>
-        
-    </extension>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.removeNature" helpContextId="com.salesforce.ide.documentation.removeNatureAction" id="removeNature" label="Remove Force.com Nature" mnemonic="v" style="push" tooltip="%tooltip.2">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <adapt type="org.eclipse.core.resources.IResource">
+                  <instanceof value="org.eclipse.core.resources.IProject"/>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.addOnlineNature" helpContextId="com.salesforce.ide.documentation.addOnlineNatureAction" id="workOnline" label="Work Online" mnemonic="k" style="push" tooltip="%tooltip.3">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <reference definitionId="com.salesforce.ide.projectOffline"/>
+                <adapt type="org.eclipse.core.resources.IProject">
+                  <instanceof value="org.eclipse.core.resources.IProject"/>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.removeOnlineNature" helpContextId="com.salesforce.ide.documentation.removeOnlineNatureAction" id="workOffline" label="Work Offline" mnemonic="f" style="push" tooltip="%tooltip.1">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <reference definitionId="com.salesforce.ide.projectOnline"/>
+                <adapt type="org.eclipse.core.resources.IProject">
+                  <instanceof value="org.eclipse.core.resources.IProject"/>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <separator name="group1" visible="true"/>
+        <command commandId="com.salesforce.ide.ui.command.executeAnonymous" helpContextId="com.salesforce.ide.documentation.executeAnonymousAction" id="executeAnonymous" label="Execute Anonymous..." mnemonic="E" style="push" tooltip="%tooltip.15">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <reference definitionId="com.salesforce.ide.projectOnline"/>
+                <adapt type="org.eclipse.core.resources.IProject">
+                  <instanceof value="org.eclipse.core.resources.IProject"/>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <separator name="tools" visible="true"/>
+        <command commandId="com.salesforce.ide.ui.command.refreshResource" helpContextId="com.salesforce.ide.documentation.refreshResource" id="refreshResource" label="Refresh from Server" mnemonic="R" style="push" tooltip="%tooltip.5">
+          <visibleWhen checkEnabled="false">
+            <iterate ifEmpty="false" operator="and">
+              <reference definitionId="com.salesforce.ide.projectFile"/>
+              <adapt type="org.eclipse.core.resources.IResource">
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
+              </adapt>
+            </iterate>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.saveToServer" helpContextId="com.salesforce.ide.documentation.saveToServerAction" id="saveToServer" label="Save to Server" mnemonic="S" style="push" tooltip="%tooltip.4">
+          <visibleWhen checkEnabled="false">
+            <iterate ifEmpty="false" operator="and">
+              <reference definitionId="com.salesforce.ide.projectFile"/>
+              <adapt type="org.eclipse.core.resources.IResource">
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+              </adapt>
+            </iterate>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.synchronize" helpContextId="com.salesforce.ide.documentation.syncAction" id="synchronize" label="Synchronize with Server" mnemonic="y" style="push" tooltip="%tooltip.6">
+          <visibleWhen checkEnabled="false">
+            <iterate ifEmpty="false" operator="and">
+              <reference definitionId="com.salesforce.ide.projectFile"/>
+              <adapt type="org.eclipse.core.resources.IResource">
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+              </adapt>
+            </iterate>
+          </visibleWhen>
+        </command>
+        <separator name="group2" visible="true"/>
+        <separator name="group3" visible="true"/>
+        <separator name="group4" visible="true"/>
+        <command commandId="com.salesforce.ide.ui.command.runTests" helpContextId="com.salesforce.ide.documentation.runTests" id="runTests" label="Run Tests" mnemonic="T" style="push" tooltip="%tooltip.13">
+          <visibleWhen checkEnabled="false">
+            <iterate ifEmpty="false" operator="and">
+              <reference definitionId="com.salesforce.ide.projectFile"/>
+              <adapt type="org.eclipse.core.resources.IResource">
+                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRunTestEnabledResources"/>
+              </adapt>
+            </iterate>
+          </visibleWhen>
+        </command>
+        <separator name="group5" visible="true"/>
+        <command commandId="com.salesforce.ide.ui.command.showInBrowser" helpContextId="com.salesforce.ide.documentation.showInBrowser" id="showInBrowser" label="Show in Salesforce Web" mnemonic="w" style="push" tooltip="%tooltip.12">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <adapt type="org.eclipse.core.resources.IResource">
+                  <not>
+                    <or>
+                      <test property="org.eclipse.core.resources.name" value="%SchemaBrowser.fullName"/>
+                      <test property="org.eclipse.core.resources.name" value="%PackageManifest.fileName"/>
+                      <test property="org.eclipse.core.resources.name" value="%Layout.defaultFolder"/>
+                      <test property="org.eclipse.core.resources.extension" value="%Layout.fileExtension"/>
+                      <test property="org.eclipse.core.resources.extension" value="%CustomObjectTranslation.fileExtension"/>
+                      <test property="org.eclipse.core.resources.extension" value="%Translations.fileExtension"/>
+                    </or>
+                  </not>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.openProjectProperties" helpContextId="com.salesforce.ide.documentation.openProjectPropertiesAction" id="openProjectProperties" label="Project Properties" mnemonic="P" style="push" tooltip="%tooltip.16">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <adapt type="org.eclipse.core.resources.IProject">
+                  <instanceof value="org.eclipse.core.resources.IProject"/>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <command commandId="com.salesforce.ide.ui.command.openProjectContentProperties" helpContextId="com.salesforce.ide.documentation.openProjectContentPropertiesAction" id="openProjectContentProperties" label="Add/Remove Metadata Components..." mnemonic="A" style="push" tooltip="%tooltip.17">
+          <visibleWhen checkEnabled="false">
+            <and>
+              <count value="1"/>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <adapt type="org.eclipse.core.resources.IResource">
+                  <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isPrjOrNonRefPkgFolders"/>
+                </adapt>
+              </iterate>
+            </and>
+          </visibleWhen>
+        </command>
+        <separator name="group6" visible="true"/>
+      </menu>
+    </menuContribution>org.eclipse.ui.views.showView.viewId
+    <menuContribution locationURI="menu:help?before=additions">
+      <command commandId="org.eclipse.ui.views.showView" id="openLogView" label="%action.label.OpenLogView">
+        <parameter name="org.eclipse.ui.views.showView.viewId" value="com.salesforce.ide.ui.view.log"/>
+      </command>
+    </menuContribution>
+    <menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+      <toolbar id="com.salesforce.ide.ui.toolbar.main">
+        <command commandId="org.eclipse.ui.browser.openBrowser" id="openBrowserToSalesforce0" tooltip="%action.label.OpenSalesforce" icon="icons/icon_scube.gif">
+          <parameter name="url" value="http://www.salesforce.com/"/>
+          <parameter name="browserId" value="Salesforce"/>
+          <parameter name="name" value="Salesforce.com"/>
+        </command>
+        <command commandId="org.eclipse.ui.browser.openBrowser" id="openBrowserDeveloper0" tooltip="%action.label.OpenSalesforceDev" icon="icons/appExDevIco16.png">
+          <parameter name="url" value="http://www.salesforce.com/developer/"/>
+          <parameter name="browserId" value="Developer Force"/>
+          <parameter name="name" value="Developer Force"/>
+        </command>
+        <command commandId="com.salesforce.ide.ui.commands.openBrowserToSalesforceCommand" id="openBrowserToSalesforce" tooltip="%action.label.OpenSalesforce" icon="icons/icon_scube.gif">
+          <parameter name="url" value="http://www.salesforce.com/"/>
+        </command>
+        <command commandId="com.salesforce.ide.ui.commands.openBrowserDeveloperCommand" id="openBrowserDeveloper" tooltip="%action.label.OpenSalesforceDev" icon="icons/appExDevIco16.png">
+          <parameter name="url" value="http://www.salesforce.com/developer/"/>
+        </command>
+      </toolbar>
+    </menuContribution>
+  </extension>
 
 
     <!--   V I E W S   -->
@@ -631,41 +405,6 @@
             class="com.salesforce.ide.ui.views.log.LogView"
             allowMultiple="false"
             name="%view.name.LogView" />
-    </extension>
-
-
-    <!--   A C T I O N   S E T S  -->
-    <extension point="org.eclipse.ui.actionSets">
-        <actionSet
-            id="com.salesforce.ide.ui.actionset"
-            label="%action.label.OpenSalesforce">
-            <action
-                id="com.salesforce.ide.ui.action.openToDeveloper"
-                class="com.salesforce.ide.core.internal.factories.ExtensionFactory:openBrowserDeveloperAction"
-                label="%action.label.OpenSalesforceDev"
-                tooltip="%action.label.OpenSalesforceDev"
-                icon="icons/appExDevIco16.png"
-                toolbarPath="force"/>
-            <action
-                id="com.salesforce.ide.ui.action.openToSalesforce"
-                class="com.salesforce.ide.core.internal.factories.ExtensionFactory:openBrowserToSalesforceAction"
-                label="%action.label.OpenSalesforce"
-                tooltip="%action.label.OpenSalesforce"
-                icon="icons/icon_scube.gif"
-                toolbarPath="force"/>
-        </actionSet>
-        <actionSet
-            id="com.salesforce.ide.ui.actionset.help"
-            label="%action.label.OpenLogView">
-             <action
-                 class="com.salesforce.ide.ui.actions.OpenLogViewAction"
-                 id="com.salesforce.ide.ui.action.openLogView"
-                 label="%action.label.OpenLogView"
-                 menubarPath="help/forceIDE"
-                 icon="icons/appExDevIco16.png"
-                 tooltip="%action.label.OpenLogView"
-                 style="push"/>
-        </actionSet>
     </extension>
 
 
@@ -790,5 +529,250 @@
     <extension point="org.eclipse.ui.startup">
        <startup class="com.salesforce.ide.ui.preferences.ForceDefaultEncodingPreference"/>
     </extension>
+
+  <extension point="org.eclipse.ui.commands">
+    <category id="com.salesforce.ide.ui.commands.category" name="Force.com"/>
+    <command categoryId="com.salesforce.ide.ui.commands.category" id="com.salesforce.ide.ui.commands.openBrowserToSalesforceCommand" name="%action.label.OpenSalesforce">
+      <commandParameter id="url" name="URL" optional="false"/>
+    </command>
+    <command categoryId="com.salesforce.ide.ui.commands.category" id="com.salesforce.ide.ui.commands.openBrowserDeveloperCommand" name="%action.label.OpenSalesforceDev">
+      <commandParameter id="url" name="URL" optional="false"/>
+    </command>
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.0"
+      helpContextId="com.salesforce.ide.documentation.addNatureAction"
+      id="com.salesforce.ide.ui.command.addNature"
+      name="Add Force.com Nature"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.2"
+      helpContextId="com.salesforce.ide.documentation.removeNatureAction"
+      id="com.salesforce.ide.ui.command.removeNature"
+      name="Remove Force.com Nature"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.3"
+      helpContextId="com.salesforce.ide.documentation.addOnlineNatureAction"
+      id="com.salesforce.ide.ui.command.addOnlineNature"
+      name="Work Online"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.1"
+      helpContextId="com.salesforce.ide.documentation.removeOnlineNatureAction"
+      id="com.salesforce.ide.ui.command.removeOnlineNature"
+      name="Work Online"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.15"
+      helpContextId="com.salesforce.ide.documentation.executeAnonymousAction"
+      id="com.salesforce.ide.ui.command.executeAnonymous"
+      name="Execute Anonymous"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.5"
+      helpContextId="com.salesforce.ide.documentation.refreshResource"
+      id="com.salesforce.ide.ui.command.refreshResource"
+      name="Refresh from Server"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.4"
+      helpContextId="com.salesforce.ide.documentation.saveToServerAction"
+      id="com.salesforce.ide.ui.command.saveToServer"
+      name="Save to Server"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.6"
+      helpContextId="com.salesforce.ide.documentation.syncAction"
+      id="com.salesforce.ide.ui.command.synchronize"
+      name="Synchronize with Server"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.13"
+      helpContextId="com.salesforce.ide.documentation.runTests"
+      id="com.salesforce.ide.ui.command.runTests"
+      name="Run Tests"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.16"
+      helpContextId="com.salesforce.ide.documentation.openProjectPropertiesAction"
+      id="com.salesforce.ide.ui.command.openProjectProperties"
+      name="Project Properties"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.17"
+      helpContextId="com.salesforce.ide.documentation.openProjectContentPropertiesAction"
+      id="com.salesforce.ide.ui.command.openProjectContentProperties"
+      name="Add/Remove Metadata Components"
+      />
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.12"
+      helpContextId="com.salesforce.ide.documentation.showInBrowser"
+      id="com.salesforce.ide.ui.command.showInBrowser"
+      name="Show in Salesforce Web"
+      />
+  </extension>
+
+  <extension point="org.eclipse.ui.handlers">
+    <handler class="com.salesforce.ide.ui.handlers.OpenBrowserToExternalSiteHandler" commandId="com.salesforce.ide.ui.commands.openBrowserToSalesforceCommand"/>
+    <handler class="com.salesforce.ide.ui.handlers.OpenBrowserToExternalSiteHandler" commandId="com.salesforce.ide.ui.commands.openBrowserDeveloperCommand"/>
+    <handler class="com.salesforce.ide.ui.handlers.AddNatureHandler" commandId="com.salesforce.ide.ui.command.addNature">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.RemoveNatureHandler" commandId="com.salesforce.ide.ui.command.removeNature">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.AddOnlineNatureHandler" commandId="com.salesforce.ide.ui.command.addOnlineNature">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.RemoveOnlineNatureHandler" commandId="com.salesforce.ide.ui.command.removeOnlineNature">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.ExecuteAnonymousHandler" commandId="com.salesforce.ide.ui.command.executeAnonymous">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.RefreshResourceHandler" commandId="com.salesforce.ide.ui.command.refreshResource">
+      <enabledWhen>
+        <iterate ifEmpty="false" operator="and">
+          <adapt type="org.eclipse.core.resources.IResource">
+            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
+          </adapt>
+          <reference definitionId="com.salesforce.ide.projectActive"/>
+        </iterate>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.SaveToServerHandler" commandId="com.salesforce.ide.ui.command.saveToServer">
+      <enabledWhen>
+        <iterate ifEmpty="false" operator="and">
+          <adapt type="org.eclipse.core.resources.IResource">
+            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+          </adapt>
+          <reference definitionId="com.salesforce.ide.projectActive"/>
+        </iterate>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.SynchronizeHandler" commandId="com.salesforce.ide.ui.command.synchronize">
+      <enabledWhen>
+        <iterate ifEmpty="false" operator="and">
+          <adapt type="org.eclipse.core.resources.IResource">
+            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+          </adapt>
+          <reference definitionId="com.salesforce.ide.projectActive"/>
+        </iterate>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.RunTestsHandler" commandId="com.salesforce.ide.ui.command.runTests">
+      <enabledWhen>
+        <iterate ifEmpty="false" operator="and">
+          <adapt type="org.eclipse.core.resources.IResource">
+            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRunTestEnabledResources"/>
+          </adapt>
+          <reference definitionId="com.salesforce.ide.projectActive"/>
+        </iterate>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.OpenProjectPropertiesHandler" commandId="com.salesforce.ide.ui.command.openProjectProperties">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectFile"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.OpenProjectContentPropertiesHandler" commandId="com.salesforce.ide.ui.command.openProjectContentProperties">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IProject">
+              <instanceof value="org.eclipse.core.resources.IProject"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectFile"/>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+    <handler class="com.salesforce.ide.ui.handlers.ShowInBrowserHandler" commandId="com.salesforce.ide.ui.command.showInBrowser">
+      <enabledWhen>
+        <and>
+          <count value="1"/>
+          <iterate ifEmpty="false" operator="and">
+            <adapt type="org.eclipse.core.resources.IResource">
+              <instanceof value="org.eclipse.core.resources.IResource"/>
+            </adapt>
+            <reference definitionId="com.salesforce.ide.projectFile"/>
+          </iterate>
+        </and>
+      </enabledWhen>
+    </handler>
+  </extension>
+
 </plugin>
 

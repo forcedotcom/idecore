@@ -73,7 +73,7 @@ public class ExecuteAnonymousDialog extends TitleAreaDialog {
         Control contents = super.createContents(parent);
 
         setTitleImage(ForceImages.get(ForceImages.APEX_WIZARD_IMAGE));
-        setTitle(UIMessages.getString("ExecuteAnonymousAction.title"));
+        setTitle(UIMessages.getString("ExecuteAnonymousDialog.title"));
         setMessage("Execute an anonymous block of Apex to help quickly evaluate code on the fly.");
 
         return contents;
