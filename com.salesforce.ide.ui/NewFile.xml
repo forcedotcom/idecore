@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<!--
+    Force.com IDE Copyright (c) 2008 Salesforce.com
+-->
+
+<plugin>
+  <!--   M E N U S  -->
+  <extension point="org.eclipse.ui.popupMenus">
+    <viewerContribution id="com.salesforce.ide.ui.menu.mergeFields" targetID="org.eclipse.wst.sse.ui.StructuredTextEditor.EditorContext">
+      <menu id="com.salesforce.ide.ui.menu.tools" label="%menu.label" path="additions">
+        <separator name="group0"/>
+      </menu>
+      <action id="com.salesforce.ide.actions.mergeFields" class="com.salesforce.ide.ui.editors.actions.MergeFieldsAction" tooltip="%tooltip.MergeFields" label="%action.label" enablesFor="1" helpContextId="com.salesforce.ide.documentation.mergeFields" menubarPath="com.salesforce.ide.ui.menu.tools/group0"/>
+    </viewerContribution>
+  </extension>
+
+  <!--   E D I T O R S  -->
+  <extension point="org.eclipse.ui.editors">
+    <!-- visual force -->
+    <editor id="com.salesforce.ide.ui.editors.html" class="com.salesforce.ide.ui.editors.visualforce.VisualForceMultiPageEditor" contributorClass="com.salesforce.ide.ui.editors.visualforce.VisualForceEditorContributor" default="true" extensions="scf, scf-meta.xml, page, page-meta.xml, component, component-meta.xml" icon="icons/appExDevIco16.png" name="%editor.name.Scontrol">
+      <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.scontrol"/>
+      <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.page"/>
+      <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.component"/>
+    </editor>
+
+    <!-- apex class/trigger editor -->
+    <editor id="com.salesforce.ide.ui.editors.apex" class="com.salesforce.ide.ui.editors.apex.ApexCodeMultiPageEditor" contributorClass="com.salesforce.ide.ui.editors.apex.ApexActionContributor" default="true" extensions="cls, cls-meta.xml, trigger, trigger-meta.xml" icon="icons/appExDevIco16.png" name="%editor.name.ApexCode">
+      <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.class"/>
+      <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.trigger"/>
+    </editor>
+
+  </extension>
+
+  <extension point="org.eclipse.ui.editors.documentProviders">
+    <provider id="org.eclipse.wst.html.ui.internal.ExternalFileDocumentProvider" class="org.eclipse.ui.editors.text.TextFileDocumentProvider" extensions="scf, page" inputTypes="org.eclipse.eclipse.ui.IFileEditorInput"/>
+  </extension>
+
+  <extension id="apex.document.setup" name="%document.name.Apex" point="org.eclipse.core.filebuffers.documentSetup">
+    <participant extensions="cls, trigger" class="com.salesforce.ide.ui.editors.apex.ApexDocumentSetupParticipant"/>
+  </extension>
+  <extension point="org.eclipse.ui.editors.documentProviders">
+    <provider class="com.salesforce.ide.ui.editors.apex.ApexDocumentProvider" extensions="cls" id="com.salesforce.ide.ui.editors.ApexDocumentProvider" inputTypes="org.eclipse.ui.IFileEditorInput"/>
+  </extension>
+
+  <!--   P R E F E N C E S  -->
+  <extension point="org.eclipse.core.runtime.preferences">
+    <initializer class="com.salesforce.ide.ui.editors.apex.preferences.PreferenceInitializer"/>
+  </extension>
+
+  <extension point="org.eclipse.ui.preferencePages">
+    <page category="com.salesforce.ide.ui.preferences.GeneralPreferencePage" class="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage" id="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage" name="%page.name"/>
+  </extension>
+
+  <extension point="org.eclipse.wst.sse.ui.sourcevalidation">
+    <validator scope="total" class="com.salesforce.ide.ui.editors.page.PageValidator" id="com.salesforce.ide.ui.editors.page.validator">
+      <contentTypeIdentifier id="com.salesforce.ide.core.contentType.page">
+        <partitionType id="org.eclipse.wst.html.HTML_DEFAULT"/>
+      </contentTypeIdentifier>
+    </validator>
+  </extension>
+
+</plugin>
