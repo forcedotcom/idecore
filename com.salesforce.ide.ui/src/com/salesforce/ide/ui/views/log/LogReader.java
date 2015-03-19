@@ -14,8 +14,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,7 @@ import com.salesforce.ide.core.internal.utils.QuietCloseable;
  */
 public class LogReader {
 
+    private static final String EOL = "\n";
     public static final long MAX_FILE_LENGTH = 1024 * 1024;
     private static final int ENTRY_STATE = 0;
     private static final int SUBENTRY_STATE = 1;
@@ -50,8 +49,9 @@ public class LogReader {
             ArrayList<LogEntry> parents = new ArrayList<>();
             LogEntry current = null;
             int writerState = UNKNOWN_STATE;
-            StringWriter swriter = null;
-            PrintWriter writer = null;
+            StringBuilder accumulator = null;
+//            StringWriter swriter = null;
+//            PrintWriter writer = null;
             int state = UNKNOWN_STATE;
 
             try {
@@ -82,23 +82,20 @@ public class LogReader {
                     }
 
                     if (state == TEXT_STATE && found) {
-                        if (writer != null) {
-                            writer.println(line);
+                        if (accumulator != null) {
+                            accumulator.append(line).append(EOL);
                         }
                         continue;
                     }
 
-                    if (writer != null && found) {
-                        setLogData(current, writerState, swriter);
+                    if (accumulator != null && found) {
+                        setLogData(current, writerState, accumulator);
                         writerState = UNKNOWN_STATE;
-                        swriter = null;
-                        writer.close();
-                        writer = null;
+                        accumulator = null;
                     }
 
                     if (state == STACK_STATE && found) {
-                        swriter = new StringWriter();
-                        writer = new PrintWriter(swriter, true);
+                        accumulator = new StringBuilder();
                         writerState = STACK_STATE;
                     } else if (state == ENTRY_STATE && found) {
                         LogEntry entry = new LogEntry();
@@ -107,8 +104,7 @@ public class LogReader {
                         current = entry;
                         entries.add(entry);
                     } else if (state == MESSAGE_STATE && found) {
-                        swriter = new StringWriter();
-                        writer = new PrintWriter(swriter, true);
+                        accumulator = new StringBuilder();
                         String message = Constants.EMPTY_STRING;
                         if (line.length() > 8) {
                             message = line.substring(9).trim();
@@ -122,25 +118,24 @@ public class LogReader {
                     }
                 }
 
-                if (swriter != null && current != null && writerState == STACK_STATE && found) {
+                if (accumulator != null && current != null && writerState == STACK_STATE && found) {
                     writerState = UNKNOWN_STATE;
-                    current.setStack(swriter.toString());
+                    current.setStack(accumulator.toString());
                 }
             } finally {
-                if (writer != null) {
-                    setLogData(current, writerState, swriter);
-                    writer.close();
+                if (accumulator != null) {
+                    setLogData(current, writerState, accumulator);
                 }
             }
         }
     }
 
-    private static void setLogData(LogEntry current, int writerState, StringWriter swriter) {
+    private static void setLogData(LogEntry current, int writerState, CharSequence swriter) {
         if (writerState == STACK_STATE && current != null) {
             current.setStack(swriter.toString());
         } else if (writerState == MESSAGE_STATE && current != null) {
             StringBuffer sb = new StringBuffer(current.getMessage());
-            sb.append(swriter.toString());
+            sb.append(swriter);
             current.setMessage(sb.toString().trim());
         }
     }
