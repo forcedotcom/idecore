@@ -358,16 +358,19 @@
     </menuContribution>
     <menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
       <toolbar id="com.salesforce.ide.ui.toolbar.main">
-        <command commandId="org.eclipse.ui.browser.openBrowser" id="openBrowserToSalesforce0" tooltip="%action.label.OpenSalesforce" icon="icons/icon_scube.gif">
+        <!--
+         | These cause the JVM to crash on Linux if the user specifies the internal browser.
+        <command commandId="org.eclipse.ui.browser.openBrowser" id="openBrowserToSalesforce" tooltip="%action.label.OpenSalesforce" icon="icons/icon_scube.gif">
           <parameter name="url" value="http://www.salesforce.com/"/>
           <parameter name="browserId" value="Salesforce"/>
           <parameter name="name" value="Salesforce.com"/>
         </command>
-        <command commandId="org.eclipse.ui.browser.openBrowser" id="openBrowserDeveloper0" tooltip="%action.label.OpenSalesforceDev" icon="icons/appExDevIco16.png">
+        <command commandId="org.eclipse.ui.browser.openBrowser" id="openBrowserDeveloper" tooltip="%action.label.OpenSalesforceDev" icon="icons/appExDevIco16.png">
           <parameter name="url" value="http://www.salesforce.com/developer/"/>
           <parameter name="browserId" value="Developer Force"/>
           <parameter name="name" value="Developer Force"/>
         </command>
+        -->
         <command commandId="com.salesforce.ide.ui.commands.openBrowserToSalesforceCommand" id="openBrowserToSalesforce" tooltip="%action.label.OpenSalesforce" icon="icons/icon_scube.gif">
           <parameter name="url" value="http://www.salesforce.com/"/>
         </command>
