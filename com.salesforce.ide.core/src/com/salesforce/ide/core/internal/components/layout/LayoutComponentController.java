@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.components.ComponentController;
 import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
@@ -32,6 +31,7 @@ import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.metadata.RetrieveResultExt;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
+import com.salesforce.ide.core.services.ServiceException;
 import com.sforce.soap.partner.wsc.DescribeSObjectResult;
 
 public class LayoutComponentController extends ComponentController {
@@ -44,10 +44,11 @@ public class LayoutComponentController extends ComponentController {
     /**
      * For layout, before save to f/s and deploy to server. We retrieve default layout from target object(standard and
      * custome objects) and use it's content as template for new-created layout.
+     * @throws InvocationTargetException 
      */
     @Override
     protected void preSaveProcess(ComponentModel layoutWizardModel, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, IOException {
+            throws InterruptedException, InvocationTargetException {
         Component layout = layoutWizardModel.getComponent();
         Component defaultLayout = getDefaultLayout(layout);
         defaultLayout.setPackageName(layout.getPackageName());
@@ -63,15 +64,15 @@ public class LayoutComponentController extends ComponentController {
             monitorWorkCheck(monitor, "Retrieving default layout '" + defaultLayout.getName()
                     + "' to project as template...");
             retrieveResultHandler = ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrieveSelective(projectPackageList, monitor);
-        } catch (Exception e) {
+
+            monitor.worked(1);
+
+            projectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
+                    .getFileMetadataHandler(), monitor);
+        } catch (RuntimeException | ForceConnectionException | ForceRemoteException | ServiceException | IOException e) {
             logger.error("Exception happened when trying to retrieve default layout component", e);
             throw new InvocationTargetException(e);
         }
-
-        monitor.worked(1);
-
-        projectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                .getFileMetadataHandler(), monitor);
 
         String body = projectPackageList.getComponentByFilePath(defaultLayout.getMetadataFilePath()).getBody();
         if (body != null) {
@@ -83,11 +84,7 @@ public class LayoutComponentController extends ComponentController {
 
     private Component getDefaultLayout(Component layout) throws InvocationTargetException {
         Component defaulLayout = null;
-        try {
-            defaulLayout = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(Constants.LAYOUT);
-        } catch (FactoryException e) {
-            throw new InvocationTargetException(e);
-        }
+        defaulLayout = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(Constants.LAYOUT);
         String objectAPIName = layout.getName().substring(0, layout.getName().indexOf("-"));
         // need to construct the object label because that's used in the default layout name.
         String objectLabel = null;

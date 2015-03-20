@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.context.IContainerDelegate;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 /**
  * Proxy class between Eclipse's extension point manager and beans within the force's container.
@@ -46,6 +45,7 @@ public class ExtensionFactory implements IExecutableExtension, IExecutableExtens
     private Object bean = null;
     private String beanRef = null;
 
+    @Override
     public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
             throws CoreException {
         beanRef = (String) data;
@@ -66,6 +66,7 @@ public class ExtensionFactory implements IExecutableExtension, IExecutableExtens
         }
     }
 
+    @Override
     public Object create() throws CoreException {
 
         if (bean == null) {
@@ -81,7 +82,7 @@ public class ExtensionFactory implements IExecutableExtension, IExecutableExtens
         return bean;
     }
 
-    protected IContainerDelegate getContainerInstance() throws ForceProjectException {
+    protected IContainerDelegate getContainerInstance() {
         return ContainerDelegate.getInstance();
     }
 

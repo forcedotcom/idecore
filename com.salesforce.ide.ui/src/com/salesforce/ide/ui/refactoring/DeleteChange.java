@@ -27,7 +27,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ProjectPackageList;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.Messages;
 
 /**
@@ -42,7 +41,7 @@ public class DeleteChange extends BaseChange {
     boolean remoteDeleteCanceled = false;
 
     // C O N S T R U C T O R
-    public DeleteChange() throws ForceProjectException {
+    public DeleteChange() {
         super();
         this.refactorController = new DeleteRefactorController();
     }

@@ -20,7 +20,8 @@ public class ChangeRefactoringStatusContext extends ResourceRefactoringStatusCon
 	}
 	
 	//   M E T H O D S
-	public ChangeRefactorModel getRefactorModel() {
+	@Override
+    public ChangeRefactorModel getRefactorModel() {
 		return (ChangeRefactorModel) refactorModel;
 	}
 

@@ -173,7 +173,7 @@ public class ForceIdeCorePlugin extends AbstractUIPlugin {
     }
 
     // initialize application container
-    private void initApplicationContext() {
+    private static void initApplicationContext() {
         if (logger != null && logger.isDebugEnabled()) {
             stopWatch.start("ForceIdeCorePlugin.initApplicationContext");
         }

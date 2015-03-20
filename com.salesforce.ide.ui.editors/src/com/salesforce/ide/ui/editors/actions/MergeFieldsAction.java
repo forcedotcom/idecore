@@ -10,14 +10,11 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 
-import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
 import com.salesforce.ide.ui.actions.BaseAction;
 import com.salesforce.ide.ui.editors.visualforce.SnippetDialog;
@@ -26,9 +23,7 @@ import com.salesforce.ide.ui.editors.visualforce.VisualForceMultiPageEditor;
 
 public class MergeFieldsAction extends BaseAction implements IEditorActionDelegate {
 
-    private static final Logger logger = Logger.getLogger(MergeFieldsAction.class);
-
-    public MergeFieldsAction() throws ForceProjectException {
+    public MergeFieldsAction() {
         super();
     }
 
@@ -40,13 +35,7 @@ public class MergeFieldsAction extends BaseAction implements IEditorActionDelega
         VisualForceMultiPageEditor multiPageEditor = getSControlMultiPageEditor();
         SnippetDialog snippetDialog =
                 new SnippetDialog(multiPageEditor.getTextEditor().getSite().getShell(), multiPageEditor.getTextEditor());
-        try {
-            snippetDialog.setSnippetDialogController(new SnippetDialogController());
-        } catch (ForceProjectException e) {
-            logger.warn("Unable to get snippet controller", e);
-            Utils.openError("Action Error", "Unable to open Merge Field: " + e.getMessage());
-            return;
-        }
+        snippetDialog.setSnippetDialogController(new SnippetDialogController());
         IFile file = multiPageEditor.getEditorInputFile();
         snippetDialog.setProject(file.getProject());
         snippetDialog.open();

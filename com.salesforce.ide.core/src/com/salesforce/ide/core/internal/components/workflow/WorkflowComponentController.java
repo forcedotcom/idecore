@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.components.ComponentController;
+import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ComponentList;
@@ -138,5 +139,12 @@ public class WorkflowComponentController extends ComponentController {
         if (Utils.isNotEmpty(resources)) {
             getComponent().setFileResource((IFile) resources.get(0));
         }
+    }
+
+    @Override
+    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException {
+        // TODO Auto-generated method stub
+        
     }
 }

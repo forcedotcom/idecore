@@ -15,5 +15,4 @@ import com.salesforce.ide.core.internal.utils.Constants;
 public interface SchemaConstants {
 	String PLUGIN_NAME = "Force.com IDE Editors";
     String PLUGIN_PREFIX = Constants.PLUGIN_PREFIX + ".schemabrowser";
-    String RESOURCE_BUNDLE_ID = PLUGIN_PREFIX + ".utils.messages";
 }

@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
@@ -36,6 +35,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.QualifiedNames;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProjectException;
@@ -264,7 +264,7 @@ public abstract class ComponentResource implements IComponent {
     protected abstract void saveAdditionalFileProperties(IFile file);
 
     public IFile saveToFile(IProject project, ProjectPackage projectPackage, IProgressMonitor monitor)
-            throws InvocationTargetException, CoreException, IOException, InterruptedException, ForceProjectException {
+            throws CoreException, InterruptedException, ForceProjectException {
         monitor.subTask(getFileName());
         setProjectPackageProperties(projectPackage);
         resource = createFile(project, monitor);
@@ -281,8 +281,7 @@ public abstract class ComponentResource implements IComponent {
         }
     }
 
-    public IFile saveToFile(boolean saveProperties, IProgressMonitor monitor) throws InvocationTargetException,
-            CoreException, InterruptedException, ForceProjectException {
+    public IFile saveToFile(boolean saveProperties, IProgressMonitor monitor) throws CoreException, InterruptedException, ForceProjectException {
         monitorCheck(monitor);
 
         if (resource == null) {
@@ -349,7 +348,7 @@ public abstract class ComponentResource implements IComponent {
      * @param file
      * @throws CoreException
      */
-    private void removeCaseSensitiveDupFile(IFile file) throws CoreException {
+    private static void removeCaseSensitiveDupFile(IFile file) throws CoreException {
         Resource fileResource = (Resource) file;
         // now look for a matching case variant in the tree
         IResource variant = fileResource.findExistingResourceVariant(fileResource.getFullPath());
@@ -642,7 +641,7 @@ public abstract class ComponentResource implements IComponent {
 
     }
 
-    protected final long generateChecksum(String str) {
+    protected final static long generateChecksum(String str) {
         long checksumValue = 0;
         if (Utils.isNotEmpty(str)) {
             CRC32 checksum = new CRC32();
@@ -656,7 +655,7 @@ public abstract class ComponentResource implements IComponent {
         return checksumValue;
     }
 
-    protected final long generateChecksum(IFile file) {
+    protected final static long generateChecksum(IFile file) {
         long checksumValue = INIT_CHECKSUM;
         if (file != null) {
             try {
@@ -670,7 +669,7 @@ public abstract class ComponentResource implements IComponent {
         return checksumValue;
     }
 
-    protected final long generateChecksum(byte[] file) {
+    protected final static long generateChecksum(byte[] file) {
         long checksumValue = 0;
         if (Utils.isNotEmpty(file)) {
             CRC32 checksum = new CRC32();
@@ -680,7 +679,7 @@ public abstract class ComponentResource implements IComponent {
         return checksumValue;
     }
 
-    protected final byte[] compress(byte[] input) {
+    protected final static byte[] compress(byte[] input) {
         // Create the compressor with highest level of compression
         Deflater compressor = new Deflater();
         compressor.setLevel(Deflater.BEST_COMPRESSION);
@@ -693,20 +692,19 @@ public abstract class ComponentResource implements IComponent {
         // You cannot use an array that's the same size as the orginal because
         // there is no guarantee that the compressed data will be smaller than
         // the uncompressed data.
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
+        try (final QuietCloseable<ByteArrayOutputStream> c = QuietCloseable.make(new ByteArrayOutputStream(input.length))) {
+            final ByteArrayOutputStream bos = c.get();
 
-        // Compress the data
-        byte[] buf = new byte[1024];
-        while (!compressor.finished()) {
-            int count = compressor.deflate(buf);
-            bos.write(buf, 0, count);
+            // Compress the data
+            byte[] buf = new byte[1024];
+            while (!compressor.finished()) {
+                int count = compressor.deflate(buf);
+                bos.write(buf, 0, count);
+            }
+
+            // Get the compressed data
+            return bos.toByteArray();
         }
-        try {
-            bos.close();
-        } catch (IOException e) {}
-
-        // Get the compressed data
-        return bos.toByteArray();
     }
 
     protected void monitorCheck(IProgressMonitor monitor) throws InterruptedException {

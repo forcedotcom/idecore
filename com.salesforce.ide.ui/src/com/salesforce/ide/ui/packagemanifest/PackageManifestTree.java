@@ -57,11 +57,9 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.PackageManifestDocumentUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.ui.internal.ForceImages;
@@ -244,7 +242,7 @@ public class PackageManifestTree extends FilteredTree {
         return null;
     }
 
-    private String getComponentName(PackageTreeNode packageTreeNode) {
+    private static String getComponentName(PackageTreeNode packageTreeNode) {
         if (packageTreeNode instanceof ComponentNode) {
 
             ComponentTypeNode componentTypeNode = getComponentTypeNode(packageTreeNode);
@@ -350,15 +348,15 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     // C O N S T R U C T O R S
-    public PackageManifestTree(Composite parent, int treeStyle) throws ForceProjectException {
+    public PackageManifestTree(Composite parent, int treeStyle) {
     	this(parent, treeStyle, new PackageManifestController());
     }
-    public PackageManifestTree(Composite parent, int treeStyle, PackageManifestController controller) throws ForceProjectException {
-        super(parent, treeStyle, new ManifestTreeFilter());
+    public PackageManifestTree(Composite parent, int treeStyle, PackageManifestController controller) {
+        super(parent, treeStyle, new ManifestTreeFilter(), false);
         this.controller = controller;
 
-        profileObjectStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
-        filterStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+        profileObjectStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
+        filterStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
 
         checkFilter = new HideNonCheckedFilter();
         createMultiStatus();
@@ -447,6 +445,7 @@ public class PackageManifestTree extends FilteredTree {
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         treeViewer.getControl().setLayoutData(data);
         treeViewer.getControl().addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 refreshJob.cancel();
             }
@@ -540,6 +539,7 @@ public class PackageManifestTree extends FilteredTree {
         });
 
         getTreeViewer().addCheckStateListener(new ICheckStateListener() {
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 PackageTreeNode node = (PackageTreeNode) event.getElement();
                 handleItemSelection(node);
@@ -685,14 +685,17 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     protected class ManifestContentProvider implements ITreeContentProvider {
+        @Override
         public Object[] getElements(Object inputElement) {
             return controller.getEnabledCompTypeTreeNodes();
         }
 
+        @Override
         public void dispose() {
 
         }
 
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
         }
@@ -700,6 +703,7 @@ public class PackageManifestTree extends FilteredTree {
         // TODO the commented code below was for previous implementation which
         // lazily called metadata api
         // this may need to be brought back for large orgs...
+        @Override
         public Object[] getChildren(Object parentElement) {
             if (parentElement instanceof ComponentTypeNode) {
                 ComponentTypeNode node = (ComponentTypeNode) parentElement;
@@ -730,6 +734,7 @@ public class PackageManifestTree extends FilteredTree {
             return new Object[0];
         }
 
+        @Override
         public Object getParent(Object element) {
             if (element instanceof PackageTreeNode) {
                 return ((PackageTreeNode) element).getParent();
@@ -738,6 +743,7 @@ public class PackageManifestTree extends FilteredTree {
             return null;
         }
 
+        @Override
         public boolean hasChildren(Object element) {
             if (element instanceof PackageTreeNode) {
                 PackageTreeNode node = (PackageTreeNode) element;
@@ -753,6 +759,7 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     protected class ManifestLabelProvider extends LabelProvider implements ITableLabelProvider {
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             if (columnIndex == 0) {
                 if (element instanceof PackageTreeNode) {
@@ -763,6 +770,7 @@ public class PackageManifestTree extends FilteredTree {
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             switch (columnIndex) {
             case 0:
@@ -789,7 +797,7 @@ public class PackageManifestTree extends FilteredTree {
         }
     }
 
-    private ComponentTypeNode getComponentTypeNode(TreeNode node) {
+    private static ComponentTypeNode getComponentTypeNode(TreeNode node) {
         while (!(node instanceof ComponentTypeNode)) {
             node = node.getParent();
         }
@@ -1163,31 +1171,31 @@ public class PackageManifestTree extends FilteredTree {
         }
     }
 
-    private boolean isWildCardSupported(TreeNode node) {
+    private static boolean isWildCardSupported(TreeNode node) {
         ComponentTypeNode comp = getComponentTypeNode(node);
         return comp.getComponent().isWildCardSupported();
     }
 
-    private boolean isWildCardSelected(PackageTreeNode node) {
+    private static boolean isWildCardSelected(PackageTreeNode node) {
         if (isWildCardSupported(node)) {
             return getComponentTypeNode(node).isWildcardSelected();
         }
         return false;
     }
 
-    private boolean isUnChecked(PackageTreeNode node) {
+    private static boolean isUnChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isUnChecked(node.getState());
     }
 
-    private boolean isBlackChecked(PackageTreeNode node) {
+    private static boolean isBlackChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isBlackChecked(node.getState());
     }
 
-    private boolean isGrayChecked(PackageTreeNode node) {
+    private static boolean isGrayChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isGrayChecked(node.getState());
     }
 
-    private boolean isSchroedingerChecked(PackageTreeNode node) {
+    private static boolean isSchroedingerChecked(PackageTreeNode node) {
         return MultiCheckboxButton.isSchroedinger(node.getState());
     }
 
@@ -1590,15 +1598,7 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     private boolean validateTypes() {
-        PackageTreeNode profileNode = null;
-
-        try {
-            profileNode =
-                    controller.getNode(controller.getPathForComponentType(Constants.PROFILE) + Constants.FOWARD_SLASH);
-        } catch (FactoryException e) {
-            logger.warn("Profile node cannot be found", e); //$NON-NLS-1$
-        }
-
+        PackageTreeNode profileNode = controller.getNode(controller.getPathForComponentType(Constants.PROFILE) + Constants.FOWARD_SLASH);
         PackageTreeNode objectNode = controller.getNode(Constants.STANDARD_OBJECT + Constants.FOWARD_SLASH);
         PackageTreeNode customNode = controller.getNode(Constants.CUSTOM_OBJECT + Constants.FOWARD_SLASH);
 
@@ -1607,7 +1607,7 @@ public class PackageManifestTree extends FilteredTree {
                 if (!isUnChecked(objectNode)) {
                     if (!profileObjectStatus.getMessage().equals(Messages.PackageManifestTree_checkWarning_text)) {
                         profileObjectStatus =
-                                new Status(Status.WARNING, getClass().getName(), Status.WARNING,
+                                new Status(IStatus.WARNING, getClass().getName(), IStatus.WARNING,
                                         Messages.PackageManifestTree_checkWarning_text, null);
                         return true;
                     }
@@ -1620,7 +1620,7 @@ public class PackageManifestTree extends FilteredTree {
                 if (!isUnChecked(customNode)) {
                     if (!profileObjectStatus.getMessage().equals(Messages.PackageManifestTree_checkWarning_text)) {
                         profileObjectStatus =
-                                new Status(Status.WARNING, getClass().getName(), Status.WARNING,
+                                new Status(IStatus.WARNING, getClass().getName(), IStatus.WARNING,
                                         Messages.PackageManifestTree_checkWarning_text, null);
                         return true;
                     }
@@ -1631,7 +1631,7 @@ public class PackageManifestTree extends FilteredTree {
         }
 
         if (!Utils.isEmpty(profileObjectStatus.getMessage())) {
-            profileObjectStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+            profileObjectStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
             return true;
         }
 
@@ -1647,7 +1647,7 @@ public class PackageManifestTree extends FilteredTree {
         if (isFiltered() && ((PackageManifestTreeViewer) getTreeViewer()).checkedAndFiltered) {
             if (!filterStatus.getMessage().equals(Messages.PackageManifestTree_filterWarning_text)) {
                 filterStatus =
-                        new Status(Status.WARNING, getClass().getName(), Status.WARNING,
+                        new Status(IStatus.WARNING, getClass().getName(), IStatus.WARNING,
                                 Messages.PackageManifestTree_filterWarning_text, null);
                 return true;
             }
@@ -1656,7 +1656,7 @@ public class PackageManifestTree extends FilteredTree {
         }
 
         if (!Utils.isEmpty(filterStatus.getMessage())) {
-            filterStatus = new Status(Status.OK, getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+            filterStatus = new Status(IStatus.OK, getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
             return true;
         }
 
@@ -1668,13 +1668,13 @@ public class PackageManifestTree extends FilteredTree {
     }
 
     private void createMultiStatus() {
-        status = new MultiStatus(getClass().getName(), Status.OK, "", null); //$NON-NLS-1$
+        status = new MultiStatus(getClass().getName(), IStatus.OK, "", null); //$NON-NLS-1$
 
-        if (profileObjectStatus.getSeverity() != Status.OK) {
+        if (profileObjectStatus.getSeverity() != IStatus.OK) {
             status.add(profileObjectStatus);
         }
 
-        if (filterStatus.getSeverity() != Status.OK) {
+        if (filterStatus.getSeverity() != IStatus.OK) {
             status.add(filterStatus);
         }
     }

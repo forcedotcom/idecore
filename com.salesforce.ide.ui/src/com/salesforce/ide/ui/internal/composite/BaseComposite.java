@@ -38,6 +38,7 @@ public abstract class BaseComposite extends Composite {
         
         addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 font.dispose();
             }
@@ -54,6 +55,7 @@ public abstract class BaseComposite extends Composite {
 
     protected void addValidateModifyListener(Text text) {
         text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 validateUserInput();
             }
@@ -62,6 +64,7 @@ public abstract class BaseComposite extends Composite {
 
     protected void addValidateModifyListener(Combo combo) {
         combo.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 validateUserInput();
             }
@@ -70,10 +73,12 @@ public abstract class BaseComposite extends Composite {
 
     protected void addValidateSelectionListener(Button btn) {
         btn.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

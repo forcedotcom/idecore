@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.wsdl;
 
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 
 /**
@@ -19,7 +18,7 @@ import org.eclipse.jface.wizard.WizardPage;
  * @author kevin.ren
  * 
  */
-public abstract class DynamicWizardPage extends WizardPage implements IWizardPage {
+public abstract class DynamicWizardPage extends WizardPage {
 
     protected DynamicWizardPage(String pageName) {
         super(pageName);

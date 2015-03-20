@@ -63,6 +63,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#isProxiesEnabled()
     */
+    @Override
     public boolean isProxiesEnabled() {
         if (logger.isDebugEnabled()) {
             logger.debug("Proxy is " + (proxiesEnabled ? "enabled" : "disabled"));
@@ -74,6 +75,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
      * (non-Javadoc)
      * @see com.salesforce.ide.model.IProxy#setProxiesEnabled(boolean)
      */
+    @Override
     public void setProxiesEnabled(boolean proxiesEnabled) {
         this.proxiesEnabled = proxiesEnabled;
     }
@@ -101,6 +103,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#getProxyHost()
     */
+    @Override
     public String getProxyHost() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -120,6 +123,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#getProxyPort()
     */
+    @Override
     public String getProxyPort() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -139,6 +143,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#getProxyUser()
     */
+    @Override
     public String getProxyUser() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -169,6 +174,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#getProxyPassword()
     */
+    @Override
     public String getProxyPassword() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -199,6 +205,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#hasNonProxyHost()
     */
+    @Override
     public boolean hasNonProxyHost() {
         return Utils.isNotEmpty(excludedHosts);
     }
@@ -206,6 +213,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#getNonProxyHosts()
     */
+    @Override
     public String getNonProxyHosts() {
         if (!hasNonProxyHost()) {
             return Constants.EMPTY_STRING;
@@ -229,6 +237,7 @@ public class NetworkConnectionProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.ide.model.IProxy#isServerExcluded(java.lang.String)
     */
+    @Override
     public boolean isServerExcluded(String serverName) {
         if (Utils.isEmpty(serverName) || Utils.isEmpty(excludedHosts)) {
             return false;

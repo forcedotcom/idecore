@@ -64,7 +64,6 @@ import com.salesforce.ide.upgrade.internal.utils.UpgradeMessages;
  * 
  * @author cwall
  */
-@SuppressWarnings("restriction")
 public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
 
     private Tree treeComponentConflicts = null;
@@ -140,7 +139,7 @@ public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
                 compareEditor.setTitle(UpgradeMessages.getString("UpgradeWizard.Compare.title",
                         new String[] { localComponent.getFileName() }));
 
-                compareEditor.setFocus();
+                compareEditor.setFocus2();
 
                 if (compareResultOK(compareEditor, null)) {
                     Runnable runnable = new Runnable() {

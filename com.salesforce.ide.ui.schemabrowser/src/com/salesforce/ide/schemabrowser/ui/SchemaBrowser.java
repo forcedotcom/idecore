@@ -11,7 +11,6 @@
 package com.salesforce.ide.schemabrowser.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -47,22 +46,19 @@ import org.eclipse.ui.PlatformUI;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
+import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.schemabrowser.ui.tableviewer.QueryTableViewer;
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
-import com.sforce.soap.partner.fault.wsc.InvalidSObjectFault;
-import com.sforce.soap.partner.fault.wsc.UnexpectedErrorFault;
 import com.sforce.soap.partner.wsc.ChildRelationship;
 import com.sforce.soap.partner.wsc.DescribeSObjectResult;
 import com.sforce.soap.partner.wsc.Field;
 import com.sforce.soap.partner.wsc.PicklistEntry;
 import com.sforce.soap.partner.wsc.QueryResult;
-import com.sforce.ws.ConnectionException;
 
 /**
  * TODO: Can this be made into a single page editor?
@@ -142,7 +138,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
             new Hashtable<String, DescribeSObjectResult>();
 
     // C O N S T R U C T O R S
-    public SchemaBrowser() throws ForceProjectException {
+    public SchemaBrowser() {
         super();
         queryTableViewer = new QueryTableViewer();
     }
@@ -186,8 +182,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         }
     }
 
-    private Composite createPage(Composite composite) throws ForceConnectionException, ForceProjectException,
-            ForceRemoteException {
+    private Composite createPage(Composite composite) throws ForceConnectionException, ForceRemoteException {
         schemaEditorComposite =
                 new SchemaEditorComposite(getContainer(), SWT.NONE, file.getProject(), queryTableViewer);
         wireUpComposite();
@@ -197,6 +192,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
     private void wireUpComposite() {
         schemaEditorComposite.getButtonRun().addMouseListener(new org.eclipse.swt.events.MouseListener() {
+            @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
                 try {
                     PlatformUI.getWorkbench().getProgressService().run(false, true, runQuery);
@@ -208,24 +204,30 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 }
             }
 
+            @Override
             public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent e) {}
 
+            @Override
             public void mouseDown(org.eclipse.swt.events.MouseEvent e) {}
         });
 
         schemaEditorComposite.getButtonRefresh().addMouseListener(new org.eclipse.swt.events.MouseListener() {
+            @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
                 initialize();
             }
 
+            @Override
             public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent e) {}
 
+            @Override
             public void mouseDown(org.eclipse.swt.events.MouseEvent e) {}
         });
         createTree(schemaEditorComposite);
     }
 
     IRunnableWithProgress runQuery = new IRunnableWithProgress() {
+        @Override
         public void run(IProgressMonitor monitor) throws InvocationTargetException {
             try {
                 IProject project = file.getProject();
@@ -241,10 +243,10 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 }
 
                 fillTable(qr, monitor, true);
-            } catch (ConnectionException e) {
+            } catch (InsufficientPermissionsException e) {
                 logger.error(e);
-                Utils.openError(e, false, "Failed to execute query");
-            } catch (Exception e) {
+                throw new InvocationTargetException(e);
+            } catch (ForceConnectionException e) {
                 logger.error(e);
                 throw new InvocationTargetException(e);
             } finally {
@@ -328,6 +330,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
         Tree tree = this.schemaEditorComposite.getTree();
         tree.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 if (event.item instanceof TreeItem) {
                     selectedItem = (TreeItem) event.item;
@@ -338,12 +341,14 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
         });
         tree.addTreeListener(new org.eclipse.swt.events.TreeListener() {
+            @Override
             public void treeExpanded(org.eclipse.swt.events.TreeEvent e) {
                 final TreeItem selectedItem = (TreeItem) e.item;
                 Boolean isTopLevel = (Boolean) selectedItem.getData(IS_TOP_LEVEL);
                 if ((isTopLevel != null) && isTopLevel.booleanValue()) {
                     if (selectedItem.getItemCount() == 1) {
                         Runnable lt = new Runnable() {
+                            @Override
                             public void run() {
                                 ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                 mon.getProgressMonitor();
@@ -359,6 +364,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                             }
                         };
                         Runnable lb = new Runnable() {
+                            @Override
                             public void run() {
                                 ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                 mon.getProgressMonitor();
@@ -379,6 +385,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                         if (type.equals(SchemaBrowser.CHILD_RELATIONSHIP_NODE)
                                 && selectedItem.getData(LOADED).equals(Boolean.FALSE)) {
                             Runnable getThisChildSchema = new Runnable() {
+                                @Override
                                 public void run() {
                                     ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                     mon.getProgressMonitor();
@@ -395,6 +402,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                         } else if (SchemaBrowser.LOOKUP_RELATIONSHIP_NODE.equals(type)
                                 && Boolean.FALSE.equals(selectedItem.getData(LOADED))) {
                             Runnable getThisChildSchema = new Runnable() {
+                                @Override
                                 public void run() {
                                     ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                     mon.getProgressMonitor();
@@ -414,12 +422,14 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 wasExpanded = true;
             }
 
+            @Override
             public void treeCollapsed(org.eclipse.swt.events.TreeEvent e) {
                 wasExpanded = true;
             }
         });
 
         tree.addMouseListener(new org.eclipse.swt.events.MouseListener() {
+            @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
                 if (!wasExpanded) {
                     if (selectedItem != null) {
@@ -444,6 +454,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                                         if ((selectedItem.getData(LOADED) != null)
                                                 && Boolean.FALSE.equals(selectedItem.getData(LOADED))) {
                                             Runnable getThisChildSchema = new Runnable() {
+                                                @Override
                                                 public void run() {
                                                     ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                                     mon.getProgressMonitor();
@@ -461,6 +472,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                                     } else if (SchemaBrowser.LOOKUP_RELATIONSHIP_NODE.equals(type)
                                             && Boolean.FALSE.equals(selectedItem.getData(LOADED))) {
                                         Runnable getThisChildSchema = new Runnable() {
+                                            @Override
                                             public void run() {
                                                 ProgressMonitorDialog mon = new ProgressMonitorDialog(getShell());
                                                 mon.getProgressMonitor();
@@ -507,8 +519,10 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 wasExpanded = false;
             }
 
+            @Override
             public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent e) {}
 
+            @Override
             public void mouseDown(org.eclipse.swt.events.MouseEvent e) {}
         });
         initialize();
@@ -554,7 +568,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         }
     }
 
-    private TreeItem getPrimaryFieldsNode(TreeItem customObjectNode) {
+    private static TreeItem getPrimaryFieldsNode(TreeItem customObjectNode) {
         TreeItem fieldsNode = null;
         for (int i = 0; i < customObjectNode.getItemCount(); i++) {
             TreeItem nodeChild = customObjectNode.getItem(i);
@@ -570,7 +584,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return fieldsNode;
     }
 
-    private TreeItem getChildRelationshipsNode(TreeItem customObjectNode) {
+    private static TreeItem getChildRelationshipsNode(TreeItem customObjectNode) {
         TreeItem childRNode = null;
         for (int i = 0; i < customObjectNode.getItemCount(); i++) {
             String nodeLabel = customObjectNode.getItem(i).getText();
@@ -582,7 +596,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return childRNode;
     }
 
-    private TreeItem getReferenceToNode(TreeItem primaryField) {
+    private static TreeItem getReferenceToNode(TreeItem primaryField) {
         TreeItem referenceToNode = null;
         TreeItem returnNode = null;
 
@@ -603,7 +617,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return returnNode;
     }
 
-    private TreeItem getReferenceToObjectFieldsNode(TreeItem referenceToObjectNode) {
+    private static TreeItem getReferenceToObjectFieldsNode(TreeItem referenceToObjectNode) {
         TreeItem lookupFieldsNode = null;
         for (int k = 0; k < referenceToObjectNode.getItemCount(); k++) {
             TreeItem objectChildNode = referenceToObjectNode.getItem(k);
@@ -740,7 +754,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         return slca;
     }
 
-    private TreeItem getTopOfBranch(TreeItem childItem) {
+    private static TreeItem getTopOfBranch(TreeItem childItem) {
         Boolean isTopLevel = (Boolean) childItem.getData(IS_TOP_LEVEL);
         TreeItem parent;
         if (isTopLevel.booleanValue()) {
@@ -1061,9 +1075,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
             SubProgressMonitor spm = new SubProgressMonitor(monitor, 1);
             spm.beginTask("Getting relationship definitions...", fields.length);
             for (Field element : fields) {
-                if (spm != null) {
-                    spm.worked(1);
-                }
+                spm.worked(1);
                 spm.subTask("Getting " + element.getLabel() + " definition...");
                 TreeItem thisChild =
                         createTreeItemChild(childFields, element.getLabel(), true, 0, false, childFieldType);
@@ -1095,7 +1107,9 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
                 createTreeItemChild(child, "Cascade Delete", false, 0, false);
             }
             if (cr.getRelationshipName() != null) {
-                monitor.subTask(cr.getRelationshipName());
+                if (monitor != null) {
+                    monitor.subTask(cr.getRelationshipName());
+                }
                 createTreeItemChild(child, "Relationship Name: " + cr.getRelationshipName(), false, 0, false);
                 createTreeItemChild(child, "Related Field: " + cr.getField(), false, 0, false);
             }
@@ -1177,7 +1191,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
     }
 
     private DescribeSObjectResult getCachedDescribe(String componentType) throws ForceConnectionException,
-            ForceProjectException, ForceRemoteException {
+            ForceRemoteException {
         if (!describeCache.containsKey(componentType.toLowerCase())) {
             IProject project = file.getProject();
             Connection connection = getConnectionFactory().getConnection(project);
@@ -1222,14 +1236,13 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         schemaEditorComposite.setCursor(null);
     }
 
-    private void clearDescribeCache(IProject project) throws ForceConnectionException, ForceRemoteException, ForceProjectException {
+    private void clearDescribeCache(IProject project) throws ForceConnectionException, ForceRemoteException {
         // Refresh the DescribeSObject cache and also the DescribeObjectRegistry
         describeCache.clear();
         ContainerDelegate.getInstance().getServiceLocator().getProjectService().getDescribeObjectRegistry().refresh(project);
     }
 
-    void fillTable(QueryResult qr, IProgressMonitor monitor, boolean clearTable) throws InvalidSObjectFault,
-            UnexpectedErrorFault, RemoteException {
+    void fillTable(QueryResult qr, IProgressMonitor monitor, boolean clearTable) {
         schemaEditorComposite.loadTable(qr);
         monitor.done();
     }

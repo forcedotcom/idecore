@@ -306,7 +306,7 @@ public class Connection {
         setToolingEndPoint();
     }
 
-    private String changeServer(String url, String server, boolean isHttps) {
+    private static String changeServer(String url, String server, boolean isHttps) {
         if (Utils.isEmpty(url) || Utils.isEmpty(server) || !url.startsWith(Constants.HTTP)) {
             return url;
         }
@@ -352,7 +352,7 @@ public class Connection {
         }
     }
 
-    private void setProxyOnConnectorConfig(IProxy proxy, ConnectorConfig connectorConfig) {
+    private static void setProxyOnConnectorConfig(IProxy proxy, ConnectorConfig connectorConfig) {
         final String proxyHost = proxy.getProxyHost();
         final String proxyPort = proxy.getProxyPort();
         int portNumber = Utils.isNotEmpty(proxyPort) ? Integer.parseInt(proxyPort) : -1;
@@ -366,7 +366,7 @@ public class Connection {
         connectorConfig.setProxyPassword(proxy.getProxyPassword());
     }
 
-    private void logLoginResult(LoginResult loginResult) {
+    private static void logLoginResult(LoginResult loginResult) {
         if (loginResult == null) {
             return;
         }
@@ -447,7 +447,7 @@ public class Connection {
      * @param url For example, http://na1.salesforce.com/home/home.jsp
      * @return For example, http://na1.salesforce.com/
      */
-	private String getRootUrlWithProtocol(String url) {
+	private static String getRootUrlWithProtocol(String url) {
 		url = url.substring(0, url.indexOf("/", url.indexOf("//") + 2));
 		return url;
 	}

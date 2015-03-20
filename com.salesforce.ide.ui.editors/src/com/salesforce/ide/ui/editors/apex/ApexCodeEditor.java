@@ -27,8 +27,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.internal.ui.text.JavaPairMatcher;
-import org.eclipse.jdt.internal.ui.text.PreferencesAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -64,6 +65,7 @@ import org.eclipse.ui.editors.text.ITextEditorHelpContextIds;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.ShowInContext;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -75,7 +77,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;
@@ -303,7 +304,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      *            the required type
      * @return an adapter for the required type or <code>null</code>
      */
-	@Override
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (fOutlinePage == null) {
@@ -337,15 +338,9 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         IPreferenceStore store = createCombinedPreferenceStore(null);
         setPreferenceStore(store);
         setHelpContextId(Constants.DOCUMENTATION_PLUGIN_PREFIX + "." + this.getClass().getSimpleName());
-        try {
-            apexSourceViewerConfiguration = new ApexSourceViewerConfiguration(getPreferenceStore(), this);
-            apexSourceViewerConfiguration.init(project);
-            setSourceViewerConfiguration(apexSourceViewerConfiguration);
-        } catch (ForceProjectException e) {
-            logger.error("Unable to initialize source viewer configuration", e);
-            Utils.openError("Initialization Error",
-                "Unable to initialize source viewer configuration: " + e.getMessage());
-        }
+        apexSourceViewerConfiguration = new ApexSourceViewerConfiguration(getPreferenceStore(), this);
+        apexSourceViewerConfiguration.init(project);
+        setSourceViewerConfiguration(apexSourceViewerConfiguration);
     }
 
     /**
@@ -356,11 +351,11 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      * @return the preference store for this editor
      *
      */
-    private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
-        List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
+    private static IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
+        List<IPreferenceStore> stores = new ArrayList<>(3);
 
-        stores.add(ForceIdeEditorsPlugin.getDefault().getPreferenceStore());
-        stores.add(new PreferencesAdapter(ForceIdeEditorsPlugin.getDefault().getPluginPreferences()));
+        stores.add(new ScopedPreferenceStore(InstanceScope.INSTANCE, ForceIdeEditorsPlugin.PLUGIN_ID));
+        stores.add(new ScopedPreferenceStore(DefaultScope.INSTANCE, ForceIdeEditorsPlugin.PLUGIN_ID));
         stores.add(EditorsUI.getPreferenceStore());
 
         return new ChainedPreferenceStore(stores.toArray(new IPreferenceStore[stores.size()]));
@@ -610,7 +605,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
      * Updates the selection in the editor's widget with the selection of the outline page.
      */
     class OutlineSelectionChangedListener extends AbstractSelectionChangedListener {
-        OutlineViewDispatcher<HighlightRange> dispatcher = new OutlineViewDispatcher<HighlightRange>(new OutlineViewSelectionHandler(
+        OutlineViewDispatcher<HighlightRange> dispatcher = new OutlineViewDispatcher<>(new OutlineViewSelectionHandler(
                 ApexCodeEditor.this));
 
         @Override
@@ -634,12 +629,10 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         StyledText textWidget = null;
 
         ISourceViewer sourceViewer = getSourceViewer();
+        if (null == sourceViewer) return;
 
-        if (sourceViewer != null)
-            textWidget = sourceViewer.getTextWidget();
-
-        if (textWidget == null)
-            return;
+        textWidget = sourceViewer.getTextWidget();
+        if (null == textWidget) return;
 
         try {
             int offset = range.startOffset;

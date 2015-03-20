@@ -53,7 +53,7 @@ public class BuilderController extends Controller {
     protected boolean bubbleExceptions = false;
     protected boolean success = false;
 
-    public BuilderController() throws ForceProjectException {
+    public BuilderController() {
         super();
     }
 
@@ -93,12 +93,12 @@ public class BuilderController extends Controller {
         }
     }
 
-    private boolean isDeployableThroughToolingAPI(ComponentList saveComponentList, ForceProject forceProject) {
+    private static boolean isDeployableThroughToolingAPI(ComponentList saveComponentList, ForceProject forceProject) {
         return saveComponentList.isDeployableThroughContainerAsyncRequest()
                 && Float.parseFloat(forceProject.getEndpointApiVersion()) >= FIRST_TOOLING_API_VERSION;
     }
 
-    private void buildThroughTooling(ComponentList saveComponentList, IProject project, ForceProject forceProject,
+    private static void buildThroughTooling(ComponentList saveComponentList, IProject project, ForceProject forceProject,
             IProgressMonitor monitor) {
         if (logger.isDebugEnabled()) {
             logger.debug("***   B U I L D I N G (Tooling API)  ***");
@@ -157,15 +157,14 @@ public class BuilderController extends Controller {
         .handleDeployResult(loadedProjectPackageList, deployResultHandler, true, monitor);
     }
 
-    protected DeployOptions makeDeployOptions(PackageDeployService packageDeployService)
-            throws ForceConnectionException {
+    protected DeployOptions makeDeployOptions(PackageDeployService packageDeployService) {
         final DeployOptions deployOptions = packageDeployService.makeDefaultDeployOptions(false);
         deployOptions.setIgnoreWarnings(true);
         return deployOptions;
     }
 
     //   U T I L I T I E S
-    private void markAllDirty(IFile[] files, String msg) {
+    private static void markAllDirty(IFile[] files, String msg) {
         if (Utils.isNotEmpty(files)) {
             for (IFile file : files) {
                 MarkerUtils markerUtils = MarkerUtils.getInstance();

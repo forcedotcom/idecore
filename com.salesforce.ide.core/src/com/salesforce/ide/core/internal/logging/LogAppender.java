@@ -59,7 +59,7 @@ public class LogAppender extends AppenderSkeleton {
      * @param ev
      * @return
      */
-    private int getSeverity(LoggingEvent ev) {
+    private static int getSeverity(LoggingEvent ev) {
         Level level = ev.getLevel();
         if(level == Level.FATAL || level == Level.ERROR)
             return IStatus.ERROR;
@@ -76,7 +76,7 @@ public class LogAppender extends AppenderSkeleton {
      * @param ev
      * @return
      */
-    private int getCode(LoggingEvent ev) {
+    private static int getCode(LoggingEvent ev) {
         return 0;
     }
 
@@ -93,10 +93,12 @@ public class LogAppender extends AppenderSkeleton {
         return Platform.getLog(b);
     }
 
+    @Override
     public void close() {
 
     }
 
+    @Override
     public boolean requiresLayout() {
         return false;
     }

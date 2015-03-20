@@ -38,7 +38,8 @@ public class HTMLPrinter {
 					/*
 					 * @see java.lang.Runnable#run()
 					 */
-					public void run() {
+					@Override
+                    public void run() {
 						BG_COLOR_RGB= display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB();
 					}
 				});
@@ -140,7 +141,7 @@ public class HTMLPrinter {
 			return;
 
 		StringBuffer styleBuf= new StringBuffer(10 * styles.length);
-		for (int i= 0; styles != null && i < styles.length; i++) {
+		for (int i= 0; i < styles.length; i++) {
 			styleBuf.append(" style=\""); //$NON-NLS-1$
 			styleBuf.append(styles[i]);
 			styleBuf.append('"');

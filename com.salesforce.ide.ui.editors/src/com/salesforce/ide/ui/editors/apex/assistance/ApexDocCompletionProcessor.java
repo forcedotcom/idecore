@@ -34,6 +34,7 @@ public class ApexDocCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
         ICompletionProposal[] result = new ICompletionProposal[fgProposals.length];
         for (int i = 0; i < fgProposals.length; i++) {
@@ -45,6 +46,7 @@ public class ApexDocCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
         return null;
     }
@@ -52,6 +54,7 @@ public class ApexDocCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return null;
     }
@@ -59,6 +62,7 @@ public class ApexDocCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return null;
     }
@@ -66,6 +70,7 @@ public class ApexDocCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public IContextInformationValidator getContextInformationValidator() {
         return null;
     }
@@ -73,6 +78,7 @@ public class ApexDocCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public String getErrorMessage() {
         return null;
     }

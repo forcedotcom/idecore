@@ -6,84 +6,58 @@ Force.com IDE Copyright (c) 2008 Salesforce.com
 -->
 
 <plugin>
+
+  <!--   M E N U S  -->
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution allPopups="false" locationURI="menu:com.salesforce.ide.ui.menu.context?before=group2">
+      <command commandId="com.salesforce.ide.ui.command.deploy" helpContextId="com.salesforce.ide.documentation.deploymentAction" id="deploy" label="Deploy to Server..." mnemonic="D" style="push" tooltip="%tooltip.Deploy">
+        <visibleWhen checkEnabled="false">
+          <iterate ifEmpty="false" operator="and">
+            <reference definitionId="com.salesforce.ide.projectFile"/>
+            <adapt type="org.eclipse.core.resources.IResource">
+              <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
+            </adapt>
+          </iterate>
+        </visibleWhen>
+      </command>
+    </menuContribution>
+    <menuContribution locationURI="toolbar:com.salesforce.ide.ui.toolbar.main?before=openBrowserToSalesforce">
+      <command
+        commandId="com.salesforce.ide.ui.command.deploy"
+        disabledIcon="icons/actions/dts_d_co.gif"
+        helpContextId="com.salesforce.ide.documentation.deploymentAction"
+        icon="icons/actions/dts_e_co.gif"
+        id="deploy"
+        label="%toolbar.label.Deploy"
+        style="push"
+        tooltip="%tooltip.Deploy"
+        />
+    </menuContribution>
+  </extension>
+
+  <extension point="org.eclipse.ui.commands">
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.Deploy"
+      helpContextId="com.salesforce.ide.documentation.deploymentAction"
+      id="com.salesforce.ide.ui.command.deploy"
+      name="Deploy to Server"
+      />
+  </extension>
+
+  <extension point="org.eclipse.ui.handlers">
+    <handler class="com.salesforce.ide.deployment.handlers.DeploymentHandler" commandId="com.salesforce.ide.ui.command.deploy">
+      <enabledWhen>
+        <iterate ifEmpty="false" operator="and">
+          <adapt type="org.eclipse.core.resources.IResource">
+            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
+          </adapt>
+          <reference definitionId="com.salesforce.ide.projectFile"/>
+          <reference definitionId="com.salesforce.ide.projectActive"/>
+        </iterate>
+      </enabledWhen>
+    </handler>
+  </extension>
     
-    <!--   M E N U S  -->
-    <extension point="org.eclipse.ui.popupMenus">
-        <!-- deployment -->
-        <objectContribution
-            id="com.salesforce.ide.deployment.ui.menu.deploy"
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true">
-            <menu
-                id="com.salesforce.ide.ui.menu.tools"
-                label="Force&amp;.com"
-                icon="icons/appExDevIco16.png"
-                path="additions">
-                <separator name="group2"/>
-            </menu>
-            <!-- despite the little warning on 'enablement', 'test' *is* supported -->
-            <enablement>
-                <or>
-                    <instanceof value="org.eclipse.core.resources.IProject"/>
-                    <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-                </or>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
-            </enablement>
-            <action
-                id="com.salesforce.ide.deployment.actions.deploymentAction"
-                class="com.salesforce.ide.deployment.actions.DeploymentAction"
-                label="&amp;Deploy to Server..."
-                tooltip="%tooltip.Deploy"
-                helpContextId="com.salesforce.ide.documentation.deploymentAction"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group2">
-                <enablement>
-                    <not>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                    </not>
-                </enablement>
-            </action>
-        </objectContribution>
-    </extension>
-    
-    <!--   A C T I O N   S E T S  -->
-    <extension point="org.eclipse.ui.actionSets">
-        <actionSet
-         id="com.salesforce.ide.deployment.actionset"
-         label="%toolbar.label.Deploy"
-         visible="false">
-            <action
-             class="com.salesforce.ide.deployment.actions.DeploymentAction"
-             disabledIcon="icons/actions/dts_d_co.gif"
-             icon="icons/actions/dts_e_co.gif"
-             id="com.salesforce.ide.deployment.action.deploy"
-             label="%toolbar.label.Deploy"
-             state="false"
-             style="push"
-             toolbarPath="com.salesforce.ide.ui.actionset/force"
-             tooltip="%toolbar.label.Deploy">
-                <enablement>
-                    <and>
-                        <objectClass name="org.eclipse.core.resources.IResource"/>
-                        <objectState name="projectNature" value="com.salesforce.ide.nature.default" />
-                        <not>
-                            <or>
-                                <objectState name="name" value="package.xml"/>
-                                <objectState name="name" value="salesforce.schema"/>
-                                <objectState name="path" value="*Referenced Packages*"/>
-                                <objectState name="projectNature" value="com.salesforce.ide.nature.inactive"/>
-                            </or>
-                        </not>
-                        
-                    </and>
-                </enablement>
-            </action>
-        </actionSet>
-    </extension>
-    
-    <extension point="org.eclipse.ui.perspectiveExtensions">
-        <perspectiveExtension targetID="com.salesforce.ide.perspective">
-            <actionSet id="com.salesforce.ide.deployment.actionset"/>
-        </perspectiveExtension>
-    </extension>
 </plugin>
 

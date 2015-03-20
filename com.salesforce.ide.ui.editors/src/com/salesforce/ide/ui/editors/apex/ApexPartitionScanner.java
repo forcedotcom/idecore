@@ -44,10 +44,12 @@ public class ApexPartitionScanner extends RuleBasedPartitionScanner {
 
         public WordPredicateRule(IToken successToken) {
             super(new IWordDetector() {
+                @Override
                 public boolean isWordStart(char c) {
                     return (c == '/');
                 }
 
+                @Override
                 public boolean isWordPart(char c) {
                     return ((c == '*') || (c == '/'));
                 }
@@ -60,6 +62,7 @@ public class ApexPartitionScanner extends RuleBasedPartitionScanner {
         /*
          * @see org.eclipse.jface.text.rules.IPredicateRule#evaluate(ICharacterScanner, boolean)
          */
+        @Override
         public IToken evaluate(ICharacterScanner scanner, boolean resume) {
             return super.evaluate(scanner);
         }
@@ -67,6 +70,7 @@ public class ApexPartitionScanner extends RuleBasedPartitionScanner {
         /*
          * @see org.eclipse.jface.text.rules.IPredicateRule#getSuccessToken()
          */
+        @Override
         public IToken getSuccessToken() {
             return fSuccessToken;
         }

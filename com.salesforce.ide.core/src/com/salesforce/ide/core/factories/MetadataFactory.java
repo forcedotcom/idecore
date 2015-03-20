@@ -55,8 +55,7 @@ public class MetadataFactory extends BaseFactory {
         return metadataStubExt;
     }
 
-    public MetadataStubExt refreshMetadataStubExt(Connection connection) throws ForceConnectionException,
-            ForceRemoteException {
+    public MetadataStubExt refreshMetadataStubExt(Connection connection) throws ForceRemoteException {
         final ForceProject forceProject = connection.getForceProject();
 
         final MetadataStubExt metadataStubExt = metadataStubs.get(forceProject);
@@ -107,8 +106,8 @@ public class MetadataFactory extends BaseFactory {
         return metadataStubExt;
     }
 
-    private void cacheMetadataStubExt(ForceProject forceProject, MetadataStubExt metadataStubExt)
-            throws ForceConnectionException, ForceRemoteException {
+    private static void cacheMetadataStubExt(ForceProject forceProject, MetadataStubExt metadataStubExt)
+            throws ForceConnectionException {
         if (forceProject == null) {
             throw new ForceConnectionException(" project must be specific to get a connection.");
         }
@@ -139,7 +138,7 @@ public class MetadataFactory extends BaseFactory {
         clearCache();
     }
 
-    private void logStoredMetadataStubExts() {
+    private static void logStoredMetadataStubExts() {
         if (metadataStubs == null || Utils.isEmpty(metadataStubs.keySet())) {
             logger.info("No cached metadata stubs");
             return;

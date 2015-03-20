@@ -23,10 +23,12 @@ public class ComponentVariantComparator implements IResourceVariantComparator {
         this.syncController = syncController;
     }
 
+    @Override
     public boolean compare(IResource file, IResourceVariant baseVariant) {
         return syncController.compare(file, baseVariant);
     }
 
+    @Override
     public boolean compare(IResourceVariant baseVariant, IResourceVariant remoteVariant) {
         return syncController.compare(baseVariant, remoteVariant);
     }
@@ -36,6 +38,7 @@ public class ComponentVariantComparator implements IResourceVariantComparator {
      *
      * @see org.eclipse.team.core.variants.IResourceVariantComparator#isThreeWay()
      */
+    @Override
     public boolean isThreeWay() {
         return true;
     }

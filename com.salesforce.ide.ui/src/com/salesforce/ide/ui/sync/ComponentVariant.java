@@ -28,18 +28,22 @@ public class ComponentVariant implements IResourceVariant {
         this.component = component;
     }
 
+    @Override
     public String getName() {
         return component.getName();
     }
 
+    @Override
     public byte[] asBytes() {
         return getContentIdentifier().getBytes();
     }
 
+    @Override
     public String getContentIdentifier() {
         return (new Date(component.getFetchTime())).toString();
     }
 
+    @Override
     public boolean isContainer() {
         return false;
     }
@@ -56,6 +60,7 @@ public class ComponentVariant implements IResourceVariant {
         this.remote = remote;
     }
 
+    @Override
     public IStorage getStorage(IProgressMonitor monitor) throws TeamException {
         return new ComponentStorage(getComponent());
     }

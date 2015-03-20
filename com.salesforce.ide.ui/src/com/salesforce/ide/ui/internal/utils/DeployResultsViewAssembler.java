@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DeployMessageExtractor;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -88,7 +87,7 @@ public class DeployResultsViewAssembler {
         if (deployResultHandler != null) {
             noResultsTreeItem.setText(UIMessages.getString("Deployment.ResultsView.NoResults.message"));
         } else {
-            noResultsTreeItem.setText(UIMessages.getString("RunTestsAction.ResultsView.NoResults.message"));
+            noResultsTreeItem.setText(UIMessages.getString("RunTestsHandler.ResultsView.NoResults.message"));
         }
     }
 
@@ -170,7 +169,7 @@ public class DeployResultsViewAssembler {
         }
     }
 
-    private void handleDeploySuccessMessages(Collection<DeployMessage> messages) {
+    private static void handleDeploySuccessMessages(Collection<DeployMessage> messages) {
         if (logger.isDebugEnabled()) {
             for (DeployMessage deployMessage : messages) {
                 logger.debug("Deployment of '" + getDisplayName(deployMessage)
@@ -225,6 +224,7 @@ public class DeployResultsViewAssembler {
         }
 
         Collections.sort(warnings, new Comparator<CodeCoverageWarning>() {
+            @Override
             public int compare(final CodeCoverageWarning w1, final CodeCoverageWarning w2) {
                 if (Utils.isEmpty(w1.getName())) {
                     return -1;
@@ -328,9 +328,6 @@ public class DeployResultsViewAssembler {
             String logMessage = Utils.generateCoreExceptionLog(e);
             logger.warn("Unable to find resource for '" + componentName + "( " + componentType + ")'  in package "
                     + project.getName() + ": " + logMessage, e);
-        } catch (FactoryException e) {
-            logger.warn("Unable to find resource for '" + componentName + "( " + componentType + ")'  in package "
-                    + project.getName(), e);
         }
         return file;
     }
@@ -356,14 +353,14 @@ public class DeployResultsViewAssembler {
         }
     }
 
-    private String apexPrefixCheck(String componentType) {
+    private static String apexPrefixCheck(String componentType) {
         if (Utils.isNotEmpty(componentType) && !componentType.startsWith(Constants.APEX_PREFIX)) {
             componentType = Constants.APEX_PREFIX + componentType;
         }
         return componentType;
     }
 
-    private void sortCodeCoverageResults(ICodeCoverageResultExt[] codeCoverageResults) {
+    private static void sortCodeCoverageResults(ICodeCoverageResultExt[] codeCoverageResults) {
         if (Utils.isEmpty(codeCoverageResults)) {
             return;
         }
@@ -378,28 +375,21 @@ public class DeployResultsViewAssembler {
         });
     }
 
-    private String getDisplayName(DeployMessage deployMessage) {
+    private static String getDisplayName(DeployMessage deployMessage) {
         // REVIEWME: full name or file name?
         return deployMessage.getFileName();
     }
 
     private String getDisplayName(ICodeCoverageResultExt codeCoverageResult) {
         String componentName = getDisplayName(codeCoverageResult.getNamespace(), codeCoverageResult.getName());
-        Component component = null;
-        try {
-            component =
-                    projectService.getComponentFactory().getComponentByComponentType(
-                        apexPrefixCheck(codeCoverageResult.getType()));
-        } catch (FactoryException e) {
-            logger.error("Unable to locate corresponding component based on CodeCoverageResult type '"
-                    + codeCoverageResult.getType() + "' ", e);
-        }
+        Component component = projectService.getComponentFactory().getComponentByComponentType(
+                    apexPrefixCheck(codeCoverageResult.getType()));
         return componentName
                 + (Utils.isNotEmpty(component) ? " (" + component.getComponentType() + ")" : " ("
                         + codeCoverageResult.getType() + ")");
     }
 
-    private String getDisplayName(String namespace, String name) {
+    private static String getDisplayName(String namespace, String name) {
         StringBuffer strBuff = new StringBuffer();
 
         // prepend namespace
@@ -412,7 +402,7 @@ public class DeployResultsViewAssembler {
         return strBuff.toString();
     }
 
-    private String getDeployAction(DeployMessage deployMessage) {
+    private static String getDeployAction(DeployMessage deployMessage) {
         if (deployMessage.isCreated()) {
             return "created";
         } else if (deployMessage.isDeleted()) {
@@ -424,7 +414,7 @@ public class DeployResultsViewAssembler {
         }
     }
 
-    private TreeItem getChildTreeItem(TreeItem parentTreeItem, String name) {
+    private static TreeItem getChildTreeItem(TreeItem parentTreeItem, String name) {
         if (parentTreeItem.getItemCount() > 0) {
             TreeItem[] childTreeItems = parentTreeItem.getItems();
             for (TreeItem childTreeItem : childTreeItems) {
@@ -459,7 +449,7 @@ public class DeployResultsViewAssembler {
         stacktraceTreeItem.setText(stacktrace);
     }
 
-    private ApexCodeLocation getLocationFromStackLine(String name, String stackTrace) {
+    private static ApexCodeLocation getLocationFromStackLine(String name, String stackTrace) {
         if (Utils.isEmpty(name) || Utils.isEmpty(stackTrace)) {
             logger.warn("Unable to get location from stacktrace - name and/or stacktrace is null");
             return null;

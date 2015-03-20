@@ -145,7 +145,7 @@ public class ToolingDeployService extends BaseService {
         MarkerUtils.getInstance().applyDirty(resources);
     }
 
-    private IResource[] obtainListOfAffectedResources(ComponentList list) {
+    private static IResource[] obtainListOfAffectedResources(ComponentList list) {
         IResource[] resources = Lists.transform(list, new Function<Component, IResource>() {
 
             @Override
@@ -194,7 +194,7 @@ public class ToolingDeployService extends BaseService {
         return onGoingRequest;
     }
 
-    private void handleContainerAsyncMessages(ComponentList list, ContainerAsyncRequest onGoingRequest) {
+    private static void handleContainerAsyncMessages(ComponentList list, ContainerAsyncRequest onGoingRequest) {
         ContainerAsyncRequestMessageHandler handler = new ContainerAsyncRequestMessageHandler(list, onGoingRequest);
         handler.handle();
     }
@@ -213,7 +213,7 @@ public class ToolingDeployService extends BaseService {
         createSaveLocallyOnlyMarkers(list);
     }
 
-    private void handleToolingDeployException(ForceException e) {
+    private static void handleToolingDeployException(ForceException e) {
         // TODO: Present useful information to the user in a dialog
         logger.warn(e);
     }
@@ -224,7 +224,7 @@ public class ToolingDeployService extends BaseService {
      * ii) to prevent collision when we create the MetadataContainer since the name needs to be unique
      * Unfortunately, we cannot force users to upgrade their old projects to the new format so we act defensively here.
      */
-    private String constructProjectIdentifier(ForceProject project) {
+    private static String constructProjectIdentifier(ForceProject project) {
         String projectIdentifier = project.getProjectIdentifier();
         if (Utils.isNotEmpty(projectIdentifier)) {
             return projectIdentifier;

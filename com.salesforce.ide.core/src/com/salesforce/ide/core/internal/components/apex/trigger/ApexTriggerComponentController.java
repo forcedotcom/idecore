@@ -10,11 +10,14 @@
  ******************************************************************************/
 package com.salesforce.ide.core.internal.components.apex.trigger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.SortedSet;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.salesforce.ide.core.internal.components.ComponentController;
+import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.ForceConnectionException;
@@ -42,5 +45,12 @@ public class ApexTriggerComponentController extends ComponentController {
         DescribeObjectRegistry describeObjectRegistry = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getDescribeObjectRegistry();
 
         return describeObjectRegistry.getCachedTriggerableDescribeTypes(project, refresh);
+    }
+
+    @Override
+    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException {
+        // TODO Auto-generated method stub
+        
     }
 }

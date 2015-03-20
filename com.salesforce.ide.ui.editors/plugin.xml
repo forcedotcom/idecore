@@ -6,28 +6,44 @@
 -->
 
 <plugin>
-    <!--   M E N U S  -->
-    <extension point="org.eclipse.ui.popupMenus">
-        <viewerContribution
-            id="com.salesforce.ide.ui.menu.mergeFields"
-            targetID="org.eclipse.wst.sse.ui.StructuredTextEditor.EditorContext">
-            <menu
-                  icon="icons/appExDevIco16.png"
-                  id="com.salesforce.ide.ui.menu.tools"
-                  label="%menu.label"
-                  path="additions">
-                <separator name="group0" />
-            </menu>
-            <action
-                id="com.salesforce.ide.actions.mergeFields"
-                class="com.salesforce.ide.ui.editors.actions.MergeFieldsAction"
-                tooltip="%tooltip.MergeFields"
-                label="%action.label"
-                enablesFor="1"
-                helpContextId="com.salesforce.ide.documentation.mergeFields"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group0"/>
-        </viewerContribution>
-    </extension>
+  <!--   M E N U S  -->
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution allPopups="false" locationURI="menu:com.salesforce.ide.ui.menu.context?before=group0">
+      <command commandId="com.salesforce.ide.ui.command.mergeFields" helpContextId="com.salesforce.ide.documentation.mergeFields" id="mergeFields" label="%action.label" mnemonic="M" style="push" tooltip="%tooltip.MergeFields">
+        <visibleWhen checkEnabled="false">
+          <with variable="activeEditorId">
+            <or>
+              <equals value="com.salesforce.ide.ui.editors.apex"/>
+              <equals value="com.salesforce.ide.ui.editors.html"/>
+            </or>
+          </with>
+        </visibleWhen>
+      </command>
+    </menuContribution>
+  </extension>
+
+  <extension point="org.eclipse.ui.commands">
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.MergeFields"
+      helpContextId="com.salesforce.ide.documentation.mergeFields"
+      id="com.salesforce.ide.ui.command.mergeFields"
+      name="%action.label"
+      />
+  </extension>
+
+  <extension point="org.eclipse.ui.handlers">
+    <handler class="com.salesforce.ide.ui.editors.handlers.MergeFieldsHandler" commandId="com.salesforce.ide.ui.command.mergeFields">
+      <activeWhen>
+        <with variable="activeEditorId">
+          <or>
+            <equals value="com.salesforce.ide.ui.editors.apex"/>
+            <equals value="com.salesforce.ide.ui.editors.html"/>
+          </or>
+        </with>
+      </activeWhen>
+    </handler>
+  </extension>
 
     <!--   E D I T O R S  -->
     <extension point="org.eclipse.ui.editors">

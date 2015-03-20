@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.core.services;
 
-import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,8 +44,7 @@ public class RunTestsService extends BaseService {
     private static final Logger logger = Logger.getLogger(RunTestsService.class);
 
     public IDeployResultExt runTests(IResource projectResource, IProgressMonitor monitor)
-            throws ForceConnectionException, FactoryException, CoreException, InterruptedException, RemoteException,
-            ServiceException, ForceRemoteException {
+            throws ForceConnectionException, FactoryException, CoreException, InterruptedException, ServiceException, ForceRemoteException {
         Connection connection = getConnectionFactory().getConnection(projectResource.getProject());
         String[] testClazz = testCases(projectResource);
         ProjectPackageList projectPackageList =
@@ -62,12 +60,11 @@ public class RunTestsService extends BaseService {
      *
      * @throws InterruptedException
      * @throws ServiceException
-     * @throws RemoteException
      * @throws ForceRemoteException
      */
     public DeployResultExt runTests(Connection connection, ProjectPackageList projectPackageList, String[] tests,
-            LogInfo[] logInfos, IProgressMonitor monitor) throws ForceConnectionException, InterruptedException,
-            RemoteException, ServiceException, ForceRemoteException {
+            LogInfo[] logInfos, IProgressMonitor monitor) throws InterruptedException,
+            ServiceException, ForceRemoteException {
         DeployOptions deployOptions = getPackageDeployService().getRunTestDeployOptions(tests);
 
         DeployResultExt deployResultExt = null;
@@ -83,7 +80,7 @@ public class RunTestsService extends BaseService {
         return deployResultExt;
     }
 
-    private String[] testCases(IResource resource) throws ForceConnectionException, FactoryException, CoreException {
+    private String[] testCases(IResource resource) throws FactoryException, CoreException {
         if (resource == null) {
             throw new IllegalArgumentException("Resource cannot be null");
         }
@@ -104,11 +101,10 @@ public class RunTestsService extends BaseService {
      *
      * @param folder
      * @return
-     * @throws ForceConnectionException
      * @throws FactoryException
      * @throws CoreException
      */
-    private String[] testCases(IFolder folder) throws ForceConnectionException, FactoryException, CoreException {
+    private String[] testCases(IFolder folder) throws FactoryException, CoreException {
         if (folder == null) {
             throw new IllegalArgumentException("Folder cannot be null");
         }
@@ -162,7 +158,7 @@ public class RunTestsService extends BaseService {
         return classNames.toArray(new String[classNames.size()]);
     }
 
-    public String[] testCases(IFile componentFile) throws ForceConnectionException, FactoryException {
+    public String[] testCases(IFile componentFile) throws FactoryException {
         if (componentFile == null) {
             throw new IllegalArgumentException("File cannot be null");
         }

@@ -47,7 +47,7 @@ public class MetadataExt extends com.salesforce.ide.api.metadata.types.Metadata 
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public String getXMLString() throws JAXBException {
         // prepare body and save component
         Marshaller marshaller = JAXBContext.newInstance(getClass()).createMarshaller();

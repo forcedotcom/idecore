@@ -23,7 +23,6 @@ import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.core.remote.MetadataStubExt;
 import com.salesforce.ide.core.remote.ToolingStubExt;
@@ -90,7 +89,7 @@ public abstract class BaseRetryAspect implements Ordered {
     }
 
     public void evaluateLoginException(ForceConnectionException ex, JoinPoint joinPoint) throws InvalidLoginException,
-            ForceConnectionException, ForceRemoteException {
+            ForceConnectionException {
         if (isLoginExceptionRetryable(ex, joinPoint) || isConnectionExceptionRetryable(ex, joinPoint)) {
             return;
         }
@@ -98,8 +97,7 @@ public abstract class BaseRetryAspect implements Ordered {
         throw ex;
     }
 
-    private boolean isLoginExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint)
-            throws InvalidLoginException {
+    private boolean isLoginExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint) {
         Throwable th = ForceExceptionUtils.getRootCause(ex);
         String message = Utils.isNotEmpty(th.getMessage()) ? th.getMessage() : ex.getMessage();
 
@@ -121,14 +119,13 @@ public abstract class BaseRetryAspect implements Ordered {
     }
 
     public void evaluateConnectionException(ForceConnectionException ex, JoinPoint joinPoint)
-            throws ForceConnectionException, ForceRemoteException {
+            throws ForceConnectionException {
         if (!isConnectionExceptionRetryable(ex, joinPoint)) {
             throw ex;
         }
     }
 
-    private boolean isConnectionExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint)
-            throws ForceConnectionException, ForceRemoteException {
+    private boolean isConnectionExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint) {
         Throwable th = ForceExceptionUtils.getRootCause(ex);
         String message = Utils.isNotEmpty(th.getMessage()) ? th.getMessage() : ex.getMessage();
 
@@ -157,7 +154,7 @@ public abstract class BaseRetryAspect implements Ordered {
     }
 
     public void evaluateOperationsException(ForceConnectionException ex, JoinPoint joinPoint)
-            throws ForceConnectionException, ForceRemoteException {
+            throws ForceConnectionException {
         if (isConnectionExceptionRetryable(ex, joinPoint) || isOperationsExceptionRetryable(ex, joinPoint)) {
             return;
         }
@@ -165,8 +162,7 @@ public abstract class BaseRetryAspect implements Ordered {
         throw ex;
     }
 
-    private boolean isOperationsExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint)
-            throws ForceConnectionException, ForceRemoteException {
+    private boolean isOperationsExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint) {
         Throwable th = ForceExceptionUtils.getRootCause(ex);
         String message = Utils.isNotEmpty(th.getMessage()) ? th.getMessage() : ex.getMessage();
 
@@ -191,7 +187,7 @@ public abstract class BaseRetryAspect implements Ordered {
         }
     }
 
-    private boolean isExceptionRetryable(Exception ex, JoinPoint joinPoint) throws Exception {
+    private boolean isExceptionRetryable(Exception ex, JoinPoint joinPoint) {
         Throwable th = ForceExceptionUtils.getRootCause(ex);
         String message = Utils.isNotEmpty(th.getMessage()) ? th.getMessage() : ex.getMessage();
 
@@ -241,7 +237,7 @@ public abstract class BaseRetryAspect implements Ordered {
         return false;
     }
 
-    private void relogin(String code, JoinPoint joinPoint) throws ForceConnectionException, ForceRemoteException {
+    private void relogin(String code, JoinPoint joinPoint) {
         if (Utils.isEmpty(code)) {
             return;
         }
@@ -270,7 +266,7 @@ public abstract class BaseRetryAspect implements Ordered {
         return null;
     }
 
-    protected void refreshConnection(JoinPoint joinPoint) throws ForceConnectionException, ForceRemoteException {
+    protected void refreshConnection(JoinPoint joinPoint) {
         Object obj = joinPoint.getTarget();
         try {
             if (obj instanceof Connection) {

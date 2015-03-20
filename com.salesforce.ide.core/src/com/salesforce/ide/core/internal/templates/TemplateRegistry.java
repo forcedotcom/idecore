@@ -213,7 +213,7 @@ public class TemplateRegistry {
                 }
             }
 
-            if (Utils.isEmpty(templateName)) {
+            if (null == templateName || 0 == templateName.length()) {
                 logger.warn("Unable to add " + file.getAbsolutePath()
                     + " - unable to determine template name and/or max custom templates reached");
                 continue;
@@ -303,6 +303,7 @@ public class TemplateRegistry {
         File[] templates = null;
         if (directory.exists()) {
             templates = directory.listFiles(new FilenameFilter() {
+                @Override
                 public boolean accept(File dir, String name) {
                     return Utils.isNotEmpty(name) && name.endsWith("." + templateExtension);
                 }

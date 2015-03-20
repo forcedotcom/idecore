@@ -83,6 +83,7 @@ public class UpgradeProjectInspector extends Job implements IResourceChangeListe
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         if (!enabled) {
             logger.warn("Upgrade inspector disabled");
@@ -93,6 +94,7 @@ public class UpgradeProjectInspector extends Job implements IResourceChangeListe
 
         final Set<IProject> projects = new HashSet<IProject>();
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+            @Override
             public boolean visit(IResourceDelta delta) {
                 //only interested in changed resources (not added or removed)
                 if (delta.getResource().getType() != IResource.PROJECT
@@ -248,6 +250,7 @@ public class UpgradeProjectInspector extends Job implements IResourceChangeListe
 
             // let the workbench generate events to update all resources affected by a decorator
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 @SuppressWarnings("synthetic-access")
                 public void run() {
                     // remove online nature first to disable builder

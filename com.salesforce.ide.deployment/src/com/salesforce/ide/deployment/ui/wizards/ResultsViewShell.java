@@ -61,12 +61,14 @@ public class ResultsViewShell {
         ToolItem btnClose = new ToolItem (barCommands, SWT.PUSH | SWT.BORDER);
         btnClose.setText("Close");
         btnClose.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 shell.close();
                 if (logShellView != null) {
                     logShellView.close();
                 }
             }
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

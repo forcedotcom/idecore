@@ -30,6 +30,7 @@ public class DeploymentComponentSorter {
 
     static {
         sorters.put(SORT_ACTION, new Comparator<DeploymentComponent>() {
+            @Override
             public int compare(DeploymentComponent o1, DeploymentComponent o2) {
                 if (o1 == o2) {
                     return 0;
@@ -46,24 +47,28 @@ public class DeploymentComponentSorter {
         });
 
         sorters.put(SORT_NAME, new Comparator<DeploymentComponent>() {
+            @Override
             public int compare(DeploymentComponent o1, DeploymentComponent o2) {
                 return o1 == o2 ? 0 : String.CASE_INSENSITIVE_ORDER.compare(o1.getNameWithFolder(), o2.getNameWithFolder());
             }
         });
 
         sorters.put(SORT_PACKAGE_NAME, new Comparator<DeploymentComponent>() {
+            @Override
             public int compare(DeploymentComponent o1, DeploymentComponent o2) {
                 return o1 == o2 ? 0 : o1.getPackageName().compareTo(o2.getPackageName());
             }
         });
 
         sorters.put(SORT_TYPE, new Comparator<DeploymentComponent>() {
+            @Override
             public int compare(DeploymentComponent o1, DeploymentComponent o2) {
                 return o1 == o2 ? 0 : o1.getDisplayName().compareTo(o2.getDisplayName());
             }
         });
 
         sorters.put(SORT_FILENAME, new Comparator<DeploymentComponent>() {
+            @Override
             public int compare(DeploymentComponent o1, DeploymentComponent o2) {
                 if (o1 == o2) {
                     return 0;

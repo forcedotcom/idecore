@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
@@ -39,7 +38,7 @@ public class DeploymentOptions extends BasePropertyPage {
     private ProjectController projectController = null;
     private ForceProject forceProject;
 
-    public DeploymentOptions() throws ForceProjectException {
+    public DeploymentOptions() {
         super();
         projectController = new ProjectController();
     }

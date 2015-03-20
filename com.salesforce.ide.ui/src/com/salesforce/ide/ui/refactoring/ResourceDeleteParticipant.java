@@ -37,7 +37,6 @@ import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.dialogs.WebOnlyDeleteMessageDialog;
 import com.salesforce.ide.ui.internal.Messages;
 
@@ -68,97 +67,96 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
         // REVIEWME: what to do w/ ResourceChangeChecker and/or ValidateEditChecker
 
         Display.getDefault().syncExec(new Runnable() {
+            @Override
             public void run() {
                 Set<IResource> deletedResources =
                         deleteChange.getRefactorController().getRefactorModel().getChangeResources();
-                List<IResource> resources = new ArrayList<IResource>();
+                List<IResource> resources = new ArrayList<>();
                 StringBuffer buffer = new StringBuffer();
-                try {
-                    Component workflow =
-                            deleteChange.getComponentFactory().getComponentByComponentType(Constants.WORKFLOW);
-                    Component portal = deleteChange.getComponentFactory().getComponentByComponentType(Constants.PORTAL);
-                    Component site =
-                            deleteChange.getComponentFactory().getComponentByComponentType(Constants.CUSTOM_SITE);
+                Component workflow =
+                        deleteChange.getComponentFactory().getComponentByComponentType(Constants.WORKFLOW);
+                Component portal = deleteChange.getComponentFactory().getComponentByComponentType(Constants.PORTAL);
+                Component site =
+                        deleteChange.getComponentFactory().getComponentByComponentType(Constants.CUSTOM_SITE);
 
-                    List<IResource> workflows = new ArrayList<IResource>();
-                    List<IResource> sites = new ArrayList<IResource>();
-                    List<IResource> portals = new ArrayList<IResource>();
+                List<IResource> workflows = new ArrayList<>();
+                List<IResource> sites = new ArrayList<>();
+                List<IResource> portals = new ArrayList<>();
 
-                    for (Object o : deletedResources) {
-                        if (o instanceof IFile) {
-                            IFile file = (IFile) o;
+                for (Object o : deletedResources) {
+                    if (o instanceof IFile) {
+                        IFile file = (IFile) o;
 
-                            if (file.getFileExtension().equals(portal.getFileExtension())) {
-                                resources.add(file);
-                                portals.add(file);
-                            }
-
-                            else if (file.getFileExtension().equals(site.getFileExtension())) {
-                                resources.add(file);
-                                sites.add(file);
-                            }
-
-                            else if (file.getFileExtension().equals(workflow.getFileExtension())) {
-                                resources.add(file);
-                                workflows.add(file);
-                            }
-                        }
-                    }
-
-                    Collections.sort(portals, new Comparator<IResource>() {
-                        public int compare(IResource o1, IResource o2) {
-                            return o1.getName().compareToIgnoreCase(o2.getName());
-                        }
-                    });
-
-                    Collections.sort(sites, new Comparator<IResource>() {
-                        public int compare(IResource o1, IResource o2) {
-                            return o1.getName().compareToIgnoreCase(o2.getName());
-                        }
-                    });
-
-                    Collections.sort(workflows, new Comparator<IResource>() {
-                        public int compare(IResource o1, IResource o2) {
-                            return o1.getName().compareToIgnoreCase(o2.getName());
-                        }
-                    });
-
-                    for (IResource file : portals) {
-                        addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message, file
-                                .getName()), NLS.bind(
-                            Messages.ResourceDeleteParticipant_remotePortalConfirmation_message, resources
-                                    .indexOf(file), file.getFullPath().removeFileExtension().lastSegment()));
-                    }
-
-                    for (IResource file : sites) {
-                        addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message, file
-                                .getName()), NLS.bind(
-                            Messages.ResourceDeleteParticipant_remoteSiteConfirmation_message, resources.indexOf(file),
-                            file.getFullPath().removeFileExtension().lastSegment()));
-                    }
-
-                    if (workflows.size() == 1) {
-                        IResource file = workflows.get(0);
-
-                        addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message, file
-                                .getName()), NLS.bind(
-                            Messages.ResourceDeleteParticipant_remoteWorkflowConfirmation_message, resources
-                                    .indexOf(file)));
-                    }
-
-                    else if (workflows.size() > 0) {
-                        for (IResource file : workflows) {
-                            addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message,
-                                file.getName()));
+                        if (file.getFileExtension().equals(portal.getFileExtension())) {
+                            resources.add(file);
+                            portals.add(file);
                         }
 
-                        addBullet(buffer, NLS.bind(
-                            Messages.ResourceDeleteParticipant_remoteWorkflowConfirmation_message, resources
-                                    .indexOf(workflows.get(0))));
+                        else if (file.getFileExtension().equals(site.getFileExtension())) {
+                            resources.add(file);
+                            sites.add(file);
+                        }
+
+                        else if (file.getFileExtension().equals(workflow.getFileExtension())) {
+                            resources.add(file);
+                            workflows.add(file);
+                        }
+                    }
+                }
+
+                Collections.sort(portals, new Comparator<IResource>() {
+                    @Override
+                    public int compare(IResource o1, IResource o2) {
+                        return o1.getName().compareToIgnoreCase(o2.getName());
+                    }
+                });
+
+                Collections.sort(sites, new Comparator<IResource>() {
+                    @Override
+                    public int compare(IResource o1, IResource o2) {
+                        return o1.getName().compareToIgnoreCase(o2.getName());
+                    }
+                });
+
+                Collections.sort(workflows, new Comparator<IResource>() {
+                    @Override
+                    public int compare(IResource o1, IResource o2) {
+                        return o1.getName().compareToIgnoreCase(o2.getName());
+                    }
+                });
+
+                for (IResource file : portals) {
+                    addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message, file
+                            .getName()), NLS.bind(
+                        Messages.ResourceDeleteParticipant_remotePortalConfirmation_message, resources
+                                .indexOf(file), file.getFullPath().removeFileExtension().lastSegment()));
+                }
+
+                for (IResource file : sites) {
+                    addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message, file
+                            .getName()), NLS.bind(
+                        Messages.ResourceDeleteParticipant_remoteSiteConfirmation_message, resources.indexOf(file),
+                        file.getFullPath().removeFileExtension().lastSegment()));
+                }
+
+                if (workflows.size() == 1) {
+                    IResource file = workflows.get(0);
+
+                    addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message, file
+                            .getName()), NLS.bind(
+                        Messages.ResourceDeleteParticipant_remoteWorkflowConfirmation_message, resources
+                                .indexOf(file)));
+                }
+
+                else if (workflows.size() > 0) {
+                    for (IResource file : workflows) {
+                        addBullet(buffer, NLS.bind(Messages.ResourceDeleteParticipant_fileLocallyDeleted_message,
+                            file.getName()));
                     }
 
-                } catch (FactoryException e) {
-                    logger.error("Could not get Workflow component", e); //$NON-NLS-1$
+                    addBullet(buffer, NLS.bind(
+                        Messages.ResourceDeleteParticipant_remoteWorkflowConfirmation_message, resources
+                                .indexOf(workflows.get(0))));
                 }
 
                 boolean showWarning = true;
@@ -202,7 +200,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
         return refactoringStatus;
     }
 
-    private void addBullet(StringBuffer buffer, String... msgs) {
+    private static void addBullet(StringBuffer buffer, String... msgs) {
         buffer.append("<li>"); //$NON-NLS-1$
         for (String msg : msgs) {
             buffer.append(msg);
@@ -229,9 +227,6 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
             try {
                 deleteChange = new DeleteChange();
                 deleteChange.initialize(resource, new NullProgressMonitor());
-            } catch (ForceProjectException e) {
-                // catch exception because exceptions cause the participant to become deactivated for future refactorings
-                logger.error("Unable to create delete instance", e);
             } catch (FactoryException e) {
                 // catch exception because exceptions cause the participant to become deactivated for future refactorings
                 logger.error(
@@ -243,7 +238,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
                         + "': " + logMessage, e);
             } catch (InterruptedException e) {
                 logger.warn("Operation canceled by user");
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 // catch exception because exceptions cause the participant to become deactivated for future refactorings
                 logger.warn(e.getClass().getSimpleName() + " occurred while initializing delete change", e);
             }
@@ -256,12 +251,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
     @Override
     public Change createChange(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
         if (deleteChange == null) {
-            try {
-                deleteChange = new DeleteChange();
-            } catch (ForceProjectException e) {
-                // catch exception because exceptions cause the participant to become deactivated for future refactorings
-                logger.error("Unable to create delete instance", e);
-            }
+            deleteChange = new DeleteChange();
         }
         return deleteChange;
     }
@@ -271,6 +261,7 @@ public class ResourceDeleteParticipant extends DeleteParticipant implements ISha
         return Constants.PLUGIN_NAME + " Delete Resource Participant";
     }
 
+    @Override
     public void addElement(Object element, RefactoringArguments arguments) {
         if (element instanceof IResource == false || ((IResource) element).getType() != IResource.FILE) {
             return;

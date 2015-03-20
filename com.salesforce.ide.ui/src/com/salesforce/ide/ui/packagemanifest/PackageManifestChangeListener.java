@@ -31,6 +31,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import com.salesforce.ide.api.metadata.types.Package;
 import com.salesforce.ide.api.metadata.types.PackageTypeMembers;
@@ -39,8 +40,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.ui.actions.RefreshResourceAction;
+import com.salesforce.ide.ui.handlers.RefreshResourceHandler;
 import com.salesforce.ide.ui.internal.Messages;
 import com.salesforce.ide.ui.internal.startup.ForceStartup;
 
@@ -54,6 +54,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
     private static Logger logger = Logger.getLogger(PackageManifestChangeListener.class);
     private static PackageManifestFactory pmf = new PackageManifestFactory();
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         //we are only interested in POST_CHANGE events
         if (event.getType() != IResourceChangeEvent.POST_CHANGE)
@@ -62,6 +63,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
 
         final Set<IResource> changed = new HashSet<IResource>();
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+            @Override
             public boolean visit(IResourceDelta delta) {
                 int kind = delta.getKind();
 
@@ -107,39 +109,26 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
                         final Package newPackage = getPackage(resource);
 
                         Display.getDefault().asyncExec(new Runnable() {
+                            @Override
                             public void run() {
-                                try {
-                                    // remove ourself so that we don't receive new events while processing old ones 
-                                    // (RefreshResourceAction will touch package.xml causing an infinite dialog loop)
-                                    // TODO investigate whether new events should be combined with old events
-                                    ForceStartup.removePackageManifestChangeListener();
-                                    final Package oldPackage = ForceStartup.getManifestCache().get(resource);
+                                // TODO investigate whether new events should be combined with old events
+                                final Package oldPackage = ForceStartup.getManifestCache().get(resource);
 
-                                    if (!isEqual(oldPackage, newPackage)) {
-                                        ForceStartup.getManifestCache().put(resource, newPackage);
+                                if (!isEqual(oldPackage, newPackage)) {
+                                    ForceStartup.getManifestCache().put(resource, newPackage);
 
-                                        if (logger.isDebugEnabled()) {
-                                            logger.debug("Manifest resource '"
-                                                    + resource.getFullPath().toPortableString()
-                                                    + "' found to be refresh-able");
-                                        }
-
-                                        if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
-                                            Messages.PackageManifestChangeListener_dialog_title, NLS.bind(
-                                                Messages.PackageManifestChangeListener_dialog_message, resource
-                                                        .getFullPath(), project.getName()))) {
-                                            RefreshResourceAction action = new RefreshResourceAction();
-                                            action.selectionChanged(null, new StructuredSelection(project));
-                                            action.run(null);
-                                        }
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("Manifest resource '"
+                                                + resource.getFullPath().toPortableString()
+                                                + "' found to be refresh-able");
                                     }
 
-                                } catch (ForceProjectException e) {
-                                    logger.warn("An error occured while refreshing " + project.getName() + ": "
-                                            + ForceExceptionUtils.getRootCauseMessage(e));
-                                } finally {
-                                    // add ourself since we removed above
-                                    ForceStartup.addPackageManifestChangeListener();
+                                    if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
+                                        Messages.PackageManifestChangeListener_dialog_title, NLS.bind(
+                                            Messages.PackageManifestChangeListener_dialog_message, resource
+                                                    .getFullPath(), project.getName()))) {
+                                        RefreshResourceHandler.execute(PlatformUI.getWorkbench(), new StructuredSelection(project));
+                                    }
                                 }
                             }
                         });
@@ -152,7 +141,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
         }
     }
 
-    private Package getPackage(IResource resource) {
+    private static Package getPackage(IResource resource) {
         try {
             return pmf.getPackageManifestFromFile((IFile) resource);
         } catch (Exception e) {
@@ -164,12 +153,13 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
     }
 
     private static Comparator<PackageTypeMembers> typeComparator = new Comparator<PackageTypeMembers>() {
+        @Override
         public int compare(PackageTypeMembers o1, PackageTypeMembers o2) {
             return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
         }
     };
 
-    private boolean isEqual(Package p1, Package p2) {
+    private static boolean isEqual(Package p1, Package p2) {
         List<PackageTypeMembers> p1Types = p1.getTypes();
         List<PackageTypeMembers> p2Types = p2.getTypes();
 

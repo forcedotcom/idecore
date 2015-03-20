@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import com.salesforce.ide.core.internal.utils.LoggingInfo;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.views.LoggingComposite;
 
@@ -36,7 +35,7 @@ public class ApexCodePropertyPage extends BasePropertyPage {
 
     private LoggingInfo[] cachedRunTestLoggingSetting;
 
-    public ApexCodePropertyPage() throws ForceProjectException {
+    public ApexCodePropertyPage() {
         super();
     }
 

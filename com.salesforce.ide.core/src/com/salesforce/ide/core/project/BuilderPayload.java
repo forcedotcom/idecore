@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.factories.FactoryLocator;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -60,7 +59,7 @@ public class BuilderPayload {
         this.project = project;
     }
 
-    public BuilderPayload(IProject project, ComponentList componentList) throws BuilderException {
+    public BuilderPayload(IProject project, ComponentList componentList) {
         this.project = project;
         setComponentList(componentList);
     }
@@ -237,7 +236,7 @@ public class BuilderPayload {
     }
 
     private void filterComponentsInConflict(ProjectPackageList projectPackageList, IProgressMonitor monitor)
-            throws ForceConnectionException, FactoryException, InterruptedException, IOException, ForceRemoteException,
+            throws ForceConnectionException, InterruptedException, IOException, ForceRemoteException,
             ServiceException {
         if (logger.isDebugEnabled()) {
             logger.debug("Filtering components in conflict...");
@@ -256,7 +255,8 @@ public class BuilderPayload {
                     monitor);
 
         if (retrieveResultHandler == null) {
-            logger.warn("Unable to perform conflict check - retrieve handler null for " + connection.getLogDisplay()
+            String logDisplay = null == connection ? "" : connection.getLogDisplay();
+            logger.warn("Unable to perform conflict check - retrieve handler null for " + logDisplay
                 + " and project package " + projectPackageList);
             return;
         }

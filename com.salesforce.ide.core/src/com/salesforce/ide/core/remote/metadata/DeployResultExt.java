@@ -37,10 +37,12 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		this.messageHandler = messageHandler;
 	}
 
+    @Override
     public DeployResult getDeployResult() {
 		return deployResult;
 	}
 
+    @Override
     public RunTestsResult getRunTestsResult() {
     	if (deployResult != null) {
     		return deployResult.getDetails().getRunTestResult();
@@ -48,6 +50,7 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		return null;
 	}
 
+    @Override
     public RunTestsResultExt getRunTestsResultHandler() {
     	if (deployResult != null) {
     		return new RunTestsResultExt(deployResult.getDetails().getRunTestResult());
@@ -55,14 +58,16 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		return null;
 	}
 
-	public DeployMessageExt getMessageHandler() {
+	@Override
+    public DeployMessageExt getMessageHandler() {
 		if (deployResult != null && messageHandler == null) {
 			messageHandler = new DeployMessageExt(getMessages(deployResult));
 		}
 		return messageHandler;
 	}
 
-	public boolean hasRetriveResult() {
+	@Override
+    public boolean hasRetriveResult() {
 		boolean result = false;
 		if (deployResult != null && deployResult.getDetails().getRetrieveResult() != null) {
 			result = true;
@@ -70,14 +75,16 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		return result;
 	}
 
-	public RetrieveResultExt getRetrieveResultHandler() {
+	@Override
+    public RetrieveResultExt getRetrieveResultHandler() {
 		if (deployResult != null && deployResult.getDetails().getRetrieveResult() != null) {
 			retrieveHandler = new RetrieveResultExt(deployResult.getDetails().getRetrieveResult());
 		}
 		return retrieveHandler;
 	}
 
-	public int getMessageCount() {
+	@Override
+    public int getMessageCount() {
 		int count = 0;
 		DeployMessage[] messages = getMessages(deployResult);
         if (deployResult != null && Utils.isNotEmpty(messages)) {
@@ -86,11 +93,13 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		return count;
 	}
 
-	public boolean hasMessages() {
+	@Override
+    public boolean hasMessages() {
 		return getMessageCount() > 0;
 	}
 
-	public boolean isSuccess() {
+	@Override
+    public boolean isSuccess() {
 		boolean success = false;
 		if (deployResult != null) {
 			return deployResult.isSuccess();
@@ -98,7 +107,8 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		return success;
 	}
 
-	public String getDebugLog() {
+	@Override
+    public String getDebugLog() {
 		return debugLog;
 	}
 
@@ -106,7 +116,7 @@ public class DeployResultExt implements IMetadataResultExt, IDeployResultExt {
 		this.debugLog = debugLog;
 	}
 	
-	private DeployMessage[] getMessages(DeployResult deployResult){
+	private static DeployMessage[] getMessages(DeployResult deployResult){
         DeployMessage[] componentSuccesses = deployResult.getDetails().getComponentSuccesses();
         DeployMessage[] componentFailures = deployResult.getDetails().getComponentFailures();
         DeployMessage[] combined = new DeployMessage[componentSuccesses.length + componentFailures.length];

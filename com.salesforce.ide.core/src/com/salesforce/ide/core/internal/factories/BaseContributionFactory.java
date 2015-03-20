@@ -43,6 +43,7 @@ public abstract class BaseContributionFactory implements IContributionFactory {
     /* (non-Javadoc)
      * @see com.salesforce.ide.ui.internal.factories.IContributionFactory#setContributionTemplate(java.lang.String)
      */
+    @Override
     public void setContributionTemplate(String contributionTemplate) {
         this.contributionTemplate = contributionTemplate;
     }

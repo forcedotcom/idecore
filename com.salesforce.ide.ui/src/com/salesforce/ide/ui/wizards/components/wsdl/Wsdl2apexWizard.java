@@ -75,6 +75,7 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
         return this.generator;
     }
 
+    @Override
     public void addPages() {
         setWindowTitle("Convert WSDL File to Apex");
         this.convertPage = new Wsdl2apexWizardFindPage();
@@ -97,6 +98,7 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
     public boolean performFinish() {
         try {
             getContainer().run(true, true, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     exec();
                 }

@@ -136,6 +136,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
 
         wsdlFileField = new Text(container, SWT.BORDER);
         wsdlFileField.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 updatePageComplete();
             }
@@ -144,6 +145,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
         wsdlFileField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         final Button button = new Button(container, SWT.NONE);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 browseForWsdlFile();
             }
@@ -160,6 +162,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
         combo.setItems(new String[] { "True", "False" });
         combo.setText("True");
         combo.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 setAsyncTrue(Boolean.valueOf(combo.getText()));
             }

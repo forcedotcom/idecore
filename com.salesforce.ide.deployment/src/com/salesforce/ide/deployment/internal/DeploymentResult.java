@@ -181,7 +181,7 @@ public class DeploymentResult {
         return strBuff.toString();
     }
 
-    private String getActionString(DeployMessage deployMessage) {
+    private static String getActionString(DeployMessage deployMessage) {
         if (deployMessage.isChanged()) {
             return "UPDATED";
         } else if (deployMessage.isCreated()) {
@@ -200,9 +200,7 @@ public class DeploymentResult {
 
         IRunTestsResultExt runResults = new RunTestsResultExt(deployResultHandler.getDeployResult().getDetails().getRunTestResult());
         String resultsLog = null;
-        if (runResults != null) {
-            resultsLog = runResults.toLog();
-        }
+        resultsLog = runResults.toLog();
         return resultsLog;
     }
 }

@@ -61,7 +61,7 @@ public class ProxyManager {
         return isBundleAvailable(Constants.PROXY_BUNDLE_3_3);
     }
 
-    private boolean isBundleAvailable(String bundleId) {
+    private static boolean isBundleAvailable(String bundleId) {
         Bundle proxyBundle = Platform.getBundle(bundleId);
         return proxyBundle != null && proxyBundle.getState() == Bundle.ACTIVE;
     }
@@ -72,7 +72,7 @@ public class ProxyManager {
         proxyService.dispose();
     }
 
-    private void setNetworkAddressCache(String positive, String negative) {
+    private static void setNetworkAddressCache(String positive, String negative) {
         // java.security to indicate the caching policy for successful and unsuccessful (negative)
         // name lookups from the name service
         System.setProperty("networkaddress.cache.ttl", positive);

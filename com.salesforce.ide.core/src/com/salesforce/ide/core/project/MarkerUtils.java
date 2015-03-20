@@ -447,7 +447,7 @@ public class MarkerUtils {
         }
     }
 
-    private ISchedulingRule getRule(IResource resource) {
+    private static ISchedulingRule getRule(IResource resource) {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = ruleFactory.markerRule(resource.getProject());

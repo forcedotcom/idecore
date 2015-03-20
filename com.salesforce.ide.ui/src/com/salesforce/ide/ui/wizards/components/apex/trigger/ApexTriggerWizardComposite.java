@@ -97,10 +97,12 @@ public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
 
     private Button createTriggerOperationButton(String text) {
         SelectionListener selectionListener = new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 getComponentWizardPage().validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

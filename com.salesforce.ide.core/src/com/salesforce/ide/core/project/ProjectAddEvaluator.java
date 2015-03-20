@@ -58,9 +58,11 @@ public class ProjectAddEvaluator implements IResourceChangeListener {
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         final Set<IProject> projects = new HashSet<IProject>();
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+            @Override
             public boolean visit(IResourceDelta delta) {
                 try {
                     //only interested in added force.com projects

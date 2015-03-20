@@ -31,7 +31,6 @@ import org.eclipse.swt.graphics.Color;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.util.ApexCodeColorProvider;
@@ -151,7 +150,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         return wordRule;
     }
 
-    public DescribeObjectRegistry getDescribeObjectRegistry() throws ForceProjectException {
+    public DescribeObjectRegistry getDescribeObjectRegistry() {
         return (DescribeObjectRegistry) ContainerDelegate.getInstance().getBean(DescribeObjectRegistry.class);
     }
 
@@ -165,7 +164,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         return super.read();
     }
 
-    private TextAttribute getBoldTextAttribute(Color color) {
+    private static TextAttribute getBoldTextAttribute(Color color) {
         TextAttribute textAttribute = new TextAttribute(color, null, SWT.BOLD);
         return textAttribute;
     }

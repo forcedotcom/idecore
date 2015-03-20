@@ -26,6 +26,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getDmlInfo()
     */
+    @Override
     public ICodeLocationExt[] getDmlInfo() {
         ICodeLocationExt[] codeLocations = null;
         if (Utils.isNotEmpty(codeCoverageResult.getDmlInfo())) {
@@ -40,6 +41,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getDmlInfo(int)
     */
+    @Override
     public ICodeLocationExt getDmlInfo(int i) {
         return new com.salesforce.ide.core.remote.metadata.CodeLocationExt(codeCoverageResult.getDmlInfo()[i]);
     }
@@ -47,6 +49,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getId()
     */
+    @Override
     public String getId() {
         return codeCoverageResult.getId().toString();
     }
@@ -54,6 +57,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getLocationsNotCovered()
     */
+    @Override
     public ICodeLocationExt[] getLocationsNotCovered() {
         ICodeLocationExt[] codeLocations = null;
         if (Utils.isNotEmpty(codeCoverageResult.getLocationsNotCovered())) {
@@ -68,6 +72,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getLocationsNotCovered(int)
     */
+    @Override
     public ICodeLocationExt getLocationsNotCovered(int i) {
         return new com.salesforce.ide.core.remote.metadata.CodeLocationExt(codeCoverageResult.getLocationsNotCovered()[i]);
     }
@@ -75,6 +80,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getMethodInfo()
     */
+    @Override
     public ICodeLocationExt[] getMethodInfo() {
         ICodeLocationExt[] codeLocations = null;
         if (Utils.isNotEmpty(codeCoverageResult.getMethodInfo())) {
@@ -89,6 +95,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getMethodInfo(int)
     */
+    @Override
     public ICodeLocationExt getMethodInfo(int i) {
         return new CodeLocationExt(codeCoverageResult.getMethodInfo()[i]);
     }
@@ -96,6 +103,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getName()
     */
+    @Override
     public java.lang.String getName() {
         return codeCoverageResult.getName();
     }
@@ -103,6 +111,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getNamespace()
     */
+    @Override
     public java.lang.String getNamespace() {
         return codeCoverageResult.getNamespace();
     }
@@ -110,6 +119,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getNumLocations()
     */
+    @Override
     public int getNumLocations() {
         return codeCoverageResult.getNumLocations();
     }
@@ -117,6 +127,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getNumLocationsNotCovered()
     */
+    @Override
     public int getNumLocationsNotCovered() {
         return codeCoverageResult.getNumLocationsNotCovered();
     }
@@ -124,6 +135,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getSoqlInfo()
     */
+    @Override
     public ICodeLocationExt[] getSoqlInfo() {
         ICodeLocationExt[] codeLocations = null;
         if (Utils.isNotEmpty(codeCoverageResult.getSoqlInfo())) {
@@ -138,6 +150,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getSoqlInfo(int)
     */
+    @Override
     public ICodeLocationExt getSoqlInfo(int i) {
         return new com.salesforce.ide.core.remote.metadata.CodeLocationExt(codeCoverageResult.getSoqlInfo()[i]);
     }
@@ -145,6 +158,7 @@ public class CodeCoverageResultExt implements ICodeCoverageResultExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageResultExt#getType()
     */
+    @Override
     public java.lang.String getType() {
         return codeCoverageResult.getType();
     }

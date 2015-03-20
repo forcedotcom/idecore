@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Listener;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.PackageManifestModel;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
@@ -66,18 +65,19 @@ public class ProjectCustomComponentsComposite extends Composite {
     protected StatusLineLink statusLine2 = null;
 
     public ProjectCustomComponentsComposite(Composite parent, int style, PackageManifestModel packageManifestModel,
-            Connection connection) throws ForceProjectException {
+            Connection connection) {
         super(parent, style);
         this.packageManifestModel = packageManifestModel;
         this.connection = connection;
         initialize();
     }
 
-    protected void initialize() throws ForceProjectException {
+    protected void initialize() {
         setLayout(new GridLayout(1, false));
 
         // adjust size of manifest tree
         addListener(SWT.Resize, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 Rectangle rect = UIUtils.getClientArea(getShell());
                 GridData gdPackageManifestTree = (GridData) packageManifestTree.getLayoutData();
@@ -128,6 +128,7 @@ public class ProjectCustomComponentsComposite extends Composite {
         // handles storing package manifest cache w/ newly create project
         ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 
+            @Override
             public void resourceChanged(IResourceChangeEvent event) {
                 if (packageManifestModel == null || packageManifestModel.getProject() == null
                         || packageManifestTree == null) {
@@ -198,7 +199,7 @@ public class ProjectCustomComponentsComposite extends Composite {
         layout(true, true);
     }
 
-    private void updateStatusWork(IStatus status, StatusLineLink statusLine) {
+    private static void updateStatusWork(IStatus status, StatusLineLink statusLine) {
         if (statusLine != null && !statusLine.isDisposed()) {
             statusLine.setErrorStatus(status);
         }
@@ -222,7 +223,7 @@ public class ProjectCustomComponentsComposite extends Composite {
         protected Button btnCollapseAll;
         protected Button btnRefresh;
 
-        public ProjectPackageManifestTree(Composite parent, int treeStyle) throws ForceProjectException {
+        public ProjectPackageManifestTree(Composite parent, int treeStyle) {
             super(parent, treeStyle);
 
             // if null, clears cache (during project create b/c file has not been created yet) 
@@ -349,10 +350,12 @@ public class ProjectCustomComponentsComposite extends Composite {
                 btnSelectAll = new Button(this, SWT.PUSH);
                 btnSelectAll.setLayoutData(new GridData(SWT.BEGINNING, SWT.BOTTOM, false, true, 1, 0));
                 btnSelectAll.addSelectionListener(new SelectionListener() {
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         widgetDefaultSelected(e);
                     }
 
+                    @Override
                     public void widgetDefaultSelected(SelectionEvent e) {
                         selectAllAction.run();
                     }
@@ -361,10 +364,12 @@ public class ProjectCustomComponentsComposite extends Composite {
                 btnDeSelectAll = new Button(this, SWT.PUSH);
                 btnDeSelectAll.setLayoutData(new GridData(SWT.BEGINNING, SWT.BOTTOM, false, true, 1, 0));
                 btnDeSelectAll.addSelectionListener(new SelectionListener() {
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         widgetDefaultSelected(e);
                     }
 
+                    @Override
                     public void widgetDefaultSelected(SelectionEvent e) {
                         deselectAllAction.run();
                     }
@@ -392,10 +397,12 @@ public class ProjectCustomComponentsComposite extends Composite {
                 btnExpandAll = new Button(this, SWT.PUSH);
                 btnExpandAll.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, true, 1, 0));
                 btnExpandAll.addSelectionListener(new SelectionListener() {
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         widgetDefaultSelected(e);
                     }
 
+                    @Override
                     public void widgetDefaultSelected(SelectionEvent e) {
                         getExpandAllAction().run();
                     }
@@ -404,10 +411,12 @@ public class ProjectCustomComponentsComposite extends Composite {
                 btnCollapseAll = new Button(this, SWT.PUSH);
                 btnCollapseAll.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, true, 1, 0));
                 btnCollapseAll.addSelectionListener(new SelectionListener() {
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         widgetDefaultSelected(e);
                     }
 
+                    @Override
                     public void widgetDefaultSelected(SelectionEvent e) {
                         getCollapseAllAction().run();
                     }
@@ -416,28 +425,36 @@ public class ProjectCustomComponentsComposite extends Composite {
                 btnRefresh = new Button(this, SWT.PUSH);
                 btnRefresh.setLayoutData(new GridData(SWT.END, SWT.BOTTOM, false, true, 1, 0));
                 btnRefresh.addSelectionListener(new SelectionListener() {
+                    @Override
                     public void widgetDefaultSelected(SelectionEvent e) {
                         lblLastUpdatedPackageManifestCache.setText("");
                         getRefreshAction().run();
 
                         getRefreshAction().job.addJobChangeListener(new IJobChangeListener() {
+                            @Override
                             public void done(IJobChangeEvent event) {
                                 updateCacheTimestamp(packageManifestTree);
                             }
 
+                            @Override
                             public void aboutToRun(IJobChangeEvent event) {}
 
+                            @Override
                             public void awake(IJobChangeEvent event) {}
 
+                            @Override
                             public void running(IJobChangeEvent event) {}
 
+                            @Override
                             public void scheduled(IJobChangeEvent event) {}
 
+                            @Override
                             public void sleeping(IJobChangeEvent event) {}
                         });
 
                     }
 
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         widgetDefaultSelected(e);
                     }

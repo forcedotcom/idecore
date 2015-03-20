@@ -125,6 +125,7 @@ public abstract class BaseComponentSynchronizeModelOperation extends Synchronize
 
     protected void showErrorAsync(final Exception e, final boolean displayTrace, final String message) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 Utils.openError(e, displayTrace, message);
             }
@@ -141,6 +142,7 @@ public abstract class BaseComponentSynchronizeModelOperation extends Synchronize
             this.message = message;
         }
 
+        @Override
         public void run() {
             confirm = Utils.openQuestion(title, message);
         }

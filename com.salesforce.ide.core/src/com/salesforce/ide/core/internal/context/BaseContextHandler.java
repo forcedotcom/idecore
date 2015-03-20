@@ -65,10 +65,12 @@ public abstract class BaseContextHandler implements IContextHandler {
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContextHandler#initApplicationContext(java.lang.String[])
      */
+    @Override
     public void initApplicationContext(String[] contextLocations) throws ForceProjectException {
         loadApplicationContext(contextLocations, true);
     }
 
+    @Override
     public void loadApplicationContext(String[] contextLocations, boolean classpath) throws ForceProjectException {
         if (Utils.isEmpty(contextLocations)) {
             throw new IllegalArgumentException("Context locations cannot be null or empty");
@@ -126,6 +128,7 @@ public abstract class BaseContextHandler implements IContextHandler {
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContextHandler#getBean(java.lang.Class)
      */
+    @Override
     public Object getBean(Class<?> clazz) throws ForceProjectException {
         if (applicationContext == null) {
             initApplicationContext();
@@ -146,17 +149,17 @@ public abstract class BaseContextHandler implements IContextHandler {
             logger.error("Unable to get bean for id '" + name + "'");
             logBeans();
             ForceExceptionUtils.throwNewForceProjectException("Unable to get bean for id '" + name + "'");
-        }
-
-        if (logger.isDebugEnabled()) {
+        } else if (logger.isDebugEnabled()) {
             logger.debug("Got bean of class '" + bean.getClass().getName() + "' for id '" + name + "'");
         }
+
         return bean;
     }
 
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContextHandler#getBean(java.lang.String)
      */
+    @Override
     public Object getBean(String name) throws ForceProjectException {
         if (applicationContext == null) {
             initApplicationContext();
@@ -174,17 +177,17 @@ public abstract class BaseContextHandler implements IContextHandler {
             logger.warn("Unable to get bean for id '" + name + "'");
             logBeans();
             ForceExceptionUtils.throwNewForceProjectException("Unable to get bean for id '" + name + "'");
-        }
-
-        if (logger.isDebugEnabled()) {
+        } else if (logger.isDebugEnabled()) {
             logger.debug("Got bean of class '" + bean.getClass().getName() + "' for id '" + name + "'");
         }
+
         return bean;
     }
 
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContextHandler#dispose()
      */
+    @Override
     public void dispose() {
         try {
             FactoryLocator factoryLocator = (FactoryLocator) getBean(FactoryLocator.class);
