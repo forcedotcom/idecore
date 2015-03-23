@@ -6425,14 +6425,12 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
       <xsd:sequence>
        <xsd:element name="Breakpoint" minOccurs="0" type="tns:ApexDebuggerBreakpoint" nillable="true"/>
        <xsd:element name="BreakpointId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ClassBody" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="CurrencyIsoCode" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="Description" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="FileName" minOccurs="0" type="xsd:string" nillable="true"/>
-       <xsd:element name="HasClassBody" minOccurs="0" type="xsd:boolean" nillable="true"/>
        <xsd:element name="IsDeleted" minOccurs="0" type="xsd:boolean" nillable="true"/>
        <xsd:element name="IsLocked" minOccurs="0" type="xsd:boolean" nillable="true"/>
        <xsd:element name="LastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
