@@ -50,6 +50,7 @@ public class RunTestView extends BaseViewPart {
 
     public static final String VIEW_NAME = "Apex Test Runner";
     public static final String DEBUG_LOG = "Debug Log";
+    public static final String DEBUG_USER_LOG = "Debug User Log";
     protected RunTestViewComposite runTestComposite = null;
     protected IResource resource = null;
     protected IProject project = null;
@@ -142,8 +143,24 @@ public class RunTestView extends BaseViewPart {
         IRunTestsResultExt runTestResults = new RunTestsResultExt(deployResult);
         if (runTestResults.getDebugInfo() != null && Utils.isNotEmpty(runTestResults.getDebugInfo().getDebugLog())) {
             runTestComposite.getTextArea().setText(DEBUG_LOG + ":\n\n" + runTestResults.getDebugInfo().getDebugLog());
+            String finalResult = "";
+            String debugResult = runTestResults.getDebugInfo().getDebugLog();
+            if (debugResult.contains("DEBUG")) {
+                String[] newDateWithSperators = debugResult.split("\\|");
+                for (int index = 0; index < newDateWithSperators.length; index++) {
+                    String newDateWithSperator = newDateWithSperators[index];
+                    if (newDateWithSperator.contains("USER_DEBUG")) {
+                        String debugData = newDateWithSperators[index + 3];
+                        debugData = debugData.substring(0, debugData.lastIndexOf('\n'));
+                        finalResult += "\n" + debugData + "\n";
+                    }
+
+                }
+            }
+            runTestComposite.getUserLogsTextArea().setText(DEBUG_USER_LOG + ":\n\n" + finalResult);
         } else {
             runTestComposite.getTextArea().setText("No Debug Logs");
+            runTestComposite.getUserLogsTextArea().setText("No Debug Logs");
         }
 
         if (project != null) {
