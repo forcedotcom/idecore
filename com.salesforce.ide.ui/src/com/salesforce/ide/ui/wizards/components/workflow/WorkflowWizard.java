@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.workflow;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.core.internal.components.workflow.WorkflowComponentController;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
@@ -28,14 +25,6 @@ public class WorkflowWizard extends ComponentWizard {
     public WorkflowWizard() throws ForceProjectException {
         super();
         controller = new WorkflowComponentController();
-    }
-
-    public WorkflowWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public WorkflowWizard(IFolder folder, IProject project) {
-        super(folder, project);
     }
 
     @Override

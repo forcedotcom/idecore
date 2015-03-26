@@ -618,7 +618,7 @@ public class Component extends ComponentResource {
     public Set<String> getTemplateNames(boolean sort) {
         Map<String, String> templates = getTemplates();
         if (Utils.isEmpty(templates)) {
-            logger.warn("Not templates found");
+            logger.debug("No templates found");
             return null;
         }
 
@@ -628,7 +628,7 @@ public class Component extends ComponentResource {
     public String getTemplate(String templateName) {
         Map<String, String> templates = getTemplates();
         if (Utils.isEmpty(templates)) {
-            logger.warn("Not templates found");
+            logger.debug("No templates found");
             return Constants.EMPTY_STRING;
         }
 

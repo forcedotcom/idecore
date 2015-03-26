@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.profile;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.core.internal.components.profile.ProfileComponentController;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
@@ -28,14 +25,6 @@ public class ProfileWizard extends GenericComponentWizard {
     public ProfileWizard() throws ForceProjectException {
         super();
         controller = new ProfileComponentController();
-    }
-
-    public ProfileWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public ProfileWizard(IFolder folder, IProject project) {
-        super(folder, project);
     }
 
     @Override

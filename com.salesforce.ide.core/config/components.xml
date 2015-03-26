@@ -108,8 +108,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
           <!--  default body template; value read from template file registered in template registry -->
           <lookup-method name="getTemplates" bean="apexClassTemplate" />
           <lookup-method name="getDefaultMetadataExtInstance" bean="apexClassMetadata" />
-          <!-- associated wizard class -->
-          <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizard" />
         </bean>
 
     <!-- REVIEWME: there must be a dynamic way to do method look-ups -->
@@ -148,7 +146,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <!--  default body template  -->
         <lookup-method name="getTemplates" bean="apexComponentTemplate" />
         <lookup-method name="getDefaultMetadataExtInstance" bean="apexComponentMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.component.ApexComponentWizard" />
     </bean>
 
     <bean id="apexComponentTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
@@ -185,7 +182,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
         <lookup-method name="getTemplates" bean="apexPageTemplate" />
         <lookup-method name="getDefaultMetadataExtInstance" bean="apexPageMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.page.ApexPageWizard" />
     </bean>
 
     <bean id="apexPageTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
@@ -225,7 +221,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <lookup-method name="getTemplates" bean="apexTriggerTemplate" />
         <property name="operationOptions" ref="triggerOperations" />
         <lookup-method name="getDefaultMetadataExtInstance" bean="apexTriggerMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.apex.trigger.ApexTriggerWizard" />
     </bean>
 
     <bean id="apexTriggerTemplate" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"

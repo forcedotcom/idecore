@@ -36,15 +36,14 @@ public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
     private List<String> triggerOperationsOptions = null;
 
     //   C O N S T R U C T O R S
-    public ApexTriggerWizardComposite(Composite parent, int style, String componentTypeDisplayName,
-            Set<String> supportedApiVesions) {
-        super(parent, style, componentTypeDisplayName);
+    public ApexTriggerWizardComposite(Composite parent, int style, String displayName, Set<String> supportedApiVesions) {
+        super(parent, style, displayName);
         initialize(supportedApiVesions);
     }
 
-    public ApexTriggerWizardComposite(Composite parent, int style, String componentTypeDisplayName,
+    public ApexTriggerWizardComposite(Composite parent, int style, String displayName,
             Set<String> supportedApiVesions, List<String> triggerOperationsOptions) {
-        super(parent, style, componentTypeDisplayName);
+        super(parent, style, displayName);
         this.triggerOperationsOptions = triggerOperationsOptions;
         initialize(supportedApiVesions);
     }

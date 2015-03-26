@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.homepage.component;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.core.internal.components.homepage.component.HomePageComponentComponentController;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
@@ -28,14 +25,6 @@ public class HomePageComponentWizard extends GenericComponentWizard {
     public HomePageComponentWizard() throws ForceProjectException {
         super();
         controller = new HomePageComponentComponentController();
-    }
-
-    public HomePageComponentWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public HomePageComponentWizard(IFolder folder, IProject project) {
-        super(folder, project);
     }
 
     @Override

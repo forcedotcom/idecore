@@ -66,7 +66,6 @@ public class ApexTriggerModel extends ApexCodeModel {
         ApexTrigger apexTrigger = (ApexTrigger) component;
         apexTrigger.setObjectName(getObjectName());
         apexTrigger.setOperations(new ArrayList<String>(operations));
-        apexTrigger.intiNewBody(apexTrigger.getNewBodyFromTemplateString());
         componentList.add(apexTrigger);
 
         // prepare metadata body and component

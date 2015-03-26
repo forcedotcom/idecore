@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.wizards.components.apex.component;
+package com.salesforce.ide.ui.wizards.components.apex.page;
 
 import java.util.Set;
 
@@ -18,17 +18,16 @@ import org.eclipse.swt.widgets.Group;
 
 import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardComposite;
 
-public class ApexComponentWizardComposite extends ApexCodeWizardComposite {
+public class ApexPageWizardComposite extends ApexCodeWizardComposite {
 
-    public ApexComponentWizardComposite(Composite parent, int style, String componentTypeDisplayName,
-            Set<String> supportedApiVesions) {
-        super(parent, style, componentTypeDisplayName);
+    public ApexPageWizardComposite(Composite parent, int style, String displayName, Set<String> supportedApiVesions) {
+        super(parent, style, displayName);
         initialize(supportedApiVesions);
     }
 
     protected void initialize(Set<String> supportedApiVesions) {
         setLayout(new GridLayout());
-
+        
         Group grpProperties = createPropertiesGroup(this);
         createLabelAndNameText(null, grpProperties);
         createApiVersionCombo(grpProperties, supportedApiVesions);

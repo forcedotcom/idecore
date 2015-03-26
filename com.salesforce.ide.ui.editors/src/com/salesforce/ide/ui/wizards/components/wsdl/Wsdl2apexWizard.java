@@ -29,10 +29,8 @@ import com.salesforce.ide.core.internal.components.apex.clazz.ApexClassModel;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ProjectPackageList;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizard;
 import com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizardPage;
-import com.salesforce.ide.wsdl2apex.core.CalloutException;
 import com.salesforce.ide.wsdl2apex.core.Wsdl2Apex;
 
 /**
@@ -190,32 +188,11 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
                         }
                     }
 
-                } catch (ForceProjectException e) {
-                    MessageDialog dialog =
-                            new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                    new String[] { "Ok" }, 0);
-                    dialog.open();
-                    logger.error(e.getMessage());
-                } catch (IOException e) {
-                    MessageDialog dialog =
-                            new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                    new String[] { "Ok" }, 0);
-                    dialog.open();
-                    logger.error(e.getMessage());
-                } catch (CalloutException e) {
-                    MessageDialog dialog =
-                            new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                    new String[] { "Ok" }, 0);
-                    dialog.open();
-                    logger.error(e.getMessage());
                 } catch (Exception e) {
                     if (e.getMessage() != null) {
-                        MessageDialog dialog =
-                                new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                        new String[] { "Ok" }, 0);
-                        dialog.open();
+                        new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR, new String[] { "Ok" }, 0).open();
                     }
-                    logger.error(e.getMessage());
+                    logger.error(e);
                 }
             }
         });

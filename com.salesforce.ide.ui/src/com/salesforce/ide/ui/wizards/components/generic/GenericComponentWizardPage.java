@@ -41,9 +41,6 @@ public class GenericComponentWizardPage extends ComponentWizardPage {
     }
 
     @Override
-    protected void additionalInitialize(Composite parent) {}
-
-    @Override
     protected boolean finalDialogChanged(IComponentWizardPage componentWizardPage) {
         return true;
     }

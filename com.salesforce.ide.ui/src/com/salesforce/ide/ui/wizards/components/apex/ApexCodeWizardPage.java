@@ -33,6 +33,7 @@ public abstract class ApexCodeWizardPage extends GenericComponentWizardPage {
 
     @Override
     protected void additionalInitialize(Composite parent) {
+        super.additionalInitialize(parent);
         try {
             apexEnabled = componentWizard.getComponentController().isComponentEnabled();
         } catch (InsufficientPermissionsException e) {
