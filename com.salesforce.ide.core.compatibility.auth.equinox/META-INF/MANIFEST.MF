@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.core.compatibility.auth.equinox
-Bundle-Version: 33.0.0.qualifier
+Bundle-Version: 34.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.core.compatibility.auth.equinox.Activator
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",

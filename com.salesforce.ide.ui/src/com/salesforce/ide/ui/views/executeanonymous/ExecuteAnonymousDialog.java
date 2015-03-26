@@ -45,6 +45,7 @@ public class ExecuteAnonymousDialog extends TitleAreaDialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         setShellStyle(getShellStyle() | SWT.Resize);
+        setBlockOnOpen(false);
         Composite composite = (Composite) super.createDialogArea(parent);
         GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;

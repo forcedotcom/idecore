@@ -200,7 +200,7 @@ public class MetadataStubExt {
 
         RetrieveResult retrieveResult = null;
         try {
-            retrieveResult = metadataConnection.checkRetrieveStatus(asyncProcessId);
+            retrieveResult = metadataConnection.checkRetrieveStatus(asyncProcessId, true);
         } catch (ConnectionException e) {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }

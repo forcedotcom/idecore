@@ -67,7 +67,6 @@ public class PackageDeployService extends BasePackageService {
         deployOptions.setRollbackOnError(true);
         deployOptions.setAutoUpdatePackage(false);
         deployOptions.setPerformRetrieve(false);
-        deployOptions.setRunAllTests(false);
         return deployOptions;
     }
 
@@ -101,7 +100,6 @@ public class PackageDeployService extends BasePackageService {
         //   to compile (for example, the whole lot will fail to save).
         deployOptions.setRollbackOnError(true);
         deployOptions.setCheckOnly(checkOnly);
-        deployOptions.setRunAllTests(false);
         deployOptions.setSinglePackage(true);
         return deployOptions;
     }
@@ -363,7 +361,6 @@ public class PackageDeployService extends BasePackageService {
                 StringBuffer strBuff = new StringBuffer("Deploy options:");
                 strBuff.append("\n  Check only = " + deployOptions.isCheckOnly())
                         .append("\n  Single package = " + deployOptions.isSinglePackage())
-                        .append("\n  Run all tests = " + deployOptions.isRunAllTests())
                         .append("\n  Update package manifest = " + deployOptions.isAutoUpdatePackage())
                         .append("\n  Save w/ missing files = " + deployOptions.isAllowMissingFiles())
                         .append("\n  Rollback on error = " + deployOptions.isRollbackOnError())
@@ -431,9 +428,9 @@ public class PackageDeployService extends BasePackageService {
  */
 class DeployResultAdapter implements IFileBasedResultAdapter {
 
-    private AsyncResult asyncResult;
+    private final AsyncResult asyncResult;
     private DeployResult deployResult;
-    private MetadataStubExt metadataStubExt;
+    private final MetadataStubExt metadataStubExt;
 
     public DeployResultAdapter(AsyncResult asyncResult, MetadataStubExt metadataStubExt) {
         this.asyncResult = asyncResult;

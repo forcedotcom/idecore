@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 33.0
+Salesforce.com Apex API version 34.0
 
-Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
+Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
 -->
 <definitions targetNamespace="http://soap.sforce.com/2006/08/apex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/2006/08/apex">
  <types>
@@ -509,7 +509,7 @@ Copyright 2006-2014 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/33.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/34.0"/>
   </port>
  </service>
 </definitions>
