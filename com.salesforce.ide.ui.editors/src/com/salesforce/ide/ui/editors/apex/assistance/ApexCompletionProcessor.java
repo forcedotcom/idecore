@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.assistance;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -39,7 +38,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     protected static ICompletionProposal[] currentList;
     private static String fileName = null;
-    protected IProject project;
     private ContentAssistant assistant;
     
     /**
@@ -76,15 +74,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     //  C O N S T R U C T O R S
     public ApexCompletionProcessor() {}
-
-    //   M E T H O D S
-    public IProject getProject() {
-        return project;
-    }
-
-    public void setProject(IProject project) {
-        this.project = project;
-    }
 
     public void setContentAssistant(ContentAssistant assistant) {
         this.assistant = assistant;

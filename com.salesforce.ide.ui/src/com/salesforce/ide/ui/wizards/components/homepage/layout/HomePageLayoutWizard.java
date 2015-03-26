@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.homepage.layout;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.core.internal.components.homepage.layout.HomePageLayoutComponentController;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
@@ -28,14 +25,6 @@ public class HomePageLayoutWizard extends GenericComponentWizard {
     public HomePageLayoutWizard() throws ForceProjectException {
         super();
         controller = new HomePageLayoutComponentController();
-    }
-
-    public HomePageLayoutWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public HomePageLayoutWizard(IFolder folder, IProject project) {
-        super(folder, project);
     }
 
     @Override

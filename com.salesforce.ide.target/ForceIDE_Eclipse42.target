@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
-
-<target name="ForceIDE_Eclipse42" sequenceNumber="10">
+<?pde version="3.8"?><target name="ForceIDE_Eclipse42" sequenceNumber="11">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rcp.sdk.id" version="4.2.0.I20120608-1400"/>
@@ -29,6 +27,11 @@
 <unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
 <unit id="org.hamcrest.library" version="1.3.0.v201305281000"/>
 <repository location="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.wst.xml_sdk.feature.feature.group" version="3.4.2.v201211061806-7A7B58DXJVWwZEWDH3nUMVrrpMjAA0fXe5BCATMT"/>
+<unit id="org.eclipse.wst.web_sdk.feature.feature.group" version="3.4.2.v201211061806-7E7IAF8SxfyTJqOOz0B4vATN_BNcGcRts0BgyTQP"/>
+<repository location="http://download.eclipse.org/webtools/repository/juno"/>
 </location>
 </locations>
 </target>

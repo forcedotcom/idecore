@@ -48,7 +48,6 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexAutoIndentStrategy;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner;
@@ -91,11 +90,8 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /**
      * Default constructor.
-     * 
-     * @throws ForceProjectException
      */
-    public ApexSourceViewerConfiguration(IPreferenceStore preferenceStore, ITextEditor editor)
-            throws ForceProjectException {
+    public ApexSourceViewerConfiguration(IPreferenceStore preferenceStore, ITextEditor editor) {
         super(preferenceStore);
         fTextEditor = editor;
         apexCodeScanner = (ApexCodeScanner) ContainerDelegate.getInstance().getBean(ApexCodeScanner.class);
@@ -112,7 +108,6 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
     public void init(IProject project) {
         apexCodeScanner.init(project);
         apexDocScanner.init();
-        apexCompletionProcessor.setProject(project);
     }
 
     @Override
@@ -211,7 +206,6 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
         if (apexCompletionProcessor != null) {
             assistant.setContentAssistProcessor(apexCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-            apexCompletionProcessor.setContentAssistant(assistant);
         }
 
         assistant.setContentAssistProcessor(new ApexDocCompletionProcessor(), ApexPartitionScanner.APEX_DOC);

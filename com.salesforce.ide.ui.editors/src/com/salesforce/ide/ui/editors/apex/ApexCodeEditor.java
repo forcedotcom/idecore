@@ -75,7 +75,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;
@@ -337,15 +336,9 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         IPreferenceStore store = createCombinedPreferenceStore(null);
         setPreferenceStore(store);
         setHelpContextId(Constants.DOCUMENTATION_PLUGIN_PREFIX + "." + this.getClass().getSimpleName());
-        try {
-            apexSourceViewerConfiguration = new ApexSourceViewerConfiguration(getPreferenceStore(), this);
-            apexSourceViewerConfiguration.init(project);
-            setSourceViewerConfiguration(apexSourceViewerConfiguration);
-        } catch (ForceProjectException e) {
-            logger.error("Unable to initialize source viewer configuration", e);
-            Utils.openError("Initialization Error",
-                "Unable to initialize source viewer configuration: " + e.getMessage());
-        }
+        apexSourceViewerConfiguration = new ApexSourceViewerConfiguration(getPreferenceStore(), this);
+        apexSourceViewerConfiguration.init(project);
+        setSourceViewerConfiguration(apexSourceViewerConfiguration);
     }
 
     /**
@@ -634,12 +627,10 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         StyledText textWidget = null;
 
         ISourceViewer sourceViewer = getSourceViewer();
+        if (null == sourceViewer) return;
 
-        if (sourceViewer != null)
-            textWidget = sourceViewer.getTextWidget();
-
-        if (textWidget == null)
-            return;
+        textWidget = sourceViewer.getTextWidget();
+        if (null == textWidget) return;
 
         try {
             int offset = range.startOffset;

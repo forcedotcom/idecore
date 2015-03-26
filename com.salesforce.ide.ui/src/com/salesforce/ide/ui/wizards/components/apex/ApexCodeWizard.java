@@ -10,11 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.apex;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
-
 
 /**
  * Wizard to create new Apex Class.
@@ -27,11 +23,4 @@ public abstract class ApexCodeWizard extends ComponentWizard {
         super();
     }
 
-    public ApexCodeWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public ApexCodeWizard(IFolder folder, IProject project) {
-        super(folder, project);
-    }
 }
