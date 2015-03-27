@@ -25,36 +25,40 @@ public abstract class ApexCodeWizardPage extends GenericComponentWizardPage {
 
     private static final Logger logger = Logger.getLogger(ApexCodeWizardPage.class);
 
-    protected boolean apexEnabled = false;
-
     public ApexCodeWizardPage(ComponentWizard baseComponentWizard) {
         super(baseComponentWizard);
     }
 
     @Override
     protected void additionalInitialize(Composite parent) {
+        super.additionalInitialize(parent);
+        checkEnabled();
+    }
+
+    protected final boolean checkEnabled() {
+        boolean apexEnabled = false;
         try {
             apexEnabled = componentWizard.getComponentController().isComponentEnabled();
         } catch (InsufficientPermissionsException e) {
             DialogUtils.getInstance().presentInsufficientPermissionsDialog(e);
         } catch (Exception e) {
-            logger.warn(
-                "Unable to check " + getComponentWizardModel().getComponent().getDisplayName() + " permissions", e);
-            Utils
-            .openError("Permission Check Failed", "Unable to check "
-                    + getComponentWizardModel().getComponent().getDisplayName() + " permissions:\n\n "
-                    + e.getMessage());
+            final String displayName = getComponentWizardModel().getComponent().getDisplayName();
+            final String message = "Unable to check " + displayName + " permissions";
+            logger.warn(message, e);
+            Utils.openError("Permission Check Failed", message + ":\n\n " + e.getMessage());
         }
 
         if (!apexEnabled) {
             handleNoApexPerms();
         }
+
+        componentWizardComposite.setEnabled(apexEnabled);
+        return apexEnabled;
     }
 
     @Override
     public boolean initialDialogChanged(IComponentWizardPage componentWizardPage) {
-        if (!apexEnabled) {
-            handleNoApexPerms();
+        if (!checkEnabled()) {
             pageComplete = false;
             return false;
         }
@@ -63,13 +67,6 @@ public abstract class ApexCodeWizardPage extends GenericComponentWizardPage {
 
     protected void handleNoApexPerms() {
         updateErrorStatus(UIMessages.getString("ApexCodeWizard.ApexEnabled.error", new String[] { "Apex Code" }));
-        // disable generic controls
-        componentWizardComposite.disableAllControls();
-        // disable common apex controls
-        ((ApexCodeWizardComposite) componentWizardComposite).disableComponentApiField();
-        // disable child controls
-        disableAllApexControls();
     }
 
-    protected abstract void disableAllApexControls();
 }

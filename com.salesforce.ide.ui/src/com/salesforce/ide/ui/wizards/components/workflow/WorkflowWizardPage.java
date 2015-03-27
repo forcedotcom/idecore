@@ -13,6 +13,7 @@ package com.salesforce.ide.ui.wizards.components.workflow;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -51,6 +52,12 @@ public class WorkflowWizardPage extends GenericComponentWizardPage {
     @Override
     protected void additionalInitialize(Composite parent) {
         super.additionalInitialize(parent);
+        loadObjects(false);
+    }
+
+    @Override
+    protected void selectedProjectChanged(IProject project) {
+        super.selectedProjectChanged(project);
         loadObjects(false);
     }
 
@@ -106,7 +113,6 @@ public class WorkflowWizardPage extends GenericComponentWizardPage {
 
         if (getComponentWizardModel().getProject() == null) {
             updateErrorStatus(UIMessages.getString("NewComponent.ProjectRequired.message"));
-            componentWizardComposite.disableAllControls();
             return;
         }
 
