@@ -26,6 +26,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.XmlConstants;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
@@ -75,20 +76,12 @@ public class ApexModel {
             logger.debug("Loading Apex Model from " + apexModelFile.getAbsolutePath());
         }
 
-        InputStream in = null;
         DOMParser parser = new DOMParser();
-        try {
-            in = apexModelUrl.openStream();
+        try (final QuietCloseable<InputStream> c = QuietCloseable.make(apexModelUrl.openStream())) {
+            final InputStream in = c.get();
+
             InputSource source = new InputSource(in);
             parser.parse(source);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    logger.warn("Unable to close input stream for " + apexModelFile.getAbsolutePath());
-                }
-            }
         }
 
         Document doc = parser.getDocument();

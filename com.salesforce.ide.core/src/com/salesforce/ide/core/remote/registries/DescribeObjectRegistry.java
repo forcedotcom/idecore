@@ -41,7 +41,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
     private static final Logger logger = Logger.getLogger(DescribeObjectRegistry.class);
 
     private static ConcurrentMap<String, Hashtable<String, DescribeSObjectResult>> describeCaches =
-            new ConcurrentHashMap<String, Hashtable<String, DescribeSObjectResult>>();
+            new ConcurrentHashMap<>();
 
     protected List<String> workflowableObjectNames = null;
     protected List<String> crtableObjectNames = null;
@@ -132,8 +132,8 @@ public class DescribeObjectRegistry extends BaseRegistry {
         return types;
     }
 
-    private SortedSet<String> getSortedDescribeSObjectResult(Set<String> types) {
-        return new TreeSet<String>(types);
+    private static SortedSet<String> getSortedDescribeSObjectResult(Set<String> types) {
+        return new TreeSet<>(types);
     }
 
     // custom objects
@@ -153,7 +153,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
             return null;
         }
 
-        SortedSet<String> customTypes = new TreeSet<String>();
+        SortedSet<String> customTypes = new TreeSet<>();
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
         if (Utils.isEmpty(describeCache) || refresh) {
@@ -194,7 +194,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
             return null;
         }
 
-        SortedSet<String> workflowableTypes = new TreeSet<String>();
+        SortedSet<String> workflowableTypes = new TreeSet<>();
         workflowableTypes.addAll(getWorkflowableObjectNames());
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
@@ -238,7 +238,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
             return cachedWorkflowableDescribeTypes;
         }
 
-        SortedSet<String> noNsWorkflowableDescribeTypes = new TreeSet<String>();
+        SortedSet<String> noNsWorkflowableDescribeTypes = new TreeSet<>();
         for (String cachedWorkflowableDescribeType : cachedWorkflowableDescribeTypes) {
             String fullNamespace = namespace + Constants.NAMESPACE_SEPARATOR;
             if (cachedWorkflowableDescribeType.startsWith(fullNamespace)) {
@@ -269,7 +269,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
             return null;
         }
 
-        SortedSet<String> layoutableTypes = new TreeSet<String>();
+        SortedSet<String> layoutableTypes = new TreeSet<>();
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
         if (Utils.isEmpty(describeCache) || refresh) {
@@ -306,7 +306,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
             return cachedLayoutableDescribeTypes;
         }
 
-        SortedSet<String> noNsLayoutableDescribeTypes = new TreeSet<String>();
+        SortedSet<String> noNsLayoutableDescribeTypes = new TreeSet<>();
         for (String cachedLayoutableDescribeType : cachedLayoutableDescribeTypes) {
             if (cachedLayoutableDescribeType.startsWith(namespace)) {
                 String objectWithoutNamespace = Utils.stripNamespace(cachedLayoutableDescribeType, namespace);
@@ -339,7 +339,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
         // filter out crtableObject that describeSObject is not supported
         List<String> crtableObjectNamesInPlural =
                 removeObjectNotSupportedByDescribeSObject(crtableObjectNames, connection, projectName);
-        SortedSet<String> crtableTypePluralLabels = new TreeSet<String>();
+        SortedSet<String> crtableTypePluralLabels = new TreeSet<>();
         crtableTypePluralLabels.addAll(crtableObjectNamesInPlural);
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
@@ -369,7 +369,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
 
     private List<String> removeObjectNotSupportedByDescribeSObject(List<String> crtableObjectNames,
             Connection connection, String projectName) throws ForceConnectionException, ForceRemoteException {
-        List<String> filteredCrtableObjectNamesPluralLabel = new ArrayList<String>();
+        List<String> filteredCrtableObjectNamesPluralLabel = new ArrayList<>();
         SortedSet<String> cachedGlobalDescribeTypes = getCachedGlobalDescribeTypes(connection, projectName);
         for (String crtableObjectName : crtableObjectNames) {
             if (cachedGlobalDescribeTypes.contains(crtableObjectName)) {
@@ -401,7 +401,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
             return null;
         }
 
-        TreeSet<String> triggerableTypes = new TreeSet<String>();
+        TreeSet<String> triggerableTypes = new TreeSet<>();
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
         if (Utils.isEmpty(describeCache) || refresh) {
@@ -538,7 +538,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
 
     public SortedSet<String> getCachedDescribeSObjectNames(Connection connection, String projectName, boolean refresh)
             throws ForceConnectionException, ForceRemoteException {
-        SortedSet<String> describeSObjectNames = new TreeSet<String>();
+        SortedSet<String> describeSObjectNames = new TreeSet<>();
 
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
@@ -558,8 +558,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
         return describeSObjectNames;
     }
 
-    public DescribeSObjectResult getCachedDescribeSObjectByApiName(String projectName, String apiName)
-            throws ForceConnectionException, ForceRemoteException {
+    public DescribeSObjectResult getCachedDescribeSObjectByApiName(String projectName, String apiName) {
         Hashtable<String, DescribeSObjectResult> describeCache = getDescribeCacheForProject(projectName);
 
         if (Utils.isNotEmpty(describeCache)) {
@@ -615,7 +614,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
 
                 Arrays.sort(describeSObjectResults, describeSObjectResultComparator);
 
-                describeCache = new Hashtable<String, DescribeSObjectResult>();
+                describeCache = new Hashtable<>();
                 for (DescribeSObjectResult describeSObjectResult : describeSObjectResults) {
                     if (excludedTypes.contains(describeSObjectResult.getName())) {
                         if (logger.isDebugEnabled()) {
@@ -685,7 +684,7 @@ public class DescribeObjectRegistry extends BaseRegistry {
         }
 
         TreeSet<DescribeSObjectResult> describeSObjectResults =
-                new TreeSet<DescribeSObjectResult>(describeSObjectResultComparator);
+                new TreeSet<>(describeSObjectResultComparator);
         describeSObjectResults.addAll(describeCache.values());
         StringBuffer strBuffer = new StringBuffer();
         strBuffer.append("Cached describe objects [" + describeSObjectResults.size() + "] are:");

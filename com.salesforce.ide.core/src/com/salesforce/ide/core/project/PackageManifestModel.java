@@ -136,7 +136,7 @@ public class PackageManifestModel {
 
         // for each type stanza, check for wildcard and if found add cache names to type
         for (PackageTypeMembers updatedPackageComponentType : updatedPackageManifest.getTypes()) {
-            if (updatedPackageManifest == null || Utils.isEmpty(updatedPackageComponentType.getMembers())) {
+            if (Utils.isEmpty(updatedPackageComponentType.getMembers())) {
                 continue;
             }
 
@@ -155,7 +155,7 @@ public class PackageManifestModel {
         }
     }
 
-    private PackageTypeMembers getPackageTypeMembers(PackageTypeMembers projectPackageComponentType,
+    private static PackageTypeMembers getPackageTypeMembers(PackageTypeMembers projectPackageComponentType,
             Package cachePackageManifest) {
         for (PackageTypeMembers cachePackageComponentType : cachePackageManifest.getTypes()) {
             if (projectPackageComponentType.getName().equals(cachePackageComponentType.getName())) {

@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Control;
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 
 public class ComponentPropertyPage extends BasePropertyPage {
@@ -35,7 +34,7 @@ public class ComponentPropertyPage extends BasePropertyPage {
         return componentPropertyPageComposite;
     }
 
-    public ComponentPropertyPage() throws ForceProjectException {
+    public ComponentPropertyPage() {
         super();
     }
 
@@ -68,6 +67,7 @@ public class ComponentPropertyPage extends BasePropertyPage {
             logger.error("Component property component and/or componet is null");
             Utils.openWarn("Initialize Error",
                     "Unable to initialize component property view.  Component property component and/or componet is null.");
+            return;
         }
 
         componentPropertyPageComposite.setTxtName(component.getName());

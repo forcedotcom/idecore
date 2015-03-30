@@ -83,10 +83,12 @@ public class ApexDocScanner extends RuleBasedScanner {
         if (Utils.isNotEmpty(docKeywords)) {
             // Add word rule for keywords.
             WordRule wordRule = new WordRule(new IWordDetector() {
+                @Override
                 public boolean isWordStart(char c) {
                     return (c == '@');
                 }
 
+                @Override
                 public boolean isWordPart(char c) {
                     return Character.isLetter(c);
                 }

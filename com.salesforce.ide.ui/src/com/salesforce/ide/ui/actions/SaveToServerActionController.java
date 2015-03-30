@@ -26,7 +26,6 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ProjectPackageList;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.MarkerUtils;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
@@ -45,7 +44,7 @@ public class SaveToServerActionController extends ActionController {
     protected DeployResultExt deployResultExt = null;
 
     //   C O N S T R U C T O R
-    public SaveToServerActionController() throws ForceProjectException {
+    public SaveToServerActionController() {
         super();
     }
 
@@ -86,7 +85,7 @@ public class SaveToServerActionController extends ActionController {
 
         boolean response =
                 Utils.openQuestion(getProject(), workbenchWindow.getShell(), "Confirm Save", UIMessages
-                    .getString("SaveToServerAction.Overwrite.message"));
+                    .getString("SaveToServerHandler.Overwrite.message"));
         if (!response) {
             if (logger.isInfoEnabled()) {
                 logger.info("Save to server cancelled by user");

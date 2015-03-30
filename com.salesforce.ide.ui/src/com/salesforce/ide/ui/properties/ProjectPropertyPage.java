@@ -22,7 +22,6 @@ import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
@@ -37,7 +36,7 @@ public class ProjectPropertyPage extends BasePropertyPage {
     private ProjectController projectController = null;
 
     //   C O N S T R U C T O R
-    public ProjectPropertyPage() throws ForceProjectException {
+    public ProjectPropertyPage() {
         super();
         projectController = new ProjectController();
     }

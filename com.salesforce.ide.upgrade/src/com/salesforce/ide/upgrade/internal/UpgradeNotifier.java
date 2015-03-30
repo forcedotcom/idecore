@@ -29,7 +29,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -38,7 +37,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonNavigator;
-import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
@@ -69,7 +67,6 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
     private IWorkbenchPage page = null;
     private IPackagesViewPart packagesViewPart = null;
     private CommonNavigator projectExplorer = null;
-    private ResourceNavigator resourceNavigator = null;
     private boolean enabled = true;
     private boolean save = true; // set to false for development - does not add to notifiedProjectNames, clears existing
 
@@ -145,13 +142,15 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
 
     //   P R O J E C T   E V A L U A T I O N
     protected void evaluateProject(final IProject project) {
+        if (null == project) return;
+
         if (!enabled) {
             logger.warn("Upgrade notifier disabled");
             return;
         }
 
         try {
-            if (project != null && project.isOpen() && !notifiedProjectNames.contains(project.getName())
+            if (project.isOpen() && !notifiedProjectNames.contains(project.getName())
                     && project.hasNature(UpgradeNature.NATURE_ID)) {
 
                 // display alert
@@ -236,11 +235,6 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
             projectExplorer.getCommonViewer().removeSelectionChangedListener(this);
             projectExplorer.getCommonViewer().removeTreeListener(this);
         }
-
-        if (resourceNavigator != null && resourceNavigator.getTreeViewer() != null) {
-            resourceNavigator.getTreeViewer().removeSelectionChangedListener(this);
-            resourceNavigator.getTreeViewer().removeTreeListener(this);
-        }
     }
 
     //   P A C K A G E   E X P L O R E R   L I S T E N E R
@@ -254,11 +248,6 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
             // listener on project explorer view
             if (page.findView(Constants.PROJECT_EXPLORER_ID) != null) {
                 addProjectsViewListener();
-            }
-
-            // listener on resource navigator view
-            if (page.findView(IPageLayout.ID_RES_NAV) != null) {
-                addResourceViewListener();
             }
         } else {
             if (logger.isInfoEnabled()) {
@@ -291,19 +280,7 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
         }
     }
 
-    private void addResourceViewListener() {
-        if (page != null && page.findView(IPageLayout.ID_RES_NAV) != null) {
-            resourceNavigator = (ResourceNavigator) page.findView(IPageLayout.ID_RES_NAV);
-            addViewListener(this, resourceNavigator);
-        } else {
-            if (logger.isInfoEnabled()) {
-                logger.info("Unable to add upgrade notifier to resource navigator - page and/or '"
-                        + IPageLayout.ID_RES_NAV + "' view null or empty");
-            }
-        }
-    }
-
-    private void addViewListener(final UpgradeNotifier upgradeNotifier, final IViewPart viewPart) {
+    private static void addViewListener(final UpgradeNotifier upgradeNotifier, final IViewPart viewPart) {
         // display alert
         Display.getDefault().asyncExec(new Runnable() {
             @Override
@@ -316,10 +293,6 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
                         && ((CommonNavigator) viewPart).getCommonViewer() != null) {
                     ((CommonNavigator) viewPart).getCommonViewer().addSelectionChangedListener(upgradeNotifier);
                     ((CommonNavigator) viewPart).getCommonViewer().addTreeListener(upgradeNotifier);
-                } else if (viewPart instanceof ResourceNavigator
-                        && ((ResourceNavigator) viewPart).getTreeViewer() != null) {
-                    ((ResourceNavigator) viewPart).getTreeViewer().addSelectionChangedListener(upgradeNotifier);
-                    ((ResourceNavigator) viewPart).getTreeViewer().addTreeListener(upgradeNotifier);
                 }
             }
         });
@@ -364,7 +337,7 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
         }
     }
 
-    private IFile getFile(IEditorPart editorPart) {
+    private static IFile getFile(IEditorPart editorPart) {
         if (editorPart instanceof IFileEditorInput) {
             return ((IFileEditorInput) editorPart).getFile();
         } else if (editorPart instanceof XMLMultiPageEditorPart

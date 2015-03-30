@@ -20,8 +20,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -83,12 +81,12 @@ public class DeploymentController extends Controller {
     private ProjectPackageList localProjectPackageList = null;
     private ProjectPackageList remoteProjectPackageList = null;
 
-    public DeploymentController(IProject project) throws ForceProjectException {
+    public DeploymentController(IProject project) {
         super();
         model = new DeploymentWizardModel(project);
     }
 
-    public DeploymentController(IProject project, List<IResource> resources) throws ForceProjectException {
+    public DeploymentController(IProject project, List<IResource> resources) {
         super();
         model = new DeploymentWizardModel(project, resources);
     }
@@ -154,12 +152,12 @@ public class DeploymentController extends Controller {
     }
 
     private DeploymentResult deploy(boolean checkOnly, IProgressMonitor monitor) throws ForceConnectionException,
-            DeployException, FactoryException, Exception, RemoteException, InterruptedException {
+            DeployException, FactoryException, Exception, InterruptedException {
         return deploy(getDeploymentWizardModel().getDestinationOrg(), deploymentPayload, checkOnly, monitor);
     }
 
     public void generateArchive(DeploymentComponentSet deploymentComponents, File zipPath, String zipName)
-            throws IOException, FactoryException {
+            throws IOException {
         // should already have composite components in deployment set
         ComponentList components = deploymentComponents.getComponents(false);
         generateArchive(components, zipPath, zipName);
@@ -270,8 +268,8 @@ public class DeploymentController extends Controller {
 
     public DeploymentPayload generateDeploymentPayload(IResource deployResource, ForceProject destinationProject,
             IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
-            CoreException, FactoryException, RetrieveException, IOException, ServiceTimeoutException {
-        List<IResource> deployResources = new ArrayList<IResource>(1);
+            CoreException, FactoryException {
+        List<IResource> deployResources = new ArrayList<>(1);
         deployResources.add(deployResource);
         return generateDeploymentPayload(deployResources, destinationProject, monitor);
     }
@@ -289,16 +287,12 @@ public class DeploymentController extends Controller {
      * @throws Exception
      * @throws FactoryException
      * @throws CoreException
-     * @throws RetrieveException
-     * @throws IOException
-     * @throws ServiceTimeoutException
      * @throws MetadataServiceException
      */
     // FIXME: review exception throwing
     public DeploymentPayload generateDeploymentPayload(List<IResource> deployResources,
             ForceProject destinationProject, IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, CoreException, FactoryException, RetrieveException,
-            IOException, ServiceTimeoutException {
+            ForceConnectionException, ForceRemoteException, CoreException, FactoryException {
         if (Utils.isEmpty(deployResources) || destinationProject == null || model.getProject() == null) {
             throw new IllegalArgumentException("Resources, project, and/or destination cannot be null");
         }
@@ -323,7 +317,7 @@ public class DeploymentController extends Controller {
         }
         monitorWork(monitor);
 
-        List<String> remoteEnabledComponentTypes = new ArrayList<String>(enabledComponentTypes.length);
+        List<String> remoteEnabledComponentTypes = new ArrayList<>(enabledComponentTypes.length);
         remoteEnabledComponentTypes.addAll(Arrays.asList(enabledComponentTypes));
 
         monitorCheckSubTask(monitor, "Gathering project contents for resource(s)");
@@ -407,7 +401,7 @@ public class DeploymentController extends Controller {
 
     protected void loadRemoteProjectPackageList(Connection connection, List<IResource> deployResources,
             IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException,
-            FactoryException, CoreException, IOException, InvocationTargetException, ServiceException {
+            FactoryException, CoreException, IOException, ServiceException {
         if (Utils.isEmpty(deployResources)) {
             logger.warn("Unable to get remote content for resources - resources is null or empty");
         }
@@ -462,7 +456,7 @@ public class DeploymentController extends Controller {
 
     protected void handleSourceRetrieve(Connection connection, List<IResource> deployResources, IProgressMonitor monitor)
             throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException,
-            CoreException, IOException, ServiceException {
+            IOException, ServiceException {
         monitorCheck(monitor);
         if (Utils.isNotEmpty(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getFolder(deployResources, Constants.SOURCE_FOLDER_NAME))) {
             String packageName = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageName(model.getProject());
@@ -486,7 +480,7 @@ public class DeploymentController extends Controller {
 
     protected void handleSourceComponentFolderRetrieve(Connection connection, List<IResource> deployResources,
             IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
-            FactoryException, CoreException, IOException, InvocationTargetException, ServiceException {
+            FactoryException, CoreException, IOException, ServiceException {
 
         // if only source root was selected was selected, let's end here
         if (deployResources.size() == 1
@@ -496,7 +490,7 @@ public class DeploymentController extends Controller {
 
         monitorCheck(monitor);
         List<IResource> folders = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getResourcesByType(deployResources, IResource.FOLDER);
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
         if (Utils.isNotEmpty(folders)) {
             for (IResource folder : folders) {
                 if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isComponentFolder(folder)) {
@@ -544,8 +538,8 @@ public class DeploymentController extends Controller {
     // newly created 'mypackage' (it's quite possible <nonamespace>.myApexClass was already a member of
     // another package; that relationship would be unchanged).
     protected void handlePackageRetrieve(Connection connection, List<IResource> deployResources,
-            IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
-            FactoryException, CoreException, IOException, InvocationTargetException, ServiceException {
+            IProgressMonitor monitor) throws InterruptedException, ForceRemoteException,
+            FactoryException, IOException, ServiceException {
 
         // 1.) get list of component not found in remote org - assume components don't exist in package, but might be unpackaged
         // 2.) selectively query for said components
@@ -593,8 +587,8 @@ public class DeploymentController extends Controller {
     }
 
     protected void handleSourceComponentFileRetrieve(Connection connection, List<IResource> deployResources,
-            IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
-            FactoryException, CoreException, IOException, InvocationTargetException, ServiceException {
+            IProgressMonitor monitor) throws InterruptedException, ForceRemoteException,
+            IOException, ServiceException {
 
         // if only source root was selected was selected, let's end here
         if (deployResources.size() == 1
@@ -773,7 +767,7 @@ public class DeploymentController extends Controller {
         }
     }
 
-    private DeploymentComponent createNewDeploymentComponent(Component component,
+    private static DeploymentComponent createNewDeploymentComponent(Component component,
             List<String> remoteEnabledComponentTypes) {
         DeploymentComponent deploymentComponent = new DeploymentComponent(component);
         // make sure type is permissible in destination and remote add is supported
@@ -813,7 +807,7 @@ public class DeploymentController extends Controller {
         return deploymentComponent;
     }
 
-    private DeploymentComponent createDeleteDeploymentComponent(Component component) {
+    private static DeploymentComponent createDeleteDeploymentComponent(Component component) {
         DeploymentComponent deploymentComponent = new DeploymentComponent(component);
         if (component.isRemoteDeleteable()) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.DELETED);
@@ -893,11 +887,10 @@ public class DeploymentController extends Controller {
      * @throws ForceProjectException
      * @throws InterruptedException
      * @throws ForceRemoteException
-     * @throws JAXBException
      */
     public DeploymentResult deploy(ForceProject destinationProject, DeploymentPayload deploymentPayload,
             boolean checkOnly, IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, ForceProjectException, FactoryException, ServiceException, JAXBException {
+            InterruptedException, ForceProjectException, FactoryException, ServiceException {
         Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(destinationProject);
         if (logger.isDebugEnabled()) {
             logger.debug(deploymentPayload.getDeploymentPlanSummary());
@@ -907,7 +900,7 @@ public class DeploymentController extends Controller {
 
     private DeploymentResult deployWork(Connection connection, DeploymentPayload deploymentPayload, boolean checkOnly,
             IProgressMonitor monitor) throws InterruptedException, ForceProjectException, FactoryException,
-            ForceConnectionException, ServiceException, ForceRemoteException, JAXBException {
+            ServiceException, ForceRemoteException {
 
         final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
         ProjectPackageList projectPackageList = serviceLocator.getProjectService().getProjectPackageListInstance();
@@ -1021,7 +1014,7 @@ public class DeploymentController extends Controller {
         return result;
     }
 
-	protected DeployOptions makeDefaultDeployOptions(boolean checkOnly, PackageDeployService packageDeployService) throws ForceConnectionException {
+	protected DeployOptions makeDefaultDeployOptions(boolean checkOnly, PackageDeployService packageDeployService) {
         DeployOptions deployOptions = packageDeployService.getDeployOptions(checkOnly);
         deployOptions.setIgnoreWarnings(true);
         return deployOptions;

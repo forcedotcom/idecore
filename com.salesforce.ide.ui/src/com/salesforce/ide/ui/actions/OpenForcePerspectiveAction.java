@@ -19,14 +19,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.WorkbenchException;
 
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 
 public class OpenForcePerspectiveAction extends BaseAction {
     private static final Logger logger = Logger.getLogger(OpenForcePerspectiveAction.class);
 
-    public OpenForcePerspectiveAction() throws ForceProjectException {
+    public OpenForcePerspectiveAction() {
         super();
     }
 

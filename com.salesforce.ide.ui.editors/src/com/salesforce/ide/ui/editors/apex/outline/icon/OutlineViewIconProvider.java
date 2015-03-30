@@ -69,6 +69,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
         return getTypeImage(accessorFlags_JVM, accessorFlags_JDT, false);
     }
 
+    @Override
     public Image handle(ClassDecl element) {
         AccessorFlags flags = computeAccessorFlags(element.modifiers);
         int accessorFlags_JVM = flags.accessorFlags_JVM;
@@ -77,7 +78,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
         return getTypeImage(accessorFlags_JVM, accessorFlags_JDT, false);
     }
 
-    private Image getTypeImage(int accessorFlags_JVM, int accessorFlags_JDT, boolean isInner) {
+    private static Image getTypeImage(int accessorFlags_JVM, int accessorFlags_JDT, boolean isInner) {
         if ((accessorFlags_JVM & ApexElementImageDescriptor.GLOBAL) != 0) {
             ImageDescriptor desc = ForceImages.getDesc(ForceImages.APEX_GLOBAL_CLASS);
             ApexElementImageDescriptor decoratedDesc =
@@ -92,6 +93,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
         return ForceImages.get(ForceImages.JDT_CLASS, accessorFlags_JVM, decoratedDesc);
     }
 
+    @Override
     public Image handle(InterfaceDecl element) {
         AccessorFlags flags = computeAccessorFlags(element.modifiers);
         int accessorFlags_JVM = flags.accessorFlags_JVM;
@@ -199,7 +201,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
         return getImageForMethodLikeElements(null, accessorFlags_JVM, accessorFlags_JDT);
     }
 
-    private Image getImageForMethodLikeElements(MethodMember element, int accessorFlags_JVM, int accessorFlags_JDT) {
+    private static Image getImageForMethodLikeElements(MethodMember element, int accessorFlags_JVM, int accessorFlags_JDT) {
         if ((accessorFlags_JVM & ApexElementImageDescriptor.WEBSERVICE) != 0) {
             ImageDescriptor desc = ForceImages.getDesc(ForceImages.APEX_GLOBAL_METHOD);
 
@@ -268,7 +270,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
     /*
      * Adds decoration for constructor
      */
-    private int adornWithMethodClassDetails(MethodMember element, int accessorFlags_JDT) {
+    private static int adornWithMethodClassDetails(MethodMember element, int accessorFlags_JDT) {
         int flags = accessorFlags_JDT;
         if (element.methodDecl.type instanceof Optional.None) { // No return type means that it is a constructor
             flags |= JavaElementImageDescriptor.CONSTRUCTOR;

@@ -125,15 +125,14 @@ public class PackageVersionWidget {
                 pv.setMajorNumber(0);
                 pv.setMinorNumber(0);
 
-                Scanner scanner = new Scanner(number).useDelimiter("\\."); //$NON-NLS-1$
+                try (final Scanner scanner = new Scanner(number)) {
+                    // Whole part - must exist for it to pass the matcher
+                    pv.setMajorNumber(scanner.useDelimiter("\\.").nextInt()); //$NON-NLS-1$
 
-                // Whole part - must exist for it to pass the matcher
-                pv.setMajorNumber(scanner.nextInt());
-
-                if (scanner.hasNextInt()) { // Decimal part, user might just not put it, then default to 0
-                    pv.setMinorNumber(scanner.nextInt());
+                    if (scanner.hasNextInt()) { // Decimal part, user might just not put it, then default to 0
+                        pv.setMinorNumber(scanner.nextInt());
+                    }
                 }
-
             }
 
             return pv;

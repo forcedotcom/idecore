@@ -18,11 +18,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.ui.internal.wizards.BaseWizard;
@@ -36,7 +34,7 @@ public class UpgradeWizard extends BaseWizard {
     private UpgradeComponentConflictsPage upgradeComponentsPage = null;
 
     // C O N S T R U C T O R S
-    public UpgradeWizard(IProject project) throws ForceProjectException, FactoryException {
+    public UpgradeWizard(IProject project) {
         super();
 
         this.project = project;

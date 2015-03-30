@@ -117,11 +117,13 @@ public class ReplaceRunningUserTableComposite extends BaseComposite {
     }
 
     class ReplaceDashboardLabelProvider implements ITableLabelProvider {
-        List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
+        List<ILabelProviderListener> listeners = new ArrayList<>();
+        @Override
         public Image getColumnImage(Object element, int columnIndex) {
             return null;
         }
 
+        @Override
         public String getColumnText(Object element, int columnIndex) {
             DeploymentComponent deploymentComponent = (DeploymentComponent)element;
             switch(columnIndex) {
@@ -133,17 +135,21 @@ public class ReplaceRunningUserTableComposite extends BaseComposite {
             return "";
         }
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
             listeners.add(listener);
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             return false;
         }
 
+        @Override
         public void removeListener(ILabelProviderListener listener) {
             listeners.remove(listener);
         }

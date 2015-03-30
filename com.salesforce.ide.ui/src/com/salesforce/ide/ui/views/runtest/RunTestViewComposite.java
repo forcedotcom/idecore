@@ -116,6 +116,7 @@ public class RunTestViewComposite extends Composite {
         resultsTree.setLinesVisible(true);
         resultsTree.setLayoutData(gridData1);
         resultsTree.addMouseListener(new MouseListener() {
+            @Override
             public void mouseDoubleClick(MouseEvent arg0) {
                 if (arg0.getSource() != null && arg0.getSource() instanceof Tree
                         && Utils.isNotEmpty(((Tree) arg0.getSource()).getSelection())) {
@@ -128,8 +129,10 @@ public class RunTestViewComposite extends Composite {
                 }
             }
 
+            @Override
             public void mouseDown(MouseEvent arg0) {}
 
+            @Override
             public void mouseUp(MouseEvent arg0) {
                 if (arg0.getSource() != null && arg0.getSource() instanceof Tree
                         && Utils.isNotEmpty(((Tree) arg0.getSource()).getSelection())) {

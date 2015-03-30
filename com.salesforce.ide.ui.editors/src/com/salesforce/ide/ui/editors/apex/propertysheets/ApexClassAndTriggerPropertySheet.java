@@ -12,6 +12,7 @@ package com.salesforce.ide.ui.editors.apex.propertysheets;
 
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
 import com.salesforce.ide.api.metadata.types.ApexCodeUnitStatus;
@@ -45,7 +46,7 @@ public abstract class ApexClassAndTriggerPropertySheet extends ApexPropertySheet
 
     @Override
     protected void createPackageVersions() {
-        Section packageVersions = toolkit.createSection(form.getBody(), Section.TITLE_BAR | Section.DESCRIPTION);
+        Section packageVersions = toolkit.createSection(form.getBody(), ExpandableComposite.TITLE_BAR | Section.DESCRIPTION);
         packageVersions.setText(EditorMessages.getString("ApexMetadataFormPage.PackageVersionsSection")); //$NON-NLS-1$
         packageVersions.setDescription(EditorMessages
                 .getString("ApexMetadataFormPage.PackageVersionsSection.Description")); //$NON-NLS-1$

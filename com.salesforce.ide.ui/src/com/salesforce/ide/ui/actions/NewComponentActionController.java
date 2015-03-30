@@ -19,11 +19,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
@@ -43,11 +41,11 @@ public class NewComponentActionController extends ActionController {
 
     private Resources resources;
 
-    public NewComponentActionController() throws ForceProjectException {
+    public NewComponentActionController() {
         this(new Resources());
     }
     
-    public NewComponentActionController(Resources resources) throws ForceProjectException {
+    public NewComponentActionController(Resources resources) {
         this.resources = resources;
     }
 
@@ -143,14 +141,7 @@ public class NewComponentActionController extends ActionController {
             return null;
         }
 
-        Component component = null;
-        try {
-            component = getComponentFactory().getComponentByComponentType(componentType);
-        } catch (FactoryException e) {
-            logger.warn("Unable to derive component folder - unable to get object type from action id '" + actionId
-                    + "'");
-        }
-
+        Component component = getComponentFactory().getComponentByComponentType(componentType);
         if (component == null) {
             logger.warn("Unable to derive component folder");
         }
@@ -170,8 +161,8 @@ public class NewComponentActionController extends ActionController {
             prepareAndOpenWizardDialog();
         } catch (Exception e) {
             logger.error("Unable to open New Force.com Component wizard for " + component.getComponentType(), e);
-            Utils.openError(e, UIMessages.getString("NewComponentAction.MessageBox.title"), UIMessages
-                    .getString("NewComponentAction.GeneralError.message"));
+            Utils.openError(e, UIMessages.getString("NewComponent.MessageBox.title"), UIMessages
+                    .getString("NewComponent.GeneralError.message"));
         }
     }
 
@@ -246,7 +237,7 @@ public class NewComponentActionController extends ActionController {
     
     public static class Resources {
         public String getDialogTitle_Error() {
-            return UIMessages.getString("NewComponentAction.MessageBox.title")+" Error";
+            return UIMessages.getString("NewComponent.MessageBox.title")+" Error";
         }
 
         public String getMessage_invalidDerivedComponent() {
@@ -262,11 +253,11 @@ public class NewComponentActionController extends ActionController {
         }
 
         public String getMessage_ReferencedPkg() {
-            return UIMessages.getString("NewComponentAction.ReferencedPackage.message");
+            return UIMessages.getString("NewComponent.ReferencedPackage.message");
         }
 
         public String getMessage_unknownFolderMessage() {
-            return UIMessages.getString("NewComponentAction.UnknownFolder.message");
+            return UIMessages.getString("NewComponent.UnknownFolder.message");
         }
         
     }

@@ -45,6 +45,7 @@ public class DeploymentResultsComposite extends BaseDeploymentComposite {
         font = new Font(this.getDisplay(), "Arial", 10, SWT.BOLD);
 
         addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 font.dispose();
             }

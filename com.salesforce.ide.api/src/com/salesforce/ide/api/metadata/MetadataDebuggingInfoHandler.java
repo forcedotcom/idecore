@@ -47,10 +47,12 @@ public class MetadataDebuggingInfoHandler extends DefaultHandler implements Mess
         return LOCAL.get();
     }
 
+    @Override
     public void handleRequest(URL endpoint, byte[] request) {
         // Don't need to do anything on the request
     }
 
+    @Override
     public void handleResponse(URL endpoint, byte[] response) {
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(new ByteArrayInputStream(response), this);

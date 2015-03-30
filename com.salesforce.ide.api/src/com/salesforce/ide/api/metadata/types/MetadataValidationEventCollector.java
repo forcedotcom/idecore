@@ -77,7 +77,7 @@ public class MetadataValidationEventCollector extends ValidationEventCollector {
 
     public void logValidationMessages(String name) {
         List<String> validationMessages = getValidationMessages();
-        if (validationMessages != null && validationMessages.isEmpty()) {
+        if (validationMessages == null || validationMessages.isEmpty()) {
             if (logger.isInfoEnabled()) {
                 logger.info(name + " has no validation issues");
             }
@@ -93,7 +93,7 @@ public class MetadataValidationEventCollector extends ValidationEventCollector {
         }
     }
 
-    private String getSeverity(int severity) {
+    private static String getSeverity(int severity) {
         switch (severity) {
         case ValidationEvent.FATAL_ERROR:
             return "FATAL";

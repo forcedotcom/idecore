@@ -36,7 +36,6 @@ import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.ui.internal.composite.BaseProjectComposite;
@@ -218,12 +217,7 @@ public class ProjectOrganizationPage extends BaseProjectCreatePage {
             // save updated input
             saveUserInput();
 
-            // invalidate packageCache.xml from previous org's PME load
-            try {
-                new PackageManifestController().clearCache();
-            } catch (ForceProjectException e) {
-                logger.error("Unable to clear PME cache, '" + Constants.CACHE_FILENAME + "'", e);
-            }
+            new PackageManifestController().clearCache();
 
             // pre-load org's packages and enabled component types
             if (!prepareNextPage()) {
@@ -363,9 +357,7 @@ public class ProjectOrganizationPage extends BaseProjectCreatePage {
                 } catch (Throwable e) {
                     throw new InvocationTargetException(e);
                 } finally {
-                    if (monitor != null) {
-                        monitor.done();
-                    }
+                    monitor.done();
                 }
             }
         });

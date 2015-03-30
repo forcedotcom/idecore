@@ -144,9 +144,9 @@ public class SalesforceEndpoints {
         try {
             File temp = new File(userEndpointsFilePath);
             if (temp.exists()) {
-                BufferedReader buffReader = new BufferedReader(new FileReader(userEndpointsFilePath));
-                loadEndpoints(buffReader);
-                buffReader.close();
+                try (final BufferedReader buffReader = new BufferedReader(new FileReader(userEndpointsFilePath))) {
+                    loadEndpoints(buffReader);
+                }
             }
         } catch (FileNotFoundException e) {
             logger.warn("Unable to load user endpoints from file '" + userEndpointsFilePath + "'", e);
@@ -195,9 +195,9 @@ public class SalesforceEndpoints {
                 return;
             }
 
-            BufferedWriter out = new BufferedWriter(writer);
-            out.write(endpoint + System.getProperty("line.separator"));
-            out.close();
+            try (final BufferedWriter out = new BufferedWriter(writer)) {
+                out.write(endpoint + System.getProperty("line.separator"));
+            }
             if (logger.isDebugEnabled()) {
                 logger.debug("Added new user defined endpoint '" + endpoint + "' to file '" + userEndpointsFilePath
                         + "'");

@@ -129,7 +129,7 @@ public class DeploymentPlanPage extends BaseDeploymentPage {
     }
 
     // compares destination artifacts with deployment candidates
-    private void performDestinationComparison(final DeploymentController deploymentWizardController)
+    private static void performDestinationComparison(final DeploymentController deploymentWizardController)
             throws InvocationTargetException, InterruptedException {
 
         IProgressService service = PlatformUI.getWorkbench().getProgressService();
@@ -522,7 +522,7 @@ public class DeploymentPlanPage extends BaseDeploymentPage {
                         deploymentPayload.getDeploymentComponentsByType(component.getSecondaryComponentType());
             }
 
-            if (Utils.isEmpty(folderTypeDeploymentComponentSet)) {
+            if (null == folderTypeDeploymentComponentSet || folderTypeDeploymentComponentSet.isEmpty()) {
                 if (logger.isInfoEnabled()) {
                     logger.info("Unable to find subfolder components for folder '" + folderName + "'");
                 }
@@ -571,7 +571,7 @@ public class DeploymentPlanPage extends BaseDeploymentPage {
                         deploymentPayload.getDeploymentComponentsByType(component.getSecondaryComponentType());
             }
 
-            if (Utils.isEmpty(folderTypeDeploymentComponentSet)) {
+            if (null == folderTypeDeploymentComponentSet || folderTypeDeploymentComponentSet.isEmpty()) {
                 if (logger.isInfoEnabled()) {
                     logger.info("Unable to find subfolder components for folder '" + folderName + "'");
                 }

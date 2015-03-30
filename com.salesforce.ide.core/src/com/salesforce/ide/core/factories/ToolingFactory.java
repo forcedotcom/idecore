@@ -75,7 +75,7 @@ public class ToolingFactory extends BaseFactory {
         return stub;
     }
 
-    private void cacheToolingStubExt(ForceProject forceProject, ToolingStubExt stub) {
+    private static void cacheToolingStubExt(ForceProject forceProject, ToolingStubExt stub) {
         toolingStubs.put(forceProject, stub);
     }
 

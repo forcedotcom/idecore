@@ -50,6 +50,10 @@ public class ComponentArchiver {
     public static void generateArchive(String zipName, File zipPath, ComponentList componentList) throws IOException {
         if(!validInput(zipName, zipPath, componentList)) return;
 
+        if (Utils.isEmpty(componentList)) {
+            return;
+        }
+
         File zipFile = new File(zipPath + File.separator + zipName + ".zip");
         if (zipFile.exists()) {
             boolean success = zipFile.delete();
@@ -58,57 +62,50 @@ public class ComponentArchiver {
             }
         }
 
-        ZipOutputStream zipFileStream = new ZipOutputStream(new FileOutputStream(zipFile));
         ZipStats stats = new ZipStats();
 
-        if (Utils.isEmpty(componentList)) {
-            return;
-        }
-
-        for (Component component: componentList) {
-            if (component.getFileResource() == null && Utils.isEmpty(component.getBody())) {
-                logger.warn("File and body for component " + component.getFullDisplayName() + " is null");
-                continue;
-            }
-
-            ZipStats tmpStats = null;
-            String filePath = Utils.stripSourceFolder(component.getMetadataFilePath());
-            if (component.getFileResource() != null) {
-                File file = component.getFileResource().getRawLocation().toFile();
-                if (!file.exists()) {
-                    logger.warn("File '" + file.getAbsolutePath() + "' does not exist");
+        try (final ZipOutputStream zipFileStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            for (Component component: componentList) {
+                if (component.getFileResource() == null && Utils.isEmpty(component.getBody())) {
+                    logger.warn("File and body for component " + component.getFullDisplayName() + " is null");
                     continue;
                 }
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Zipping content from component's file '"
-                            + component.getFileResource().getProjectRelativePath().toPortableString());
+                ZipStats tmpStats = null;
+                String filePath = Utils.stripSourceFolder(component.getMetadataFilePath());
+                if (component.getFileResource() != null) {
+                    File file = component.getFileResource().getRawLocation().toFile();
+                    if (!file.exists()) {
+                        logger.warn("File '" + file.getAbsolutePath() + "' does not exist");
+                        continue;
+                    }
+
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Zipping content from component's file '"
+                                + component.getFileResource().getProjectRelativePath().toPortableString());
+                    }
+
+                    // get zip and add to zip stats
+                    tmpStats = ZipUtils.zipFile(filePath, file, zipFileStream, Integer.MAX_VALUE);
+                } else if (Utils.isNotEmpty(component.getBody())) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Zipping content from component's body");
+                    }
+
+                    // get zip and add to zip stats
+                    tmpStats = ZipUtils.zipFile(filePath, component.getBody(), zipFileStream, Integer.MAX_VALUE);
                 }
 
-                // get zip and add to zip stats
-                tmpStats = ZipUtils.zipFile(filePath, file, zipFileStream, Integer.MAX_VALUE);
-            } else if (Utils.isNotEmpty(component.getBody())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Zipping content from component's body");
-                }
-
-                // get zip and add to zip stats
-                tmpStats = ZipUtils.zipFile(filePath, component.getBody(), zipFileStream, Integer.MAX_VALUE);
-            }
-
-            if (stats != null) {
                 stats.addStats(tmpStats);
-            }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Updated zip stats:\n" + stats.toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Updated zip stats:\n" + stats.toString());
+                }
             }
         }
-
-        zipFileStream.close();
     }
 
-    private static boolean validInput(String zip_name, File zip_path, ComponentList components) throws IOException {
+    private static boolean validInput(String zip_name, File zip_path, ComponentList components) {
         if (Utils.isEmpty(zip_path) || !zip_path.exists()) {
             throw new IllegalArgumentException("Zip path '" + zip_path.getAbsolutePath() + "' does not exist");
         }

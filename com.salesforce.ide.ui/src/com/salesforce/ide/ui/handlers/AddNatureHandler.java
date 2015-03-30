@@ -1,25 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *     Salesforce.com, inc. - initial API and implementation
- ******************************************************************************/
-package com.salesforce.ide.ui.actions;
+package com.salesforce.ide.ui.handlers;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
@@ -27,61 +19,44 @@ import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
+import com.salesforce.ide.ui.actions.OpenForcePerspectiveAction;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
-/**
- * 
- * @author cwall
- */
-public class AddNatureAction extends BaseChangeNatureAction {
-
-    private static final Logger logger = Logger.getLogger(AddNatureAction.class);
-
-    protected ProjectController projectController = null;
-
-    // C O N S T R U C T O R
-    public AddNatureAction() throws ForceProjectException {
-        super();
-        projectController = new ProjectController();
-    }
-
-    // M E T H O D S
-    @Override
-    public void init() {}
+public final class AddNatureHandler extends BaseHandler {
+    private static final Logger logger = Logger.getLogger(AddNatureHandler.class);
 
     @Override
-    public void execute(IAction action) {
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
+        final IWorkbench workbench = HandlerUtil.getActiveWorkbenchWindowChecked(event).getWorkbench();
+        final IProject project = getProjectChecked(event);
         try {
             if (project.hasNature(DefaultNature.NATURE_ID)) {
                 Utils.openInfo("Force.com Default Nature Exists",
                     "Force.com Default Nature already exists on project '" + project.getName() + "'.");
-                return;
+                return null;
             }
         } catch (CoreException e) {
             String logMessage = Utils.generateCoreExceptionLog(e);
-            logger.error("Unable to apply Force.com Online Nature to project '" + project.getName() + "': "
+            logger.error("Unable to apply Force.com Default Nature to project '" + project.getName() + "': "
                     + logMessage, e);
-            Utils.openError(e, "Force.com Online Nature Error", "Problems adding Force.com Online Nature to project '"
+            Utils.openError(e, "Force.com Default Nature Error", "Problems adding Force.com Default Nature to project '"
                     + project.getName() + "': " + e.getMessage());
-            return;
+            return null;
         }
 
-        applyNature();
-        updateDecorators();
+        applyNature(workbench, project);
+        updateDecorators(workbench);
 
         DialogUtils.getInstance().okMessage("Force.com Project Properties",
             UIMessages.getString("AddForceNature.Properties.message"), MessageDialog.WARNING);
-        try {
-            (new OpenForcePerspectiveAction()).run();
-        } catch (ForceProjectException e) {
-            logger.error("Unable to open Force Perspective", e);
-        }
+        (new OpenForcePerspectiveAction()).run();
+
+        return null;
     }
 
-    public void applyNature() {
+    private static void applyNature(final IWorkbench workbench, final IProject project) {
         WorkspaceModifyOperation applyNatureOperation = new WorkspaceModifyOperation() {
             @Override
             protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
@@ -89,6 +64,8 @@ public class AddNatureAction extends BaseChangeNatureAction {
 
                 ProjectModel projectModel = new ProjectModel(project);
                 projectModel.setContentSelection(ProjectController.NONE);
+
+                final ProjectController projectController = new ProjectController();
                 projectController.setModel(projectModel);
 
                 monitor.beginTask("Applying Force.com Nature", 4);
@@ -99,11 +76,7 @@ public class AddNatureAction extends BaseChangeNatureAction {
                     monitor.worked(1);
 
                     monitor.subTask(UIMessages.getString("ProjectCreateWizard.CreateOperation.GenerateSchema.label"));
-                    try {
-                        projectController.generateSchemaFile(monitor);
-                    } catch (IOException e) {
-                        logger.error("Unable to generate schema file");
-                    }
+                    projectController.generateSchemaFile(monitor);
                     monitor.worked(1);
 
                     if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().hasPackageManifest(project)) {
@@ -122,7 +95,7 @@ public class AddNatureAction extends BaseChangeNatureAction {
             }
         };
 
-        IProgressService service = PlatformUI.getWorkbench().getProgressService();
+        IProgressService service = workbench.getProgressService();
         try {
             service.run(false, true, applyNatureOperation);
         } catch (InterruptedException e) {
@@ -134,4 +107,5 @@ public class AddNatureAction extends BaseChangeNatureAction {
                     + project.getName() + "': " + ForceExceptionUtils.getRootCauseMessage(e));
         }
     }
+
 }

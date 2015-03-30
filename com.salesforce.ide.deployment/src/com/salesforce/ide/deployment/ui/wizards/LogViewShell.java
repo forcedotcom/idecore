@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 
 public class LogViewShell {
@@ -129,6 +130,7 @@ public class LogViewShell {
         ToolItem btnCopy = new ToolItem(barCommands, SWT.PUSH | SWT.BORDER);
         btnCopy.setText("Copy to Clipboard");
         btnCopy.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 clipboard = new Clipboard(shell.getDisplay());
                 Text txtArea = (Text) tabLogView.getSelection()[0].getControl();
@@ -139,6 +141,7 @@ public class LogViewShell {
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -198,6 +201,7 @@ public class LogViewShell {
                 }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 StringBuffer strBuff = new StringBuffer(txtSummaryArea.getText());
                 strBuff.append("\n\n").append(txtDebugArea.getText());
@@ -216,6 +220,7 @@ public class LogViewShell {
                 writeToFile(fileName, strBuff.toString());
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -226,21 +231,12 @@ public class LogViewShell {
                     return;
                 }
 
-                BufferedWriter buffWriter = null;
-                try {
-                    FileWriter fileWriter = new FileWriter(fileName);
-                    buffWriter = new BufferedWriter(fileWriter);
+                try (final QuietCloseable<BufferedWriter> c = QuietCloseable.make(new BufferedWriter(new FileWriter(fileName)))) {
+                    final BufferedWriter buffWriter = c.get();
                     buffWriter.write(textToWrite);
-                    buffWriter.close();
                 } catch (IOException e) {
                     logger.error("Unable to write to file [" + fileName + "]", e);
                     return;
-                } finally {
-                    if (buffWriter != null) {
-                        try {
-                            buffWriter.close();
-                        } catch (IOException e) {}
-                    }
                 }
             }
         });
@@ -249,6 +245,7 @@ public class LogViewShell {
         ToolItem btnClose = new ToolItem(barCommands, SWT.PUSH | SWT.BORDER);
         btnClose.setText("Close");
         btnClose.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (clipboard != null) {
                     clipboard.dispose();
@@ -256,6 +253,7 @@ public class LogViewShell {
                 shell.setVisible(false);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

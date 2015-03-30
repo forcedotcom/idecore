@@ -32,6 +32,7 @@ final class DeploymentPlanColumnSortListener implements Listener {
         this.deploymentPlanComposite = deploymentPlanComposite;
     }
 
+    @Override
     public void handleEvent(Event e) {
         TableItem[] items = deploymentPlanComposite.getTblDeployPlan().getItems();
         TableColumn column = (TableColumn) e.widget;

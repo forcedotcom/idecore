@@ -32,7 +32,6 @@ import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.quickassist.IQuickFixableAnnotation;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
@@ -464,7 +463,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
      * @deprecated will be removed during 3.4
      */
     @Deprecated
-    private static class InternalMarkerAnnotation extends MarkerAnnotation implements IQuickFixableAnnotation {
+    private static class InternalMarkerAnnotation extends MarkerAnnotation {
 
         /**
          * Tells whether this annotation is quick fixable.

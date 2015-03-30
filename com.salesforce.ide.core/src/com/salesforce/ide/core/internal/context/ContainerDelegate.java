@@ -39,7 +39,7 @@ public class ContainerDelegate extends BaseContainerDelegate {
         return _instance;
     }
 
-    public static ContainerDelegate init() throws ForceProjectException {
+    public static ContainerDelegate init() {
         return getInstance();
     }
 

@@ -87,7 +87,7 @@ public class ForceIdeDeploymentPlugin extends AbstractUIPlugin {
     }
 
     //  P L U G I N   I N I T S
-    private void init() {
+    private static void init() {
         System.out.println("Initiated '" + PLUGIN_ID + "' plugin, version " + getBundleVersion());
     }
 

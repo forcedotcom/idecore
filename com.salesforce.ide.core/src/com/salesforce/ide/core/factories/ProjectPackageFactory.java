@@ -78,7 +78,7 @@ public class ProjectPackageFactory extends BaseFactory {
     }
 
     public ProjectPackageList getProjectPackageListInstance(IProject project, byte[] zipFile,
-            FileMetadataExt fileMetadataHandler) throws FactoryException, InterruptedException, IOException {
+            FileMetadataExt fileMetadataHandler) throws InterruptedException, IOException {
         if (fileMetadataHandler == null) {
             throw new IllegalArgumentException("Project and/or FileMetadataExt cannot be null");
         }

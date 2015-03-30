@@ -83,6 +83,7 @@ public class ReplaceRunningUserViewShell {
         ToolItem btnReplace = new ToolItem(barCommands, SWT.PUSH | SWT.BORDER);
         btnReplace.setText("Replace");
         btnReplace.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 String runningUser = replaceRunningUserTableComposite.getTxtReplaceRunningUserString();
                 if (deployDashboardProcess.replaceRunningUserWith(runningUser)) {
@@ -92,6 +93,7 @@ public class ReplaceRunningUserViewShell {
                 }
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -100,10 +102,12 @@ public class ReplaceRunningUserViewShell {
         ToolItem btnClose = new ToolItem(barCommands, SWT.PUSH | SWT.BORDER);
         btnClose.setText("Cancel");
         btnClose.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 shell.close();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }

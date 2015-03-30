@@ -48,7 +48,6 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
 
         IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea);
         folder.addView(JavaUI.ID_PACKAGES);
-        folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 
         IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.7, editorArea);
         outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
@@ -58,8 +57,6 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
 
         layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float) 0.75, editorArea);
 
-        layout.addActionSet(UIConstants.PLUGIN_PREFIX + ".actionset");
-
         // views
         layout.addShowViewShortcut(UIConstants.RUN_TEST_VIEW_ID);
         layout.addShowViewShortcut(UIConstants.DEBUG_LOG_VIEW_ID);
@@ -67,7 +64,6 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
         layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
         layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
         layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
-        layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 
         // new wizards
         IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
@@ -88,7 +84,5 @@ public class ForcePerspectiveFactory implements IPerspectiveFactory {
 
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
-
-        layout.addActionSet(UIConstants.PLUGIN_PREFIX + ".actionset.help");
     }
 }

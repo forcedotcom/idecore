@@ -114,13 +114,13 @@ public class ForceIdeUIPlugin extends AbstractUIPlugin {
 
     // P L U G I N I N I T S
 
-    private void init() {
+    private static void init() {
         initApplicationContext();
         System.out.println("Initiated '" + PLUGIN_ID + "' ForceIdeUIPlugin, version " + getBundleVersion());
     }
 
     // initialize application container
-    private void initApplicationContext() {
+    private static void initApplicationContext() {
         if (logger != null && logger.isDebugEnabled()) {
             stopWatch.start("ForceIdeUIPlugin.initApplicationContext");
         }

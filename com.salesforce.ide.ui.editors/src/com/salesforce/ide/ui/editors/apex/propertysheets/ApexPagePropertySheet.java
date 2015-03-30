@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
 import com.salesforce.ide.api.metadata.types.ApexCodeUnitStatus;
@@ -59,7 +60,7 @@ public class ApexPagePropertySheet extends ApexPropertySheet {
     }
 
     protected void createGeneralInformation() {
-        Section generalInformation = toolkit.createSection(form.getBody(), Section.TITLE_BAR | Section.DESCRIPTION);
+        Section generalInformation = toolkit.createSection(form.getBody(), ExpandableComposite.TITLE_BAR | Section.DESCRIPTION);
         generalInformation.setText(EditorMessages.getString("ApexMetadataFormPage.GeneralInformationSection")); //$NON-NLS-1$
         generalInformation.setDescription(EditorMessages
                 .getString("ApexMetadataFormPage.GeneralInformationSection.Description")); //$NON-NLS-1$

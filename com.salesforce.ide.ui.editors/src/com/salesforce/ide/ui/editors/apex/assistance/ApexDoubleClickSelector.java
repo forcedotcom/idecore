@@ -41,6 +41,7 @@ public class ApexDoubleClickSelector implements ITextDoubleClickStrategy {
     /*
      * (non-Javadoc) Method declared on ITextDoubleClickStrategy
      */
+    @Override
     public void doubleClicked(ITextViewer text) {
 
         fPos = text.getSelectedRange().x;

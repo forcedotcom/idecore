@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -31,6 +32,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.w3c.dom.Document;
@@ -41,10 +43,9 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
-import com.salesforce.ide.ui.actions.RefreshResourceAction;
+import com.salesforce.ide.ui.handlers.RefreshResourceHandler;
 import com.salesforce.ide.ui.internal.startup.ForceStartup;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
@@ -63,7 +64,7 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
     private String originalSummary = null;
     private boolean updated = false;
 
-    public ProjectContentPropertyPage() throws ForceProjectException {
+    public ProjectContentPropertyPage() {
         super();
     }
 
@@ -285,11 +286,9 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
                         com.salesforce.ide.ui.internal.Messages.PackageManifestChangeListener_dialog_message,
                         getProject().getName()))) {
                     ForceStartup.removePackageManifestChangeListener();
-                    RefreshResourceAction action = new RefreshResourceAction();
                     IFolder srcFolder = getProjectService().getSourceFolder(getProject());
                     if (srcFolder != null && srcFolder.exists()) {
-                        action.selectionChanged(null, new StructuredSelection(srcFolder));
-                        refreshProject(action);
+                        refreshProject(PlatformUI.getWorkbench(), new StructuredSelection(srcFolder));
                         // set original summary to current saved summary only successfully refresh project
                         originalSummary = currentSavedSummary;
                     } else {
@@ -308,26 +307,25 @@ public class ProjectContentPropertyPage extends BasePropertyPage {
         }
     }
 
-    private void refreshProject(final RefreshResourceAction action) throws InvocationTargetException,
+    private static void refreshProject(final IWorkbench workbench, final IStructuredSelection selection) throws InvocationTargetException,
             InterruptedException {
         final IProgressService service = PlatformUI.getWorkbench().getProgressService();
         service.run(false, false, new IRunnableWithProgress() {
+            @Override
             public void run(final IProgressMonitor monitor) throws InvocationTargetException {
                 monitor.beginTask("Refreshing project...", IProgressMonitor.UNKNOWN);
                 try {
-                    action.run(null);
+                    RefreshResourceHandler.execute(workbench, selection);
                 } catch (Throwable e) {
                     throw new InvocationTargetException(e);
                 } finally {
-                    if (monitor != null) {
-                        monitor.done();
-                    }
+                    monitor.done();
                 }
             }
         });
     }
 
-    private IProgressMonitor getNullProgressMonitor() {
+    private static IProgressMonitor getNullProgressMonitor() {
         return new NullProgressMonitor();
     }
 

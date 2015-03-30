@@ -28,9 +28,11 @@ public class DefaultProxyService implements IProxyService {
     }
 
     // M E T H O D S
+    @Override
     public void dispose() {
     }
 
+    @Override
     public IProxy getProxy() {
         return proxy;
     }

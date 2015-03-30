@@ -22,6 +22,7 @@ public class DescribeMetadataResultExt {
     protected DescribeMetadataObjectExt[] describeMetadataObjectExts = null;
     private static Comparator<DescribeMetadataObjectExt> describeComparator =
             new Comparator<DescribeMetadataObjectExt>() {
+                @Override
                 public int compare(DescribeMetadataObjectExt o1, DescribeMetadataObjectExt o2) {
                     if (o1 == o2) {
                         return 0;

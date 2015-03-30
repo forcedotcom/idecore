@@ -59,6 +59,7 @@ public class OrgModel implements IModel {
         this.forceProject = forceProject;
     }
 
+    @Override
     public IProject getProject() {
         if (forceProject == null) {
             return null;
@@ -66,6 +67,7 @@ public class OrgModel implements IModel {
         return forceProject.getProject();
     }
 
+    @Override
     public void setProject(IProject project) {
         if (forceProject == null) {
             forceProject = new ForceProject();

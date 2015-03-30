@@ -33,6 +33,7 @@ public class MessageDialogRunnable implements Runnable {
         this.defaultIndex = defaultIndex;
     }
 
+    @Override
     public void run() {
         MessageDialog messageDialog = new MessageDialog(Display.getDefault().getActiveShell(), dialogTitle,
                 dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels, defaultIndex);

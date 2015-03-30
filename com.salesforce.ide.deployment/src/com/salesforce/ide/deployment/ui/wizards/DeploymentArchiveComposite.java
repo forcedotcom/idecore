@@ -71,9 +71,11 @@ public class DeploymentArchiveComposite extends BaseDeploymentComposite {
         chkSourceArchive.setText("Project archive");
         chkSourceArchive.setSelection(false);
         chkSourceArchive.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (!chkSourceArchive.getSelection()) {
                     txtSourceDirectory.setText("");
@@ -104,9 +106,11 @@ public class DeploymentArchiveComposite extends BaseDeploymentComposite {
         chkDestinationArchive.setText("Destination archive");
         chkDestinationArchive.setSelection(true);
         chkDestinationArchive.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (!chkDestinationArchive.getSelection()) {
                     txtDestinationDirectory.setText("");

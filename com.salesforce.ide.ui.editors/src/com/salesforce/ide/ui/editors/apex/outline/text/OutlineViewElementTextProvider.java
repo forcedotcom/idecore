@@ -54,7 +54,7 @@ public final class OutlineViewElementTextProvider implements IOutlineViewElement
     private static OutlineViewPropertyClassMemberPrinter propertyMemberPrinter =
             new OutlineViewPropertyClassMemberPrinter(printerFactory);
 
-    private PrintContext defaultPrintContext() {
+    private static PrintContext defaultPrintContext() {
         return new PrintContext();
     }
 

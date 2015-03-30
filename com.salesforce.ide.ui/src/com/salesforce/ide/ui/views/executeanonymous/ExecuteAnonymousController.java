@@ -19,17 +19,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.controller.Controller;
 import com.salesforce.ide.core.model.OrgModel;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.apex.ExecuteAnonymousResultExt;
 
 public class ExecuteAnonymousController extends Controller {
 
-    public ExecuteAnonymousController() throws ForceProjectException {
+    public ExecuteAnonymousController() {
         super();
         model = new OrgModel();
     }
 
-    public ExecuteAnonymousController(IProject project) throws ForceProjectException {
+    public ExecuteAnonymousController(IProject project) {
         super();
         model = new OrgModel(project);
     }

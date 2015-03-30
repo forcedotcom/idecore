@@ -29,13 +29,15 @@ Require-Bundle: com.salesforce.ide.core;bundle-version="[34.0.0,35.0.0)",
  org.eclipse.help.ui;bundle-version="3.5.0",
  org.eclipse.help;bundle-version="3.6.0",
  org.eclipse.jface,
- org.eclipse.swt
+ org.eclipse.swt,
+ org.eclipse.ui.workbench
 Import-Package: org.apache.log4j
 Bundle-ClassPath: .
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
 Export-Package: com.salesforce.ide.ui,
  com.salesforce.ide.ui.actions,
+ com.salesforce.ide.ui.handlers,
  com.salesforce.ide.ui.internal,
  com.salesforce.ide.ui.internal.composite,
  com.salesforce.ide.ui.internal.editor,

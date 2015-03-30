@@ -18,13 +18,10 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
-import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
-
 public class MoveChange extends BaseChange {
 
     // C O N S T R U C T O R
-    public MoveChange() throws ForceProjectException {
+    public MoveChange() {
         super();
         this.refactorController = new ChangeRefactorController();
     }
@@ -50,7 +47,7 @@ public class MoveChange extends BaseChange {
     }
 
     public RefactoringStatus checkConditions(IResource origDesintation, IProgressMonitor monitor)
-            throws OperationCanceledException, ForceRemoteException, CoreException, InterruptedException {
+            throws OperationCanceledException {
         return null;
     }
 

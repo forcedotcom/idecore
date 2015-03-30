@@ -93,7 +93,7 @@ public class DefaultBuilder extends BaseBuilder {
         logger.warn("TODO: apply 'Save locally only...' markers on each resource");
     }
 
-    private boolean hasOnlyDefaultNature(IProject project) {
+    private static boolean hasOnlyDefaultNature(IProject project) {
         try {
             String[] natureIds = project.getDescription().getNatureIds();
             for (String natureId : natureIds) {

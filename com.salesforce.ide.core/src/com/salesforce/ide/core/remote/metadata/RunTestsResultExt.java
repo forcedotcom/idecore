@@ -41,34 +41,42 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         this.debugInfo.setDebugLog(results.getDebugLog());
     }
 
+    @Override
     public DebuggingInfo_element getDebugInfo() {
         return debugInfo;
     }
 
+    @Override
     public RunTestsResult getTestResult() {
         return metadataRunTestsResult;
     }
 
+    @Override
     public void setDebugInfo(DebuggingInfo_element debugInfo) {
         this.debugInfo = debugInfo;
     }
 
+    @Override
     public String getNamespacePrefix() {
         return namespacePrefix;
     }
 
+    @Override
     public void setNamespacePrefix(String namespacePrefix) {
         this.namespacePrefix = namespacePrefix;
     }
 
+    @Override
     public int getNumTestsRun() {
         return metadataRunTestsResult.getNumTestsRun();
     }
 
+    @Override
     public double getTotalTime() {
         return metadataRunTestsResult.getTotalTime();
     }
 
+    @Override
     public int getNumFailures() {
         if (metadataRunTestsResult == null) {
             return 0;
@@ -80,6 +88,7 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         return metadataRunTestsResult.getNumFailures() > 0;
     }
 
+    @Override
     public ICodeCoverageResultExt[] getCodeCoverages() {
         ICodeCoverageResultExt[] codeCoverageResultExts = null;
         if (Utils.isNotEmpty(metadataRunTestsResult.getCodeCoverage())) {
@@ -91,10 +100,12 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         return codeCoverageResultExts;
     }
 
+    @Override
     public ICodeCoverageResultExt getCodeCoverage(int i) {
         return new CodeCoverageResultExt(metadataRunTestsResult.getCodeCoverage()[i]);
     }
 
+    @Override
     public ICodeCoverageWarningExt[] getCodeCoverageWarnings() {
         ICodeCoverageWarningExt[] codeCoverageWarningsExts = null;
         if (Utils.isNotEmpty(metadataRunTestsResult.getCodeCoverageWarnings())) {
@@ -110,10 +121,12 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         return Utils.isNotEmpty(metadataRunTestsResult.getCodeCoverageWarnings());
     }
 
+    @Override
     public ICodeCoverageWarningExt getCodeCoverageWarnings(int i) {
         return new CodeCoverageWarningExt(metadataRunTestsResult.getCodeCoverageWarnings()[i]);
     }
 
+    @Override
     public IRunTestFailureExt[] getFailures() {
         IRunTestFailureExt[] runTestFailureExts = null;
         if (Utils.isNotEmpty(metadataRunTestsResult.getFailures())) {
@@ -125,10 +138,12 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         return runTestFailureExts;
     }
 
+    @Override
     public IRunTestFailureExt getFailures(int i) {
         return new RunTestFailureExt(metadataRunTestsResult.getFailures()[i]);
     }
 
+    @Override
     public IRunTestSuccessExt[] getSuccesses() {
         IRunTestSuccessExt[] runTestSuccessExts = null;
         if (Utils.isNotEmpty(metadataRunTestsResult.getSuccesses())) {
@@ -140,10 +155,12 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         return runTestSuccessExts;
     }
 
+    @Override
     public IRunTestSuccessExt getSuccesses(int i) {
         return new RunTestSuccessExt(metadataRunTestsResult.getSuccesses()[i]);
     }
 
+    @Override
     public List<String> getFailureMessages() {
         List<String> messages = new ArrayList<String>();
         if (metadataRunTestsResult.getNumFailures() > 0) {
@@ -155,10 +172,12 @@ public class RunTestsResultExt implements IRunTestsResultExt {
         return messages;
     }
 
+    @Override
     public int getCodeCompilanceCovagePercentage() {
         return CODE_COVERAGE_COMPLIANCE_PCT;
     }
 
+    @Override
     public String toLog() {
         StringBuffer strBuff = new StringBuffer();
         if (metadataRunTestsResult.getNumFailures() > 0) {

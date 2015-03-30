@@ -61,6 +61,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         // pre delete operations
         if (event.getType() == IResourceChangeEvent.PRE_DELETE && event.getResource() != null
@@ -78,6 +79,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
             // handle post-delete operations
             final Set<IProject> deletedProjects = new HashSet<IProject>();
             IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+                @Override
                 public boolean visit(IResourceDelta delta) {
                     if (delta.getKind() == IResourceDelta.REMOVED && delta.getResource() != null
                             && delta.getResource().getType() == IResource.PROJECT) {
@@ -104,7 +106,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
     }
 
     // note: many operations may not be performed due to tree locking
-    protected void preProjectDelete(final IProject project, IProgressMonitor monitor) throws CoreException {
+    protected void preProjectDelete(final IProject project, IProgressMonitor monitor) {
         // set reference package content to writable so that no delete warnings appear
         IFolder referencedPackageFolder = serviceLocator.getProjectService().getReferencedPackagesFolder(project);
         if (referencedPackageFolder != null && referencedPackageFolder.exists()) {

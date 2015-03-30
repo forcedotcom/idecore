@@ -40,7 +40,6 @@ import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.model.ProjectPackage;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 
 /**
  * Service methods for refactoring functionality.
@@ -71,7 +70,7 @@ public class ChangeRefactorController extends BaseRefactorController {
      * @throws InterruptedException
      */
     public RefactoringStatus validateChangeDestination(IProgressMonitor monitor) throws CoreException,
-            ForceRemoteException, InterruptedException {
+            InterruptedException {
         monitorCheck(monitor);
 
         RefactoringStatus refactoringStatus = new RefactoringStatus();
@@ -124,10 +123,10 @@ public class ChangeRefactorController extends BaseRefactorController {
     }
 
     private List<RefactoringStatusEntry> validateChangeFile(IFile changeCandidate, IProgressMonitor monitor)
-            throws ForceRemoteException, InterruptedException {
+            throws InterruptedException {
         monitorCheck(monitor);
         // container to hold status entries
-        List<RefactoringStatusEntry> entries = new ArrayList<RefactoringStatusEntry>();
+        List<RefactoringStatusEntry> entries = new ArrayList<>();
 
         // get components to inspect
         ProjectPackageList projectPackageList = refactorModel.getProjectPackageList();
@@ -202,8 +201,8 @@ public class ChangeRefactorController extends BaseRefactorController {
     }
 
     private List<RefactoringStatusEntry> validateChangeFolder(IFolder changeFolder, IProgressMonitor monitor)
-            throws CoreException, ForceRemoteException, InterruptedException {
-        List<RefactoringStatusEntry> entries = new ArrayList<RefactoringStatusEntry>();
+            throws CoreException, InterruptedException {
+        List<RefactoringStatusEntry> entries = new ArrayList<>();
 
         if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isSourceFolder(changeFolder)
                 && ContainerDelegate.getInstance().getServiceLocator().getProjectService().isSourceFolder(getRefactorModel().getDestinationResource())) {
@@ -251,7 +250,7 @@ public class ChangeRefactorController extends BaseRefactorController {
 
     // evaluate permissions on change components - per component folder
     protected RefactoringStatusEntry evaluateComponentTypeEnablementForComponentFolder(IFolder componentFolder,
-            IProgressMonitor monitor) throws CoreException, ForceRemoteException, InterruptedException {
+            IProgressMonitor monitor) throws InterruptedException {
         monitorCheck(monitor);
 
         // get enabled object types to compare against
@@ -271,7 +270,7 @@ public class ChangeRefactorController extends BaseRefactorController {
             return null;
         }
 
-        List<IFolder> componentFolders = new ArrayList<IFolder>();
+        List<IFolder> componentFolders = new ArrayList<>();
         componentFolders.add(componentFolder);
 
         return evaluateComponentTypeEnablement(enabledComponentTypes, componentFolders, monitor);
@@ -279,7 +278,7 @@ public class ChangeRefactorController extends BaseRefactorController {
 
     // evaluate permissions on change components - per package folder
     protected RefactoringStatusEntry evaluateComponentTypeEnablementForSourceFolder(IFolder sourceFolder,
-            IProgressMonitor monitor) throws CoreException, ForceRemoteException, InterruptedException {
+            IProgressMonitor monitor) throws CoreException, InterruptedException {
         monitorCheck(monitor);
 
         // get enabled object types to compare against
@@ -312,7 +311,7 @@ public class ChangeRefactorController extends BaseRefactorController {
 
     // evaluate permissions on change components - per folder list
     protected RefactoringStatusEntry evaluateComponentTypeEnablement(String[] enabledComponentTypes,
-            List<IFolder> componentFolders, IProgressMonitor monitor) throws CoreException, InterruptedException {
+            List<IFolder> componentFolders, IProgressMonitor monitor) throws InterruptedException {
         if (Utils.isEmpty(enabledComponentTypes) || Utils.isEmpty(componentFolders)) {
             return null;
         }
@@ -325,12 +324,7 @@ public class ChangeRefactorController extends BaseRefactorController {
             boolean areEnabled = false;
             for (String enabledComponentType : enabledComponentTypes) {
                 Component component = null;
-                try {
-                    component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(enabledComponentType);
-                } catch (FactoryException e) {
-                    logger.error("Unable to get component for object type '" + enabledComponentType + "'");
-                    continue;
-                }
+                component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(enabledComponentType);
 
                 if (component == null) {
                     logger.warn("Unable to get component for object type '" + enabledComponentType + "'");
@@ -345,14 +339,14 @@ public class ChangeRefactorController extends BaseRefactorController {
 
             if (!areEnabled) {
                 if (restrictedComponentFolders == null) {
-                    restrictedComponentFolders = new ArrayList<IFolder>();
+                    restrictedComponentFolders = new ArrayList<>();
                 }
                 restrictedComponentFolders.add(componentFolder);
             }
             monitorCheck(monitor);
         }
 
-        if (Utils.isNotEmpty(restrictedComponentFolders)) {
+        if (null != restrictedComponentFolders && !restrictedComponentFolders.isEmpty()) {
             StringBuffer strBuff = new StringBuffer();
             for (IFolder restrictedComponentFolder : restrictedComponentFolders) {
                 strBuff.append("'").append(restrictedComponentFolder.getName()).append("' ");
@@ -408,11 +402,9 @@ public class ChangeRefactorController extends BaseRefactorController {
      * @param changeElements
      * @param destinationResource
      * @param monitor
-     * @throws Exception
      * @throws InterruptedException
-     * @throws FactoryException
      */
-    public void performMove(IProgressMonitor monitor) throws Exception, OperationCanceledException, FactoryException {
+    public void performMove(IProgressMonitor monitor) throws OperationCanceledException {
     }
 
     @Override
@@ -479,6 +471,7 @@ public class ChangeRefactorController extends BaseRefactorController {
 
         try {
             ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
                     try {
                         destinationProjectPackageList.saveResources(new SubProgressMonitor(monitor, 3));

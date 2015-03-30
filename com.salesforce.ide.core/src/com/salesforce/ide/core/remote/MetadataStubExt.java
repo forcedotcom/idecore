@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
@@ -337,12 +336,8 @@ public class MetadataStubExt {
             }
 			
     		Component component = null;
-			try {
-				component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
-                        .getComponentByComponentType(name);
-			} catch (FactoryException e) {
-				//If an exception is thrown, it isn't supported
-			}
+			component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
+                    .getComponentByComponentType(name);
 			//Check the md folder in the bean
 			if (component != null && object.isInFolder()) {
 				supportedNames.add(component.getFolderNameIfFolderTypeMdComponent());
@@ -372,7 +367,7 @@ public class MetadataStubExt {
 		return filePropertiesSubList;
 	}
 
-	private void logTimeout(ListMetadataQuery query) {
+	private static void logTimeout(ListMetadataQuery query) {
 		logger.warn("Timeout while retrying to retrieve listMetadata for for component type "
 		                + query.getType()
 		                + (Utils.isNotEmpty(query.getFolder()) ? "[" + query.getFolder() + "]" : "")
@@ -410,18 +405,18 @@ public class MetadataStubExt {
 		return new Double(connection.getSalesforceEndpoints().getDefaultApiVersion());
 	}
 
-	private void checkMonitorIsCanceled(IProgressMonitor monitor) throws MonitorCanceledException {
+	private static void checkMonitorIsCanceled(IProgressMonitor monitor) throws MonitorCanceledException {
 		if (monitor.isCanceled()) {
 			throw new MonitorCanceledException();
 		}
 	}
 
-	private ArrayList<FileProperties> arrayToList(
+	private static ArrayList<FileProperties> arrayToList(
 			FileProperties[] tmpFileProperties) {
 		return tmpFileProperties == null ? Lists.<FileProperties>newArrayList() : Lists.newArrayList(tmpFileProperties);
 	}
 
-	private String getMonitorMessage(List<ListMetadataQuery> tmpListMetadataQueryList) {
+	private static String getMonitorMessage(List<ListMetadataQuery> tmpListMetadataQueryList) {
         final StringBuffer strBuff = new StringBuffer();
         Set<String> componentTypes = new HashSet<String>();
         for (Iterator<ListMetadataQuery> iterator = tmpListMetadataQueryList.iterator(); iterator.hasNext();) {
@@ -443,7 +438,7 @@ public class MetadataStubExt {
         return strBuff.toString() + "...";
 	}
 
-	private void logQueries(List<ListMetadataQuery> tmpListMetadataQueryList) {
+	private static void logQueries(List<ListMetadataQuery> tmpListMetadataQueryList) {
 		if (logger.isDebugEnabled()) {
 			StringBuffer strBuff = new StringBuffer();
 			for (Iterator<ListMetadataQuery> iterator = tmpListMetadataQueryList.iterator(); iterator.hasNext();) {
