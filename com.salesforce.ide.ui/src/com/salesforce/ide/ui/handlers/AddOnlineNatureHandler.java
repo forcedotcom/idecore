@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Salesforce.com, inc..
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Salesforce.com, inc. - initial API and implementation
+ ******************************************************************************/
 package com.salesforce.ide.ui.handlers;
 
 import org.apache.log4j.Logger;
@@ -20,14 +30,21 @@ public final class AddOnlineNatureHandler extends BaseHandler {
         final IWorkbench workbench = HandlerUtil.getActiveWorkbenchWindowChecked(event).getWorkbench();
         final IProject project = getProjectChecked(event);
 
+        addOnlineNature(workbench, project);
+        return null;
+    }
+
+    public static void addOnlineNature(final IWorkbench workbench, final IProject project) {
         try {
             getConnectionFactory().getConnection(project);
         } catch (Exception e) {
             logger.error("Unable to apply Force.com Online Nature to project '" + project.getName() + "'.", e);
-            Utils.openError(e, "Force.com Online Nature Error", UIMessages
-                    .getString("WorkOnlineAction.ConnectionError.message", new String[] { ForceExceptionUtils
-                            .getRootCauseMessage(e) }));
-            return null;
+            Utils.openError(
+                e,
+                "Force.com Online Nature Error",
+                UIMessages.getString("WorkOnlineAction.ConnectionError.message",
+                    new String[] { ForceExceptionUtils.getRootCauseMessage(e) }));
+            return;
         }
 
         try {
@@ -39,14 +56,8 @@ public final class AddOnlineNatureHandler extends BaseHandler {
                     + logMessage, e);
             Utils.openError(e, "Force.com Online Nature Error", "Unable to apply Force.com Online Nature to project '"
                     + project.getName() + "': " + e.getMessage());
-            return null;
+            return;
         }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   O N L I N E   ***");
-        }
-
-        return null;
     }
 
 }

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Salesforce.com, inc..
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Salesforce.com, inc. - initial API and implementation
+ ******************************************************************************/
 package com.salesforce.ide.deployment.handlers;
 
 import java.util.ArrayList;
@@ -28,36 +38,44 @@ public final class DeploymentHandler extends BaseHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final IStructuredSelection selection = getSelection(event);
-        if (!selection.isEmpty()) {
-            final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-            final DeploymentActionController actionController = buildController(window, selection);
-            if (null != actionController) {
-                final Shell shell = HandlerUtil.getActiveShellChecked(event);
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        final Shell shell = HandlerUtil.getActiveShellChecked(event);
 
-                try {
-                    // instantiates the wizard container with the wizard and opens it
-                    WizardDialog dialog = actionController.getWizardDialog();
-                    dialog.create();
-                    UIUtils.placeDialogInCenter(shell, dialog.getShell());
-                    Utils.openDialog(actionController.getProject(), dialog);
-                } catch (Exception e) {
-                    logger.error("Unable to open deployment wizard", e);
-                }
-            }
+        if (!selection.isEmpty()) {
+            execute(window, selection, shell);
         }
 
         return null;
     }
 
-    private static DeploymentActionController buildController(final IWorkbenchWindow window, final IStructuredSelection selection) {
+    public static void execute(final IWorkbenchWindow window, final IStructuredSelection selection, final Shell shell) {
+        final DeploymentActionController actionController = buildController(window, selection);
+        if (null != actionController) {
+
+            try {
+                // instantiates the wizard container with the wizard and opens it
+                WizardDialog dialog = actionController.getWizardDialog();
+                dialog.create();
+                UIUtils.placeDialogInCenter(shell, dialog.getShell());
+                Utils.openDialog(actionController.getProject(), dialog);
+            } catch (Exception e) {
+                logger.error("Unable to open deployment wizard", e);
+            }
+        }
+    }
+
+    private static DeploymentActionController buildController(final IWorkbenchWindow window,
+            final IStructuredSelection selection) {
         final List<IResource> selectedResources = discardReferencedPackages(getSelectedResources(selection));
         final List<IResource> filteredResources = filter(selectedResources);
-        if (filteredResources.isEmpty()) return null;
+        if (filteredResources.isEmpty())
+            return null;
 
         final IProject project = filteredResources.get(0).getProject();
         for (final IResource resource : filteredResources) {
             if (!project.equals(resource.getProject())) {
-                logger.warn("Unable to refresh resources from multiple projects at the same time. Only refreshing resources from " + project.getName());
+                logger.warn("Unable to refresh resources from multiple projects at the same time. Only refreshing resources from "
+                        + project.getName());
                 break;
             }
         }
@@ -84,5 +102,4 @@ public final class DeploymentHandler extends BaseHandler {
         }
         return new ArrayList<>(resourceSet);
     }
-
 }
