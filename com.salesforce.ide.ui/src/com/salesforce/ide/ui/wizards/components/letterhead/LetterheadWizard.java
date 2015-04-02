@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.letterhead;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.core.internal.components.letterhead.LetterheadComponentController;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
@@ -28,14 +25,6 @@ public class LetterheadWizard extends GenericComponentWizard {
     public LetterheadWizard() throws ForceProjectException {
         super();
         controller = new LetterheadComponentController();
-    }
-
-    public LetterheadWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public LetterheadWizard(IFolder folder, IProject project) {
-        super(folder, project);
     }
 
     @Override

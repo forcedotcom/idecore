@@ -102,7 +102,6 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
     public void init(IProject project) {
         apexCodeScanner.init(project);
         apexDocScanner.init();
-        apexCompletionProcessor.setProject(project);
     }
 
     @Override

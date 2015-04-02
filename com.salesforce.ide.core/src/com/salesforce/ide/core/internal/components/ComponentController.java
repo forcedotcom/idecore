@@ -81,8 +81,7 @@ public abstract class ComponentController extends Controller {
         this.model = componentWizardModel;
     }
 
-    public void setResources(IFolder folder, IProject project) {
-        getComponentWizardModel().setFolder(folder);
+    public void setResources(IProject project) {
         getComponentWizardModel().setProject(project);
     }
 

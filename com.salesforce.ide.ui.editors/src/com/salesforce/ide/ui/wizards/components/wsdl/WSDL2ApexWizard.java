@@ -29,10 +29,8 @@ import com.salesforce.ide.core.internal.components.apex.clazz.ApexClassModel;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ProjectPackageList;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizard;
 import com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizardPage;
-import com.salesforce.ide.wsdl2apex.core.CalloutException;
 import com.salesforce.ide.wsdl2apex.core.Wsdl2Apex;
 
 /**
@@ -42,9 +40,9 @@ import com.salesforce.ide.wsdl2apex.core.Wsdl2Apex;
  * 
  */
 
-public class Wsdl2apexWizard extends Wizard implements INewWizard {
+public class WSDL2ApexWizard extends Wizard implements INewWizard {
     private IStructuredSelection initialSelection;
-    private Wsdl2apexWizardFindPage convertPage;
+    private WSDL2apexWizardFindPage convertPage;
     private Wsdl2apexWizardRenameClasses createPage;
     private IWorkbench currentWorkBench;
     private static final Logger logger = Logger.getLogger(ProjectPackageList.class);
@@ -59,7 +57,7 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
         this.setForcePreviousAndNextButtons(true);
     }
 
-    public Wsdl2apexWizardFindPage getConvertPage() {
+    public WSDL2apexWizardFindPage getConvertPage() {
         return this.convertPage;
     }
 
@@ -78,7 +76,7 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
     @Override
     public void addPages() {
         setWindowTitle("Convert WSDL File to Apex");
-        this.convertPage = new Wsdl2apexWizardFindPage();
+        this.convertPage = new WSDL2apexWizardFindPage();
         this.createPage = new Wsdl2apexWizardRenameClasses();
         addPage(convertPage);
         addPage(createPage);
@@ -192,32 +190,11 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
                         }
                     }
 
-                } catch (ForceProjectException e) {
-                    MessageDialog dialog =
-                            new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                    new String[] { "Ok" }, 0);
-                    dialog.open();
-                    logger.error(e.getMessage());
-                } catch (IOException e) {
-                    MessageDialog dialog =
-                            new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                    new String[] { "Ok" }, 0);
-                    dialog.open();
-                    logger.error(e.getMessage());
-                } catch (CalloutException e) {
-                    MessageDialog dialog =
-                            new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                    new String[] { "Ok" }, 0);
-                    dialog.open();
-                    logger.error(e.getMessage());
                 } catch (Exception e) {
                     if (e.getMessage() != null) {
-                        MessageDialog dialog =
-                                new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR,
-                                        new String[] { "Ok" }, 0);
-                        dialog.open();
+                        new MessageDialog(null, "Error", null, e.getMessage(), MessageDialog.ERROR, new String[] { "Ok" }, 0).open();
                     }
-                    logger.error(e.getMessage());
+                    logger.error(e);
                 }
             }
         });

@@ -60,7 +60,7 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
     public void onEnterPage() {
         setErrorMessage(null);
         setPageComplete(true);
-        final Wsdl2apexWizard w = (Wsdl2apexWizard) this.getWizard();
+        final WSDL2ApexWizard w = (WSDL2ApexWizard) this.getWizard();
         if (allText != null) //gets rid of all the old text widgets if there are any
         {
             for (Text t : allText) {

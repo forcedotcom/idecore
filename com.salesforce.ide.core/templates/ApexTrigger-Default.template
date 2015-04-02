@@ -1,3 +1,0 @@
-trigger @@NAME@@ on @@OBJECT@@ (@@OPERATIONS@@) {
-
-}

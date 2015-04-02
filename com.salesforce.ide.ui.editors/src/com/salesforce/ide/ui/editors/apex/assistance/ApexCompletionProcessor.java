@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.assistance;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -18,6 +17,7 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -35,8 +35,9 @@ import org.eclipse.swt.widgets.Shell;
 public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     protected static ICompletionProposal[] currentList;
-    protected IProject project;
-    
+    private static String fileName = null;
+    private ContentAssistant assistant;
+
     /**
      * Simple content assist tip closer. The tip is valid in a range of 5 characters around its popup location.
      */
@@ -75,13 +76,8 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     //  C O N S T R U C T O R S
     public ApexCompletionProcessor() {}
 
-    //   M E T H O D S
-    public IProject getProject() {
-        return project;
-    }
-
-    public void setProject(IProject project) {
-        this.project = project;
+    public void setContentAssistant(ContentAssistant assistant) {
+        this.assistant = assistant;
     }
 
     /*
@@ -89,9 +85,9 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
      */
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-    	return new ICompletionProposal[0];
+        return new ICompletionProposal[0];
     }
-    
+
     public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
             @Override

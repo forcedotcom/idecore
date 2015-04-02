@@ -13,6 +13,10 @@ package com.salesforce.ide.ui.internal.factories;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
+
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.FileReader;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -37,6 +41,25 @@ public class NewWizardComponentContributionFactory extends ComponentContribution
 
     @Override
     protected boolean isValidComponentForContribution(Component component) {
+        if (component == null) {
+            return false;
+        }
+
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] extensions = registry.getConfigurationElementsFor("org.eclipse.ui.newWizards");
+        if (Utils.isEmpty(extensions)) {
+            return true;
+        }
+
+        String expectedId = "com.salesforce.ide.ui.wizards.create" + component.getComponentType();
+        for (int i = 0; i < extensions.length; i++) {
+            IConfigurationElement element = extensions[i];
+            String id = element.getAttribute("id");
+            if (expectedId.equals(id)) {
+                return false;
+            }
+        }
+
         return true;
     }
 

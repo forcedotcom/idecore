@@ -11,7 +11,6 @@
 package com.salesforce.ide.ui.wizards.components;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -28,14 +27,14 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.internal.wizards.BaseWizard;
 
 /**
- *
+ * 
  * 
  * @author cwall
  */
 public abstract class ComponentWizard extends BaseWizard implements IComponentCreateWizard {
     private static final Logger logger = Logger.getLogger(ComponentWizard.class);
 
-    protected ComponentWizardPage wizardPage = null;
+    private ComponentWizardPage wizardPage = null;
 
     //   C O N S T R U C T O R S
     public ComponentWizard() {
@@ -43,12 +42,6 @@ public abstract class ComponentWizard extends BaseWizard implements IComponentCr
     }
 
     //   M E T H O D S
-    public ComponentWizard(IFolder folder, IProject project) {
-        super();
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   C O M P O N E N T  W I Z A R D   ***");
-        }
-    }
 
     public String getComponentType() {
         return getComponentController().getComponentType();
@@ -60,31 +53,19 @@ public abstract class ComponentWizard extends BaseWizard implements IComponentCr
 
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        IFolder folder = null;
-        IProject project = null;
-
-        IStructuredSelection structuredSelection = selection;
-        if (selection == null || structuredSelection.getFirstElement() == null
-                && (getComponentWizardModel() != null && getComponentWizardModel().getProject() == null)) {
-            logger.warn("Unable to open new component wizard - folder and project are null.");
-            Utils.openWarn(null, UIMessages.getString("NewComponent.MessageBox.title"), UIMessages
-                    .getString("NewComponent.UnknownFolder.message"));
+        final ComponentModel model = getComponentWizardModel();
+        if ((selection == null || selection.getFirstElement() == null) && model != null && model.getProject() == null) {
+            logger.warn("Unable to open new component wizard - project is null.");
+            Utils.openWarn(null, UIMessages.getString("NewComponentAction.MessageBox.title"),
+                UIMessages.getString("NewComponentAction.UnknownFolder.message"));
             return;
         }
 
-        Object obj = structuredSelection.getFirstElement();
-        if (obj instanceof IFolder) {
-            folder = (IFolder) obj;
-            project = ((IFolder) obj).getProject();
-        } else if (obj instanceof IProject) {
-            project = (IProject) obj;
-        } else if (obj instanceof IResource) {
-            project = ((IResource) obj).getProject();
-        }
-
+        final Object obj = selection.getFirstElement();
+        final IProject project = obj instanceof IResource ? ((IResource) obj).getProject() : null;
         setNeedsProgressMonitor(false);
         addImage();
-        getComponentController().setResources(folder, project);
+        getComponentController().setResources(project);
 
         if (logger.isDebugEnabled()) {
             logger.debug(getClass().getSimpleName() + " wizard initialized");
@@ -140,7 +121,7 @@ public abstract class ComponentWizard extends BaseWizard implements IComponentCr
      * wizard as execution context.
      */
     @Override
-    public final boolean performFinish() {
+    public boolean performFinish() {
         if (!getComponentController().canComplete()) {
             if (logger.isInfoEnabled()) {
                 logger.info("Component control is not complete");

@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.generic;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
 
 /**
@@ -26,11 +23,4 @@ public abstract class GenericComponentWizard extends ComponentWizard {
         super();
     }
 
-    public GenericComponentWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public GenericComponentWizard(IFolder folder, IProject project) {
-        super(folder, project);
-    }
 }

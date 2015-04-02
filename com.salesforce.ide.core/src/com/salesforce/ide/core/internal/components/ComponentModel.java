@@ -15,7 +15,6 @@ import java.util.Calendar;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
@@ -34,7 +33,6 @@ public abstract class ComponentModel implements IModel {
     protected Display display = null;
     protected IProject project = null;
     protected ISelection selection = null;
-    protected IFolder folder = null;
     protected ComponentFactory componentFactory = null;
     protected ComponentList componentList = null;
     protected Component component = null;
@@ -118,17 +116,6 @@ public abstract class ComponentModel implements IModel {
 
     public String getDisplayName() {
         return component.getDisplayName();
-    }
-
-    public IFolder getFolder() {
-        return folder;
-    }
-
-    public void setFolder(IFolder folder) {
-        this.folder = folder;
-        if (this.folder != null) {
-            setProject(this.folder.getProject());
-        }
     }
 
     /**

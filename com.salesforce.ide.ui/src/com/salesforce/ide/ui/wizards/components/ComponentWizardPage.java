@@ -131,7 +131,9 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         return (ComponentWizardComposite) componentWizardComposite;
     }
 
-    protected abstract void additionalInitialize(Composite parent);
+    protected void additionalInitialize(Composite parent) {
+        /* intentionally empty */
+    }
 
     protected abstract void createComposite(Composite parent);
 

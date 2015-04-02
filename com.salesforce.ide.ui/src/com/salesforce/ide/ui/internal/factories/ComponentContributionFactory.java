@@ -76,8 +76,8 @@ public abstract class ComponentContributionFactory extends BaseContributionFacto
                 }
 
                 if (!isValidComponentForContribution(component)) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Skipping contribution for '" + component.getDisplayName() + "'");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping contribution for '" + component.getDisplayName() + "'");
                     }
                     continue;
                 }

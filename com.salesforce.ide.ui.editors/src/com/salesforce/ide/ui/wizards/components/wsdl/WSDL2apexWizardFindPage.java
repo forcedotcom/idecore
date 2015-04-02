@@ -37,7 +37,7 @@ import com.salesforce.ide.core.model.ProjectPackageList;
  * @author kevin.ren
  * 
  */
-public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
+public class WSDL2apexWizardFindPage extends DynamicWizardPage {
 
     private Text wsdlFileField;
     private String wsdlFileLocation = null; //please do not access this variable directly.  use its getter and setter methods
@@ -59,7 +59,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
             shouldGenerate = false;
             String[] s = new String[] { getWsdlFileLocation() };
             try {
-                Wsdl2apexWizard w = (Wsdl2apexWizard) this.getWizard();
+                WSDL2ApexWizard w = (WSDL2ApexWizard) this.getWizard();
                 w.getApexGenerator().parse(s);
             } catch (Exception e) {
                 MessageDialog dialog =
@@ -92,7 +92,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
         setWsdlFileLocation(a);
     }
 
-    public Wsdl2apexWizardFindPage() {
+    public WSDL2apexWizardFindPage() {
         super("selectFiles");
         setTitle("Select file");
         setDescription("Select the source file");
