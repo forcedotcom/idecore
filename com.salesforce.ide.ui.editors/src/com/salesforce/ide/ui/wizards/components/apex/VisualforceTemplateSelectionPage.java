@@ -30,6 +30,7 @@ import org.eclipse.wst.sse.ui.internal.provisional.style.LineStyleProvider;
  * Templates page in new file wizard. Allows users to select a new file
  * template to be applied in new file.
  */
+@SuppressWarnings("restriction")
 public abstract class VisualforceTemplateSelectionPage extends AbstractTemplateSelectionPage {
 
     public VisualforceTemplateSelectionPage(final String contextTypeId, final TemplateStore templateStore, final String pageName, final String description) {
@@ -45,14 +46,17 @@ public abstract class VisualforceTemplateSelectionPage extends AbstractTemplateS
      *            the parent control
      * @return a configured source viewer
      */
+    @Override
     protected final SourceViewer createViewer(Composite parent) {
         SourceViewerConfiguration sourceViewerConfiguration = new StructuredTextViewerConfiguration() {
             StructuredTextViewerConfiguration baseConfiguration = new StructuredTextViewerConfigurationHTML();
 
+            @Override
             public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
                 return baseConfiguration.getConfiguredContentTypes(sourceViewer);
             }
 
+            @Override
             public LineStyleProvider[] getLineStyleProviders(ISourceViewer sourceViewer, String partitionType) {
                 return baseConfiguration.getLineStyleProviders(sourceViewer, partitionType);
             }

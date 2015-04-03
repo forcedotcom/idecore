@@ -34,5 +34,8 @@ Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: com.salesforce.ide.core
 Export-Package: com.salesforce.ide.ui.editors.apex,
  com.salesforce.ide.ui.editors.apex.assistance,
- com.salesforce.ide.ui.editors.visualforce
+ com.salesforce.ide.ui.editors.visualforce,
+ com.salesforce.ide.ui.wizards.components.apex.clazz,
+ com.salesforce.ide.ui.wizards.components.apex.trigger,
+ com.salesforce.ide.ui.wizards.components.wsdl
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -34,6 +34,7 @@ import com.salesforce.ide.core.internal.utils.Utils;
  * @author kevin.ren
  * 
  */
+@SuppressWarnings("restriction")
 public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
 
     private Composite container = null;

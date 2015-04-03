@@ -21,6 +21,7 @@ import org.eclipse.wst.html.ui.internal.preferences.ui.HTMLTemplatePreferencePag
 
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 
+@SuppressWarnings("restriction")
 public class VisualforceTemplatePreferencePage extends HTMLTemplatePreferencePage {
     public static final String ID = "com.salesforce.ide.ui.editors.visualforce.TemplatesPreferencePage"; //$NON-NLS-1$
 
