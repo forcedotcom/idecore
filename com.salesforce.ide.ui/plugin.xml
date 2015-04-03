@@ -147,32 +147,114 @@
 
     <!--   W I Z A R D S   -->
     <!-- project -->
-    <extension point="org.eclipse.ui.newWizards">
-        <category
-            id="com.salesforce.ide.ui.wizards"
-            name="%brandName"/>
-        <wizard
-            id="com.salesforce.ide.ui.wizards.createProject"
-            category="com.salesforce.ide.ui.wizards"
-            class="com.salesforce.ide.ui.wizards.project.ProjectCreateWizard"
-            icon="icons/appExDevIco16.png"
-            name="%wizard.label.ForceProject"
-            finalPerspective="com.salesforce.ide.perspective"
-            project="true">
-        </wizard>
+<extension point="org.eclipse.ui.newWizards">
+    <category id="com.salesforce.ide.ui.wizards" name="%brandName" />
     
-        <wizard
-              category="com.salesforce.ide.ui.wizards"
-              class="com.salesforce.ide.ui.wizards.components.wsdl.Wsdl2apexWizard"
-              hasPages="true"
-              icon="icons/appExDevIco16.png"
-              id="com.salesforce.ide.ui.wizards.createWsdl2Apex"
-              name="Apex Class (from WSDL)"
-              preferredPerspective="com.salesforce.ide.perspective"
-              project="false">
-        </wizard>
-    </extension>
-
+    <wizard id="com.salesforce.ide.ui.wizards.createProject" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.project.ProjectCreateWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="%wizard.label.ForceProject" 
+    	finalPerspective="com.salesforce.ide.perspective" 
+    	project="true" />
+    	
+    <wizard id="com.salesforce.ide.ui.wizards.createApexClass" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Apex Class" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createWsdl2Apex" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.wsdl.Wsdl2apexWizard" 
+    	hasPages="true" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Apex Class from WSDL" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createApexTrigger" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.apex.trigger.ApexTriggerWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Apex Trigger" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createCustomApplication" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.application.CustomApplicationWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Custom Application" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createCustomObject" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.object.CustomObjectWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Custom Object" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createHomePageComponent" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.homepage.component.HomePageComponentWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="HomePage Component" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createHomePageLayout" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.homepage.layout.HomePageLayoutWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="HomePage Layout" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createLetterhead" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.letterhead.LetterheadWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Letterhead" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createProfile" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.profile.ProfileWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Profile" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createProfile" 
+    	category="com.salesforce.ide.ui.wizards"
+    	class="com.salesforce.ide.ui.wizards.components.profile.ProfileWizard"
+    	icon="icons/appExDevIco16.png" 
+    	name="Profile" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project ="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createApexPage" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.apex.page.ApexPageWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Visualforce Page" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+    
+    <wizard id="com.salesforce.ide.ui.wizards.createWorkflow" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.workflow.WorkflowWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Workflow" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+</extension>
 
     <!--   M E N U S  -->
     <extension point="org.eclipse.ui.popupMenus">
