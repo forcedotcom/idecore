@@ -20,16 +20,17 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.salesforce.ide.core.model.ProjectPackageList;
+import com.salesforce.ide.ui.internal.utils.UIUtils;
 
 /**
  * Allows the user to choose a wsdl to parse
@@ -40,8 +41,8 @@ import com.salesforce.ide.core.model.ProjectPackageList;
 public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
 
     private Text wsdlFileField;
-    private String wsdlFileLocation = null; //please do not access this variable directly.  use its getter and setter methods
-    private Boolean asyncTrue = true; //please do not access this variable directly.  Use its getter and setter methods
+    private String wsdlFileLocation = null;
+    private Boolean asyncTrue = true;
     private Boolean shouldGenerate = false; //flag for if we need to regenerate the apex class
     private static final Logger logger = Logger.getLogger(ProjectPackageList.class);
 
@@ -94,8 +95,8 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
 
     public Wsdl2apexWizardFindPage() {
         super("selectFiles");
-        setTitle("Select file");
-        setDescription("Select the source file");
+        setTitle("Convert WSDL File to Apex");
+        setDescription("This wizard generates Apex classes from a WSDL file.");
     }
 
     public String getWsdlFileLocation() {
@@ -116,10 +117,9 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
     @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
-        final GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 3;
-        container.setLayout(gridLayout);
+        container.setLayout(new GridLayout(3, false));
         setControl(container);
+        UIUtils.setHelpContext(container, "WSDL2ApexWizardPage1");
 
         setPageComplete(false); //ensures upon entering the page, we cannot continue through the wizard
 
@@ -127,42 +127,46 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
         final GridData gridData = new GridData();
         gridData.horizontalSpan = 3;
         label.setLayoutData(gridData);
-        label.setText("Select the WSDL file you would like to convert.");
+        label.setText("Select a WSDL source file.");
 
         final Label wsdlFileLabel = new Label(container, SWT.NONE);
-        final GridData gridData2 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        wsdlFileLabel.setLayoutData(gridData2);
-        wsdlFileLabel.setText("WSDL File:");
+        wsdlFileLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        wsdlFileLabel.setText("WSDL File: ");
 
         wsdlFileField = new Text(container, SWT.BORDER);
         wsdlFileField.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 updatePageComplete();
             }
         });
+        wsdlFileField.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
 
-        wsdlFileField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         final Button button = new Button(container, SWT.NONE);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 browseForWsdlFile();
             }
         });
-        button.setText(" Browse ");
-        button.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL));
+        button.setText("Browse");
+        button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
-        final Label async = new Label(container, SWT.NONE);
         final GridData asyncGridData = new GridData();
-        async.setLayoutData(asyncGridData);
-        async.setText("Add Async Class?");
+        asyncGridData.horizontalSpan = 3;
+        final Button checkbox = new Button(container, SWT.CHECK);
+        checkbox.setLayoutData(asyncGridData);
+        checkbox.setText("Generate classes for asynchronous callouts");
+        checkbox.setSelection(false);
+        checkbox.addSelectionListener(new SelectionListener() {
 
-        final Combo combo = new Combo(container, SWT.READ_ONLY);
-        combo.setItems(new String[] { "True", "False" });
-        combo.setText("True");
-        combo.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                setAsyncTrue(Boolean.valueOf(combo.getText()));
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                setAsyncTrue(checkbox.getSelection());
             }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {}
         });
     }
 
@@ -201,7 +205,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
      * sets the text of the path the user selected
      */
     protected void browseForWsdlFile() {
-        IPath path = browse(getWsdlPath(), false);
+        IPath path = browse(getWsdlPath());
         if (path == null)
             return;
         IPath rootLoc = ResourcesPlugin.getWorkspace().getRoot().getLocation();
@@ -214,11 +218,10 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
      * Opens a dialog for finding a file
      * 
      * @param path
-     * @param mustExist
      * @return the path of the file selected
      */
-    private IPath browse(IPath path, boolean mustExist) {
-        FileDialog dialog = new FileDialog(getShell(), mustExist ? SWT.OPEN : SWT.SAVE);
+    private IPath browse(IPath path) {
+        FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
         if (path != null) {
             if (path.segmentCount() > 1)
                 dialog.setFilterPath(path.removeLastSegments(1).toOSString());

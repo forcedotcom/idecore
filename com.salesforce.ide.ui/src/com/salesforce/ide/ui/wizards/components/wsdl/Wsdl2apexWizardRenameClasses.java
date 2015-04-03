@@ -16,17 +16,19 @@ import java.util.HashMap;
 import org.eclipse.core.internal.resources.LocationValidator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.google.common.collect.Lists;
 import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.ui.internal.utils.UIUtils;
 
 /**
  * Allows the user to rename the classes generated from wsdl2apex
@@ -34,6 +36,7 @@ import com.salesforce.ide.core.internal.utils.Utils;
  * @author kevin.ren
  * 
  */
+@SuppressWarnings("restriction")
 public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
 
     private Composite container = null;
@@ -43,8 +46,8 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
 
     public Wsdl2apexWizardRenameClasses() {
         super("createFile");
-        setTitle("Create file");
-        setDescription("Create the Apex class");
+        setTitle("Convert WSDL File to Apex");
+        setDescription("This wizard generates Apex classes from a WSDL file.");
     }
 
     public ArrayList<Text> getAllText() {
@@ -56,19 +59,19 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
      * and the suggested names are in text widgets
      */
 
+    @Override
     public void onEnterPage() {
         setErrorMessage(null);
         setPageComplete(true);
         final Wsdl2apexWizard w = (Wsdl2apexWizard) this.getWizard();
-        if (allText != null) //gets rid of all the old text widgets if there are any
-        {
+        if (allText != null) { //gets rid of all the old text widgets if there are any 
             for (Text t : allText) {
                 t.dispose();
             }
             allText.clear();
         }
-        if (allLabels != null) //get rid of all old labels
-        {
+
+        if (allLabels != null) { //get rid of all old labels
             for (Label l : allLabels) {
                 l.dispose();
             }
@@ -76,21 +79,31 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
         }
 
         final HashMap<String, String> allClassNames = w.getApexGenerator().getResultFromParse();
-        allText = new ArrayList<Text>();
-        allLabels = new ArrayList<Label>();
+        allText = Lists.newArrayList();
+        allLabels = Lists.newArrayList();
+
         //generates the labels and widgets
         for (String classNS : allClassNames.keySet()) {
-            Label label = new Label(container, SWT.NONE);
-            GridData gridData2 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-            label.setLayoutData(gridData2);
-            label.setText(classNS);
-            allLabels.add(label);
+            // Namespace: <some namespace>
+            Label namespaceLabel = new Label(container, SWT.NONE);
+            namespaceLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+            namespaceLabel.setText("Namespace: ");
+            Label namespaceText = new Label(container, SWT.NONE);
+            namespaceLabel.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+            namespaceText.setText(allClassNames.get(classNS));
+            allLabels.add(namespaceText);
 
-            Text t = new Text(container, SWT.BORDER);
-            t.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            t.setText(allClassNames.get(classNS));
-            allText.add(t);
-            t.addModifyListener(new ModifyListener() {
+            // Class: <some class>
+            Label label = new Label(container, SWT.NONE);
+            label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+            label.setText("Apex Class Name: ");
+            Text classText = new Text(container, SWT.BORDER);
+            classText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+            classText.setText(allClassNames.get(classNS));
+            allText.add(classText);
+
+            classText.addModifyListener(new ModifyListener() {
+                @Override
                 public void modifyText(ModifyEvent e) {
                     if (allText.contains(e.getSource())) {
                         int replaceIndex = allText.indexOf(e.getSource());
@@ -114,17 +127,18 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
 
     public Boolean checkInput(String newString) {
         int i = 0;
-        for (Text checkText : allText) //make sure all of the classes generated don't have the same name
-        {
+        for (Text checkText : allText) { //make sure all of the classes generated don't have the same name
             for (Text checkOn : allText) {
                 if (checkText.getText().equals(checkOn.getText())) {
                     i++;
                 }
             }
+
             if (i > 1) {
                 setErrorMessage("Classes cannot have the same name");
                 return false;
             }
+
             i = 0;
         }
         LocationValidator v = new LocationValidator(null);
@@ -165,27 +179,31 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
     @Override
     public void createControl(Composite parent) {
         final Composite rootComposite = new Composite(parent, SWT.NONE);
-        rootComposite.setLayout(GridLayoutFactory.fillDefaults().create());
+        rootComposite.setLayout(new GridLayout(2, false));
 
         sc = new ScrolledComposite(rootComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
         sc.setExpandHorizontal(true);
         sc.setExpandVertical(true);
 
-        container = new Composite(sc, SWT.NULL);
-        container.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).create());
+        container = new Composite(sc, SWT.NONE);
+        container.setLayout(new GridLayout(2, false));
 
         Label instructions = new Label(container, SWT.NONE);
-        final GridData gridData = new GridData();
-        gridData.horizontalSpan = 3;
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 2;
         instructions.setLayoutData(gridData);
-        instructions
-                .setText("The following are the namespaces parsed from the WSDL and their corresponding Apex class names.\n"
-                        + "If desired, you can rename these classes.");
+        instructions.setText("Default class names were generated for each namespace in the WSDL. Optionally, rename these Apex classes.");
+
+        Label spacer = new Label(container, SWT.NONE);
+        gridData = new GridData();
+        gridData.horizontalSpan = 2;
+        spacer.setLayoutData(gridData);
 
         sc.setContent(container);
         sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         setControl(rootComposite);
+        UIUtils.setHelpContext(rootComposite, "WSDL2ApexWizardPage2");
     }
 }

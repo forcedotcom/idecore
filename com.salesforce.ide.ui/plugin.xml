@@ -655,37 +655,7 @@
                 </enablement>
             </action>
         </objectContribution>
-        
-        
-        
-        
-        <objectContribution
-              adaptable="true"
-              id="com.salesforce.ide.ui.menu.wsdl2apex"
-              objectClass="org.eclipse.core.resources.IProject">
-           <menu
-                 id="com.salesforce.ide.ui.menu.tools"
-                 label="Force&amp;.com"
-                 path="additions">
-              <separator
-                    name="group4">
-              </separator>
-           </menu>
-           <action
-                 class="com.salesforce.ide.ui.actions.OpenProjectContentPropertiesAction"
-                 enablesFor="1"
-                 id="com.salesforce.ide.ui.actions.openProjectContentProperties"
-                 label="Create Apex class from Wsdl"
-                 menubarPath="com.salesforce.ide.ui.menu.tools/group4">
-           </action>
-           <filter
-                 name="projectNature"
-                 value="com.salesforce.ide.nature.default">
-           </filter>
-        </objectContribution>
-        
     </extension>
-
 
     <!--   V I E W S   -->
     <extension point="org.eclipse.ui.views">
