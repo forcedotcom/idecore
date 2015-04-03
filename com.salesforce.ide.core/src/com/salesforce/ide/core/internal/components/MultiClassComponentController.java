@@ -100,6 +100,7 @@ public class MultiClassComponentController extends ComponentController {
         allPackages.addComponents(components, false);
 
         // perform pre-save actions
+        defaultPreSaveProcess(getComponentWizardModel(), monitor);
         preSaveProcess(getComponentWizardModel(), monitor);
 
         // save to f/s - enables offline work
@@ -167,6 +168,13 @@ public class MultiClassComponentController extends ComponentController {
         allPackages.clear(); //all packages got sent, so clear the package list
         allPackages =
                 ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance(); //reinitialize the packagelist
+    }
+
+    @Override
+    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -100,11 +100,23 @@ public class ToolingStubExt {
 
         return result;
     }
+    
+    public QueryResult queryMore(String queryLocator) throws ForceRemoteException {
+        QueryResult result = null;
+
+        try {
+            result = toolingConnection.queryMore(queryLocator);
+        } catch (ConnectionException e) {
+            ForceExceptionUtils.throwTranslatedException(e, connection);
+        }
+
+        return result;
+    }
 
     public DeleteResult[] delete(String[] ids) throws ForceRemoteException {
         DeleteResult[] deleteResults = null;
         try {
-            toolingConnection.delete(ids);
+            deleteResults = toolingConnection.delete(ids);
         } catch (ConnectionException e) {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }
@@ -114,7 +126,7 @@ public class ToolingStubExt {
     public SaveResult[] update(SObject[] sObjects) throws ForceRemoteException {
         SaveResult[] saveResults = null;
         try {
-            toolingConnection.update(sObjects);
+            saveResults = toolingConnection.update(sObjects);
         } catch (ConnectionException e) {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }

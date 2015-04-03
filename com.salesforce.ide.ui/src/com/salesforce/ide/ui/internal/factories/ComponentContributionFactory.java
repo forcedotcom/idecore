@@ -41,6 +41,7 @@ public abstract class ComponentContributionFactory extends BaseContributionFacto
         return ForceIdeUIPlugin.getDefault().getBundle();
     }
 
+    @Override
     public void initContributions() {
         if (logger.isDebugEnabled()) {
             logger.debug("***  R E G I S T E R   C O N T R I B U T I O N S   ***");
@@ -75,8 +76,8 @@ public abstract class ComponentContributionFactory extends BaseContributionFacto
                 }
 
                 if (!isValidComponentForContribution(component)) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Skipping contribution for '" + component.getDisplayName() + "'");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping contribution for '" + component.getDisplayName() + "'");
                     }
                     continue;
                 }

@@ -25,6 +25,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IPageListener;
@@ -47,12 +48,12 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.core.services.PackageRetrieveService;
 import com.salesforce.ide.core.services.ProjectService;
 import com.salesforce.ide.core.services.ServiceLocator;
+import com.salesforce.ide.ui.handlers.SynchronizeHandler;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 public abstract class ActionController {
@@ -66,7 +67,7 @@ public abstract class ActionController {
     protected boolean isInSync = true;
 
     //   C O N S T R U C T O R S
-    public ActionController() throws ForceProjectException {
+    public ActionController() {
         super();
     }
 
@@ -277,15 +278,15 @@ public abstract class ActionController {
                 if (cancel) {
                     logger.warn("Unable to perform sync check", ForceExceptionUtils.getRootCause(e));
                     DialogUtils.getInstance().cancelMessage(
-                        UIMessages.getString("DeploymentAction.SyncCheckError.title"),
+                        UIMessages.getString("Deployment.SyncCheckError.title"),
                         UIMessages
-                        .getString("DeploymentAction.SyncCheckError.message", new String[] { ForceExceptionUtils
+                        .getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils
                                 .getStrippedRootCauseMessage(cause) }), MessageDialog.WARNING);
                 } else {
                     logger.warn("Unable to perform sync check: " + ForceExceptionUtils.getRootCauseMessage(e));
                     DialogUtils.getInstance().continueMessage(
-                        UIMessages.getString("DeploymentAction.SyncCheckError.title"),
-                        UIMessages.getString("DeploymentAction.SyncCheckError.message",
+                        UIMessages.getString("Deployment.SyncCheckError.title"),
+                        UIMessages.getString("Deployment.SyncCheckError.message",
                             new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
                             MessageDialog.WARNING);
 
@@ -351,16 +352,7 @@ public abstract class ActionController {
         return new Thread() {
             @Override
             public void run() {
-                SyncAction syncAction = null;
-                try {
-                    syncAction = new SyncAction();
-                    syncAction.setProject(project);
-                    syncAction.run(null);
-                } catch (ForceProjectException e) {
-                    logger.error(UIMessages.getString("DeploymentAction.SyncCheck.error"), e);
-                    Utils.openError(e, UIMessages.getString("DeploymentAction.SyncCheckError.title"), UIMessages
-                        .getString("DeploymentAction.SyncCheckError.message"));
-                }
+                SynchronizeHandler.execute(PlatformUI.getWorkbench(), new StructuredSelection(project));
             }
         };
     }

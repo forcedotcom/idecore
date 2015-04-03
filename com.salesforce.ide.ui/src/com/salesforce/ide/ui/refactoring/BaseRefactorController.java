@@ -88,7 +88,7 @@ public abstract class BaseRefactorController extends Controller {
     }
 
     protected String[] getEnabledComponentTypes(IProject project, IProgressMonitor monitor)
-            throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException {
+            throws InterruptedException, ForceConnectionException, ForceRemoteException {
 
         monitorCheck(monitor);
         // abort if online nature is not applied

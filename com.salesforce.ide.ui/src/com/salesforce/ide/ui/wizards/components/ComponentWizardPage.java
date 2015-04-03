@@ -11,15 +11,28 @@
 package com.salesforce.ide.ui.wizards.components;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
@@ -30,12 +43,13 @@ import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
+import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.internal.wizards.BaseWizardPage;
 
 /**
- *
+ * 
  * 
  * @author cwall
  */
@@ -49,6 +63,32 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
     protected boolean componentNameChanged = true;
     protected boolean performUniqueNameCheck = true;
     protected boolean unique = false;
+
+    protected Combo projectField = null;
+    private final SelectionListener projectSelectionListener = new SelectionListener() {
+        @Override
+        @SuppressWarnings("unchecked")
+        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            Combo tmpCboProject = (Combo) e.widget;
+            if (tmpCboProject.getData() != null && tmpCboProject.getData() instanceof List) {
+                List<IProject> projects = (List<IProject>) tmpCboProject.getData();
+                if (Utils.isNotEmpty(projects)) {
+                    int selectionIndex = ((Combo) e.widget).getSelectionIndex();
+                    IProject selectedProject = projects.get(selectionIndex);
+                    if (selectedProject != null) {
+                        selectedProjectChanged(selectedProject);
+                        validateUserInput();
+                    }
+
+                }
+            }
+        }
+
+        @Override
+        public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
+            widgetSelected(e);
+        }
+    };
 
     //   C O N S T R U C T O R
     protected ComponentWizardPage(ComponentWizard componentWizard) {
@@ -71,33 +111,43 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         return getComponentController().getComponentWizardModel().getComponent();
     }
 
+    @Override
     public String getPageName() {
         return "Create " + getComponent().getDisplayName();
     }
 
+    @Override
     public String getComponentTypeName() {
         return componentWizard.getComponentTypeDisplayName();
     }
 
+    @Override
     public String getWizardDescription() {
         return "This wizard creates a new " + getComponentTypeName() + ".";
     }
 
+    @Override
     public String getWizardTitle() {
         return "Create New " + getComponentTypeName();
     }
 
+    @Override
     public boolean hasComponentNameChanged() {
         return componentNameChanged;
     }
 
+    @Override
     public void setComponentNameChanged(boolean componentNameChanged) {
         this.componentNameChanged = componentNameChanged;
     }
 
-    public void createControl(Composite parent) {
-        initialize(parent);
-        setControl(componentWizardComposite);
+    @Override
+    public final void createControl(Composite parent) {
+        final Composite outer = new Composite(parent, SWT.NONE);
+        outer.setLayout(new GridLayout());
+        createProjectComposite(outer);
+        initialize(outer);
+        setControl(outer);
         setComplete(false);
     }
 
@@ -116,7 +166,6 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         // so we have allow for opening component wizards that are completely disabled when a project is not provided.
         if (getComponentWizardModel().getProject() == null) {
             updateErrorStatus(UIMessages.getString("NewComponent.ProjectRequired.message"));
-            componentWizardComposite.disableAllControls();
         }
     }
 
@@ -124,20 +173,81 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         return (ComponentWizardComposite) componentWizardComposite;
     }
 
-    protected abstract void additionalInitialize(Composite parent);
+    protected void additionalInitialize(Composite parent) {
+        setProject(getComponentWizardModel().getProject());
+    }
+
+    protected void selectedProjectChanged(final IProject project) {
+        getComponentWizardModel().setProject(project);
+    }
+
+    protected void createProjectComposite(Composite parent) {
+        final Composite group = new Composite(parent, SWT.NONE);
+        group.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        group.setLayout(new GridLayout(3, false));
+        final CLabel label = new CLabel(group, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING));
+        label.setText("Project:");
+        projectField = new Combo(group, SWT.DROP_DOWN | SWT.READ_ONLY);
+        projectField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        projectField.addSelectionListener(projectSelectionListener);
+
+        final List<IProject> projects = getProjects();
+        projectField.setData(projects);
+        projectField.setEnabled(!projects.isEmpty());
+        for (final IProject project : projects) {
+            projectField.add(project.getName());
+        }
+    }
+
+    protected void setProject(final IProject project) {
+        if (null == projectField) {
+            return;
+        }
+
+        @SuppressWarnings("unchecked")
+        final List<IProject> projects = (List<IProject>) projectField.getData();
+        projectField.select(projects.indexOf(project));
+    }
+
+    private List<IProject> getProjects() {
+        final ArrayList<IProject> projects = new ArrayList<>();
+        for (final IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) { // TODO: Inject the workspace.
+            if (hasDefaultNature(project)) {
+                projects.add(project);
+            }
+        }
+        Collections.sort(projects, new Comparator<IProject>() {
+            @Override
+            public int compare(IProject o1, IProject o2) {
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
+            }
+        });
+        return projects;
+    }
+
+    private boolean hasDefaultNature(final IProject project) {
+        try {
+            return project.isAccessible() && project.hasNature(DefaultNature.NATURE_ID);
+        } catch (final CoreException e) {
+            // This should never happen.
+            return false;
+        }
+    }
 
     protected abstract void createComposite(Composite parent);
 
     public abstract void saveUserInput() throws InstantiationException, IllegalAccessException;
 
     protected void refreshObjects() {
-    // not implemented
+        // not implemented
     }
 
     protected void setControl(IComponentWizardComposite composite) {
         setControl((Control) composite);
     }
 
+    @Override
     public void validateUserInput() {
         if (componentWizard.getContainer() instanceof WizardDialog) {
             if (((WizardDialog) componentWizard.getContainer()).getReturnCode() == Window.CANCEL) {
@@ -228,14 +338,16 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
             // Check fileName
             IStatus fileNameStatus = workspace.validateName(fileName, IResource.FILE);
             if (fileNameStatus.getCode() != IStatus.OK) {
-                logger.info(String.format("Creating a file name of %s is invalid because: %s", fileName, fileNameStatus.getMessage()));
+                logger.info(String.format("Creating a file name of %s is invalid because: %s", fileName,
+                    fileNameStatus.getMessage()));
                 nameErrorEncountered = true;
             }
 
             // Check metaName
             IStatus metaNameStatus = workspace.validateName(metaName, IResource.FILE);
             if (metaNameStatus.getCode() != IStatus.OK) {
-                logger.info(String.format("Creating a meta file name of %s is invalid because: %s", fileName, fileNameStatus.getMessage()));
+                logger.info(String.format("Creating a meta file name of %s is invalid because: %s", fileName,
+                    fileNameStatus.getMessage()));
                 nameErrorEncountered = true;
             }
 
@@ -244,7 +356,7 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
                 setComplete(false);
                 return;
             }
-                
+
         }
 
         if (!finalDialogChanged(this)) {
@@ -283,6 +395,7 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         IProgressService service = PlatformUI.getWorkbench().getProgressService();
         try {
             service.run(true, false, new IRunnableWithProgress() {
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Verifying name uniqueness", 3);
                     monitor.subTask("Checking against existing " + getComponent().getDisplayName() + "s...");
@@ -298,8 +411,8 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
             });
         } catch (Exception e) {
             logger.warn("Unable to validate name uniqueness for component", e);
-            Utils.openError(getShell(), e, true, "Unable to verify name uniqueness:\n\n "
-                    + ForceExceptionUtils.getRootCauseMessage(e));
+            Utils.openError(getShell(), e, true,
+                "Unable to verify name uniqueness:\n\n " + ForceExceptionUtils.getRootCauseMessage(e));
         }
         return unique;
     }

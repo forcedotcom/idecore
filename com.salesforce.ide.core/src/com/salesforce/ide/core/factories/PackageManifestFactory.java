@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,9 +47,7 @@ import com.salesforce.ide.core.model.ProjectPackage;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
-import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.services.RetrieveException;
 import com.sforce.soap.metadata.RetrieveRequest;
 
@@ -73,7 +70,7 @@ public class PackageManifestFactory extends BaseFactory {
         this.defaultDisabledRetrieveComponentTypes = defaultDisabledRetrieveComponentTypes;
     }
 
-    public Component getPackageManifestComponentInstance() throws FactoryException {
+    public Component getPackageManifestComponentInstance() {
         return getComponentFactory().getComponentByComponentType(Constants.PACKAGE_MANIFEST);
     }
 
@@ -81,9 +78,8 @@ public class PackageManifestFactory extends BaseFactory {
      * Generate a default manifest with registered component types.
      *
      * @return
-     * @throws FactoryException
      */
-    public Package getDefaultPackageManifest() throws FactoryException {
+    public Package getDefaultPackageManifest() {
         return createDefaultPackageManifest();
     }
 
@@ -177,14 +173,12 @@ public class PackageManifestFactory extends BaseFactory {
         return packageManifest != null ? packageManifest.getFullName() : null;
     }
 
-    public void setDefaultPackageManifest(Connection connection, RetrieveRequest retrieveRequest)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException {
+    public void setDefaultPackageManifest(Connection connection, RetrieveRequest retrieveRequest) {
         Package packageManifest = getDefaultPackageManifest(connection);
         retrieveRequest.setUnpackaged(convert(packageManifest));
     }
 
-    public Package getDefaultPackageManifest(Connection connection) throws ForceConnectionException,
-            ForceRemoteException, InterruptedException {
+    public Package getDefaultPackageManifest(Connection connection) {
         return createPackageManifest(connection, Constants.DEFAULT_PACKAGED_NAME);
     }
 
@@ -423,8 +417,9 @@ public class PackageManifestFactory extends BaseFactory {
         } catch (InterruptedException e) {
             logger.warn("Operation canceled by user");
         } catch (Exception e) {
+            String logDisplay = null == connection ? "" : connection.getLogDisplay();
             logger.error("Generic package manifest created - unable to get enabled object types from "
-                    + connection.getLogDisplay(), e);
+                    + logDisplay, e);
         }
 
         return packageManifest;
@@ -450,6 +445,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
 
         Collections.sort(packageManifest.getTypes(), new Comparator<PackageTypeMembers>() {
+            @Override
             public int compare(PackageTypeMembers o1, PackageTypeMembers o2) {
                 return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
             }
@@ -466,6 +462,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
 
         Collections.sort(types, new Comparator<PackageTypeMembers>() {
+            @Override
             public int compare(PackageTypeMembers o1, PackageTypeMembers o2) {
                 return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
             }
@@ -519,7 +516,7 @@ public class PackageManifestFactory extends BaseFactory {
         return packageManifest;
     }
 
-    private PackageTypeMembers createPackageTypeMembers(String componentType, String[] fileNames) {
+    private static PackageTypeMembers createPackageTypeMembers(String componentType, String[] fileNames) {
         PackageTypeMembers packageTypeMembers = new PackageTypeMembers();
         packageTypeMembers.setName(componentType);
         packageTypeMembers.getMembers().addAll(Arrays.asList(fileNames));
@@ -748,7 +745,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
     }
 
-    private PackageTypeMembers getDeploymentPackageTypeForComponent(Package manifest, Component component, boolean b) {
+    private static PackageTypeMembers getDeploymentPackageTypeForComponent(Package manifest, Component component, boolean b) {
         if (component.getComponentType().equals(Constants.STANDARD_OBJECT)) {
             List<PackageTypeMembers> types = manifest.getTypes();
             for (PackageTypeMembers member : types) {
@@ -762,7 +759,7 @@ public class PackageManifestFactory extends BaseFactory {
     }
 
     public Package addComponentListToManifest(ProjectPackage projectPackage, ComponentList componentList, boolean save)
-            throws FactoryException, IOException, InvocationTargetException, InterruptedException,
+            throws FactoryException, IOException, InterruptedException,
             ForceProjectException {
 
         Component packageManifestComponent = projectPackage.getPackageManifest();
@@ -811,7 +808,7 @@ public class PackageManifestFactory extends BaseFactory {
     }
 
     // U T I L I T Y
-    private boolean checkComponentExists(PackageTypeMembers member, String componentName) {
+    private static boolean checkComponentExists(PackageTypeMembers member, String componentName) {
         List<String> existingMembers = member.getMembers();
         if (Utils.isEmpty(existingMembers)) {
             return false;
@@ -824,7 +821,7 @@ public class PackageManifestFactory extends BaseFactory {
         return false;
     }
 
-    private com.salesforce.ide.api.metadata.types.PackageTypeMembers getPackageType(Package manifest,
+    private static com.salesforce.ide.api.metadata.types.PackageTypeMembers getPackageType(Package manifest,
             String componentType, boolean add) {
         List<com.salesforce.ide.api.metadata.types.PackageTypeMembers> types = manifest.getTypes();
         if (Utils.isNotEmpty(types)) {
@@ -853,7 +850,7 @@ public class PackageManifestFactory extends BaseFactory {
      * @param add
      * @return
      */
-    private com.salesforce.ide.api.metadata.types.PackageTypeMembers getPackageTypeForComponent(Package manifest,
+    private static com.salesforce.ide.api.metadata.types.PackageTypeMembers getPackageTypeForComponent(Package manifest,
             Component component, boolean add) {
         List<com.salesforce.ide.api.metadata.types.PackageTypeMembers> types = manifest.getTypes();
         if (Utils.isNotEmpty(types)) {
@@ -880,7 +877,7 @@ public class PackageManifestFactory extends BaseFactory {
         return desiredType;
     }
 
-    private boolean memberExists(List<PackageTypeMembers> members, PackageTypeMembers member) {
+    private static boolean memberExists(List<PackageTypeMembers> members, PackageTypeMembers member) {
         return (Utils.isNotEmpty(members) ? members.contains(member) : false);
     }
 
@@ -1022,7 +1019,7 @@ public class PackageManifestFactory extends BaseFactory {
         return returnedPackageManifest;
     }
 
-    private void logManifest(Package manifest) {
+    private static void logManifest(Package manifest) {
         if (logger.isDebugEnabled() && manifest != null) {
             logger.debug("Manifest for package '"
                     + (Utils.isNotEmpty(manifest.getFullName()) ? manifest.getFullName()
@@ -1032,7 +1029,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
     }
 
-    private void logPackageTypeMembers(List<PackageTypeMembers> members) {
+    private static void logPackageTypeMembers(List<PackageTypeMembers> members) {
         if (logger.isDebugEnabled() && Utils.isNotEmpty(members)) {
             for (PackageTypeMembers member : members) {
                 logPackageTypeMember(member);
@@ -1040,7 +1037,7 @@ public class PackageManifestFactory extends BaseFactory {
         }
     }
 
-    private void logPackageTypeMember(PackageTypeMembers packageTypeMembers) {
+    private static void logPackageTypeMember(PackageTypeMembers packageTypeMembers) {
         if (logger.isDebugEnabled() && packageTypeMembers != null) {
             StringBuffer strBuff = new StringBuffer();
             List<String> members = packageTypeMembers.getMembers();

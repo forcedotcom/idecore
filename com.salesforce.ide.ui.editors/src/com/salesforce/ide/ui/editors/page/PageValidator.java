@@ -31,27 +31,32 @@ public class PageValidator implements ISourceValidator, IValidator {
 		return validator;
 	}
 
-	public void cleanup(IReporter reporter) {
+	@Override
+    public void cleanup(IReporter reporter) {
 		validator.cleanup(reporter);
 	}
 
-	public void validate(IValidationContext helper, IReporter reporter)
+	@Override
+    public void validate(IValidationContext helper, IReporter reporter)
 			throws ValidationException {
 		validator.validate(helper, reporter);
 		removeApexValidationErrors(reporter);
 	}
 	
-	public void validate(IRegion dirtyRegion, IValidationContext helper,
+	@Override
+    public void validate(IRegion dirtyRegion, IValidationContext helper,
 			IReporter reporter) {
 		validator.validate(dirtyRegion, helper, reporter);
 		removeApexValidationErrors(reporter);
 	}
 
-	public void connect(IDocument document) {
+	@Override
+    public void connect(IDocument document) {
 		validator.connect(document);
 	}
 
-	public void disconnect(IDocument document) {
+	@Override
+    public void disconnect(IDocument document) {
 		validator.disconnect(document);
 	}
 

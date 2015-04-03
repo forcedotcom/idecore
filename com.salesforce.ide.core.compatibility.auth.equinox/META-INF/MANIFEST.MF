@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.core.compatibility.auth.equinox
-Bundle-Version: 31.0.0.qualifier
+Bundle-Version: 34.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.core.compatibility.auth.equinox.Activator
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
  org.eclipse.core.resources;bundle-version="3.8.0",
  org.eclipse.equinox.security;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.log4j
 Export-Package: com.salesforce.ide.core.compatibility.auth.equinox
 Bundle-Localization: plugin

@@ -104,11 +104,11 @@ public class Utils {
 	public static final String TEST_CONTEXT_PROP = "TestContext";
 
 	public static boolean isEmpty(Object obj) {
-		return obj == null;
+		return null == obj;
 	}
 
 	public static boolean isNotEmpty(Object obj) {
-		return !isEmpty(obj);
+		return null != obj;
 	}
 
 	public static boolean isEmpty(Object[] objs) {
@@ -116,7 +116,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(Object[] objs) {
-		return !isEmpty(objs);
+	    return objs != null && 0 < objs.length;
 	}
 
 	public static boolean isEmpty(byte[] objs) {
@@ -124,7 +124,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(byte[] objs) {
-		return !isEmpty(objs);
+		return objs != null && 0 < objs.length;
 	}
 
 	public static boolean isEmpty(Collection<?> col) {
@@ -132,7 +132,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(Collection<?> col) {
-		return !isEmpty(col);
+	    return col != null && !col.isEmpty();
 	}
 
 	public static boolean isEmpty(List<?> col) {
@@ -140,7 +140,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(List<?> col) {
-		return !isEmpty(col);
+		return col != null && !col.isEmpty();
 	}
 
 	public static boolean isEmpty(Map<?, ?> map) {
@@ -465,6 +465,11 @@ public class Utils {
 				&& Constants.SYS_SETTING_SFDC_INTERNAL_VALUE.equals(mode) ? true : false;
 	}
 
+    public static boolean isXForceProxy() {
+        String forceProxy = System.getProperty(Constants.SYS_SETTING_X_FORCE_PROXY);
+        return Utils.isNotEmpty(forceProxy) && Constants.SYS_SETTING_SFDC_INTERNAL_VALUE.equals(forceProxy) ? true : false;
+    }
+
 	public static String getDefaultSystemApiVersion() {
 		String apiVersion = System
 				.getProperty(Constants.SYS_SETTING_DEFAULT_API_VERSION);
@@ -517,10 +522,10 @@ public class Utils {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Manifest cache file (does"
 							+ (file.exists() ? " " : " not ") + "exist): "
-							+ file.toURL().toExternalForm());
+							+ file.toURI().toURL().toExternalForm());
 				}
 
-				return file.toURL();
+				return file.toURI().toURL();
 			} catch (MalformedURLException e) {
 				logger.warn("Unable to get url from file: " + e.getMessage());
 			}
@@ -567,9 +572,8 @@ public class Utils {
 			return props;
 		}
 
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(propFile);
+		try (final QuietCloseable<FileInputStream> c = QuietCloseable.make(new FileInputStream(propFile))) {
+		    final FileInputStream fis = c.get();
 			if (fis.available() > 0) {
 				logger.debug("Loading properties found in prop file '"
 						+ propFilePath + "'");
@@ -579,17 +583,8 @@ public class Utils {
 				logger.debug("No content found in prop file '" + propFilePath
 						+ "'");
 			}
-
 		} catch (Exception e) {
 			logger.warn("Unable to load prop file '" + propFilePath + "'", e);
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					logger.error("Unable to close stream");
-				}
-			}
 		}
 
 		return props;
@@ -709,7 +704,7 @@ public class Utils {
 	}
 
 	public static Object getPropertyValue(Object obj, String propertyName)
-			throws ClassNotFoundException, IllegalArgumentException,
+			throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		if (obj == null || propertyName == null) {
 			return null;
@@ -724,8 +719,7 @@ public class Utils {
 		return propertyValue;
 	}
 
-	public static Method getGetterMethod(Class<?> clazz, String methodNameWithoutGetPrefix)
-			throws ClassNotFoundException {
+	public static Method getGetterMethod(Class<?> clazz, String methodNameWithoutGetPrefix) {
 		Method getterMethod = null;
 		Method[] methods = clazz.getDeclaredMethods();
 		if (isNotEmpty(methods)) {
@@ -770,12 +764,11 @@ public class Utils {
 		// "4");
 		Source src = new DOMSource(doc);
 
-		FileOutputStream stream = new FileOutputStream(f, false);
-		OutputStreamWriter writer = new OutputStreamWriter(stream,
-				Constants.FORCE_DEFAULT_ENCODING_CHARSET);
-		Result result = new StreamResult(writer);
-		xform.transform(src, result);
-		writer.close();
+        try (final QuietCloseable<OutputStreamWriter> c = QuietCloseable.make(new OutputStreamWriter(new FileOutputStream(f, false), Constants.FORCE_DEFAULT_ENCODING_CHARSET))) {
+            final OutputStreamWriter writer = c.get();
+    		Result result = new StreamResult(writer);
+    		xform.transform(src, result);
+        }
 	}
 
 	public static Document loadDocument(URL fileUrl) {
@@ -867,7 +860,7 @@ public class Utils {
 	}
 
 	public static boolean isNotEmpty(String str) {
-		return !isEmpty(str);
+		return str != null && 0 < str.length();
 	}
 
 	public static boolean startsWith(String str, String suffix) {
@@ -892,39 +885,24 @@ public class Utils {
 		String contentStr = null;
 		if (file != null && file.exists()) {
 			StringBuffer strBuff = new StringBuffer();
-			BufferedReader reader = null;
-			InputStream contents = null;
-			try {
-				contents = file.getContents();
-				reader = new BufferedReader(new InputStreamReader(contents,
-						Constants.UTF_8));
-				String line = reader.readLine();
-				if (line != null) {
-					strBuff.append(line);
-				}
-				while ((line = reader.readLine()) != null) {
-					strBuff.append(Constants.NEW_LINE);
-					strBuff.append(line);
-				}
+
+	        try (final QuietCloseable<BufferedReader> c = QuietCloseable.make(new BufferedReader(new InputStreamReader(file.getContents(), Constants.UTF_8)))) {
+	            final BufferedReader reader = c.get();
+
+                String line = reader.readLine();
+                if (line != null) {
+                    strBuff.append(line);
+                }
+                while ((line = reader.readLine()) != null) {
+                    strBuff.append(Constants.NEW_LINE);
+                    strBuff.append(line);
+                }
 			} catch (IOException e) {
-				logger.error("Unable to load body from file " + file.getName(),
-						e);
+				logger.error("Unable to load body from file " + file.getName(), e);
 				throw e;
 			} catch (CoreException e) {
 				throw e;
-			} finally {
-				try {
-					if (reader != null) {
-						reader.close();
-					}
-                } catch (IOException e) {}
-
-				try {
-					if (contents != null) {
-						contents.close();
-					}
-                } catch (IOException e) {}
-			}
+	        }
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded body size ["
@@ -943,19 +921,22 @@ public class Utils {
 		return getStringFromBytes(getBytesFromStream(is, length));
 	}
 
-	public static byte[] getBytesFromStream(InputStream is, long length)
-			throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		byte[] buffer = new byte[1024];
-		int len;
+	public static byte[] getBytesFromStream(InputStream is, long length) throws IOException {
+	    try (final QuietCloseable<InputStream> c0 = QuietCloseable.make(is)) {
+	        final InputStream in = c0.get();
 
-		while ((len = is.read(buffer)) >= 0) {
-			out.write(buffer, 0, len);
-		}
+	        try (final QuietCloseable<ByteArrayOutputStream> c = QuietCloseable.make(new ByteArrayOutputStream())) {
+	            final ByteArrayOutputStream out = c.get();
+	            byte[] buffer = new byte[1024];
+	            int len;
+	    
+	            while ((len = in.read(buffer)) >= 0) {
+	                out.write(buffer, 0, len);
+	            }
 
-		is.close();
-		out.close();
-		return out.toByteArray();
+	            return out.toByteArray();
+	        }
+	    }
 	}
 
 	public static String getStringFromBytes(byte[] bytes) {
@@ -1001,12 +982,14 @@ public class Utils {
 			tmpName = (String) obj;
 		}
 
-		if (isNotEmpty(tmpName) && tmpName.contains(".")) {
+		if (null == tmpName) return null;
+
+		if (tmpName.contains(".")) {
 			tmpName = tmpName.substring(0, tmpName.indexOf("."));
 		}
 
 		// strip "-meta" typically found on folder metadata files
-		if (isNotEmpty(tmpName) && tmpName.endsWith("-meta")) {
+		if (tmpName.endsWith("-meta")) {
 			tmpName = tmpName.substring(0, tmpName.indexOf("-meta"));
 		}
 

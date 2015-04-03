@@ -29,7 +29,6 @@ import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.properysheets.MetadataFormPage;
 import com.salesforce.ide.ui.editors.properysheets.PropertySheetsFactory;
 import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
@@ -49,7 +48,7 @@ public abstract class BaseComponentMultiPageEditorPart extends BaseMultiPageEdit
     protected int propertyPageIndex = -1;
 
     // C O N S T R U C T O R S
-    public BaseComponentMultiPageEditorPart() throws ForceProjectException {
+    public BaseComponentMultiPageEditorPart() {
         super();
         setTitleImage(getImage());
     }

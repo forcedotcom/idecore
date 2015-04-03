@@ -56,10 +56,12 @@ public class StatusLineLink extends Composite {
         updateLinkLayout();
 
         lnkMessage.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 UIUtils.displayHelp(helpContextId);
             }
@@ -78,7 +80,7 @@ public class StatusLineLink extends Composite {
         lnkMessage.setLayoutData(dataSelectContents);
     }
 
-    private Image findImage(IStatus status) {
+    private static Image findImage(IStatus status) {
         if (status.isOK()) {
             return null;
         } else if (status.matches(IStatus.ERROR)) {

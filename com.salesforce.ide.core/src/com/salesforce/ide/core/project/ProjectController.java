@@ -51,6 +51,7 @@ import com.salesforce.ide.core.internal.jobs.LoadSObjectsJob;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Messages;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.remote.Connection;
@@ -174,8 +175,7 @@ public class ProjectController extends Controller {
     // Used by the testing framework to create projects
     // This is similar to the creation path through the wizard except that it turns the project "online" by default
     private void performCreateProject(IProgressMonitor monitor) throws ForceConnectionException, InterruptedException,
-            CoreException, ForceRemoteException, InvocationTargetException, FactoryException, ServiceException,
-            IOException {
+            CoreException, ForceRemoteException, InvocationTargetException, FactoryException, ServiceException {
         saveConnection(monitor);
 
         // create project
@@ -318,28 +318,24 @@ public class ProjectController extends Controller {
                 break;
             }
 
-            try {
-                List<String> folderNames =
-                        ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
-                                .getComponentFolderNames(getEnabledComponentTypes());
-                if (Utils.isNotEmpty(folderNames)) {
-                    for (String folderName : folderNames) {
-                        IFolder componentFolder = sourceFolder.getFolder(folderName);
-                        if (componentFolder != null && !componentFolder.exists()) {
-                            try {
-                                componentFolder.create(true, true, monitor);
-                            } catch (CoreException e) {
-                                String logMessage = Utils.generateCoreExceptionLog(e);
-                                // not all that critical if we cannot create
-                                logger.warn("Unable to create component folder '" + componentFolder.getName() + "': "
-                                        + logMessage);
-                            }
+            List<String> folderNames =
+                    ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
+                            .getComponentFolderNames(getEnabledComponentTypes());
+            if (Utils.isNotEmpty(folderNames)) {
+                for (String folderName : folderNames) {
+                    IFolder componentFolder = sourceFolder.getFolder(folderName);
+                    if (componentFolder != null && !componentFolder.exists()) {
+                        try {
+                            componentFolder.create(true, true, monitor);
+                        } catch (CoreException e) {
+                            String logMessage = Utils.generateCoreExceptionLog(e);
+                            // not all that critical if we cannot create
+                            logger.warn("Unable to create component folder '" + componentFolder.getName() + "': "
+                                    + logMessage);
                         }
                     }
-
                 }
-            } catch (FactoryException e) {
-                logger.error("Unable to get folder names for Apex component types", e);
+
             }
 
             break;
@@ -368,10 +364,6 @@ public class ProjectController extends Controller {
                                 componentFolder.create(true, true, monitor);
                             }
                         }
-                    } catch (FactoryException e) {
-                        // not all that critical if we cannot create
-                        logger.warn("Unable to create component folder for type '" + type.getName() + "': "
-                                + e.getMessage());
                     } catch (CoreException e) {
                         String logMessage = Utils.generateCoreExceptionLog(e);
                         // not all that critical if we cannot create
@@ -691,8 +683,8 @@ public class ProjectController extends Controller {
     }
 
     public void fetchComponents(ServiceTimeoutException ex, IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, InvocationTargetException, FactoryException, CoreException,
-            RemoteException, ServiceException {
+            ForceRemoteException, InvocationTargetException, FactoryException,
+            ServiceException {
         if (getProjectModel() == null || ex == null) {
             throw new IllegalArgumentException("Project model cannot be null");
         }
@@ -728,13 +720,11 @@ public class ProjectController extends Controller {
      * @throws InterruptedException
      * @throws ForceConnectionException
      * @throws ForceRemoteException
-     * @throws FactoryException
-     * @throws CoreException
      * @throws InvocationTargetException
      * @throws ServiceException
      */
     public void fetchManagedInstalledPackages(IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, InvocationTargetException,
+            ForceConnectionException, ForceRemoteException, InvocationTargetException,
             ServiceException {
         if (getProjectModel() == null) {
             throw new IllegalArgumentException("Project model cannot be null");
@@ -797,7 +787,7 @@ public class ProjectController extends Controller {
         monitorCheck(monitor);
     }
 
-    public void generateSchemaFile(IProgressMonitor monitor) throws CoreException, IOException {
+    public void generateSchemaFile(IProgressMonitor monitor) throws CoreException {
         if (getProjectModel() == null) {
             throw new IllegalArgumentException("Project model cannot be null");
         }
@@ -819,12 +809,13 @@ public class ProjectController extends Controller {
             return;
         }
 
-        InputStream stream = Utils.openContentStream(Constants.CONTENT_PLACE_HOLDER);
-        monitor.worked(1);
-        file.create(stream, true, monitor);
+        try (final QuietCloseable<InputStream> c = QuietCloseable.make(Utils.openContentStream(Constants.CONTENT_PLACE_HOLDER))) {
+            final InputStream stream = c.get();
 
-        monitor.worked(1);
-        stream.close();
+            monitor.worked(1);
+            file.create(stream, true, monitor);
+            monitor.worked(1);
+        }
     }
 
     public void disableBuilder() throws CoreException {
@@ -983,7 +974,7 @@ public class ProjectController extends Controller {
     }
 
     protected FileMetadataExt getFileMetadata(ListMetadataQuery[] listMetadataQueryArray, IProgressMonitor monitor)
-            throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException {
+            throws InterruptedException, ForceConnectionException, ForceRemoteException {
         if (getProjectModel() == null || getProjectModel().getForceProject() == null) {
             logger.warn("Unable to get enabled component types for project - Force project is null");
             return null;
@@ -998,7 +989,7 @@ public class ProjectController extends Controller {
     }
 
     public void loadFileMetadata(IProgressMonitor monitor) throws InterruptedException, ForceConnectionException,
-            ForceRemoteException, FactoryException {
+            ForceRemoteException {
         ForceProject forceProject = getProjectModel().getForceProject();
 
         // query describe metadata for organization namespace - don't get from ForceProject due to project might not be created yet.
@@ -1026,7 +1017,7 @@ public class ProjectController extends Controller {
     }
 
     // get list metadata types that cover default option
-    public void prepareFileMetadataQueries(IProgressMonitor monitor) throws InterruptedException, Exception {
+    public void prepareFileMetadataQueries(IProgressMonitor monitor) throws InsufficientPermissionsException, ForceConnectionException {
         Connection connection =
                 ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory()
                         .getConnection(getProjectModel().getForceProject());

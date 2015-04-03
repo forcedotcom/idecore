@@ -20,7 +20,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
 
 import com.salesforce.ide.core.internal.utils.Constants;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 /**
  * Refactoring moves are not supported by the Force.com IDE.  This class invalidates refactor move requests by always
@@ -58,12 +57,7 @@ public class ResourceMoveParticipant extends MoveParticipant {
             logger.debug("***" + getName() + " initiated ***");
         }
 
-        try {
-            moveChange = new MoveChange();
-        } catch (ForceProjectException e) {
-         // catch exception because exceptions cause the participant to become deactivated for future refactorings
-            logger.error("Unable to create delete instance", e);
-        }
+        moveChange = new MoveChange();
 
         return true;
     }
@@ -71,12 +65,7 @@ public class ResourceMoveParticipant extends MoveParticipant {
     @Override
     public Change createChange(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
         if (moveChange == null) {
-            try {
-                moveChange = new MoveChange();
-            } catch (ForceProjectException e) {
-                // catch exception because exceptions cause the participant to become deactivated for future refactorings
-                logger.error("Unable to create delete instance", e);
-            }
+            moveChange = new MoveChange();
         }
         return moveChange;
     }

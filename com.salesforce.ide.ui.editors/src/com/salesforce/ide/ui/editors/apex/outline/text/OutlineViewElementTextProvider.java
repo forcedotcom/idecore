@@ -23,11 +23,11 @@ import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 import apex.jorje.data.ast.EnumDecl;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.InterfaceDecl;
-import apex.jorje.services.messageproviders.impl.MessageProviderImpl;
 import apex.jorje.services.printers.ListPrinter;
 import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.StandardPrinterFactory;
+import apex.jorje.services.printers.PrinterFactory;
+import apex.jorje.services.printers.PrinterUtil;
 
 import com.salesforce.ide.ui.editors.apex.outline.ApexLabelProvider;
 import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
@@ -43,8 +43,7 @@ import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
  * 
  */
 public final class OutlineViewElementTextProvider implements IOutlineViewElementHandler<String> {
-    private static StandardPrinterFactory printerFactory = new StandardPrinterFactory(MessageProviderImpl.INSTANCE, 0,
-            "");
+    private static final PrinterFactory printerFactory = PrinterUtil.get().getFactory();
     private static Printer<Identifier> identifierPrinter = printerFactory.identifierPrinter();
     private static OutlineViewVariableDeclsPrinter variableDeclsPrinter = new OutlineViewVariableDeclsPrinter(
             printerFactory);
@@ -55,7 +54,7 @@ public final class OutlineViewElementTextProvider implements IOutlineViewElement
     private static OutlineViewPropertyClassMemberPrinter propertyMemberPrinter =
             new OutlineViewPropertyClassMemberPrinter(printerFactory);
 
-    private PrintContext defaultPrintContext() {
+    private static PrintContext defaultPrintContext() {
         return new PrintContext();
     }
 

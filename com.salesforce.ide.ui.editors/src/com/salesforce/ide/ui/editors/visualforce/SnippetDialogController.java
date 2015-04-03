@@ -27,7 +27,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.controller.Controller;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
@@ -45,14 +44,14 @@ public class SnippetDialogController extends Controller {
     private MergeFieldsRegistry mergeFieldsRegistry = null;
     private DescribeObjectRegistry describeObjectRegistry = null;
     private final Hashtable<String, Hashtable<String, String>> componentTypes =
-            new Hashtable<String, Hashtable<String, String>>();
-    private Hashtable<String, String> snippets = new Hashtable<String, String>();
+            new Hashtable<>();
+    private Hashtable<String, String> snippets = new Hashtable<>();
     private IProject project = null;
     private String selectedField = null;
     private String selectedSnippet = null;
 
     //   C O N S T R U C T O R S
-    public SnippetDialogController() throws ForceProjectException {
+    public SnippetDialogController() {
         super();
     }
 
@@ -127,7 +126,7 @@ public class SnippetDialogController extends Controller {
         loadObjectsAndFields();
         if (Utils.isNotEmpty(componentTypes)) {
             Set<String> componentTypeKeys = componentTypes.keySet();
-            TreeSet<String> sortedComponentTypeKeys = new TreeSet<String>();
+            TreeSet<String> sortedComponentTypeKeys = new TreeSet<>();
             sortedComponentTypeKeys.addAll(componentTypeKeys);
             for (String sortedComponentTypeKey : sortedComponentTypeKeys) {
                 listObjects.add(sortedComponentTypeKey);
@@ -136,7 +135,7 @@ public class SnippetDialogController extends Controller {
 
         if (Utils.isNotEmpty(snippets)) {
             Set<String> snippetKeys = snippets.keySet();
-            TreeSet<String> sortedSnippetKeys = new TreeSet<String>();
+            TreeSet<String> sortedSnippetKeys = new TreeSet<>();
             sortedSnippetKeys.addAll(snippetKeys);
             for (String sortedSnippetKey : sortedSnippetKeys) {
                 listSnippets.add(sortedSnippetKey);
@@ -155,11 +154,12 @@ public class SnippetDialogController extends Controller {
         if (Utils.isEmpty(mergeFieldObjects)) {
             DescribeSObjectResult describeSObjectResult =
                     getDescribeObjectRegistry().getCachedDescribe(project, selection);
-            mergeFieldObjects = new Hashtable<String, String>(describeSObjectResult.getFields().length);
+            mergeFieldObjects = new Hashtable<>(describeSObjectResult.getFields().length);
 
             Field[] fields = describeSObjectResult.getFields();
             if (Utils.isNotEmpty(fields)) {
                 Arrays.sort(fields, new Comparator<Field>() {
+                    @Override
                     public int compare(Field o1, Field o2) {
                         String name1 = (o1).getLabel();
                         String name2 = (o2).getLabel();
@@ -175,7 +175,7 @@ public class SnippetDialogController extends Controller {
         }
 
         Set<String> mergeFieldObjectKeys = mergeFieldObjects.keySet();
-        TreeSet<String> sortedMergeFieldObjectKeys = new TreeSet<String>();
+        TreeSet<String> sortedMergeFieldObjectKeys = new TreeSet<>();
         sortedMergeFieldObjectKeys.addAll(mergeFieldObjectKeys);
         for (String sortedMergeFieldObjectKey : sortedMergeFieldObjectKeys) {
             listFields.add(sortedMergeFieldObjectKey);
@@ -252,7 +252,7 @@ public class SnippetDialogController extends Controller {
         try {
             Set<String> gtypes = getDescribeObjectRegistry().getCachedGlobalDescribeTypes(project);
             if (Utils.isNotEmpty(gtypes)) {
-                TreeSet<String> sortedTypes = new TreeSet<String>();
+                TreeSet<String> sortedTypes = new TreeSet<>();
                 sortedTypes.addAll(gtypes);
                 for (String sortedType : sortedTypes) {
                     if (sortedType.endsWith(Constants.CUSTOM_OBJECT_SUFFIX)) {
@@ -272,8 +272,8 @@ public class SnippetDialogController extends Controller {
         }
     }
 
-    private Hashtable<String, String> getEmtpyMergeFieldHashtable() {
-        return new Hashtable<String, String>();
+    private static Hashtable<String, String> getEmtpyMergeFieldHashtable() {
+        return new Hashtable<>();
     }
 
     @Override

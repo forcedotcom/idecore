@@ -324,6 +324,7 @@ public interface Constants {
     String SYS_SETTING_PROPERTIES = "force-ide-properties";
     String SYS_SETTING_SFDC_DEBUGGER = "sfdc-debugger";
     String SYS_SETTING_SFDC_INTERNAL = "sfdc-internal";
+    String SYS_SETTING_X_FORCE_PROXY = "x-force-proxy";
     String SYS_SETTING_SFDC_INTERNAL_VALUE = "true";
     String SYS_SETTING_DEFAULT_API_VERSION = "force-ide-api-version";
     String SYS_SETTING_POLL_LIMIT_MILLIS = "force-ide-poll-limit";

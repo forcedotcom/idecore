@@ -16,12 +16,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.internal.wizards.BaseWizard;
-import com.sforce.ws.ConnectionException;
 
 /**
  * Wizard creates new Force.com Project.
@@ -35,12 +33,12 @@ public class ProjectCreateWizard extends BaseWizard {
     private ProjectProjectContentPage projectProjectContentPage = null;
     private ProjectCreateOperation createProjectOperation = null;
 
-    public ProjectCreateWizard() throws ForceProjectException {
+    public ProjectCreateWizard() {
         super();
         init();
     }
 
-    private final void init() throws ForceProjectException {
+    private final void init() {
         controller = new ProjectController(project);
 
         // create connection operation to perform new project creation
@@ -126,7 +124,7 @@ public class ProjectCreateWizard extends BaseWizard {
     *
     * @return boolean
     */
-    public boolean createProject() throws ConnectionException, InvocationTargetException, InterruptedException {
+    public boolean createProject() throws InvocationTargetException, InterruptedException {
         // perform project creation
         return createProjectOperation.create();
     }

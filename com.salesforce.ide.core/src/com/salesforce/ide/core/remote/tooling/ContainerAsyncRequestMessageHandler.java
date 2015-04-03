@@ -11,6 +11,7 @@
 package com.salesforce.ide.core.remote.tooling;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.widgets.Display;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
@@ -20,6 +21,7 @@ import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.project.MarkerUtils;
 import com.salesforce.ide.core.services.ToolingDeployService;
 import com.sforce.soap.tooling.ContainerAsyncRequest;
+import com.sforce.soap.tooling.ContainerAsyncRequestState;
 import com.sforce.soap.tooling.DeployMessage;
 
 /**
@@ -31,16 +33,9 @@ import com.sforce.soap.tooling.DeployMessage;
 public class ContainerAsyncRequestMessageHandler {
     private final Logger logger = Logger.getLogger(ToolingDeployService.class);
 
-    // These should be enums in the API, but they are not
-    public final static String ABORTED = "aborted"; //$NON-NLS-1$
-    public final static String ERROR = "error"; //$NON-NLS-1$
-    public final static String FAILED = "failed"; //$NON-NLS-1$
-    public final static String COMPLETED = "completed"; //$NON-NLS-1$
-    public final static String INVALIDATED = "invalidated"; //$NON-NLS-1$
+    private final ContainerAsyncRequest car; // We need this to get the status, compile failures and/or errors
 
-    private ContainerAsyncRequest car; // We need this to get the status, compile failures and/or errors
-
-    private ComponentList list; // We need this to map back to the actual file resource
+    private final ComponentList list; // We need this to map back to the actual file resource
 
     public ContainerAsyncRequestMessageHandler(ComponentList list, ContainerAsyncRequest car) {
         this.list = list;
@@ -48,16 +43,16 @@ public class ContainerAsyncRequestMessageHandler {
     }
 
     public void handle() {
-        String state = car.getState();
-        if (state.equalsIgnoreCase(INVALIDATED)) {
+        ContainerAsyncRequestState state = car.getState();
+        if (state == ContainerAsyncRequestState.Invalidated) {
             handleInvalidatedCase();
-        } else if (state.equalsIgnoreCase(COMPLETED)) {
+        } else if (state == ContainerAsyncRequestState.Completed) {
             handleCompletedCase();
-        } else if (state.equalsIgnoreCase(FAILED)) {
+        } else if (state == ContainerAsyncRequestState.Failed) {
             handleFailedCase();
-        } else if (state.equalsIgnoreCase(ERROR)) {
+        } else if (state == ContainerAsyncRequestState.Error) {
             handleErrorCase();
-        } else if (state.equalsIgnoreCase(ABORTED)) {
+        } else if (state == ContainerAsyncRequestState.Aborted) {
             handleAbortedCase();
         }
     }
@@ -68,8 +63,26 @@ public class ContainerAsyncRequestMessageHandler {
     }
 
     protected void handleErrorCase() {
-        String errorMsg = car.getErrorMsg();
-        getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), errorMsg); //$NON-NLS-1$
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), car.getErrorMsg()); //$NON-NLS-1$
+            }
+        });
+    }
+
+    protected void handleInvalidatedCase() {
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), //$NON-NLS-1$
+                    Messages.getString("ContainerAsyncMessagesHandler.DeploymentChangedInProgress.message")); //$NON-NLS-1$
+
+            }
+            
+        });
     }
 
     protected void handleFailedCase() {
@@ -85,14 +98,14 @@ public class ContainerAsyncRequestMessageHandler {
             MarkerUtils markerUtils = getMarkerUtils();
             if (failure.getLineNumber() > 0) { // Has line number
                 if (failure.getColumnNumber() > 1) { // Has column number
-                    markerUtils.applyCompileErrorMarker(cmp.getFileResource(), failure.getLineNumber(),
+                    markerUtils.applySaveErrorMarker(cmp.getFileResource(), failure.getLineNumber(),
                         failure.getColumnNumber(), failure.getColumnNumber() + 1, failure.getProblem());
                 } else {
-                    markerUtils.applyCompileErrorMarker(cmp.getFileResource(), failure.getLineNumber(), 1, 1,
+                    markerUtils.applySaveErrorMarker(cmp.getFileResource(), failure.getLineNumber(), 1, 1,
                         failure.getProblem());
                 }
             } else {
-                markerUtils.applyCompileErrorMarker(cmp.getFileResource(), failure.getProblem());
+                markerUtils.applySaveErrorMarker(cmp.getFileResource(), failure.getProblem());
             }
         }
     }
@@ -100,12 +113,7 @@ public class ContainerAsyncRequestMessageHandler {
     protected void handleCompletedCase() {
         ToolingDeployService toolingDeployService = getToolingDeployService();
         toolingDeployService.clearSaveLocallyOnlyMarkers(list);
-        toolingDeployService.clearCompileErrorMarkers(list);
-    }
-
-    protected void handleInvalidatedCase() {
-        getDialogUtils().closeMessage(Messages.getString("ContainerAsyncMessagesHandler.FailToSave.Title"), //$NON-NLS-1$
-            Messages.getString("ContainerAsyncMessagesHandler.DeploymentChangedInProgress.message")); //$NON-NLS-1$
+        toolingDeployService.clearSaveErrorMarkers(list);
     }
 
     // FOR TESTING/MOCKING

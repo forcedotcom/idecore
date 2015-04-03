@@ -25,32 +25,32 @@ import apex.jorje.data.ast.CompilationUnit.InterfaceDeclUnit;
 import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 import apex.jorje.parser.impl.ApexParserImpl;
 
+import com.salesforce.ide.apex.core.ApexParserFactory;
+import com.salesforce.ide.apex.internal.core.ApexModelManager;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.errors.ApexErrorMarkerHandler;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;
-import com.salesforce.ide.ui.editors.apex.parser.IdeApexParser;
 import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
 
 /**
  * The runnable that is called each time the reconciler needs to run.
  * 
  * @author nchen
- *
+ * 
  */
 public class ApexParserRunnable implements ISafeRunnable {
     private ApexReconcilingStrategy apexReconcilingStrategy;
     private ApexParserImpl fParser;
     private ApexErrorMarkerHandler fMarkerHandler;
     private CompilationUnit fCompilationUnit;
+    private IFile file;
 
     // For testing purposes
-    protected ApexParserRunnable() {
-
-    }
+    protected ApexParserRunnable() {}
 
     public ApexParserRunnable(ApexReconcilingStrategy apexReconcilingStrategy) {
         this.apexReconcilingStrategy = apexReconcilingStrategy;
-        IFile file = ((IFileEditorInput) apexReconcilingStrategy.fTextEditor.getEditorInput()).getFile();
+        file = ((IFileEditorInput) apexReconcilingStrategy.fTextEditor.getEditorInput()).getFile();
         IDocument doc = apexReconcilingStrategy.fTextEditor.getDocument();
         fMarkerHandler = new ApexErrorMarkerHandler(file, doc);
     }
@@ -67,8 +67,7 @@ public class ApexParserRunnable implements ISafeRunnable {
 
     protected boolean checkShouldUpdate() {
         IPreferenceStore preferenceStore = ForceIdeEditorsPlugin.getDefault().getPreferenceStore();
-        boolean shouldUpdate = preferenceStore.getBoolean(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER);
-        return shouldUpdate;
+        return preferenceStore.getBoolean(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER);
     }
 
     protected void clearExistingErrorMarkers() {
@@ -76,12 +75,22 @@ public class ApexParserRunnable implements ISafeRunnable {
     }
 
     protected void parseCurrentEditorContents() throws Exception {
-        fParser = IdeApexParser.initializeParser(this.apexReconcilingStrategy.fTextEditor.getText());
+        // This uses the current contents of the file (before it is saved)
+        fParser = ApexParserFactory.create(this.apexReconcilingStrategy.fTextEditor.getText());
         fCompilationUnit = fParser.compilationUnit();
+
+        refreshApexModelIfPossible();
+    }
+
+    private void refreshApexModelIfPossible() {
+        if (fCompilationUnit != null) {
+            ApexModelManager.INSTANCE.cacheCompilationUnit(file, fCompilationUnit);
+            ApexModelManager.INSTANCE.evictCompilation(file);
+        }
     }
 
     protected void reportParseErrors() {
-        fMarkerHandler.handleSyntaxErrors(fParser.getSyntaxErrors());
+        fMarkerHandler.handleSyntaxErrors(fParser.getParseErrors());
     }
 
     protected void updateOutlineViewIfPossible() {

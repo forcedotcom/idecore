@@ -35,23 +35,20 @@ import com.salesforce.ide.ui.internal.composite.BaseComposite;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 /**
- *
+ * 
  * 
  * @author cwall
  */
 public abstract class ComponentWizardComposite extends BaseComposite implements IComponentWizardComposite {
 
-    protected String componentTypeDisplayName = null;
-    protected Text txtName = null;
-    protected Text txtLabel = null;
-    protected Text txtPluralLabel = null;
-    @Deprecated
-    protected Combo cmbPackageNames = null;
-    protected Combo cmbProjectNames = null;
-    protected Combo cmbObjects = null;
-    protected Combo cmbTemplateNames = null;
-    protected Button btnRefreshObjects = null;
-    protected IComponentWizardPage componentWizardPage = null;
+    private String componentTypeDisplayName = null;
+    private Text txtName = null;
+    private Text txtLabel = null;
+    private Text txtPluralLabel = null;
+    private Combo cmbObjects = null;
+    private Combo cmbTemplateNames = null;
+    private Button btnRefreshObjects = null;
+    private IComponentWizardPage componentWizardPage = null;
 
     //   C O N S T R U C T O R
     public ComponentWizardComposite(Composite parent, int style, String componentTypeDisplayName) {
@@ -60,45 +57,24 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
     }
 
     //   M E T H O D S
-    public void setComponentWizardPage(IComponentWizardPage componentWizardPage) {
+    @Override
+    public final void setComponentWizardPage(IComponentWizardPage componentWizardPage) {
         this.componentWizardPage = componentWizardPage;
     }
 
-    public IComponentWizardPage getComponentWizardPage() {
+    public final IComponentWizardPage getComponentWizardPage() {
         return componentWizardPage;
     }
 
-    public String getComponentDisplayName() {
+    public final String getComponentDisplayName() {
         return componentTypeDisplayName;
     }
 
-    public void setComponentDisplayName(String componentTypeDisplayName) {
+    public final void setComponentDisplayName(String componentTypeDisplayName) {
         this.componentTypeDisplayName = componentTypeDisplayName;
     }
 
-    @Deprecated
-    protected final void createPackageNamesGrp(Composite composite) {
-        Group grpPackage = new Group(composite, SWT.NONE);
-        grpPackage.setText("Package");
-        grpPackage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        grpPackage.setLayout(new GridLayout(5, false));
-        Label lblEndpoint = new Label(grpPackage, SWT.NONE);
-        lblEndpoint.setText("Name:");
-        lblEndpoint.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
-        cmbPackageNames = new Combo(grpPackage, SWT.BORDER | SWT.READ_ONLY);
-        cmbPackageNames.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 4, 0));
-        cmbPackageNames.addSelectionListener(new SelectionListener() {
-            public void widgetDefaultSelected(SelectionEvent e) {
-                getComponentWizardPage().validateUserInput();
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                widgetDefaultSelected(e);
-            }
-        });
-    }
-
-    protected Group createPropertiesGroup(Composite composite) {
+    protected final Group createPropertiesGroup(Composite composite) {
         Group grpProperties = new Group(composite, SWT.NONE);
         grpProperties.setText(componentTypeDisplayName + " Properties");
         grpProperties.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -106,15 +82,11 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         return grpProperties;
     }
 
-    protected GridLayout getPropertiesGridLayout() {
-        return new GridLayout(5, true);
-    }
-
-    protected void createNameText(Group containingGroup) {
+    protected final void createNameText(Group containingGroup) {
         createNameGroup(null, containingGroup);
     }
 
-    protected void createNameGroup(Composite composite, Group containingGroup) {
+    protected final void createNameGroup(Composite composite, Group containingGroup) {
         if (composite == null && containingGroup == null) {
             throw new IllegalArgumentException("Composite and group cannot both be null");
         }
@@ -125,7 +97,8 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtName.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
+            @Override
+            public final void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
             }
@@ -134,7 +107,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         filler31.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
     }
 
-    protected void createNameText(Composite composite, Group containingGroup) {
+    protected final void createNameText(Composite composite, Group containingGroup) {
         if (composite == null && containingGroup == null) {
             throw new IllegalArgumentException("Composite and group cannot both be null");
         }
@@ -145,7 +118,8 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtName.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
+            @Override
+            public final void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
             }
@@ -154,7 +128,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         filler31.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
     }
 
-    protected void createLabelText(Composite composite, Group containingGroup) {
+    protected final void createLabelText(Composite composite, Group containingGroup) {
         if (composite == null && containingGroup == null) {
             throw new IllegalArgumentException("Composite and group cannot both be null");
         }
@@ -165,7 +139,8 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtLabel.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
+            @Override
+            public final void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
             }
@@ -174,11 +149,11 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         Label filler31 = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
     }
 
-    protected void createLabelAndNameText(Composite composite, Group containingGroup) {
+    protected final void createLabelAndNameText(Composite composite, Group containingGroup) {
         createLabelAndNameText(composite, containingGroup, false);
     }
 
-    protected void createLabelAndNameText(Composite composite, Group containingGroup, boolean includePlural) {
+    protected final void createLabelAndNameText(Composite composite, Group containingGroup, boolean includePlural) {
         if (composite == null && containingGroup == null) {
             throw new IllegalArgumentException("Composite and group cannot both be null");
         }
@@ -190,9 +165,11 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtLabel.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent event) { /* not implemented */}
+            @Override
+            public final void focusGained(FocusEvent event) { /* not implemented */}
 
-            public void focusLost(FocusEvent event) {
+            @Override
+            public final void focusLost(FocusEvent event) {
                 if (isLabelNotEmpty() && !isNameNotEmpty()) {
                     String agumentedText = Utils.generateNameFromLabel(getLabelString());
                     getTxtName().setText(agumentedText);
@@ -205,7 +182,8 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
             }
         });
         txtLabel.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
+            @Override
+            public final void modifyText(ModifyEvent e) {
                 getComponentWizardPage().validateUserInput();
                 getComponentWizardPage().setComponentNameChanged(true);
             }
@@ -222,7 +200,8 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
             txtPluralLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
             txtPluralLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
             txtPluralLabel.addModifyListener(new ModifyListener() {
-                public void modifyText(ModifyEvent e) {
+                @Override
+                public final void modifyText(ModifyEvent e) {
                     getComponentWizardPage().validateUserInput();
                 }
             });
@@ -247,7 +226,8 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
         txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         txtName.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
+            @Override
+            public final void modifyText(ModifyEvent e) {
                 getComponentWizardPage().setComponentNameChanged(true);
                 getComponentWizardPage().validateUserInput();
             }
@@ -257,37 +237,38 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         filler.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
     }
 
-    protected void createObjectTextAndRefreshButton(Composite composite, Group containingGroup) {
+    protected final void createObjectTextAndRefreshButton(Composite composite, Group containingGroup) {
         if (composite == null && containingGroup == null) {
             throw new IllegalArgumentException("Composite and group cannot both be null");
         }
 
-        Label lblObject = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
+        final Composite parent = containingGroup != null ? containingGroup : composite;
+        Label lblObject = new Label(parent, SWT.NONE);
         lblObject.setText("Object:");
         lblObject.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
-        cmbObjects = new Combo(containingGroup != null ? containingGroup : composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-        cmbObjects.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 0));
+        cmbObjects = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+        cmbObjects.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
         cmbObjects.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
+            @Override
+            public final void modifyText(ModifyEvent e) {
                 getComponentWizardPage().validateUserInput();
             }
         });
 
-        btnRefreshObjects = new Button(containingGroup != null ? containingGroup : composite, SWT.NONE);
-        btnRefreshObjects.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 0));
+        btnRefreshObjects = new Button(parent, SWT.NONE);
+        btnRefreshObjects.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
         btnRefreshObjects.setText("Refresh Objects");
         btnRefreshObjects.addSelectionListener(new SelectionListener() {
-            public void widgetDefaultSelected(SelectionEvent e) {
+            @Override
+            public final void widgetDefaultSelected(SelectionEvent e) {
                 ((ComponentWizardPage) getComponentWizardPage()).refreshObjects();
             }
 
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+            public final void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
         });
-
-        Label filler31 = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
-        filler31.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
     }
 
     protected final void createTemplateCombo(Group containingGroup, Set<String> templateNames) {
@@ -299,7 +280,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         setTemplateComboValues(templateNames);
     }
 
-    protected void setTemplateComboValues(Set<String> templateNames) {
+    protected final void setTemplateComboValues(Set<String> templateNames) {
         if (Utils.isNotEmpty(templateNames)) {
             for (String templateName : templateNames) {
                 cmbTemplateNames.add(templateName);
@@ -308,146 +289,119 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         }
     }
 
-    public void disableAllControls() {
-        disableComponentNameFields();
-
-        if (cmbPackageNames != null) {
-            cmbPackageNames.setEnabled(false);
-        }
-
-        if (cmbProjectNames != null) {
-            cmbProjectNames.setEnabled(false);
-        }
+    @Override
+    public void setEnabled(boolean enabled) {
 
         if (cmbObjects != null) {
-            cmbObjects.setEnabled(false);
+            cmbObjects.setEnabled(enabled);
         }
 
         if (btnRefreshObjects != null) {
-            btnRefreshObjects.setEnabled(false);
+            btnRefreshObjects.setEnabled(enabled);
         }
 
         if (cmbTemplateNames != null) {
-            cmbTemplateNames.setEnabled(false);
+            cmbTemplateNames.setEnabled(enabled);
         }
 
-        disableControls();
-    }
-
-    public abstract void disableControls();
-
-    @Override
-    public void validateUserInput() {
-    }
-
-    protected void initSize() {
-        setSize(new Point(490, 174));
-    }
-
-    public Text getTxtName() {
-        return txtName;
-    }
-
-    public String getComponentName() {
-        return getNameString();
-    }
-
-    public String getNameString() {
-        return getText(txtName);
-    }
-
-    public void setName(String name) {
-        setText(name, txtName);
-    }
-
-    public boolean isNameNotEmpty() {
-        return (getTxtName() != null && !Utils.isEmpty(getNameString()));
-    }
-
-    public Text getTxtLabel() {
-        return txtLabel;
-    }
-
-    public String getLabelString() {
-        return getText(txtLabel);
-    }
-
-    public boolean isLabelNotEmpty() {
-        return (getTxtLabel() != null && !Utils.isEmpty(getLabelString()));
-    }
-
-    public void setLabel(String label) {
-        setText(label, txtLabel);
-    }
-
-    public Text getTxtPluralLabel() {
-        return txtPluralLabel;
-    }
-
-    public String getPluralLabelString() {
-        return getText(txtPluralLabel);
-    }
-
-    public boolean isPluralLabelNotEmpty() {
-        return (getTxtPluralLabel() != null && !Utils.isEmpty(getPluralLabelString()));
-    }
-
-    public void setPluralLabel(String label) {
-        setText(label, txtPluralLabel);
-    }
-
-    public void disableComponentNameFields() {
-        txtName.setEnabled(false);
+        if (txtName != null) {
+            txtName.setEnabled(enabled);
+        }
 
         if (txtLabel != null) {
-            txtLabel.setEnabled(false);
+            txtLabel.setEnabled(enabled);
         }
 
         if (txtPluralLabel != null) {
-            txtPluralLabel.setEnabled(false);
+            txtPluralLabel.setEnabled(enabled);
         }
     }
 
-    @Deprecated
-    public void disableComponentPackageNameField() {
-        cmbPackageNames.setEnabled(false);
+    @Override
+    public final void validateUserInput() {}
+
+    protected final void initSize() {
+        setSize(new Point(490, 174));
     }
 
-    @Deprecated
-    public String getPackageName() {
-        return Utils.isEmpty(getText(cmbPackageNames)) ? Constants.EMPTY_STRING : getText(cmbPackageNames);
+    @Override
+    public final Text getTxtName() {
+        return txtName;
     }
 
-    @Deprecated
-    public Combo getCmbPackageName() {
-        return cmbPackageNames;
+    @Override
+    public final String getComponentName() {
+        return getNameString();
     }
 
-    public void setPackageName(String packageName) {
-        selectComboContent(packageName, cmbPackageNames);
+    @Override
+    public final String getNameString() {
+        return getText(txtName);
     }
 
-    public String getObject() {
+    public final void setName(String name) {
+        setText(name, txtName);
+    }
+
+    public final boolean isNameNotEmpty() {
+        return (getTxtName() != null && !Utils.isEmpty(getNameString()));
+    }
+
+    public final Text getTxtLabel() {
+        return txtLabel;
+    }
+
+    @Override
+    public final String getLabelString() {
+        return getText(txtLabel);
+    }
+
+    public final boolean isLabelNotEmpty() {
+        return (getTxtLabel() != null && !Utils.isEmpty(getLabelString()));
+    }
+
+    public final void setLabel(String label) {
+        setText(label, txtLabel);
+    }
+
+    public final Text getTxtPluralLabel() {
+        return txtPluralLabel;
+    }
+
+    public final String getPluralLabelString() {
+        return getText(txtPluralLabel);
+    }
+
+    public final boolean isPluralLabelNotEmpty() {
+        return (getTxtPluralLabel() != null && !Utils.isEmpty(getPluralLabelString()));
+    }
+
+    public final void setPluralLabel(String label) {
+        setText(label, txtPluralLabel);
+    }
+
+    public final String getObject() {
         return cmbObjects.getText();
     }
 
-    public void setTriggerObject(String object) {
+    public final void setTriggerObject(String object) {
         cmbObjects.setText(object);
     }
 
-    public Combo getCmbObjects() {
+    public final Combo getCmbObjects() {
         return cmbObjects;
     }
 
-    public String getObjectName() {
+    public final String getObjectName() {
         return Utils.isEmpty(getText(cmbObjects)) ? Constants.EMPTY_STRING : getText(cmbObjects);
     }
 
-    public Combo getCmbTemplateNames() {
+    @Override
+    public final Combo getCmbTemplateNames() {
         return cmbTemplateNames;
     }
 
-    public String getCmbTemplateNamesName() {
+    public final String getCmbTemplateNamesName() {
         return Utils.isEmpty(getText(cmbTemplateNames)) ? Constants.EMPTY_STRING : getText(cmbTemplateNames);
     }
 }

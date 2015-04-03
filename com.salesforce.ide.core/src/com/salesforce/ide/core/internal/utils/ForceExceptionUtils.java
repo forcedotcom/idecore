@@ -13,7 +13,7 @@ package com.salesforce.ide.core.internal.utils;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;

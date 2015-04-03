@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.components.object;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import com.salesforce.ide.core.internal.components.object.CustomObjectComponentController;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
@@ -28,14 +25,6 @@ public class CustomObjectWizard extends ComponentWizard {
     public CustomObjectWizard() throws ForceProjectException {
         super();
         controller = new CustomObjectComponentController();
-    }
-
-    public CustomObjectWizard(IFolder folder) {
-        super(folder, folder.getProject());
-    }
-
-    public CustomObjectWizard(IFolder folder, IProject project) {
-        super(folder, project);
     }
 
     @Override

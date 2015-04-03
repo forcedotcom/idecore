@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Path;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
-import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
@@ -35,7 +34,6 @@ import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
-import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.core.remote.MetadataStubExt;
 import com.salesforce.ide.core.remote.metadata.CustomObjectNameResolver;
 import com.salesforce.ide.core.remote.metadata.DescribeMetadataObjectExt;
@@ -55,7 +53,7 @@ public class MetadataService extends BaseService {
     public MetadataService() {}
 
     public DescribeMetadataResultExt getDescribeMetadata(MetadataStubExt metadataStubExt, IProgressMonitor monitor)
-            throws ForceRemoteException, InvalidLoginException, ForceConnectionException, InterruptedException {
+            throws ForceRemoteException, InterruptedException {
         if (metadataStubExt == null) {
             throw new IllegalArgumentException("MetadataStubExt cannot be null");
         }
@@ -73,27 +71,27 @@ public class MetadataService extends BaseService {
     }
 
     public boolean isApexClassEnabled(Connection connection) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, FactoryException {
+            InterruptedException {
         return isComponentTypeEnabled(connection, Constants.APEX_CLASS);
     }
 
     public boolean isApexTriggerEnabled(Connection connection) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, FactoryException {
+            InterruptedException {
         return isComponentTypeEnabled(connection, Constants.APEX_TRIGGER);
     }
 
     public boolean isApexPageEnabled(Connection connection) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, FactoryException {
+            InterruptedException {
         return isComponentTypeEnabled(connection, Constants.APEX_PAGE);
     }
 
     public boolean isComponentTypeEnabled(Connection connection, String componentType) throws ForceConnectionException,
-            ForceRemoteException, InterruptedException, FactoryException {
+            ForceRemoteException, InterruptedException {
         return isComponentTypeEnabled(connection, new String[] { componentType });
     }
 
     public boolean isComponentTypeEnabled(Connection connection, String[] componentTypes)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(componentTypes)) {
             throw new IllegalArgumentException("Connection and/or object types cannot be null");
         }
@@ -123,7 +121,7 @@ public class MetadataService extends BaseService {
     }
 
     public String[] getEnabledComponentTypes(IProject project) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, FactoryException {
+            InterruptedException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -132,17 +130,17 @@ public class MetadataService extends BaseService {
     }
 
     public String[] getEnabledComponentTypes(Connection connection) throws ForceConnectionException,
-            ForceRemoteException, InterruptedException, FactoryException {
+            ForceRemoteException, InterruptedException {
         return getEnabledComponentTypes(connection, false);
     }
 
     public String[] getEnabledComponentTypes(Connection connection, boolean addChildren)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return getEnabledComponentTypes(connection, addChildren, false);
     }
 
     public String[] getEnabledComponentTypes(Connection connection, boolean addChildren, boolean addInternal)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -165,13 +163,11 @@ public class MetadataService extends BaseService {
 		return componentTypes;
     }
 
-    public String[] getEnabledComponentTypes(DescribeMetadataResultExt describeMetadataResultExt)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+    public String[] getEnabledComponentTypes(DescribeMetadataResultExt describeMetadataResultExt) {
         return getEnabledComponentTypes(describeMetadataResultExt, false);
     }
 
-    public String[] getEnabledComponentTypes(DescribeMetadataResultExt describeMetadataResultExt, boolean addChildren)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+    public String[] getEnabledComponentTypes(DescribeMetadataResultExt describeMetadataResultExt, boolean addChildren) {
         if (describeMetadataResultExt == null) {
             throw new IllegalArgumentException("DescribeMetadataResultExt cannot be null");
         }
@@ -182,7 +178,7 @@ public class MetadataService extends BaseService {
             return null;
         }
 
-        Set<String> componentTypeList = new HashSet<String>();
+        Set<String> componentTypeList = new HashSet<>();
         for (DescribeMetadataObjectExt describeMetadataObjectExt : describeMetadataObjectExts) {
             String componentType = describeMetadataObjectExt.getName();
             if (componentType != null && !getComponentFactory().isDisabledComponentType(componentType)) {
@@ -208,8 +204,7 @@ public class MetadataService extends BaseService {
         return componentTypes;
     }
 
-    public ComponentList getEnabledComponents(DescribeMetadataResultExt describeMetadataResultExt)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+    public ComponentList getEnabledComponents(DescribeMetadataResultExt describeMetadataResultExt) {
         if (describeMetadataResultExt == null) {
             throw new IllegalArgumentException("DescribeMetadataResultExt cannot be null");
         }
@@ -222,15 +217,11 @@ public class MetadataService extends BaseService {
         String[] componentTypes = getEnabledComponentTypes(describeMetadataResultExt);
         ComponentList componentList = getComponentFactory().getComponentListInstance();
         for (String componentType : componentTypes) {
-            try {
-                if (getComponentFactory().isRegisteredComponentType(componentType)) {
-                    Component component = getComponentFactory().getComponentByComponentType(componentType);
-                    if (component != null) {
-                        componentList.add(component);
-                    }
+            if (getComponentFactory().isRegisteredComponentType(componentType)) {
+                Component component = getComponentFactory().getComponentByComponentType(componentType);
+                if (component != null) {
+                    componentList.add(component);
                 }
-            } catch (FactoryException e) {
-                logger.warn("Unable to get component for type '" + componentType + "' - skipping: " + e.getMessage());
             }
         }
 
@@ -257,14 +248,12 @@ public class MetadataService extends BaseService {
      * @return
      * @throws ForceConnectionException
      * @throws ForceRemoteException
-     * @throws FactoryException
      * @throws InterruptedException
      * @throws RemoteException
      * @throws RemoteException
      */
     public FileMetadataExt listMetadata(Connection connection, ListMetadataQuery[] query, boolean filter,
-            IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException,
-            FactoryException {
+            IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException {
         FileMetadataExt fileMetadataExt = listMetadata(connection, query, monitor);
         if (filter) {
             fileMetadataExt = filterStandardObjectsFromFileProperties(fileMetadataExt);
@@ -273,12 +262,12 @@ public class MetadataService extends BaseService {
     }
 
     public FileMetadataExt listMetadata(Connection connection, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return listMetadata(connection, true, monitor);
     }
 
     public FileMetadataExt listMetadata(Connection connection, boolean filter, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         FileMetadataExt fileMetadataExt = new FileMetadataExt();
 
         String[] componentTypes = getEnabledComponentTypes(connection, filter);
@@ -304,13 +293,12 @@ public class MetadataService extends BaseService {
     }
 
     public FileMetadataExt listMetadata(Connection connection, String[] componentTypes, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return listMetadata(connection, componentTypes, null, monitor);
     }
 
     public FileMetadataExt listMetadata(Connection connection, String[] componentTypes, String[] filterComponentTypes,
-            IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException,
-            FactoryException {
+            IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException {
         FileMetadataExt fileMetadataExt = new FileMetadataExt();
 
         if (Utils.isNotEmpty(componentTypes)) {
@@ -333,7 +321,7 @@ public class MetadataService extends BaseService {
     }
 
     public FileMetadataExt listMetadata(Connection connection, Component component, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
 
         ListMetadataQuery query = new ListMetadataQuery();
         String type = component.getComponentType();
@@ -354,19 +342,19 @@ public class MetadataService extends BaseService {
     }
 
     public FileMetadataExt getStandardObjectFileProperties(Connection connection, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, FactoryException, InterruptedException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return getObjectFileProperties(connection, monitor, CustomObjectNameResolver.getCheckerForStandardObject());
     }
 
     public FileMetadataExt getCustomObjectFileProperties(Connection connection, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, FactoryException, InterruptedException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return getObjectFileProperties(connection, monitor, CustomObjectNameResolver.getCheckerForCustomObject());
     }
 
     protected FileMetadataExt getObjectFileProperties(Connection connection, IProgressMonitor monitor,
             CustomObjectNameResolver objectNameResolver) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, FactoryException {
-        List<FileProperties> list = new ArrayList<FileProperties>();
+            InterruptedException {
+        List<FileProperties> list = new ArrayList<>();
 
         FileMetadataExt fileMetadataExtArray =
                 listMetadata(connection, getComponentFactory().getComponentByComponentType(Constants.CUSTOM_OBJECT),
@@ -384,7 +372,7 @@ public class MetadataService extends BaseService {
     }
 
     public FileMetadataExt listMetadata(Connection connection, ListMetadataQuery[] queries, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
         MetadataStubExt metadataStubExt = getMetadataFactory().getMetadataStubExt(connection);
 
         if (Utils.isEmpty(queries)) {
@@ -395,7 +383,7 @@ public class MetadataService extends BaseService {
     }
 
     public ListMetadataQuery[] getListMetadataQueryArray(Connection connection, boolean filter, IProgressMonitor monitor)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            throws ForceConnectionException, ForceRemoteException, InterruptedException {
 
         ListMetadataQuery[] listMetadataQueryArray = null;
         String[] componentTypes = getEnabledComponentTypes(connection, filter);
@@ -413,7 +401,7 @@ public class MetadataService extends BaseService {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Generated [" + (Utils.isNotEmpty(listMetadataQueryArray) ? listMetadataQueryArray.length : 0)
+            logger.debug("Generated [" + (null != listMetadataQueryArray ? listMetadataQueryArray.length : 0)
                     + "] file metadata queries");
         }
 
@@ -432,18 +420,17 @@ public class MetadataService extends BaseService {
      * @throws ForceConnectionException
      * @throws ForceRemoteException
      * @throws InterruptedException
-     * @throws FactoryException
      */
     public ListMetadataQuery[] getListMetadataQueryArray(Connection connection, Set<String> excludedComponentTypes,
             boolean filter, IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, FactoryException {
+            InterruptedException {
 
         ListMetadataQuery[] listMetadataQueryArray = null;
         String[] componentTypes = getEnabledComponentTypes(connection, filter);
 
         if (Utils.isNotEmpty(componentTypes)) {
             if (Utils.isNotEmpty(excludedComponentTypes)) {
-                List<String> filteredComponentTypes = new ArrayList<String>(Arrays.asList(componentTypes));
+                List<String> filteredComponentTypes = new ArrayList<>(Arrays.asList(componentTypes));
                 filteredComponentTypes.removeAll(excludedComponentTypes);
                 componentTypes = filteredComponentTypes.toArray(new String[filteredComponentTypes.size()]);
             }
@@ -461,7 +448,7 @@ public class MetadataService extends BaseService {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Generated [" + (Utils.isNotEmpty(listMetadataQueryArray) ? listMetadataQueryArray.length : 0)
+            logger.debug("Generated [" + (null != listMetadataQueryArray ? listMetadataQueryArray.length : 0)
                     + "] file metadata queries");
         }
 
@@ -475,7 +462,7 @@ public class MetadataService extends BaseService {
         }
 
         ComponentList folderComponents = getComponentFactory().getFolderComponents();
-        List<ListMetadataQuery> listMetadataQueryArray = new ArrayList<ListMetadataQuery>(componentTypes.length);
+        List<ListMetadataQuery> listMetadataQueryArray = new ArrayList<>(componentTypes.length);
         for (int i = 0; i < componentTypes.length; i++) {
             if (monitor.isCanceled()) {
                 break;
@@ -512,7 +499,7 @@ public class MetadataService extends BaseService {
     }
 
     protected FileMetadataExt filterStandardObjectsFromFileProperties(FileMetadataExt fileMetadataExt) {
-        List<FileProperties> listMetadataList = new ArrayList<FileProperties>();
+        List<FileProperties> listMetadataList = new ArrayList<>();
         if (fileMetadataExt.hasFileProperties()) {
             for (FileProperties fileProperties : fileMetadataExt.getFileProperties()) {
                 if (CustomObjectNameResolver.getCheckerForStandardObject().check(fileProperties.getFullName(),
@@ -536,8 +523,9 @@ public class MetadataService extends BaseService {
         fileMetadataExt.sort();
         final HashSet<String> filterComponentTypesSet = Sets.newHashSet(filterComponentTypes);
         final Collection<FileProperties> withoutCustomObjects =
-                Collections2.filter(new ArrayList<FileProperties>(Arrays.asList(fileMetadataExt.getFileProperties())), new Predicate<FileProperties>() {
+                Collections2.filter(new ArrayList<>(Arrays.asList(fileMetadataExt.getFileProperties())), new Predicate<FileProperties>() {
 
+                    @Override
                     public boolean apply(FileProperties fp) {
                         final String type = fp.getType();
                         return !(filterComponentTypesSet.contains(type)
@@ -549,6 +537,7 @@ public class MetadataService extends BaseService {
         final Collection<FileProperties> withoutCustomAndStandardObject =
                 Collections2.filter(withoutCustomObjects, new Predicate<FileProperties>() {
 
+                    @Override
                     public boolean apply(FileProperties fp) {
                         final String type = fp.getType();
                         return !(filterComponentTypesSet.contains(type)
@@ -559,6 +548,7 @@ public class MetadataService extends BaseService {
         final Collection<FileProperties> withoutOtherToBeFilteredTypes =
             Collections2.filter(withoutCustomAndStandardObject, new Predicate<FileProperties>() {
 
+                @Override
                 public boolean apply(FileProperties fp) {
                     final String type = fp.getType();
                     return !(filterComponentTypesSet.contains(type));

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+  <template
+    context="com.salesforce.ide.ui.editors.templates.contextType.apexClass"
+    description="Create a new Apex class"
+    id="com.salesforce.ide.ui.editor.templates.apex.class.default"
+    name="New Apex Class"
+    autoinsert="false"
+    >public with sharing class ${class_name} {
+    ${cursor}
+}</template>
+  <template
+    context="com.salesforce.ide.ui.editors.templates.contextType.apexClass"
+    description="Create a new Inbound Email Service handler"
+    id="com.salesforce.ide.ui.editor.templates.apex.class.inboundEmailService"
+    name="New Inbound Email Service"
+    autoinsert="false"
+    >/**
+ * Email services are automated processes that use Apex classes
+ * to process the contents, headers, and attachments of inbound
+ * email.
+ */
+global class ${class_name} implements Messaging.InboundEmailHandler {
+
+    global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope envelope) {
+        Messaging.InboundEmailResult result = new Messaging.InboundEmailresult();
+        ${cursor}
+        return result;
+    }
+}</template>
+  <template
+    context="com.salesforce.ide.ui.editors.templates.contextType.apexClass"
+    description="Create a new Apex unit test"
+    id="com.salesforce.ide.ui.editor.templates.apex.class.unitTest"
+    name="New Apex Unit Test"
+    autoinsert="false"
+    >/**
+ * This class contains unit tests for validating the behavior of Apex classes
+ * and triggers.
+ *
+ * Unit tests are class methods that verify whether a particular piece
+ * of code is working properly. Unit test methods take no arguments,
+ * commit no data to the database, and are flagged with the testMethod
+ * keyword in the method definition.
+ *
+ * All test methods in an organization are executed whenever Apex code is deployed
+ * to a production organization to confirm correctness, ensure code
+ * coverage, and prevent regressions. All Apex classes are
+ * required to have at least 75% code coverage in order to be deployed
+ * to a production organization. In addition, all triggers must have some code coverage.
+ * 
+ * The @isTest class annotation indicates this class only contains test
+ * methods. Classes defined with the @isTest annotation do not count against
+ * the organization size limit for all Apex scripts.
+ *
+ * See the Apex Language Reference for more information about Testing and Code Coverage.
+ */
+@isTest
+private class ${class_name} {
+
+    static testMethod void myUnitTest() {
+        // TO DO: implement unit test
+        ${cursor}
+    }
+}</template>
+  <template
+    context="com.salesforce.ide.ui.editors.templates.contextType.apexComponent"
+    description="Create a new Visualforce component"
+    id="com.salesforce.ide.ui.editor.templates.apex.component.default"
+    name="New Apex Component"
+    autoinsert="false"
+    >&lt;apex:component&gt;
+&lt;!-- Begin Default Content REMOVE THIS --&gt;
+&lt;h1&gt;Congratulations&lt;/h1&gt;
+This is your new Component${cursor}
+&lt;!-- End Default Content REMOVE THIS --&gt;
+&lt;/apex:component&gt;</template>
+  <template
+    context="com.salesforce.ide.ui.editors.templates.contextType.apexPage"
+    description="Create a new Visualforce page"
+    id="com.salesforce.ide.ui.editor.templates.apex.page.default"
+    name="New Apex Page"
+    autoinsert="false"
+    >&lt;apex:page&gt;
+&lt;!-- Begin Default Content REMOVE THIS --&gt;
+&lt;h1&gt;Congratulations&lt;/h1&gt;
+This is your new Page${cursor}
+&lt;!-- End Default Content REMOVE THIS --&gt;
+&lt;/apex:page&gt;</template>
+  <template
+    context="com.salesforce.ide.ui.editors.templates.contextType.apexTrigger"
+    description="Create a new Apex trigger"
+    id="com.salesforce.ide.ui.editor.templates.apex.trigger.default"
+    name="New Apex Trigger"
+    autoinsert="false"
+    >trigger ${class_name} on ${object_name} (${trigger_operations}) {
+    ${cursor}
+}</template>
+</templates>

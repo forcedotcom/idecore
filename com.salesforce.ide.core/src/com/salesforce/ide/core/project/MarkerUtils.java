@@ -447,7 +447,7 @@ public class MarkerUtils {
         }
     }
 
-    private ISchedulingRule getRule(IResource resource) {
+    private static ISchedulingRule getRule(IResource resource) {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = ruleFactory.markerRule(resource.getProject());
@@ -521,7 +521,7 @@ public class MarkerUtils {
         clearMarkers(resource, null, MarkerUtils.MARKER_COMPILE_ERROR);
     }
 
-    public void clearSaveMarkers(List<IResource> resources) {
+    public void clearSaveMarkers(IResource[] resources) {
         if (Utils.isEmpty(resources)) {
             logger.warn("Unable to clear save markers on resources - resources is null or empty ");
             return;
@@ -531,7 +531,7 @@ public class MarkerUtils {
             clearSaveMarkers(resource);
         }
     }
-
+    
     public void clearSaveMarkers(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_SAVE_ERROR);
     }

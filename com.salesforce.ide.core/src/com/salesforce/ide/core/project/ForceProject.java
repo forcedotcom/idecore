@@ -136,45 +136,63 @@ public class ForceProject extends Org {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + readTimeoutSecs;
-        return result;
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime
+				* result
+				+ ((endpointEnvironment == null) ? 0 : endpointEnvironment
+						.hashCode());
+		result = prime * result
+				+ ((ideVersion == null) ? 0 : ideVersion.hashCode());
+		result = prime * result
+				+ ((packageName == null) ? 0 : packageName.hashCode());
+		result = prime * result + (preferToolingDeployment ? 1231 : 1237);
+		result = prime
+				* result
+				+ ((projectIdentifier == null) ? 0 : projectIdentifier
+						.hashCode());
+		result = prime * result + readTimeoutSecs;
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ForceProject other = (ForceProject) obj;
-        if (endpointEnvironment == null) {
-            if (other.endpointEnvironment != null)
-                return false;
-        } else if (!endpointEnvironment.equals(other.endpointEnvironment))
-            return false;
-        if (packageName == null) {
-            if (other.packageName != null)
-                return false;
-        } else if (!packageName.equals(other.packageName))
-            return false;
-        if (project == null) {
-            if (other.project != null)
-                return false;
-        } else if (!project.equals(other.project))
-            return false;
-        if (readTimeoutSecs != other.readTimeoutSecs)
-            return false;
-        if (!getToken().equalsIgnoreCase(other.getToken()))
-            return false;
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ForceProject other = (ForceProject) obj;
+		if (endpointEnvironment == null) {
+			if (other.endpointEnvironment != null)
+				return false;
+		} else if (!endpointEnvironment.equals(other.endpointEnvironment))
+			return false;
+		if (ideVersion == null) {
+			if (other.ideVersion != null)
+				return false;
+		} else if (!ideVersion.equals(other.ideVersion))
+			return false;
+		if (packageName == null) {
+			if (other.packageName != null)
+				return false;
+		} else if (!packageName.equals(other.packageName))
+			return false;
+		if (preferToolingDeployment != other.preferToolingDeployment)
+			return false;
+		if (projectIdentifier == null) {
+			if (other.projectIdentifier != null)
+				return false;
+		} else if (!projectIdentifier.equals(other.projectIdentifier))
+			return false;
+		if (readTimeoutSecs != other.readTimeoutSecs)
+			return false;
+		return true;
+	}
 
-    private void initializeEnabledComponentTypes() {
+	private void initializeEnabledComponentTypes() {
         Set<String> types = Sets.newHashSet(Constants.APEX_COMPONENT_TYPES);
         MetadataStubExt metadataStubExt;
         try {

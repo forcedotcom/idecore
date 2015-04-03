@@ -11,10 +11,13 @@
 package com.salesforce.ide.ui.preferences;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PerspectiveAdapter;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
@@ -30,7 +33,8 @@ public class ForceDefaultEncodingPreference implements IStartup {
 	public static PerspectiveAdapter perspectivListener;
 	public static String encodingOfPrevPerspective;
 
-	public void earlyStartup() {
+	@Override
+    public void earlyStartup() {
 	    encodingOfPrevPerspective = ResourcesPlugin.getEncoding();
 	    
 		perspectivListener = new PerspectiveAdapter()
@@ -42,7 +46,7 @@ public class ForceDefaultEncodingPreference implements IStartup {
 				if(perspective.getId().equals(UIConstants.FORCE_PERSPECTIVE_ID)) {
 					encodingOfPrevPerspective = ResourcesPlugin.getEncoding();
                     if (!encodingOfPrevPerspective.equals(Constants.FORCE_DEFAULT_ENCODING_CHARSET)) {
-                        ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING,
+                        getPreferenceStore().setValue(ResourcesPlugin.PREF_ENCODING,
                             Constants.FORCE_DEFAULT_ENCODING_CHARSET);
                     }
 				}
@@ -54,11 +58,15 @@ public class ForceDefaultEncodingPreference implements IStartup {
 			    // restore previous encoding setting when switch out of force.com perspective
 			    if (perspective.getId().equals(UIConstants.FORCE_PERSPECTIVE_ID)) {
 			        if (!encodingOfPrevPerspective.equals(Constants.FORCE_DEFAULT_ENCODING_CHARSET)) {
-			            ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING,
+			            getPreferenceStore().setValue(ResourcesPlugin.PREF_ENCODING,
 			                encodingOfPrevPerspective);
 			        }
 			    }
 			}
+
+            private IPreferenceStore getPreferenceStore() {
+                return new ScopedPreferenceStore(InstanceScope.INSTANCE, ResourcesPlugin.PI_RESOURCES);
+            }
 		};
 
 		UIUtils.addPerspectiveListener(perspectivListener);

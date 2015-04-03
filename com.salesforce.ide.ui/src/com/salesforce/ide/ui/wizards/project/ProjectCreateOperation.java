@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.wizards.project;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
@@ -117,11 +116,7 @@ public class ProjectCreateOperation extends BaseWorkspaceModifyOperation {
 
             // schema
             monitor.subTask(UIMessages.getString("ProjectCreateWizard.CreateOperation.GenerateSchema.label"));
-            try {
-                projectController.generateSchemaFile(new SubProgressMonitor(monitor, 2));
-            } catch (IOException e) {
-                logger.warn("Unable to generate schema file", e);
-            }
+            projectController.generateSchemaFile(new SubProgressMonitor(monitor, 2));
             monitorWork(monitor);
 
             monitor.subTask(UIMessages.getString("ProjectCreateWizard.CreateOperation.OpenProject.label"));

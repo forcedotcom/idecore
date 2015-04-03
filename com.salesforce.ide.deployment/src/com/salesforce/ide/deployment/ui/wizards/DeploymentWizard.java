@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.deployment.internal.utils.DeploymentMessages;
 import com.salesforce.ide.ui.internal.wizards.BaseWizard;
 
@@ -29,7 +28,7 @@ public class DeploymentWizard extends BaseWizard {
     private DeploymentResultsPage resultsPage = null;
 
     //   C O N S T R U C T O R S
-    public DeploymentWizard(IProject project, List<IResource> resources) throws ForceProjectException {
+    public DeploymentWizard(IProject project, List<IResource> resources) {
         super();
         if (resources == null) {
             throw new IllegalArgumentException("Resource cannot be null");

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.assistance;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -29,8 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchPartReference;
 
 /**
  * Example Java completion processor.
@@ -39,9 +36,8 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     protected static ICompletionProposal[] currentList;
     private static String fileName = null;
-    protected IProject project;
     private ContentAssistant assistant;
-    
+
     /**
      * Simple content assist tip closer. The tip is valid in a range of 5 characters around its popup location.
      */
@@ -52,6 +48,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
         /*
          * @see IContextInformationValidator#isContextInformationValid(int)
          */
+        @Override
         public boolean isContextInformationValid(int offset) {
             return true; // Math.abs(fInstallOffset - offset) < 5;
         }
@@ -59,6 +56,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
         /*
          * @see IContextInformationValidator#install(IContextInformation, ITextViewer, int)
          */
+        @Override
         public void install(IContextInformation info, ITextViewer viewer, int offset) {
             fInstallOffset = offset;
         }
@@ -67,6 +65,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
          * @see org.eclipse.jface.text.contentassist.IContextInformationPresenter#updatePresentation(int,
          *      TextPresentation)
          */
+        @Override
         public boolean updatePresentation(int documentPosition, TextPresentation presentation) {
             return false;
         }
@@ -77,15 +76,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     //  C O N S T R U C T O R S
     public ApexCompletionProcessor() {}
 
-    //   M E T H O D S
-    public IProject getProject() {
-        return project;
-    }
-
-    public void setProject(IProject project) {
-        this.project = project;
-    }
-
     public void setContentAssistant(ContentAssistant assistant) {
         this.assistant = assistant;
     }
@@ -93,20 +83,23 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-    	return new ICompletionProposal[0];
+        return new ICompletionProposal[0];
     }
-    
+
     public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
+            @Override
             public IInformationControl createInformationControl(Shell parent) {
-                return new DefaultInformationControl(parent, SWT.WRAP, presenter);
+                return new DefaultInformationControl(parent, presenter);
             }
         };
     }
 
     static final DefaultInformationControl.IInformationPresenter presenter =
             new DefaultInformationControl.IInformationPresenter() {
+                @Override
                 public String updatePresentation(Display display, String infoText, TextPresentation presentation,
                         int maxWidth, int maxHeight) {
                     int start = -1;
@@ -140,6 +133,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
         /*
          * IContextInformation[] result= new IContextInformation[5]; for (int i= 0; i < result.length; i++) result[i]=
@@ -155,6 +149,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[] { '.', '(' };
     }
@@ -162,6 +157,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return new char[] { '#' };
     }
@@ -169,6 +165,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public IContextInformationValidator getContextInformationValidator() {
         return contextValidator;
     }
@@ -176,6 +173,7 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public String getErrorMessage() {
         return null;
     }
@@ -216,36 +214,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     public void clearState() {
         currentList = null;
-    }
-
-    public static IPartListener2 getPartListener() {
-        return new IPartListener2() {
-            public void partActivated(IWorkbenchPartReference partRef) {
-                // TODO: export string
-                if (partRef.getId().equals("com.salesforce.ide.ui.editors.apex")) {
-                    ApexCompletionProcessor.setFileName(partRef.getPartName());
-                }
-            }
-
-            public void partBroughtToTop(IWorkbenchPartReference partRef) {}
-
-            public void partClosed(IWorkbenchPartReference partRef) {}
-
-            public void partDeactivated(IWorkbenchPartReference partRef) {}
-
-            public void partHidden(IWorkbenchPartReference partRef) {}
-
-            public void partInputChanged(IWorkbenchPartReference partRef) {}
-
-            public void partOpened(IWorkbenchPartReference partRef) {}
-
-            public void partVisible(IWorkbenchPartReference partRef) {}
-
-        };
-    }
-
-    protected static void setFileName(String fileName) {
-        ApexCompletionProcessor.fileName = fileName;
     }
 
 }

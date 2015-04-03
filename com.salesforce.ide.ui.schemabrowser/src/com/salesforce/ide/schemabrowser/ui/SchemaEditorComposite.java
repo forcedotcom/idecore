@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 
 import com.salesforce.ide.core.internal.utils.SoqlEnum;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.schemabrowser.ui.tableviewer.QueryTableViewer;
@@ -50,14 +49,14 @@ public class SchemaEditorComposite extends Composite {
     private Composite composite2 = null;
 
     public SchemaEditorComposite(Composite parent, int style, IProject project, QueryTableViewer queryTableViewer)
-            throws ForceConnectionException, ForceProjectException, ForceRemoteException {
+            throws ForceConnectionException, ForceRemoteException {
         super(parent, style);
         this.project = project;
         this.queryTableViewer = queryTableViewer;
         initialize();
     }
 
-    private void initialize() throws ForceConnectionException, ForceProjectException, ForceRemoteException {
+    private void initialize() throws ForceConnectionException, ForceRemoteException {
         GridLayout gridLayout = new GridLayout();
         createSashForm();
 
@@ -91,7 +90,7 @@ public class SchemaEditorComposite extends Composite {
     }
 
     // This method initializes sashForm
-    private void createSashForm() throws ForceConnectionException, ForceProjectException, ForceRemoteException {
+    private void createSashForm() throws ForceConnectionException, ForceRemoteException {
         GridData gridData = new GridData();
         gridData.grabExcessVerticalSpace = true;
         gridData.horizontalAlignment = GridData.FILL;
@@ -104,7 +103,7 @@ public class SchemaEditorComposite extends Composite {
     }
 
     // This method initializes composite
-    private void createComposite() throws ForceConnectionException, ForceProjectException, ForceRemoteException {
+    private void createComposite() throws ForceConnectionException, ForceRemoteException {
         GridData gridData3 = new GridData();
         gridData3.grabExcessHorizontalSpace = true;
         GridLayout gridLayout2 = new GridLayout();
@@ -144,7 +143,7 @@ public class SchemaEditorComposite extends Composite {
     }
 
     // This method initializes sashForm1
-    private void createSashForm1() throws ForceConnectionException, ForceProjectException, ForceRemoteException {
+    private void createSashForm1() throws ForceConnectionException, ForceRemoteException {
         GridData gridData4 = new GridData();
         gridData4.horizontalSpan = 2;
         gridData4.verticalAlignment = GridData.FILL;
@@ -164,7 +163,7 @@ public class SchemaEditorComposite extends Composite {
     }
 
     // This method initializes composite2
-    private void createComposite2() throws ForceConnectionException, ForceProjectException, ForceRemoteException {
+    private void createComposite2() throws ForceConnectionException, ForceRemoteException {
         GridData gridData6 = new GridData();
         gridData6.horizontalAlignment = GridData.FILL;
         gridData6.grabExcessHorizontalSpace = true;

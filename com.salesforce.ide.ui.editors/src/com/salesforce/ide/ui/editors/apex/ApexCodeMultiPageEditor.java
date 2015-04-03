@@ -27,7 +27,6 @@ import org.eclipse.ui.part.MultiPageEditorSite;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.internal.BaseComponentMultiPageEditorPart;
 import com.salesforce.ide.ui.editors.internal.utils.EditorConstants;
 import com.salesforce.ide.ui.editors.internal.utils.EditorMessages;
@@ -45,7 +44,7 @@ public class ApexCodeMultiPageEditor extends BaseComponentMultiPageEditorPart {
 
     protected ApexCodeEditor apexCodeEditor = null;
 
-    public ApexCodeMultiPageEditor() throws ForceProjectException {
+    public ApexCodeMultiPageEditor() {
         super();
     }
 

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.api;singleton:=true
-Bundle-Version: 31.0.0.qualifier
+Bundle-Version: 34.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.api.ForceIdeAPIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -34,6 +34,7 @@ Export-Package: com.salesforce.ide.api,
  com.sforce.soap.partner.sobject.wsc,
  com.sforce.soap.partner.wsc,
  com.sforce.soap.tooling,
+ com.sforce.soap.tooling.metadata,
  com.sforce.ws;uses:="javax.xml.namespace",
  com.sforce.ws.bind;
   uses:="com.sforce.ws,

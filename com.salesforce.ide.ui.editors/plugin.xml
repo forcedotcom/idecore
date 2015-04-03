@@ -6,28 +6,44 @@
 -->
 
 <plugin>
-    <!--   M E N U S  -->
-    <extension point="org.eclipse.ui.popupMenus">
-        <viewerContribution
-            id="com.salesforce.ide.ui.menu.mergeFields"
-            targetID="org.eclipse.wst.sse.ui.StructuredTextEditor.EditorContext">
-            <menu
-                  icon="icons/appExDevIco16.png"
-                  id="com.salesforce.ide.ui.menu.tools"
-                  label="%menu.label"
-                  path="additions">
-                <separator name="group0" />
-            </menu>
-            <action
-                id="com.salesforce.ide.actions.mergeFields"
-                class="com.salesforce.ide.ui.editors.actions.MergeFieldsAction"
-                tooltip="%tooltip.MergeFields"
-                label="%action.label"
-                enablesFor="1"
-                helpContextId="com.salesforce.ide.documentation.mergeFields"
-                menubarPath="com.salesforce.ide.ui.menu.tools/group0"/>
-        </viewerContribution>
-    </extension>
+  <!--   M E N U S  -->
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution allPopups="false" locationURI="menu:com.salesforce.ide.ui.menu.context?before=group0">
+      <command commandId="com.salesforce.ide.ui.command.mergeFields" helpContextId="com.salesforce.ide.documentation.mergeFields" id="mergeFields" label="%action.label" mnemonic="M" style="push" tooltip="%tooltip.MergeFields">
+        <visibleWhen checkEnabled="false">
+          <with variable="activeEditorId">
+            <or>
+              <equals value="com.salesforce.ide.ui.editors.apex"/>
+              <equals value="com.salesforce.ide.ui.editors.html"/>
+            </or>
+          </with>
+        </visibleWhen>
+      </command>
+    </menuContribution>
+  </extension>
+
+  <extension point="org.eclipse.ui.commands">
+    <command
+      categoryId="com.salesforce.ide.ui.commands.category"
+      description="%tooltip.MergeFields"
+      helpContextId="com.salesforce.ide.documentation.mergeFields"
+      id="com.salesforce.ide.ui.command.mergeFields"
+      name="%action.label"
+      />
+  </extension>
+
+  <extension point="org.eclipse.ui.handlers">
+    <handler class="com.salesforce.ide.ui.editors.handlers.MergeFieldsHandler" commandId="com.salesforce.ide.ui.command.mergeFields">
+      <activeWhen>
+        <with variable="activeEditorId">
+          <or>
+            <equals value="com.salesforce.ide.ui.editors.apex"/>
+            <equals value="com.salesforce.ide.ui.editors.html"/>
+          </or>
+        </with>
+      </activeWhen>
+    </handler>
+  </extension>
 
     <!--   E D I T O R S  -->
     <extension point="org.eclipse.ui.editors">
@@ -89,14 +105,34 @@
     <extension point="org.eclipse.core.runtime.preferences">
       <initializer class="com.salesforce.ide.ui.editors.apex.preferences.PreferenceInitializer"/>
 	</extension>
+
     <extension point="org.eclipse.ui.preferencePages">
        <page
              category="com.salesforce.ide.ui.preferences.GeneralPreferencePage"
              class="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage"
              id="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage"
-             name="%page.name">
+             name="%preferences.page.Apex"/>
+       <page
+             category="com.salesforce.ide.ui.preferences.GeneralPreferencePage"
+             class="org.eclipse.ui.internal.dialogs.EmptyPreferencePage"
+             id="com.salesforce.ide.ui.editors.apex.preferences.VisualforceEditorPreferencePage"
+             name="%preferences.page.Visualforce"/>
+       <page
+             name="Templates"
+             category="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage"
+             class="com.salesforce.ide.ui.editors.apex.preferences.ApexTemplatePreferencePage"
+             id="com.salesforce.ide.ui.editors.apex.TemplatesPreferencePage">
+             <keywordReference id="com.salesforce.ide.ui.editors.templates.apexTemplateKeywords"/>
        </page>
-	</extension>
+       <page
+             name="Templates"
+             category="com.salesforce.ide.ui.editors.apex.preferences.VisualforceEditorPreferencePage"
+             class="com.salesforce.ide.ui.editors.visualforce.preferences.VisualforceTemplatePreferencePage"
+             id="com.salesforce.ide.ui.editors.visualforce.TemplatesPreferencePage">
+             <keywordReference id="com.salesforce.ide.ui.editors.templates.visualforceTemplateKeywords"/>
+       </page>
+    </extension>
+
     <extension
            point="org.eclipse.wst.sse.ui.sourcevalidation">
         <validator
@@ -110,8 +146,89 @@
               </partitionType>
            </contentTypeIdentifier>
         </validator>
-</extension>
-
-
+    </extension>
 	
+   <extension point="org.eclipse.ui.keywords">
+      <keyword
+            id="com.salesforce.ide.ui.editors.templates.apexTemplateKeywords"
+            label="apex classes triggers templates"/>
+      <keyword
+            id="com.salesforce.ide.ui.editors.templates.visualforceTemplateKeywords"
+            label="visualforce pages components templates"/>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors.templates">
+      <contextTypeRegistry id="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
+      <contextTypeRegistry id="com.salesforce.ide.ui.editors.templates.visualforceContextTypes"/>
+      <contextType
+            class="com.salesforce.ide.ui.editors.templates.ApexClassTemplateContextType"
+            id="com.salesforce.ide.ui.editors.templates.contextType.apexClass"
+            name="New Class"
+            registryId="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
+      <contextType
+            class="com.salesforce.ide.ui.editors.templates.ApexComponentTemplateContextType"
+            id="com.salesforce.ide.ui.editors.templates.contextType.apexComponent"
+            name="New Component"
+            registryId="com.salesforce.ide.ui.editors.templates.visualforceContextTypes"/>
+      <contextType
+            class="com.salesforce.ide.ui.editors.templates.ApexPageTemplateContextType"
+            id="com.salesforce.ide.ui.editors.templates.contextType.apexPage"
+            name="New Page"
+            registryId="com.salesforce.ide.ui.editors.templates.visualforceContextTypes"/>
+      <contextType
+            class="com.salesforce.ide.ui.editors.templates.ApexTriggerTemplateContextType"
+            id="com.salesforce.ide.ui.editors.templates.contextType.apexTrigger"
+            name="New Trigger"
+            registryId="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
+      <include file="templates/default-templates.xml"/>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <wizard
+            category="com.salesforce.ide.ui.wizards"
+            class="com.salesforce.ide.ui.wizards.components.apex.clazz.ApexClassWizard"
+            hasPages="true"
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.wizards.createApexClass"
+            name="Apex Class"
+            preferredPerspectives="com.salesforce.ide.perspective"
+            project="false"/>
+      <wizard
+            category="com.salesforce.ide.ui.wizards"
+            class="com.salesforce.ide.ui.wizards.components.apex.component.ApexComponentWizard"
+            hasPages="true"
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.wizards.createApexComponent"
+            name="Visualforce Component"
+            preferredPerspectives="com.salesforce.ide.perspective"
+            project="false"/>
+      <wizard
+            category="com.salesforce.ide.ui.wizards"
+            class="com.salesforce.ide.ui.wizards.components.apex.page.ApexPageWizard"
+            hasPages="true"
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.wizards.createApexPage"
+            name="Visualforce Page"
+            preferredPerspectives="com.salesforce.ide.perspective"
+            project="false"/>
+      <wizard
+            category="com.salesforce.ide.ui.wizards"
+            class="com.salesforce.ide.ui.wizards.components.apex.trigger.ApexTriggerWizard"
+            hasPages="true"
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.wizards.createApexTrigger"
+            name="Apex Trigger"
+            preferredPerspectives="com.salesforce.ide.perspective"
+            project="false"/>
+      <wizard
+            category="com.salesforce.ide.ui.wizards"
+            class="com.salesforce.ide.ui.wizards.components.wsdl.WSDL2ApexWizard"
+            hasPages="true"
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.wizards.createWsdl2Apex"
+            name="Apex Class (from WSDL)"
+            preferredPerspectives="com.salesforce.ide.perspective"
+            project="false"/>
+   </extension>
+
 </plugin>

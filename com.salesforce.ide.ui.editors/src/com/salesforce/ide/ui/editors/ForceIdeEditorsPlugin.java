@@ -22,8 +22,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.templates.ContextTypeRegistry;
+import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
+import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -33,6 +37,7 @@ import com.salesforce.ide.core.internal.utils.StopWatch;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.editors.apex.util.ApexCodeColorProvider;
 import com.salesforce.ide.ui.editors.internal.utils.EditorConstants;
+import com.salesforce.ide.ui.internal.utils.UIConstants;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -46,9 +51,17 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
     // The plug-in ID
     public static final String PLUGIN_ID = EditorConstants.PLUGIN_PREFIX;
 
+    /** Key to store custom templates. */
+    private static final String CUSTOM_TEMPLATES_KEY = UIConstants.PLUGIN_PREFIX + ".custom_templates"; //$NON-NLS-1$
+
     // The shared instance
     private static ForceIdeEditorsPlugin plugin = null;
     private static ApexCodeColorProvider apexCodeColorProvider = null;
+
+    private ContextTypeRegistry apexContextTypeRegistry;
+    private ContextTypeRegistry visualforceContextTypeRegistry;
+    private TemplateStore apexTemplateStore;
+    private TemplateStore visualforceTemplateStore;
 
     // C O N S T R U C T O R
     public ForceIdeEditorsPlugin() {
@@ -108,7 +121,7 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
 
     // P L U G I N I N I T S
 
-    private void init() {
+    private static void init() {
         initApplicationContext();
         initEditorResources();
         System.out.println("Initiated '" + PLUGIN_ID + "' plugin, version " //$NON-NLS-1$  //$NON-NLS-2$
@@ -116,7 +129,7 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
     }
 
     // initialize application container
-    private void initApplicationContext() {
+    private static void initApplicationContext() {
         if (logger != null && logger.isDebugEnabled()) {
             stopWatch.start("ForceIdeEditorsPlugin.initApplicationContext"); //$NON-NLS-1$
         }
@@ -133,7 +146,7 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
             }
         }
     }
-    private void initEditorResources() {
+    private static void initEditorResources() {
         apexCodeColorProvider = new ApexCodeColorProvider();
     }
 
@@ -311,11 +324,13 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
                 // wrap callbacks with Safe runnable for subsequent listeners to
                 // be called when some are causing grief
                 SafeRunner.run(new ISafeRunnable() {
+                    @Override
                     public void handleException(Throwable exception) {
                     // Util.log(exception, "Exception occurred in listener
                     // of Java element change notification"); //$NON-NLS-1$
                     }
 
+                    @Override
                     public void run() throws Exception {
                         listener.elementChanged(extraEvent);
                     }
@@ -324,4 +339,75 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
             }
         }
     }
+
+    /**
+     * Returns the template store for the Apex editor templates.
+     * 
+     * @return the template store for the Apex editor templates
+     */
+    public TemplateStore getApexTemplateStore() {
+        if (null == apexTemplateStore) {
+            apexTemplateStore = new ContributionTemplateStore(
+                getApexTemplateContextRegistry(),
+                getPreferenceStore(),
+                CUSTOM_TEMPLATES_KEY
+            );
+            try {
+                apexTemplateStore.load();
+            } catch (IOException e) {
+                final String msg = "Unable to load Apex template store";
+                final IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, msg, e);
+                getLog().log(status);
+            }
+        }
+        return apexTemplateStore;
+    }
+
+    /**
+     * Returns the template store for the Visualforce editor templates.
+     * 
+     * @return the template store for the Visualforce editor templates
+     */
+    public TemplateStore getVisualforceTemplateStore() {
+        if (null == visualforceTemplateStore) {
+            visualforceTemplateStore = new ContributionTemplateStore(
+                getVisualforceTemplateContextRegistry(),
+                getPreferenceStore(),
+                CUSTOM_TEMPLATES_KEY
+            );
+            try {
+                visualforceTemplateStore.load();
+            } catch (IOException e) {
+                final String msg = "Unable to load Visualforce template store";
+                final IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, msg, e);
+                getLog().log(status);
+            }
+        }
+        return visualforceTemplateStore;
+    }
+
+    /**
+     * Returns the template context type registry for the Apex editor.
+     * 
+     * @return the template context type registry for the Apex editor
+     */
+    public ContextTypeRegistry getApexTemplateContextRegistry() {
+        if (null == apexContextTypeRegistry) {
+            apexContextTypeRegistry = new ContributionContextTypeRegistry("com.salesforce.ide.ui.editors.templates.apexContextTypes");
+        }
+        return apexContextTypeRegistry;
+    }
+
+    /**
+     * Returns the template context type registry for the Visualforce editor.
+     * 
+     * @return the template context type registry for the Visualforce editor
+     */
+    public ContextTypeRegistry getVisualforceTemplateContextRegistry() {
+        if (null == visualforceContextTypeRegistry) {
+            visualforceContextTypeRegistry = new ContributionContextTypeRegistry("com.salesforce.ide.ui.editors.templates.visualforceContextTypes");
+        }
+        return visualforceContextTypeRegistry;
+    }
+
 }

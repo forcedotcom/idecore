@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 import com.salesforce.ide.core.factories.ComponentFactory;
@@ -24,7 +23,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.SalesforceEndpoints;
 import com.salesforce.ide.core.services.LoggingService;
 import com.salesforce.ide.core.services.ProjectService;
@@ -32,9 +30,9 @@ import com.salesforce.ide.ui.internal.composite.BaseProjectComposite;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
-public abstract class BasePropertyPage extends PropertyPage implements IWorkbenchPropertyPage {
+public abstract class BasePropertyPage extends PropertyPage {
 
-    public BasePropertyPage() throws ForceProjectException {
+    public BasePropertyPage() {
         super();
     }
 

@@ -28,6 +28,7 @@ public class FieldComparator implements Comparator<Object>, Serializable {
      * @return int
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
+    @Override
     public int compare(Object obj1, Object obj2) {
         Field f1 = (Field) obj1;
         Field f2 = (Field) obj2;

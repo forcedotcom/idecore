@@ -33,7 +33,7 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
 public class ApplyToProjectOperation extends BaseComponentSynchronizeModelOperation {
     static final Logger logger = Logger.getLogger(ApplyToProjectOperation.class);
 
-    public static final String OPERATION_TITLE = UIMessages.getString("SyncAction.ApplyRemoteToProject.label");
+    public static final String OPERATION_TITLE = UIMessages.getString("SynchronizeHandler.ApplyRemoteToProject.label");
 
     protected ApplyToProjectOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
             ComponentSubscriber subscriber) {

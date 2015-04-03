@@ -24,6 +24,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getId()
     */
+    @Override
     public String getId() {
         return runTestFailure.getId();
     }
@@ -31,6 +32,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getMessage()
     */
+    @Override
     public java.lang.String getMessage() {
         return runTestFailure.getMessage();
     }
@@ -38,6 +40,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getMethodName()
     */
+    @Override
     public java.lang.String getMethodName() {
         return runTestFailure.getMethodName();
     }
@@ -45,6 +48,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getName()
     */
+    @Override
     public java.lang.String getName() {
         return runTestFailure.getName();
     }
@@ -52,6 +56,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getNamespace()
     */
+    @Override
     public java.lang.String getNamespace() {
         return runTestFailure.getNamespace();
     }
@@ -59,6 +64,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getPackageName()
     */
+    @Override
     public java.lang.String getPackageName() {
         return runTestFailure.getPackageName();
     }
@@ -66,6 +72,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getStackTrace()
     */
+    @Override
     public java.lang.String getStackTrace() {
         return runTestFailure.getStackTrace();
     }
@@ -73,6 +80,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getTime()
     */
+    @Override
     public double getTime() {
         return runTestFailure.getTime();
     }
@@ -80,6 +88,7 @@ public class RunTestFailureExt implements IRunTestFailureExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestFailureExt#getType()
     */
+    @Override
     public java.lang.String getType() {
         return runTestFailure.getType();
     }

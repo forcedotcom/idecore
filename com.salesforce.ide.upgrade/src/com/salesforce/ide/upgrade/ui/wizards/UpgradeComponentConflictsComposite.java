@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.IStreamContentAccessor;
@@ -64,7 +64,6 @@ import com.salesforce.ide.upgrade.internal.utils.UpgradeMessages;
  * 
  * @author cwall
  */
-@SuppressWarnings("restriction")
 public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
 
     private Tree treeComponentConflicts = null;
@@ -140,10 +139,11 @@ public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
                 compareEditor.setTitle(UpgradeMessages.getString("UpgradeWizard.Compare.title",
                         new String[] { localComponent.getFileName() }));
 
-                compareEditor.setFocus();
+                compareEditor.setFocus2();
 
                 if (compareResultOK(compareEditor, null)) {
                     Runnable runnable = new Runnable() {
+                        @Override
                         public void run() {
                             CompareDialog dialog = new CompareDialog(getShell(), compareEditor);
                             dialog.open();
@@ -163,6 +163,7 @@ public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
 
         // fake a hyperlink
         treeComponentConflicts.addListener(SWT.PaintItem, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                 TreeItem item = (TreeItem)event.item;
                 TreeItem[] sel = treeComponentConflicts.getSelection();
@@ -183,6 +184,7 @@ public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
             Color highlightFgColor = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_MAGENTA);
             Cursor handCursor = Display.getCurrent().getSystemCursor(SWT.CURSOR_HAND);
 
+            @Override
             public void mouseMove(MouseEvent e) {
                 // get current TreeItem that mouse is over
                 TreeItem item = treeComponentConflicts.getItem(new Point(e.x, e.y));
@@ -272,18 +274,22 @@ public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
             this.component = component;
         }
 
+        @Override
         public InputStream getContents() throws CoreException {
             return new ByteArrayInputStream(StringUtils.defaultString(component.getBody()).getBytes());
         }
 
+        @Override
         public Image getImage() {
             return null;
         }
 
+        @Override
         public String getName() {
             return StringUtils.defaultString(component.getFileName());
         }
 
+        @Override
         public String getType() {
             return StringUtils.defaultString(component.getComponentType());
         }

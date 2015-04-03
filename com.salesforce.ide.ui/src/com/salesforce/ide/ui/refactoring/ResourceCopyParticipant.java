@@ -26,8 +26,6 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 
 /**
  * Handles refactor Force.com package and component copy function.
@@ -98,11 +96,6 @@ public class ResourceCopyParticipant extends CopyParticipant {
             logger.warn("Unable to validate destination '"
                     + copyChange.getRefactorController().getRefactorModel().getDestinationPath()
                     + "' of change request: " + logMessage);
-        } catch (ForceRemoteException e) {
-            // catch exception because exceptions cause the participant to become deactivated for future refactorings
-            logger.warn("Unable to validate destination '"
-                    + copyChange.getRefactorController().getRefactorModel().getDestinationPath()
-                    + "' of change request");
         } catch (InterruptedException e) {
             throw new OperationCanceledException(e.getMessage());
         }
@@ -129,9 +122,6 @@ public class ResourceCopyParticipant extends CopyParticipant {
             try {
                 copyChange = new CopyChange();
                 copyChange.initialize(resource, new NullProgressMonitor());
-            } catch (ForceProjectException e) {
-                // catch exception because exceptions cause the participant to become deactivated for future refactorings
-                logger.error("Unable to create change instance", e);
             } catch (FactoryException e) {
                 // catch exception because exceptions cause the participant to become deactivated for future refactorings
                 logger.error(
@@ -143,7 +133,7 @@ public class ResourceCopyParticipant extends CopyParticipant {
                         + "': " + logMessage, e);
             } catch (InterruptedException e) {
                 logger.warn("Operation canceled by user");
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 // catch exception because exceptions cause the participant to become deactivated for future refactorings
                 logger.warn(e.getClass().getSimpleName() + " occurred while initializing copy change", e);
             }
@@ -155,12 +145,7 @@ public class ResourceCopyParticipant extends CopyParticipant {
 
     @Override
     public Change createChange(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-        try {
-            copyChange = new CopyChange();
-        } catch (ForceProjectException e) {
-            // catch exception because exceptions cause the participant to become deactivated for future refactorings
-            logger.error("Unable to create change instance", e);
-        }
+        copyChange = new CopyChange();
         return copyChange;
     }
 

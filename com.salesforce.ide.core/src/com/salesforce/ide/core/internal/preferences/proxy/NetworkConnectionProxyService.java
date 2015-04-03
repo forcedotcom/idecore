@@ -64,6 +64,7 @@ public class NetworkConnectionProxyService implements com.salesforce.ide.core.in
             }
         }
 
+        @Override
         public void proxyInfoChanged(IProxyChangeEvent event) {
             if (proxyService == null || event == null) {
                 logger.warn("Unable to update proxy settings - IProxyService or event is not available");
@@ -113,6 +114,7 @@ public class NetworkConnectionProxyService implements com.salesforce.ide.core.in
         toolkitProxyChangeListener.init();
     }
 
+    @Override
     public void dispose() {
         disposeListeners();
     }
@@ -123,6 +125,7 @@ public class NetworkConnectionProxyService implements com.salesforce.ide.core.in
         }
     }
 
+    @Override
     public IProxy getProxy() {
         return proxy;
     }

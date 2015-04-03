@@ -40,6 +40,10 @@ public class ApexService extends BaseService {
     public ExecuteAnonymousResultExt executeAnonymous(String code, IProject project) {
         LogInfo[] apexLogInfo =
                 getLoggingService().getAllApexApiLogInfo(project, LoggingInfo.SupportedFeatureEnum.ExecuteAnonymous);
+        return executeAnonymous(code, apexLogInfo, project);
+    }
+
+    public ExecuteAnonymousResultExt executeAnonymous(String code, LogInfo[] apexLogInfo, IProject project) {
         int readTimeout = getProjectService().getReadTimeoutInMilliSeconds(project);
         Connection connection = null;
         try {
@@ -75,7 +79,7 @@ public class ApexService extends BaseService {
             return new ExecuteAnonymousResultExt(apex.executeAnonymous(code), apex.getDebuggingInfo());
         } catch (ConnectionException e) {
             ExecuteAnonymousResult er = errorExecuteAnonymousResult(connectorConfig, e);
-            ExecuteAnonymousResultExt erx = new ExecuteAnonymousResultExt(er, apex.getDebuggingInfo());
+            ExecuteAnonymousResultExt erx = new ExecuteAnonymousResultExt(er, null == apex ? null : apex.getDebuggingInfo());
             DebuggingInfo_element dbi = new DebuggingInfo_element();
             dbi.setDebugLog(e.getMessage());
             erx.setDebugInfo(dbi);
@@ -89,7 +93,7 @@ public class ApexService extends BaseService {
         }
     }
 
-    private ExecuteAnonymousResult errorExecuteAnonymousResult(ConnectorConfig apexCfg, Exception exception) {
+    private static ExecuteAnonymousResult errorExecuteAnonymousResult(ConnectorConfig apexCfg, Exception exception) {
         ExecuteAnonymousResult er = new ExecuteAnonymousResult();
         er.setCompiled(true);
         er.setSuccess(false);

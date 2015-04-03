@@ -24,6 +24,7 @@ public class RunTestSuccessExt implements IRunTestSuccessExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestSuccessExt#getId()
     */
+    @Override
     public String getId() {
         return runTestSuccess.getId();
     }
@@ -31,6 +32,7 @@ public class RunTestSuccessExt implements IRunTestSuccessExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestSuccessExt#getMethodName()
     */
+    @Override
     public java.lang.String getMethodName() {
         return runTestSuccess.getMethodName();
     }
@@ -38,6 +40,7 @@ public class RunTestSuccessExt implements IRunTestSuccessExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestSuccessExt#getName()
     */
+    @Override
     public java.lang.String getName() {
         return runTestSuccess.getName();
     }
@@ -45,6 +48,7 @@ public class RunTestSuccessExt implements IRunTestSuccessExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestSuccessExt#getNamespace()
     */
+    @Override
     public java.lang.String getNamespace() {
         return runTestSuccess.getNamespace();
     }
@@ -52,6 +56,7 @@ public class RunTestSuccessExt implements IRunTestSuccessExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.IRunTestSuccessExt#getTime()
     */
+    @Override
     public double getTime() {
         return runTestSuccess.getTime();
     }

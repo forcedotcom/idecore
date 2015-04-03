@@ -10,12 +10,24 @@
  ******************************************************************************/
 package com.salesforce.ide.core.internal.components.letterhead;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import com.salesforce.ide.core.internal.components.ComponentController;
+import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.project.ForceProjectException;
 
 public class LetterheadComponentController extends ComponentController {
 
     public LetterheadComponentController() throws ForceProjectException {
         super(new LetterheadModel());
+    }
+
+    @Override
+    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException {
+        // TODO Auto-generated method stub
+        
     }
 }

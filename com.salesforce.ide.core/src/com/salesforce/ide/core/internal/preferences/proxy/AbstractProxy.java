@@ -24,10 +24,12 @@ public abstract class AbstractProxy implements IProxy {
         super();
     }
 
+    @Override
     public long getLastUpdated() {
         return lastUpdated;
     }
 
+    @Override
     public void setLastUpdated(long lastUpdated) {
         this.lastUpdated = lastUpdated;
     }

@@ -1,0 +1,66 @@
+apply plugin: 'java'
+
+version = '33.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtime group:'com.force.api', name: 'force-wsc', version: version
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
+// Grabs the WSDLs, builds and copies the corresponding jars
+defaultTasks  'buildWSDLJars', 'copyWSDLArtifacts'
+
+// BULD WSDL JARS
+/////////////////
+
+task buildWSDLJars(dependsOn: classes) << {
+    sourceSets.main.resources.each { file ->
+        javaexec {
+            classpath sourceSets.main.runtimeClasspath
+            main 'com.sforce.ws.tools.wsdlc'
+            args constructArguments(file)
+            jvmArgs constructJvmArgs(file)
+        }
+    }
+}
+
+def toJarName(wsdlFile) {
+    "wsc_" + wsdlFile.replace('.', '') + ".jar"
+}
+
+def constructArguments(file) {
+    def args = [file, sourceSets.main.output.resourcesDir.absolutePath + File.separator + toJarName(file.name)]
+    return args
+}
+
+def constructJvmArgs(file) {
+    def extraArgs = [
+            'partner.wsdl' : '-Dpackage-prefix=wsc'
+    ]
+
+    def args = []
+    if(extraArgs[file.name])
+        args << extraArgs[file.name]
+    return args
+}
+
+// COPY WSDL ARTIFACTS
+//////////////////////
+
+task copyWSDLArtifacts << {
+    copy {
+        from sourceSets.main.output.resourcesDir
+        from sourceSets.main.runtimeClasspath
+        include { it.file.name.contains('wsc') }
+        rename { it.contains('force-wsc') ? 'wsc.jar' : null }
+        into { '../../com.salesforce.ide.api/lib' }
+    }
+}
+

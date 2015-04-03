@@ -195,7 +195,7 @@ public class DeploymentPayload {
         return null;
     }
 
-    private boolean isSamePackage(String packageName1, String packageName2) {
+    private static boolean isSamePackage(String packageName1, String packageName2) {
         return "".equals(packageName1) && Constants.DEFAULT_PACKAGED_NAME.equals(packageName2) ? true : Utils.isEqual(packageName1, packageName1);
     }
 

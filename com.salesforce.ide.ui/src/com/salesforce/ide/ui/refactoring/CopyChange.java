@@ -24,14 +24,12 @@ import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ProjectPackageList;
-import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
 
 public class CopyChange extends BaseChange {
     private static final Logger logger = Logger.getLogger(CopyChange.class);
 
     // C O N S T R U C T O R
-    public CopyChange() throws ForceProjectException {
+    public CopyChange() {
         super();
         this.refactorController = new ChangeRefactorController();
     }
@@ -82,7 +80,7 @@ public class CopyChange extends BaseChange {
     }
 
     public RefactoringStatus checkConditions(IResource origDesintation, IProgressMonitor monitor)
-            throws OperationCanceledException, ForceRemoteException, CoreException, InterruptedException {
+            throws OperationCanceledException, CoreException, InterruptedException {
         // REVIEWME: what to do w/ ResourceChangeChecker and/or ValidateEditChecker
 
         ChangeRefactorModel refactorModel = getRefactorController().getRefactorModel();

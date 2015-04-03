@@ -82,7 +82,7 @@ public class UpgradeController extends Controller {
     private List<String> excludeFileExtensions = null;
     private final List<IInternalUpgrade> ideInternalUpgrades = new ArrayList<IInternalUpgrade>();
 
-    public UpgradeController() throws ForceProjectException, FactoryException {
+    public UpgradeController() {
         super();
         model = new UpgradeModel(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPlatformBrandName(), ContainerDelegate.getInstance().getServiceLocator().getProjectService().getIdeReleaseName(),
                 ContainerDelegate.getInstance().getServiceLocator().getProjectService().getIdeBrandName());
@@ -545,8 +545,7 @@ public class UpgradeController extends Controller {
 
     // refresh installed managed packages
     protected boolean upgradeManagedInstalledPackages(IProject project, IProgressMonitor monitor)
-            throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException,
-            CoreException, InvocationTargetException, IOException, ServiceException, Exception {
+            throws InterruptedException, ForceConnectionException, ForceRemoteException, CoreException, IOException, ServiceException, Exception {
         if (project == null) { throw new IllegalArgumentException("Project cannot be null"); }
 
         if (logger.isInfoEnabled()) {
@@ -639,6 +638,7 @@ public class UpgradeController extends Controller {
     // sort IDE internal class execution by their order value
     private void sortIdeInternals() {
         Collections.sort(ideInternalUpgrades, new Comparator<IInternalUpgrade>() {
+            @Override
             public int compare(IInternalUpgrade o1, IInternalUpgrade o2) {
                 if (o1 == o2) {
                     return 0;
@@ -700,26 +700,27 @@ public class UpgradeController extends Controller {
         if (path.contains(".jar!")) {
             String jarPath = path.substring(path.indexOf(":") + 1, path.lastIndexOf("!"));
             logger.info("Inspecting jar:\n " + jarPath);
-            JarInputStream jarFile = new JarInputStream(new FileInputStream(jarPath));
-            while (true) {
-                JarEntry jarEntry = jarFile.getNextJarEntry();
-                if (jarEntry == null) {
-                    break;
-                }
+            try (final JarInputStream jarFile = new JarInputStream(new FileInputStream(jarPath))) {
+                while (true) {
+                    JarEntry jarEntry = jarFile.getNextJarEntry();
+                    if (jarEntry == null) {
+                        break;
+                    }
 
-                if (jarEntry.getName().startsWith(pkgname.replaceAll("\\.", "/"))
-                        && jarEntry.getName().endsWith(".class")) {
-                    String className = jarEntry.getName().substring(jarEntry.getName().lastIndexOf("/") + 1,
-                            jarEntry.getName().lastIndexOf("."));
-                    className = pkgname + "." + className;
-                    try {
-                        // classes.add(Class.forName(className));
-                        classes.add(Class.forName(className, true, this.getClass().getClassLoader()));
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Added ide internal change class: " + className);
+                    if (jarEntry.getName().startsWith(pkgname.replaceAll("\\.", "/"))
+                            && jarEntry.getName().endsWith(".class")) {
+                        String className = jarEntry.getName().substring(jarEntry.getName().lastIndexOf("/") + 1,
+                                jarEntry.getName().lastIndexOf("."));
+                        className = pkgname + "." + className;
+                        try {
+                            // classes.add(Class.forName(className));
+                            classes.add(Class.forName(className, true, this.getClass().getClassLoader()));
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Added ide internal change class: " + className);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            logger.warn("Unable to add ide internal change class '" + className + "': " + e.getMessage());
                         }
-                    } catch (ClassNotFoundException e) {
-                        logger.warn("Unable to add ide internal change class '" + className + "': " + e.getMessage());
                     }
                 }
             }
@@ -728,6 +729,7 @@ public class UpgradeController extends Controller {
             File directory = new File(path);
             if (directory.exists()) {
                 File[] files = directory.listFiles(new FilenameFilter() {
+                    @Override
                     public boolean accept(File dir, String name) {
                         return name.endsWith(".class");
                     }
@@ -735,6 +737,7 @@ public class UpgradeController extends Controller {
 
                 if (Utils.isNotEmpty(files)) {
                     Arrays.sort(files, new Comparator<File>() {
+                        @Override
                         public int compare(File o1, File o2) {
                             return o1.getName().compareTo(o2.getName());
                         }

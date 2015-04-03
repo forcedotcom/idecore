@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
@@ -29,7 +28,7 @@ public class ExecuteAnonymousDialog extends TitleAreaDialog {
     protected ExecuteAnonymousViewComposite executeAnonymousViewComposite = null;
     protected ExecuteAnonymousController executeAnonymousController = null;
 
-    public ExecuteAnonymousDialog(IProject project, Shell parentShell) throws ForceProjectException {
+    public ExecuteAnonymousDialog(IProject project, Shell parentShell) {
         super(parentShell);
         executeAnonymousController = new ExecuteAnonymousController(project);
     }
@@ -45,6 +44,7 @@ public class ExecuteAnonymousDialog extends TitleAreaDialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         setShellStyle(getShellStyle() | SWT.Resize);
+        setBlockOnOpen(false);
         Composite composite = (Composite) super.createDialogArea(parent);
         GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -74,7 +74,7 @@ public class ExecuteAnonymousDialog extends TitleAreaDialog {
         Control contents = super.createContents(parent);
 
         setTitleImage(ForceImages.get(ForceImages.APEX_WIZARD_IMAGE));
-        setTitle(UIMessages.getString("ExecuteAnonymousAction.title"));
+        setTitle(UIMessages.getString("ExecuteAnonymousDialog.title"));
         setMessage("Execute an anonymous block of Apex to help quickly evaluate code on the fly.");
 
         return contents;

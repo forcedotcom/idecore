@@ -14,13 +14,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.salesforce.ide.core.internal.utils.Constants;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 
 /**
  * Parse Platform log file
@@ -30,6 +29,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
  */
 public class LogReader {
 
+    private static final String EOL = "\n";
     public static final long MAX_FILE_LENGTH = 1024 * 1024;
     private static final int ENTRY_STATE = 0;
     private static final int SUBENTRY_STATE = 1;
@@ -43,105 +43,99 @@ public class LogReader {
             return;
         }
 
-        ArrayList<LogEntry> parents = new ArrayList<LogEntry>();
-        LogEntry current = null;
-        int writerState = UNKNOWN_STATE;
-        StringWriter swriter = null;
-        PrintWriter writer = null;
-        int state = UNKNOWN_STATE;
-        BufferedReader reader = null;
-        try {
-            boolean found = false;
-            TailInputStream tailStream = new TailInputStream(file, MAX_FILE_LENGTH);
-            reader = new BufferedReader(new InputStreamReader(tailStream, Constants.FORCE_DEFAULT_ENCODING_CHARSET));
-            for (;;) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                line = line.trim();
+        try (final QuietCloseable<BufferedReader> c = QuietCloseable.make(new BufferedReader(new InputStreamReader(new TailInputStream(file, MAX_FILE_LENGTH), Constants.FORCE_DEFAULT_ENCODING_CHARSET)))) {
+            final BufferedReader reader = c.get();
 
-                if (line.startsWith("!SESSION")) {
-                    continue;
-                } else if (line.startsWith("!ENTRY")) {
-                    state = ENTRY_STATE;
-                    found = line.contains(Constants.FORCE_PLUGIN_PREFIX);
-                    if (!found) {
+            ArrayList<LogEntry> parents = new ArrayList<>();
+            LogEntry current = null;
+            int writerState = UNKNOWN_STATE;
+            StringBuilder accumulator = null;
+//            StringWriter swriter = null;
+//            PrintWriter writer = null;
+            int state = UNKNOWN_STATE;
+
+            try {
+                boolean found = false;
+                for (;;) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    line = line.trim();
+
+                    if (line.startsWith("!SESSION")) {
+                        continue;
+                    } else if (line.startsWith("!ENTRY")) {
+                        state = ENTRY_STATE;
+                        found = line.contains(Constants.FORCE_PLUGIN_PREFIX);
+                        if (!found) {
+                            continue;
+                        }
+                    } else if (line.startsWith("!SUBENTRY")) {
+                        state = SUBENTRY_STATE;
+                    } else if (line.startsWith("!MESSAGE")) {
+                        state = MESSAGE_STATE;
+                    } else if (line.startsWith("!STACK")) {
+                        state = STACK_STATE;
+                    } else {
+                        state = TEXT_STATE;
+                    }
+
+                    if (state == TEXT_STATE && found) {
+                        if (accumulator != null) {
+                            accumulator.append(line).append(EOL);
+                        }
                         continue;
                     }
-                } else if (line.startsWith("!SUBENTRY")) {
-                    state = SUBENTRY_STATE;
-                } else if (line.startsWith("!MESSAGE")) {
-                    state = MESSAGE_STATE;
-                } else if (line.startsWith("!STACK")) {
-                    state = STACK_STATE;
-                } else {
-                    state = TEXT_STATE;
-                }
 
-                if (state == TEXT_STATE && found) {
-                    if (writer != null) {
-                        writer.println(line);
+                    if (accumulator != null && found) {
+                        setLogData(current, writerState, accumulator);
+                        writerState = UNKNOWN_STATE;
+                        accumulator = null;
                     }
-                    continue;
+
+                    if (state == STACK_STATE && found) {
+                        accumulator = new StringBuilder();
+                        writerState = STACK_STATE;
+                    } else if (state == ENTRY_STATE && found) {
+                        LogEntry entry = new LogEntry();
+                        entry.processEntry(line);
+                        setNewLogParent(parents, entry, 0);
+                        current = entry;
+                        entries.add(entry);
+                    } else if (state == MESSAGE_STATE && found) {
+                        accumulator = new StringBuilder();
+                        String message = Constants.EMPTY_STRING;
+                        if (line.length() > 8) {
+                            message = line.substring(9).trim();
+                        }
+
+                        message = message.trim();
+                        if (current != null) {
+                            current.setMessage(message);
+                        }
+                        writerState = MESSAGE_STATE;
+                    }
                 }
 
-                if (writer != null && found) {
-                    setLogData(current, writerState, swriter);
+                if (accumulator != null && current != null && writerState == STACK_STATE && found) {
                     writerState = UNKNOWN_STATE;
-                    swriter = null;
-                    writer.close();
-                    writer = null;
+                    current.setStack(accumulator.toString());
                 }
-
-                if (state == STACK_STATE && found) {
-                    swriter = new StringWriter();
-                    writer = new PrintWriter(swriter, true);
-                    writerState = STACK_STATE;
-                } else if (state == ENTRY_STATE && found) {
-                    LogEntry entry = new LogEntry();
-                    entry.processEntry(line);
-                    setNewLogParent(parents, entry, 0);
-                    current = entry;
-                    entries.add(entry);
-                } else if (state == MESSAGE_STATE && found) {
-                    swriter = new StringWriter();
-                    writer = new PrintWriter(swriter, true);
-                    String message = Constants.EMPTY_STRING;
-                    if (line.length() > 8) {
-                        message = line.substring(9).trim();
-                    }
-
-                    message = message.trim();
-                    if (current != null) {
-                        current.setMessage(message);
-                    }
-                    writerState = MESSAGE_STATE;
+            } finally {
+                if (accumulator != null) {
+                    setLogData(current, writerState, accumulator);
                 }
-            }
-
-            if (swriter != null && current != null && writerState == STACK_STATE && found) {
-                writerState = UNKNOWN_STATE;
-                current.setStack(swriter.toString());
-            }
-        } finally {
-            try {
-                if (reader != null)
-                    reader.close();
-            } catch (IOException e1) {}
-            if (writer != null) {
-                setLogData(current, writerState, swriter);
-                writer.close();
             }
         }
     }
 
-    private static void setLogData(LogEntry current, int writerState, StringWriter swriter) {
+    private static void setLogData(LogEntry current, int writerState, CharSequence swriter) {
         if (writerState == STACK_STATE && current != null) {
             current.setStack(swriter.toString());
         } else if (writerState == MESSAGE_STATE && current != null) {
             StringBuffer sb = new StringBuffer(current.getMessage());
-            sb.append(swriter.toString());
+            sb.append(swriter);
             current.setMessage(sb.toString().trim());
         }
     }

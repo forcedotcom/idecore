@@ -26,11 +26,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.XmlConstants;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexObject;
 
+/**
+ * 
+ * This is the old way of getting the completions. It's a misnomer to call it "ApexModel". I'm leaving this around for
+ * now since there are some good test cases that rely on this. After I convert them, I will remove this.
+ * 
+ */
+@Deprecated
 public class ApexModel {
 
     private static final Logger logger = Logger.getLogger(ApexModel.class);
@@ -68,20 +76,12 @@ public class ApexModel {
             logger.debug("Loading Apex Model from " + apexModelFile.getAbsolutePath());
         }
 
-        InputStream in = null;
         DOMParser parser = new DOMParser();
-        try {
-            in = apexModelUrl.openStream();
+        try (final QuietCloseable<InputStream> c = QuietCloseable.make(apexModelUrl.openStream())) {
+            final InputStream in = c.get();
+
             InputSource source = new InputSource(in);
             parser.parse(source);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    logger.warn("Unable to close input stream for " + apexModelFile.getAbsolutePath());
-                }
-            }
         }
 
         Document doc = parser.getDocument();

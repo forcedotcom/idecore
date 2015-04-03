@@ -61,6 +61,7 @@ public class ProjectProjectContentPage extends BaseProjectCreatePage {
     /**
      * Assemble connection page wizard.
      */
+    @Override
     public void createControl(Composite parent) {
         projectProjectContentComposite = new ProjectProjectContentComposite(parent, SWT.NULL, this, getProjectModel());
         setControl(projectProjectContentComposite);

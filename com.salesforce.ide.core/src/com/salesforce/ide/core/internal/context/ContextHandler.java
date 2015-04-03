@@ -31,6 +31,7 @@ public class ContextHandler extends BaseContextHandler {
         return new String[] { Constants.APPLICATION_CONTEXT};
     }
 
+    @Override
     public void initApplicationContext() throws ForceProjectException {
         initApplicationContext(getApplicationContextFiles());
     }

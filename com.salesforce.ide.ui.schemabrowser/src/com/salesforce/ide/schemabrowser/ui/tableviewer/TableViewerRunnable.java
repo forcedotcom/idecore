@@ -22,6 +22,7 @@ public class TableViewerRunnable implements Runnable {
     protected Vector<Hashtable<String, Object>> rows;
     protected String dialogTitle;
     protected Runnable showRecords = new Runnable() {
+        @Override
         public void run() {
             TableViewerDialog dialog = new TableViewerDialog(null);
             dialog.setData(rows, columnNames, dialogTitle);
@@ -33,6 +34,7 @@ public class TableViewerRunnable implements Runnable {
         this.shell = shell;
     }
 
+    @Override
     public void run() {
         showRecords.run();
     }

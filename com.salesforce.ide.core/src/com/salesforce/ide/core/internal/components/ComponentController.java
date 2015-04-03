@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
 
 import javax.xml.bind.JAXBException;
@@ -26,6 +29,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.w3c.dom.Document;
@@ -53,10 +57,11 @@ import com.salesforce.ide.core.remote.metadata.DeployResultExt;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
 import com.salesforce.ide.core.services.ServiceException;
+import com.salesforce.ide.core.services.ServiceLocator;
 import com.salesforce.ide.core.services.ServiceTimeoutException;
 import com.sforce.soap.metadata.FileProperties;
 
-public class ComponentController extends Controller {
+public abstract class ComponentController extends Controller {
     private static final Logger logger = Logger.getLogger(ComponentController.class);
 
     protected DeployResultExt deployResultHandler = null;
@@ -69,7 +74,8 @@ public class ComponentController extends Controller {
 
     @Override
     public void init() throws ForceProjectException {
-        getComponentWizardModel().setComponentFactory(ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory());
+        getComponentWizardModel().setComponentFactory(
+            ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory());
         getComponentWizardModel().initComponent();
     }
 
@@ -81,8 +87,7 @@ public class ComponentController extends Controller {
         this.model = componentWizardModel;
     }
 
-    public void setResources(IFolder folder, IProject project) {
-        getComponentWizardModel().setFolder(folder);
+    public void setResources(IProject project) {
         getComponentWizardModel().setProject(project);
     }
 
@@ -102,8 +107,9 @@ public class ComponentController extends Controller {
         this.deployResultHandler = deployResultExt;
     }
 
-    public Component getNewComponentByComponentType(String componentType) throws FactoryException {
-        return ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(componentType);
+    public Component getNewComponentByComponentType(String componentType) {
+        return ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
+                .getComponentByComponentType(componentType);
     }
 
     public IFile getComponentResoruce() {
@@ -115,28 +121,57 @@ public class ComponentController extends Controller {
     }
 
     public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException,
-    FactoryException {
-        if (getComponentWizardModel().getProject() == null) {
-            logger.error("Unable to check " + getComponentWizardModel().getComponent().getDisplayName()
-                + " permissions - project is null");
+            FactoryException {
+        final ComponentModel componentWizardModel = getComponentWizardModel();
+
+        final IProject project = componentWizardModel.getProject();
+        if (project == null) {
             return false;
         }
-        ForceProject forceProject = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProject(getComponentWizardModel().getProject());
 
-        Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(forceProject);
+        final Map<String, Boolean> cache = getComponentTypeEnablementCache(project);
+
+        final String componentType = componentWizardModel.getComponentType();
+        final Boolean cachedResult = cache.get(componentType);
+        if (null != cachedResult)
+            return cachedResult.booleanValue();
+
+        final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
+        ForceProject forceProject = serviceLocator.getProjectService().getForceProject(project);
+
+        Connection connection =
+                ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(forceProject);
         boolean componentEnabled =
-                ContainerDelegate.getInstance().getServiceLocator().getMetadataService().isComponentTypeEnabled(connection,
-                    getComponentWizardModel().getComponentType());
+                serviceLocator.getMetadataService().isComponentTypeEnabled(connection, componentType);
         if (logger.isDebugEnabled()) {
-            logger.debug(getComponentWizardModel().getComponent().getDisplayName() + " "
+            logger.debug(componentWizardModel.getComponent().getDisplayName() + " "
                     + (componentEnabled ? "are" : "are not") + " enabled");
         }
 
+        cache.put(componentType, componentEnabled);
         return componentEnabled;
     }
 
+    private static final QualifiedName KEY_ENABLEMENT_CACHE = new QualifiedName(Constants.FILE_PROP_PREFIX_ID,
+            "componentTypeEnablementCache");
+
+    private Map<String, Boolean> getComponentTypeEnablementCache(final IProject project) {
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Boolean> cache = Map.class.cast(project.getSessionProperty(KEY_ENABLEMENT_CACHE));
+            if (null == cache) {
+                cache = new HashMap<>();
+                project.setSessionProperty(KEY_ENABLEMENT_CACHE, cache);
+            }
+            return cache;
+        } catch (final CoreException e) {
+            logger.error("Unable to access session property: " + KEY_ENABLEMENT_CACHE, e);
+            return Collections.emptyMap();
+        }
+    }
+
     public boolean isNameUnique(IProgressMonitor monitor) throws ForceConnectionException, FactoryException,
-    ServiceException, ForceRemoteException, InterruptedException {
+            ServiceException, ForceRemoteException, InterruptedException {
         return (isNameUniqueLocalCheck() && isNameUniqueRemoteCheck(monitor));
     }
 
@@ -146,19 +181,20 @@ public class ComponentController extends Controller {
                 (componentToCheck != null) ? (new StringBuffer(Constants.SOURCE_FOLDER_NAME).append(File.separator)
                         .append(componentToCheck.getDefaultFolder())).toString() : null;
 
-                        final String fileName =
-                                (componentToCheck != null) ? (new StringBuffer(componentToCheck.getName()).append(".")
-                                        .append(componentToCheck.getFileExtension())).toString() : null;
+        final String fileName =
+                (componentToCheck != null) ? (new StringBuffer(componentToCheck.getName()).append(".")
+                        .append(componentToCheck.getFileExtension())).toString() : null;
 
-                                        final String componentName_Absolute =
-                                                (dirPath != null && fileName != null) ? (new StringBuffer(dirPath).append(fileName)).toString() : null;
+        final String componentName_Absolute =
+                (dirPath != null && fileName != null) ? (new StringBuffer(dirPath).append(fileName)).toString() : null;
 
-                                                if (logger.isInfoEnabled()) {
-                                                    logger.info("Ensure local uniqueness for '"
-                                                            + (Utils.isEmpty(componentName_Absolute) ? "" : componentName_Absolute.toString()) + "'");
-                                                }
+        if (logger.isInfoEnabled()) {
+            logger.info("Ensure local uniqueness for '"
+                    + (null == componentName_Absolute ? "" : componentName_Absolute.toString()) + "'");
+        }
 
-                                                return (!componentToCheck.isCaseSensitive()) ? checkInFolder(dirPath, fileName) : true;
+        return (null != componentToCheck && !componentToCheck.isCaseSensitive()) ? checkInFolder(dirPath, fileName)
+                : true;
     }
 
     protected boolean checkInFolder(final String dirPath, final String fileName) {
@@ -170,7 +206,7 @@ public class ComponentController extends Controller {
             } catch (CoreException e) {
                 String logMessage = generateLogMessageFromCoreException(e);
                 logger.warn("Unable to get contents for folder '" + folder.getProjectRelativePath().toPortableString()
-                    + "': " + logMessage, e);
+                        + "': " + logMessage, e);
                 return true;
             }
 
@@ -198,7 +234,7 @@ public class ComponentController extends Controller {
     }
 
     public boolean isNameUniqueRemoteCheck(IProgressMonitor monitor) throws InsufficientPermissionsException,
-    ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException {
+            ForceConnectionException, ForceRemoteException, InterruptedException {
         if (!isProjectOnlineEnabled()) {
             logger.warn("Remote unique name check aborted - project is not online enabled");
             return true;
@@ -207,8 +243,8 @@ public class ComponentController extends Controller {
         StringBuffer strBuff = new StringBuffer();
         final Component component = getComponent();
 
-        strBuff.append(component.getDefaultFolder()).append("/").append(component.getName()).append(".").append(
-            component.getFileExtension());
+        strBuff.append(component.getDefaultFolder()).append("/").append(component.getName()).append(".")
+                .append(component.getFileExtension());
 
         if (logger.isDebugEnabled()) {
             logger.debug("Ensure remote uniqueness for '" + strBuff.toString() + "'");
@@ -223,7 +259,7 @@ public class ComponentController extends Controller {
      * @return true if it doesn't exist on server
      */
     protected boolean checkIfComponentExistsOnServer(IProgressMonitor monitor, final Component component)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException,
+            throws ForceConnectionException, ForceRemoteException, InterruptedException,
             InsufficientPermissionsException {
         final FileMetadataExt listMetadataRetrieveResult = fireListMetadataQuery(monitor, component);
         boolean notFoundOnServer = true;
@@ -231,7 +267,7 @@ public class ComponentController extends Controller {
             final FileProperties[] fileProps = listMetadataRetrieveResult.getFileProperties();
             for (FileProperties fp : fileProps) {
                 if (fp.getFullName().equalsIgnoreCase(component.getName())) {
-                    notFoundOnServer=false;
+                    notFoundOnServer = false;
                     break;
                 }
             }
@@ -240,22 +276,28 @@ public class ComponentController extends Controller {
     }
 
     protected FileMetadataExt fireListMetadataQuery(IProgressMonitor monitor, final Component component)
-            throws ForceConnectionException, ForceRemoteException, InterruptedException, FactoryException,
+            throws ForceConnectionException, ForceRemoteException, InterruptedException,
             InsufficientPermissionsException {
         final FileMetadataExt listMetadataRetrieveResult =
-                ContainerDelegate.getInstance().getServiceLocator().getMetadataService().listMetadata(
-                    ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(getComponentWizardModel().getProject()), component, monitor);
+                ContainerDelegate
+                        .getInstance()
+                        .getServiceLocator()
+                        .getMetadataService()
+                        .listMetadata(
+                            ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory()
+                                    .getConnection(getComponentWizardModel().getProject()), component, monitor);
         return listMetadataRetrieveResult;
     }
 
     protected boolean isProjectOnlineEnabled() {
-        return ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedOnlineProject(getComponentWizardModel().getProject());
+        return ContainerDelegate.getInstance().getServiceLocator().getProjectService()
+                .isManagedOnlineProject(getComponentWizardModel().getProject());
     }
 
     @Override
     public void finish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, IOException,
-    ForceConnectionException, ForceRemoteException, FactoryException, CoreException, ServiceException,
-    JAXBException, Exception {
+            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, ServiceException,
+            JAXBException, Exception {
         if (getComponentWizardModel() == null || getComponentWizardModel().getProject() == null) {
             logger.error("Component model and/or project cannot be null");
             throw new IllegalArgumentException("Component model and/or project cannot be null");
@@ -282,11 +324,13 @@ public class ComponentController extends Controller {
         }
 
         // prepare container to perform save and deploy ops
-        ProjectPackageList projectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
+        ProjectPackageList projectPackageList =
+                ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
         projectPackageList.setProject(getComponentWizardModel().getProject());
         projectPackageList.addComponents(components, false);
 
         // perform pre-save actions
+        defaultPreSaveProcess(getComponentWizardModel(), monitor);
         preSaveProcess(getComponentWizardModel(), monitor);
 
         // save to f/s - enables offline work
@@ -305,12 +349,16 @@ public class ComponentController extends Controller {
 
     /**
      * Override this method to perform actions before saving component to server and project.
-     *
+     * 
      * @param componentWizardModel
      * @param monitor
+     * @throws InvocationTargetException
      */
-    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, IOException {
+    protected abstract void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException;
+
+    protected final void defaultPreSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException {
         // test for remote uniqueness
         try {
             if (logger.isInfoEnabled()) {
@@ -319,9 +367,9 @@ public class ComponentController extends Controller {
             if (isProjectOnlineEnabled() && !isNameUniqueRemoteCheck(monitor)) {
                 logger.warn("Found remote instance of " + getComponentWizardModel().getDisplayName());
                 StringBuffer strBuff = new StringBuffer("Found existing ");
-                strBuff.append(getComponentWizardModel().getDisplayName()).append(" instance named '").append(
-                    getComponentWizardModel().getName()).append(
-                            "' in source organization.\n\nOverwrite remote instance?");
+                strBuff.append(getComponentWizardModel().getDisplayName()).append(" instance named '")
+                        .append(getComponentWizardModel().getName())
+                        .append("' in source organization.\n\nOverwrite remote instance?");
                 boolean ovewrite = Utils.openConfirm("Duplicate Component Found", strBuff.toString());
                 if (!ovewrite) {
                     logger.warn("User cancelled new component operation - will not overwrite remote instance");
@@ -331,7 +379,7 @@ public class ComponentController extends Controller {
             }
         } catch (InterruptedException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (RuntimeException | ForceConnectionException | ForceRemoteException e) {
             logger.error("Unable to test remote uniqueness", e);
         }
 
@@ -342,12 +390,11 @@ public class ComponentController extends Controller {
 
     /**
      * Override this method to perform actions after saving component to server and project
-     *
+     * 
      * @param componentWizardModel
      * @param monitor
      */
-    protected void postSaveProcess(final ComponentModel componentWizardModel, final IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, IOException {
+    protected void postSaveProcess(final ComponentModel componentWizardModel, final IProgressMonitor monitor) {
         // manually update cache inserting new component in appropriate stanza
         Job updateCacheJob = new Job("Update list metadata cache") {
             @Override
@@ -365,10 +412,10 @@ public class ComponentController extends Controller {
                     try {
                         Utils.saveDocument(packageManifestCache, cacheUrl.getPath());
                     } catch (Exception e) {
-                        logger.warn("Unable to update cache with new component "
-                                + componentWizardModel.getDisplayName(), e);
-                        return new Status(Status.INFO, ForceIdeCorePlugin.PLUGIN_ID, Status.INFO,
+                        logger.warn(
                             "Unable to update cache with new component " + componentWizardModel.getDisplayName(), e);
+                        return new Status(IStatus.INFO, ForceIdeCorePlugin.PLUGIN_ID, IStatus.INFO,
+                                "Unable to update cache with new component " + componentWizardModel.getDisplayName(), e);
                     }
 
                     if (logger.isDebugEnabled()) {
@@ -378,10 +425,10 @@ public class ComponentController extends Controller {
                     }
                 } else {
                     logger.warn("Unable to update cache with new component " + componentWizardModel.getDisplayName()
-                        + " - cache is not found");
-                    return new Status(Status.INFO, ForceIdeCorePlugin.PLUGIN_ID, Status.INFO,
-                        "Unable to update cache with new component " + componentWizardModel.getDisplayName()
-                        + " - cache is not found", null);
+                            + " - cache is not found");
+                    return new Status(IStatus.INFO, ForceIdeCorePlugin.PLUGIN_ID, IStatus.INFO,
+                            "Unable to update cache with new component " + componentWizardModel.getDisplayName()
+                                    + " - cache is not found", null);
                 }
 
                 return Status.OK_STATUS;
@@ -405,8 +452,7 @@ public class ComponentController extends Controller {
             for (Component component : components) {
                 if (!component.isPackageManifest()) {
                     MarkerUtils.getInstance().applyDirty(component.getFileResource(),
-                        Messages
-                        .getString("Markers.OfflineOnlySavedLocally.message"));
+                        Messages.getString("Markers.OfflineOnlySavedLocally.message"));
                 }
             }
             return;
@@ -414,11 +460,17 @@ public class ComponentController extends Controller {
 
         // compile and save new component
         try {
-            deployResultHandler = ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService().deploy(projectPackageList, monitor);
+            deployResultHandler =
+                    ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService()
+                            .deploy(projectPackageList, monitor);
         } catch (ServiceTimeoutException ex) {
             deployResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService().handleDeployServiceTimeoutException(ex,
-                        "create new " + getComponent().getDisplayName(), monitor);
+                    ContainerDelegate
+                            .getInstance()
+                            .getServiceLocator()
+                            .getPackageDeployService()
+                            .handleDeployServiceTimeoutException(ex, "create new " + getComponent().getDisplayName(),
+                                monitor);
         }
 
         if (deployResultHandler == null) {
@@ -426,7 +478,8 @@ public class ComponentController extends Controller {
             return;
         }
 
-        ContainerDelegate.getInstance().getServiceLocator().getProjectService().handleDeployResult(projectPackageList, deployResultHandler, true, monitor);
+        ContainerDelegate.getInstance().getServiceLocator().getProjectService()
+                .handleDeployResult(projectPackageList, deployResultHandler, true, monitor);
     }
 
     // get all object names
@@ -437,8 +490,10 @@ public class ComponentController extends Controller {
             return null;
         }
 
-        Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(project);
-        DescribeObjectRegistry describeObjectRegistry = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getDescribeObjectRegistry();
+        Connection connection =
+                ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(project);
+        DescribeObjectRegistry describeObjectRegistry =
+                ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getDescribeObjectRegistry();
         return describeObjectRegistry.getCachedDescribeSObjectNames(connection, project.getName(), refresh);
     }
 

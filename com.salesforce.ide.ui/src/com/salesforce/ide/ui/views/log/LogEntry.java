@@ -25,6 +25,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import com.salesforce.ide.core.internal.utils.Constants;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.internal.Messages;
 
@@ -60,6 +61,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
     }
 
     //   M E T H O D S
+    @Override
     public Object getParent(Object o) {
         return parent;
     }
@@ -116,15 +118,17 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         return getSeverityText(severity);
     }
 
+    @Override
     public ImageDescriptor getImageDescriptor(Object arg0) {
         return null;
     }
 
+    @Override
     public String getLabel(Object obj) {
         return getSeverityText();
     }
 
-    private String getSeverityText(int severity) {
+    private static String getSeverityText(int severity) {
         switch (severity) {
         case IStatus.ERROR:
             return Messages.ERROR;
@@ -196,7 +200,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         }
     }
 
-    private int parseInteger(String token) {
+    private static int parseInteger(String token) {
         try {
             return Integer.parseInt(token);
         } catch (NumberFormatException e) {
@@ -234,12 +238,17 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         setMessage(status.getMessage());
         Throwable throwable = status.getException();
         if (throwable != null) {
-            StringWriter swriter = new StringWriter();
-            PrintWriter pwriter = new PrintWriter(swriter);
-            throwable.printStackTrace(pwriter);
-            pwriter.flush();
-            pwriter.close();
-            stack = swriter.toString();
+            try (final QuietCloseable<StringWriter> c0 = QuietCloseable.make(new StringWriter())) {
+                final StringWriter swriter = c0.get();
+
+                try (final QuietCloseable<PrintWriter> c = QuietCloseable.make(new PrintWriter(swriter))) {
+                    final PrintWriter pwriter = c.get();
+    
+                    throwable.printStackTrace(pwriter);
+                    pwriter.flush();
+                }
+                stack = swriter.toString();
+            }
         }
 
         IStatus[] schildren = status.getChildren();
@@ -272,6 +281,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
         }
     }
 
+    @Override
     public Object[] getChildren(Object parent) {
         return children.toArray();
     }

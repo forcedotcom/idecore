@@ -24,6 +24,7 @@ import org.eclipse.ui.progress.IProgressService;
 
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
@@ -98,9 +99,7 @@ public class UpgradeComponentConflictsPage extends BaseUpgradePage {
                     } catch (Exception e) {
                         throw new InvocationTargetException(e);
                     } finally {
-                        if (monitor != null) {
-                            monitor.done();
-                        }
+                        monitor.done();
                     }
                 }
             });
@@ -114,13 +113,18 @@ public class UpgradeComponentConflictsPage extends BaseUpgradePage {
             } else if (cause instanceof InvalidLoginException) {
                 DialogUtils.getInstance().invalidLoginDialog(ForceExceptionUtils.getRootCauseMessage(cause));
             } else {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                PrintStream ps = new PrintStream(out);
-                cause.printStackTrace(ps);
-                ps.close();
-                StringBuffer strBuff = new StringBuffer();
-                strBuff.append("Unable to perform upgrade analysis:\n\n").append(new String(out.toByteArray())).append("\n\n ");
-                Utils.openError("Upgrade Error", strBuff.toString());
+                try (final QuietCloseable<ByteArrayOutputStream> c0 = QuietCloseable.make(new ByteArrayOutputStream())) {
+                    final ByteArrayOutputStream out = c0.get();
+
+                    try (final QuietCloseable<PrintStream> c = QuietCloseable.make(new PrintStream(out))) {
+                        final PrintStream ps = c.get();
+                        cause.printStackTrace(ps);
+                    }
+
+                    StringBuffer strBuff = new StringBuffer();
+                    strBuff.append("Unable to perform upgrade analysis:\n\n").append(new String(out.toByteArray())).append("\n\n ");
+                    Utils.openError("Upgrade Error", strBuff.toString());
+                }
             }
         }
     }

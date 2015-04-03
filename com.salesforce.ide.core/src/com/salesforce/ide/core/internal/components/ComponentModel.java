@@ -15,7 +15,6 @@ import java.util.Calendar;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
@@ -27,7 +26,6 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.model.IModel;
-import com.salesforce.ide.core.project.ForceProjectException;
 
 public abstract class ComponentModel implements IModel {
     private static final Logger logger = Logger.getLogger(ComponentModel.class);
@@ -35,7 +33,6 @@ public abstract class ComponentModel implements IModel {
     protected Display display = null;
     protected IProject project = null;
     protected ISelection selection = null;
-    protected IFolder folder = null;
     protected ComponentFactory componentFactory = null;
     protected ComponentList componentList = null;
     protected Component component = null;
@@ -46,28 +43,18 @@ public abstract class ComponentModel implements IModel {
         super();
     }
 
-    public void initComponent() throws ForceProjectException {
+    public void initComponent() {
         this.componentList = componentFactory.getComponentListInstance();
 
         if (component == null) {
-            try {
-                component = componentFactory.getComponentByComponentType(getComponentType());
-            } catch (FactoryException e) {
-                throw new ForceProjectException(e, "Unable to init component");
-            }
+            component = componentFactory.getComponentByComponentType(getComponentType());
         }
 
         component.setName(getDefaultName());
         component.setPackageName(Constants.DEFAULT_PACKAGED_NAME);
         component.intiNewBody(component.getDefaultTemplateString());
 
-        try {
-            metadataExt = component.getDefaultMetadataExtInstance();
-        } catch (InstantiationException e) {
-            throw new ForceProjectException(e, "Unable to init wizard model");
-        } catch (IllegalAccessException e) {
-            throw new ForceProjectException(e, "Unable to init wizard model");
-        }
+        metadataExt = component.getDefaultMetadataExtInstance();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Initialized " + component.getDisplayName() + " model and component controller");
@@ -108,10 +95,12 @@ public abstract class ComponentModel implements IModel {
         this.componentFactory = componentFactory;
     }
 
+    @Override
     public IProject getProject() {
         return project;
     }
 
+    @Override
     public void setProject(IProject project) {
         this.project = project;
     }
@@ -127,17 +116,6 @@ public abstract class ComponentModel implements IModel {
 
     public String getDisplayName() {
         return component.getDisplayName();
-    }
-
-    public IFolder getFolder() {
-        return folder;
-    }
-
-    public void setFolder(IFolder folder) {
-        this.folder = folder;
-        if (this.folder != null) {
-            setProject(this.folder.getProject());
-        }
     }
 
     /**
@@ -187,7 +165,7 @@ public abstract class ComponentModel implements IModel {
      */
     public abstract void loadAdditionalComponentAttributes() throws FactoryException, JAXBException;
 
-    protected boolean saveMetadata(Component component) throws FactoryException, JAXBException {
+    protected boolean saveMetadata(Component component) throws JAXBException {
         if (component == null || metadataExt == null) {
             logger.error("Component and/or metadata object cannot be null");
             throw new IllegalArgumentException("Component and/or metadata object cannot be null");

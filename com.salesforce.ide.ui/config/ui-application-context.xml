@@ -5,33 +5,6 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 	<description>Configurations for the different endpoints to open a SObject/CustomObject</description>
 
-    <!--   A C T I O N S -->
-	<bean id="showInBrowserAction" class="com.salesforce.ide.ui.actions.ShowInBrowserAction"
-		scope="prototype" lazy-init="true">
-		<property name="frontDoorUrlPart" value="secur/frontdoor.jsp?sid=" />
-		<property name="retUrlPart" value="retURL=/" />
-		<property name="setupPart" value="ui/setup/Setup" />
-		<property name="packagesPart" value="033?setupid=Package" />
-        <!-- escape '&'s -->
-		<property name="installedPackagesPart">
-			<value><![CDATA[033?setupid=ImportedPackage&inst=1]]></value>
-		</property>
-		<property name="developPart" value="ui/setup/Setup?setupid=DevToolsIntegrate" />
-		<property name="createPart" value="ui/setup/Setup?setupid=DevTools" />
-		<property name="customizePart" value="ui/setup/Setup?setupid=Customize" />
-		<property name="folderPart" value="fcf=" />
-	</bean>
-	<bean id="openBrowserToSalesforceAction"
-		class="com.salesforce.ide.ui.actions.OpenBrowserToExternalSiteAction"
-		lazy-init="true">
-		<property name="url" value="http://www.salesforce.com" />
-	</bean>
-	<bean id="openBrowserDeveloperAction"
-		class="com.salesforce.ide.ui.actions.OpenBrowserToExternalSiteAction"
-		lazy-init="true">
-		<property name="url" value="http://www.salesforce.com/developer/" />
-	</bean>
-
     <!--   C O N T R I B U T I O N S -->
 	<bean id="componentContributionFactory"
 		class="com.salesforce.ide.ui.internal.factories.ComponentContributionFactory"

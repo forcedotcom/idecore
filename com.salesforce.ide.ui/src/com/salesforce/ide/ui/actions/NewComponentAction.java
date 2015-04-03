@@ -12,8 +12,6 @@ package com.salesforce.ide.ui.actions;
 
 import org.eclipse.jface.action.IAction;
 
-import com.salesforce.ide.core.project.ForceProjectException;
-
 /**
  *
  *
@@ -21,7 +19,7 @@ import com.salesforce.ide.core.project.ForceProjectException;
  */
 public class NewComponentAction extends BaseAction {
 
-    public NewComponentAction() throws ForceProjectException {
+    public NewComponentAction() {
         super();
         actionController = new NewComponentActionController();
     }

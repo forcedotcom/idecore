@@ -52,6 +52,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#isProxiesEnabled()
     */
+    @Override
     public boolean isProxiesEnabled() {
         String value = getSysProperty(HTTP_PROXY_ENABLED);
         boolean enabled = Utils.isNotEmpty(value) ? Boolean.valueOf(value) : false;
@@ -64,9 +65,10 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#setProxiesEnabled(boolean)
     */
+    @Override
     public void setProxiesEnabled(boolean proxiesEnabled) {}
 
-    private String getSysProperty(String key) {
+    private static String getSysProperty(String key) {
         Properties sysProps = System.getProperties();
         if (sysProps != null) {
             String value = sysProps.getProperty(key);
@@ -81,6 +83,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#getProxyHost()
     */
+    @Override
     public String getProxyHost() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -96,6 +99,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#getProxyPort()
     */
+    @Override
     public String getProxyPort() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -111,6 +115,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#getProxyUser()
     */
+    @Override
     public String getProxyUser() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -131,6 +136,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#getProxyPassword()
     */
+    @Override
     public String getProxyPassword() {
         if (!isProxiesEnabled()) {
             return Constants.EMPTY_STRING;
@@ -147,6 +153,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#hasNonProxyHost()
     */
+    @Override
     public boolean hasNonProxyHost() {
         return Utils.isNotEmpty(getNonProxyHosts());
     }
@@ -154,6 +161,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#getNonProxyHosts()
     */
+    @Override
     public String getNonProxyHosts() {
         //return "localhost|*blitz04.*.salesforce.com|10.0.63.186:8081";
         String value = getSysProperty(HTTP_PROXY_NON_HOSTS);
@@ -166,6 +174,7 @@ public class DefaultProxy extends AbstractProxy {
     /* (non-Javadoc)
     * @see com.salesforce.toolkit.model.IProxy#isServerExcluded(java.lang.String)
     */
+    @Override
     public boolean isServerExcluded(String serverName) {
         if (Utils.isEmpty(serverName) || Utils.isEmpty(getNonProxyHosts())) {
             return false;

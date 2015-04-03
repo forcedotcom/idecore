@@ -39,7 +39,6 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.SoqlEnum;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.XmlConstants;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
@@ -68,7 +67,7 @@ public class QueryTableViewer {
     }
 
     //   M E T H O D S
-    public ConnectionFactory getConnectionFactory() throws ForceProjectException {
+    public ConnectionFactory getConnectionFactory() {
         if (connectionFactory == null) {
             connectionFactory = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory();
         }
@@ -91,8 +90,7 @@ public class QueryTableViewer {
         this.parentComposite = parentComposite;
     }
 
-    public void initialize(Composite parent) throws ForceConnectionException, ForceProjectException,
-            ForceRemoteException {
+    public void initialize(Composite parent) throws ForceConnectionException, ForceRemoteException {
         addChildControls(parent);
     }
 
@@ -110,12 +108,10 @@ public class QueryTableViewer {
      * @return the shell that was created
      * @throws ConnectionException
      * @throws ConnectionException
-     * @throws ForceProjectException
      * @throws ForceConnectionException
      * @throws ForceRemoteException 
      */
-    private void addChildControls(final Composite composite) throws ForceConnectionException, ForceProjectException,
-            ForceRemoteException {
+    private void addChildControls(final Composite composite) throws ForceConnectionException, ForceRemoteException {
         parentComposite = composite;
         Connection connection = getConnectionFactory().getConnection(project);
         QueryResult qr = connection.query(SoqlEnum.getSchemaInitalizationQuery());
@@ -165,7 +161,7 @@ public class QueryTableViewer {
         table.setHeaderVisible(true);
         table.setToolTipText("Double click on parent or child cells (when present) to see the related records");
 
-        ArrayList<String> _columnNames = new ArrayList<String>();
+        ArrayList<String> _columnNames = new ArrayList<>();
 
         if (qr != null && qr.getSize() > 0) {
             if (Utils.isNotEmpty(qr.getRecords())) {
@@ -301,6 +297,7 @@ public class QueryTableViewer {
      * ITaskListViewer interface since it must register changeListeners with the ExampleTaskList
      */
     class SchemaContentProvider implements IStructuredContentProvider, IDataRowListViewer {
+        @Override
         public void inputChanged(Viewer v, Object oldInput, Object newInput) {
             if (newInput != null) {
                 ((DataRowList) newInput).addChangeListener(this);
@@ -310,11 +307,13 @@ public class QueryTableViewer {
             }
         }
 
+        @Override
         public void dispose() {
             taskList.removeChangeListener(this);
         }
 
         // Return the tasks as an array of Objects
+        @Override
         public Object[] getElements(Object parent) {
             return taskList.getTasks().toArray();
         }
@@ -324,6 +323,7 @@ public class QueryTableViewer {
          *
          * @see ITaskListViewer#addTask(ExampleTask)
          */
+        @Override
         public void addTask(DataRow task) {
             tableViewer.add(task);
         }
@@ -333,6 +333,7 @@ public class QueryTableViewer {
          *
          * @see ITaskListViewer#removeTask(ExampleTask)
          */
+        @Override
         public void removeTask(DataRow task) {
             tableViewer.remove(task);
         }
@@ -342,6 +343,7 @@ public class QueryTableViewer {
          *
          * @see ITaskListViewer#updateTask(ExampleTask)
          */
+        @Override
         public void updateTask(DataRow task) {
             tableViewer.update(task, null);
         }

@@ -37,6 +37,7 @@ public class SharedTextColors implements ISharedTextColors {
     /*
      * @see ISharedTextColors#getColor(RGB)
      */
+    @Override
     public Color getColor(RGB rgb) {
         if (rgb == null) {
             return null;
@@ -66,6 +67,7 @@ public class SharedTextColors implements ISharedTextColors {
     /*
      * @see ISharedTextColors#dispose()
      */
+    @Override
     public void dispose() {
         if (fDisplayTable != null) {
             Iterator<Map<RGB, Color>> j = fDisplayTable.values().iterator();

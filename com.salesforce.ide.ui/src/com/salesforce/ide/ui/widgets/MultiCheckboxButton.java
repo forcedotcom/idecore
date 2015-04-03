@@ -256,10 +256,12 @@ public class MultiCheckboxButton extends ManyStateButton {
     private class MultiCheckMouseClickListener implements MouseListener {
         boolean downFlag = false;
 
+        @Override
         public void mouseDoubleClick(MouseEvent e) {
 
         }
 
+        @Override
         public void mouseDown(MouseEvent e) {
             downFlag = true;
             //			if(getEnabled() && e.button == 1 && getClientArea().contains(e.x, e.y))
@@ -268,6 +270,7 @@ public class MultiCheckboxButton extends ManyStateButton {
             //			}
         }
 
+        @Override
         public void mouseUp(MouseEvent e) {
             if (downFlag)// && (isSet(savedState, ENABLED)))
             {
@@ -306,6 +309,7 @@ public class MultiCheckboxButton extends ManyStateButton {
     }
 
     private class MultiCheckMouseMoveListener implements MouseMoveListener {
+        @Override
         public void mouseMove(MouseEvent e) {
 
         //			if(!getClientArea().contains(e.x, e.y))

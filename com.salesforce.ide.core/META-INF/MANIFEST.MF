@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
-Bundle-SymbolicName: com.salesforce.ide.core; singleton:=true
-Bundle-Version: 31.0.0.qualifier
+Bundle-SymbolicName: com.salesforce.ide.core;singleton:=true
+Bundle-Version: 34.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.core.ForceIdeCorePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: com.salesforce.ide.api;bundle-version="[31.0.0,32.0.0)",
+Require-Bundle: com.salesforce.ide.api;bundle-version="[34.0.0,35.0.0)",
  org.eclipse.ui.ide;bundle-version="3.8.0",
  org.eclipse.ui;bundle-version="3.103.0",
  org.eclipse.core.runtime;bundle-version="3.8.0",
@@ -16,9 +16,12 @@ Require-Bundle: com.salesforce.ide.api;bundle-version="[31.0.0,32.0.0)",
  org.eclipse.ui.editors;bundle-version="3.8.0",
  org.eclipse.core.expressions;bundle-version="3.4.0",
  org.apache.xerces;bundle-version="2.9.0",
- com.salesforce.ide.core.compatibility;bundle-version="[31.0.0,32.0.0)",
- com.salesforce.ide.core.compatibility.auth.equinox;bundle-version="[31.0.0,32.0.0)"
-Import-Package: org.apache.log4j, org.apache.log4j.xml, org.apache.log4j.lf5.util,org.apache.log4j.spi
+ com.salesforce.ide.core.compatibility;bundle-version="[34.0.0,35.0.0)",
+ com.salesforce.ide.core.compatibility.auth.equinox;bundle-version="[34.0.0,35.0.0)"
+Import-Package: org.apache.log4j,
+ org.apache.log4j.lf5.util,
+ org.apache.log4j.spi,
+ org.apache.log4j.xml
 Bundle-ClassPath: .,
  lib/aopalliance.jar,
  lib/aspectjrt.jar,
@@ -28,15 +31,18 @@ Bundle-ClassPath: .,
  lib/spring-context.jar,
  lib/spring-core.jar,
  lib/cglib-nodep-2.1_3.jar,
- lib/commons-lang-2.3.jar,
+ lib/asm-all-5.0.3.jar,
  lib/commons-logging.jar,
- lib/guava-16.0.1.jar,
- lib/wsdl2Apex-1.0.jar
+ lib/wsdl2Apex-1.0.jar,
+ lib/commons-lang3-3.3.2.jar,
+ lib/guava-18.0.jar
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
-Export-Package: com.google.common.annotations,
+Export-Package: antlr,
+ com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,
+ com.google.common.cache,
  com.google.common.collect,
  com.salesforce.ide.core,
  com.salesforce.ide.core.expressions,
@@ -77,9 +83,12 @@ Export-Package: com.google.common.annotations,
  com.salesforce.ide.core.remote.registries,
  com.salesforce.ide.core.remote.tooling,
  com.salesforce.ide.core.services,
+ com.salesforce.ide.core.services.hooks,
  com.salesforce.ide.wsdl2apex.core,
- org.apache.commons.lang,
+ org.antlr.runtime,
+ org.apache.commons.lang3,
  org.aspectj.lang,
+ org.objectweb.asm,
  org.springframework.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BuddyPolicy: registered

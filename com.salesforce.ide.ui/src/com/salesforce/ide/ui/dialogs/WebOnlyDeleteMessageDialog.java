@@ -20,11 +20,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 
-import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.ui.actions.ShowInBrowserAction;
+import com.salesforce.ide.ui.handlers.ShowInBrowserHandler;
 
 /**
  * A dialog for showing messages to the user. Message is displayed in a FormText, with processing enabled
@@ -42,22 +41,15 @@ public class WebOnlyDeleteMessageDialog extends HyperLinkMessageDialog {
 
     @Override
     protected void linkActivated(HyperlinkEvent e) {
+        int index = 0;
         try {
-            int index = 0;
-            try {
-                index = Integer.parseInt(e.data.toString());
-            } catch (NumberFormatException e1) {
-                logger.error("An error occured while opening the selected resource in the web", e1); //$NON-NLS-1$
-            }
-
-            ShowInBrowserAction action =
-                    (ShowInBrowserAction) ContainerDelegate.getInstance().getBean("showInBrowserAction"); //$NON-NLS-1$
-            StructuredSelection structuredSelection = new StructuredSelection(resources.get(index));
-            action.selectionChanged(action, structuredSelection);
-            action.execute(action);
-        } catch (ForceProjectException e1) {
-            logger.warn("An error occured while opening the selected resource in the web", e1); //$NON-NLS-1$
+            index = Integer.parseInt(e.data.toString());
+        } catch (NumberFormatException e1) {
+            logger.error("An error occured while opening the selected resource in the web", e1); //$NON-NLS-1$
+            return;
         }
+
+        ShowInBrowserHandler.execute(PlatformUI.getWorkbench(), new StructuredSelection(resources.get(index)));
     }
 
     /**

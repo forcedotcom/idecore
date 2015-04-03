@@ -14,7 +14,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.ViewPart;
 
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.core.services.LoggingService;
 import com.salesforce.ide.core.services.ProjectService;
 import com.salesforce.ide.core.services.RunTestsService;
@@ -26,7 +25,7 @@ public abstract class BaseViewPart extends ViewPart {
     protected ServiceLocator serviceLocator = null;
 
     //   C O N S T R U C T O R
-    public BaseViewPart() throws ForceProjectException {
+    public BaseViewPart() {
         super();
 
         serviceLocator = ContainerDelegate.getInstance().getServiceLocator();

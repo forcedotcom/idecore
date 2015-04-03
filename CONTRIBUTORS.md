@@ -2,11 +2,14 @@ This file contains the list of people (sorted alphabetically) who have
 contributed code to Force.com IDE throughout the years. This list was gleaned through the original Perforce history.
 
 * Akhilesh Gupta (agupta)
-* Adam Taylor (ataylor)
+* Amgad Souleiman (amgad-souleiman)
 * Bill Eidson (beidson)
 * Bhadri Narayanan Venkatesan (bvenkatesan)
 * Chris Wall (cwall)
 * Dave Caroll (dcarroll)
+* Farron Dutton (fdutton)
+* Gerard Sexton (wildcatgerry)
+* Keith Clarke (KeithClarke)
 * Matt Change (fchang)
 * Gordon Mendonsa (gmendonsa)
 * Nick Chen (nchen)

@@ -27,6 +27,7 @@ public abstract class BaseContainerDelegate implements IContainerDelegate {
     protected FactoryLocator factoryLocator = null;
 
     //   M E T H O D S
+    @Override
     public IContextHandler getContextHandler() {
         return contextHandler;
     }
@@ -36,6 +37,7 @@ public abstract class BaseContainerDelegate implements IContainerDelegate {
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContainerDelegate#getBean(java.lang.Class)
      */
+    @Override
     public Object getBean(Class<?> clazz)  {
         if (clazz == null || contextHandler == null) {
             return null;
@@ -51,6 +53,7 @@ public abstract class BaseContainerDelegate implements IContainerDelegate {
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContainerDelegate#getBean(java.lang.String)
      */
+    @Override
     public Object getBean(String name) throws ForceProjectException {
         if (contextHandler == null || Utils.isEmpty(name)) {
             return null;
@@ -86,6 +89,7 @@ public abstract class BaseContainerDelegate implements IContainerDelegate {
     /* (non-Javadoc)
      * @see com.salesforce.ide.core.internal.context.IContainerDelegate#dispose()
      */
+    @Override
     public void dispose() {
         if (contextHandler != null) {
             contextHandler.dispose();

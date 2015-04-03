@@ -31,15 +31,17 @@ public abstract class BaseNature implements IProjectNature {
 
     protected IProject project;
 
+    @Override
     public IProject getProject() {
         return project;
     }
 
+    @Override
     public void setProject(IProject project) {
         this.project = project;
     }
 
-    public void configure(String builderId) throws CoreException {
+    public void configure(String builderId) {
         if (logger.isDebugEnabled()) {
             logger.debug("Configuring '" + builderId + "' builder on project '" + project.getName() + "'");
         }
@@ -82,7 +84,7 @@ public abstract class BaseNature implements IProjectNature {
         }
     }
 
-    public void deconfigure(String builderId) throws CoreException {
+    public void deconfigure(String builderId) {
         if (logger.isDebugEnabled()) {
             logger.debug("Deconfiguring " + builderId + " builder on project " + project.getName());
         }

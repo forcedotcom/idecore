@@ -24,6 +24,7 @@ public class CodeCoverageWarningExt implements ICodeCoverageWarningExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageWarningExt#getId()
     */
+    @Override
     public String getId() {
         return codeCoverageWarning.getId().toString();
     }
@@ -31,6 +32,7 @@ public class CodeCoverageWarningExt implements ICodeCoverageWarningExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageWarningExt#getMessage()
     */
+    @Override
     public java.lang.String getMessage() {
         return codeCoverageWarning.getMessage();
     }
@@ -38,6 +40,7 @@ public class CodeCoverageWarningExt implements ICodeCoverageWarningExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageWarningExt#getName()
     */
+    @Override
     public java.lang.String getName() {
         return codeCoverageWarning.getName();
     }
@@ -45,6 +48,7 @@ public class CodeCoverageWarningExt implements ICodeCoverageWarningExt {
     /* (non-Javadoc)
     * @see com.salesforce.ide.core.remote.metadata.ICodeCoverageWarningExt#getNamespace()
     */
+    @Override
     public java.lang.String getNamespace() {
         return codeCoverageWarning.getNamespace();
     }

@@ -46,6 +46,7 @@ public class ForceStartup implements IStartup {
     private static Map<IResource, Package> manifestCache = new HashMap<IResource, Package>();
     public static boolean PACKAGE_MANIFEST_LISTENER_FLAG = Utils.isManifestListenerEnabled();
 
+    @Override
     public void earlyStartup() {
         if (!Utils.isSkipCompatibilityCheck()) {
             Bundle bundle = Platform.getBundle(Constants.PREV_IDE_BUNDLE_NAME);
@@ -63,8 +64,8 @@ public class ForceStartup implements IStartup {
                 if (state != Bundle.STOPPING || state != Bundle.UNINSTALLED) {
                     String title = UIMessages.getString("Force.Startup.Compatibility.Warning.title");
 
-                    String bundleName = (String) bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_NAME);
-                    String bundleVersion = (String) bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_VERSION);
+                    String bundleName = bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_NAME);
+                    String bundleVersion = bundle.getHeaders().get(Constants.BUNDLE_ATTRIBUTE_VERSION);
                     String dialogMsg =
                             UIMessages.getString("Force.Startup.Compatibility.Warning.message", new String[] {
                                     bundleName, bundleVersion });
@@ -79,6 +80,7 @@ public class ForceStartup implements IStartup {
         }
 
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 IPerspectiveDescriptor[] perspectives =
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getOpenPerspectives();

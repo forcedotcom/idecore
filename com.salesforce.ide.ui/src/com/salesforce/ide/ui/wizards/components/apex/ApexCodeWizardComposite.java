@@ -57,12 +57,11 @@ public abstract class ApexCodeWizardComposite extends ComponentWizardComposite {
         }
     }
 
-    public void disableComponentApiField() {
-        cmbApiVersions.setEnabled(false);
-    }
-
     @Override
-    public void disableControls() {
-        disableComponentApiField();
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (null != cmbApiVersions) {
+            cmbApiVersions.setEnabled(enabled);
+        }
     }
 }

@@ -87,7 +87,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 		fCounter += length;
 	}
 
-	private String getIndent(String line) {
+	private static String getIndent(String line) {
 		int length= line.length();
 
 		int i= 0;
@@ -99,14 +99,16 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 	/*
 	 * @see IHoverInformationPresenter#updatePresentation(Display display, String, TextPresentation, int, int)
 	 */
-	public String updatePresentation(Display display, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
+	@Override
+    public String updatePresentation(Display display, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
 		return updatePresentation((Drawable)display, hoverInfo, presentation, maxWidth, maxHeight);
 	}
 
 	/*
 	 * @see IHoverInformationPresenterExtension#updatePresentation(Drawable drawable, String, TextPresentation, int, int)
 	 */
-	public String updatePresentation(Drawable drawable, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
+	@Override
+    public String updatePresentation(Drawable drawable, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
 
 		if (hoverInfo == null)
 			return null;
@@ -172,7 +174,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
 		}
 	}
 
-	private String trim(StringBuffer buffer, TextPresentation presentation) {
+	private static String trim(StringBuffer buffer, TextPresentation presentation) {
 
 		int length= buffer.length();
 

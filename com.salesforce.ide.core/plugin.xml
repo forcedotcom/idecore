@@ -6,6 +6,7 @@
 -->
 
 <plugin>
+   <extension-point id="syncServices" name="Force.com IDE Sync Services" schema="schema/syncServices.exsd"/>
 
     <!--   N A T U R E S   &   B U I L D E R S   -->
     <!-- default -->
@@ -31,6 +32,16 @@
       </builder>
     </extension>
 
+  <extension point="org.eclipse.core.expressions.definitions">
+    <definition id="com.salesforce.ide.projectFile">
+      <adapt type="org.eclipse.core.resources.IResource">
+        <test
+          property="org.eclipse.core.resources.projectNature"
+          value="com.salesforce.ide.nature.default"/>
+      </adapt>
+    </definition>
+  </extension>
+
     <!-- online -->
     <extension point="org.eclipse.core.resources.natures"
         id="com.salesforce.ide.nature.online"
@@ -53,7 +64,22 @@
          </run>
       </builder>
     </extension>
-      
+
+  <extension point="org.eclipse.core.expressions.definitions">
+    <definition id="com.salesforce.ide.projectOnline">
+      <adapt type="org.eclipse.core.resources.IResource">
+        <test
+          property="org.eclipse.core.resources.projectNature"
+          value="com.salesforce.ide.nature.online"/>
+      </adapt>
+    </definition>
+    <definition id="com.salesforce.ide.projectOffline">
+      <not>
+        <reference definitionId="com.salesforce.ide.projectOnline"/>
+      </not>
+    </definition>
+  </extension>
+
     <!-- inactive -->
     <extension point="org.eclipse.core.resources.natures"
         id="com.salesforce.ide.nature.inactive"
@@ -64,10 +90,23 @@
         <options allowLinking="true" />
     </extension>
 
+  <extension point="org.eclipse.core.expressions.definitions">
+    <definition id="com.salesforce.ide.projectInactive">
+      <adapt type="org.eclipse.core.resources.IResource">
+        <test
+          property="org.eclipse.core.resources.projectNature"
+          value="com.salesforce.ide.nature.inactive"/>
+      </adapt>
+    </definition>
+    <definition id="com.salesforce.ide.projectActive">
+      <not>
+        <reference definitionId="com.salesforce.ide.projectInactive"/>
+      </not>
+    </definition>
+  </extension>
 
     <!--   C O N T E N T   T Y P E S   -->
-    <extension point="org.eclipse.core.runtime.contentTypes"
-            id="com.salesforce.ide.core.contentTypes">
+    <extension point="org.eclipse.core.contenttype.contentTypes">
 
        <content-type
             id="com.salesforce.ide.core.contentType.settings"

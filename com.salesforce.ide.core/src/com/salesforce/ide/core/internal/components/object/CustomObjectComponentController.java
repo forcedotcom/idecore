@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.core.internal.components.object;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
@@ -35,8 +34,7 @@ public class CustomObjectComponentController extends ComponentController {
     * refresh custom object cache
     */
     @Override
-    protected void postSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, IOException {
+    protected void postSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor) {
         if (componentWizardModel.getProject() == null || !componentWizardModel.getProject().exists()) {
             logger.warn("Unable to perform post finish jobs - project is null or does not exist");
             return;
@@ -55,5 +53,12 @@ public class CustomObjectComponentController extends ComponentController {
         }
 
         super.postSaveProcess(componentWizardModel, monitor);
+    }
+
+    @Override
+    protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
+            throws InterruptedException, InvocationTargetException {
+        // TODO Auto-generated method stub
+        
     }
 }

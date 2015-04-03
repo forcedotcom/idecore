@@ -334,6 +334,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
         }
 
         Arrays.sort(sobjects, new Comparator<SObject>() {
+            @Override
             public int compare(SObject o1, SObject o2) {
                 String name1 = (String) (o1).getField("Name");
                 String name2 = (String) (o2).getField("Name");
@@ -394,6 +395,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
         }
 
         Arrays.sort(scontrols, new Comparator<SObject>() {
+            @Override
             public int compare(SObject o1, SObject o2) {
                 String name1 = (String) (o1).getField("Name");
                 String name2 = (String) (o2).getField("Name");
