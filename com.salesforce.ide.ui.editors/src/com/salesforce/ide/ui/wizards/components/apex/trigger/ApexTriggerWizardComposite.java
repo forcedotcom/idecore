@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Group;
 
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ApexTrigger;
-import com.salesforce.ide.ui.wizards.components.IComponentWizardPage;
 import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardComposite;
 
 public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
@@ -67,6 +66,7 @@ public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
 
     protected void initialize(Set<String> supportedApiVesions) {
         setLayout(new GridLayout());
+        setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         Group grpProperties = createPropertiesGroup(this);
         createNameText(grpProperties);
@@ -114,19 +114,16 @@ public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
         return checkboxOperaionButton;
     }
 
-    public void disableTriggerNameField() {
-        grpTriggerOperations.setEnabled(false);
-    }
-
     @Override
-    public void disableControls() {
-        super.disableControls();
-        disableTriggerNameField();
-    }
-
-    @Override
-    public void setComponentWizardPage(IComponentWizardPage componentWizardPage) {
-        this.componentWizardPage = componentWizardPage;
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (null != grpTriggerOperations) {
+            grpTriggerOperations.setEnabled(enabled);
+        }
+        List<Button> triggerOperationsOptions = getCheckboxOperationButtons();
+        for (Button triggerOperationsOption : triggerOperationsOptions) {
+            triggerOperationsOption.setEnabled(enabled);
+        }
     }
 
     public List<Button> getCheckboxOperationButtons() {

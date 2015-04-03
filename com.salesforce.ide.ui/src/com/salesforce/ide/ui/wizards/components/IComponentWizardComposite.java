@@ -23,18 +23,10 @@ public interface IComponentWizardComposite {
 
     String getLabelString();
 
-    Combo getCmbPackageName();
-
-    String getPackageName();
-
-    void disableComponentNameFields();
-
-    void disableComponentPackageNameField();
-
     void setComponentWizardPage(IComponentWizardPage page);
 
-    void disableAllControls();
-
     Combo getCmbTemplateNames();
+
+    void setEnabled(boolean b);
 
 }

@@ -41,10 +41,10 @@ public class GenericComponentWizardComposite extends ComponentWizardComposite {
 
     protected final void initialize() {
         setLayout(new GridLayout(2, false));
+        setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         initSize();
         createTemplateLabel(this);
-        @SuppressWarnings("unused")
-        Label filler = new Label(this, SWT.NONE);
+        new Label(this, SWT.NONE); // filler
 
         initializeControls();
     }
@@ -79,8 +79,4 @@ public class GenericComponentWizardComposite extends ComponentWizardComposite {
         return UIMessages.getString("NewComponent.GenericComponentWizardOverview.message", values);
     }
 
-    @Override
-    public void disableControls() {
-
-    }
 }

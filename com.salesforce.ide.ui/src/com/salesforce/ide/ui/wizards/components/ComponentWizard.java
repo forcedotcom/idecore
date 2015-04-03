@@ -53,19 +53,16 @@ public abstract class ComponentWizard extends BaseWizard implements IComponentCr
 
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        final ComponentModel model = getComponentWizardModel();
-        if ((selection == null || selection.getFirstElement() == null) && model != null && model.getProject() == null) {
-            logger.warn("Unable to open new component wizard - project is null.");
-            Utils.openWarn(null, UIMessages.getString("NewComponentAction.MessageBox.title"),
-                UIMessages.getString("NewComponentAction.UnknownFolder.message"));
-            return;
-        }
-
-        final Object obj = selection.getFirstElement();
-        final IProject project = obj instanceof IResource ? ((IResource) obj).getProject() : null;
         setNeedsProgressMonitor(false);
         addImage();
-        getComponentController().setResources(project);
+
+        if (null != selection) {
+            Object obj = selection.getFirstElement();
+            if (obj instanceof IResource) {
+                IProject project = ((IResource) obj).getProject();
+                getComponentController().setResources(project);
+            }
+        }
 
         if (logger.isDebugEnabled()) {
             logger.debug(getClass().getSimpleName() + " wizard initialized");

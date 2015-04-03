@@ -47,9 +47,6 @@ public class ApexClassWizardPage extends ApexCodeWizardPage {
     }
 
     @Override
-    protected void disableAllApexControls() {}
-
-    @Override
     public void saveUserInput() throws InstantiationException, IllegalAccessException {
         // nothing saved to metadata instance at this time
         ApexClassModel apexClassModel = (ApexClassModel) componentWizard.getComponentWizardModel();
