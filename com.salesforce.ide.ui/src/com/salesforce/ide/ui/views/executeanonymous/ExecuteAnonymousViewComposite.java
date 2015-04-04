@@ -54,7 +54,6 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
     protected SashForm sashForm = null;
     protected Composite cmpSource = null;
-    protected Composite cmpResult = null;
     protected Button btnExecute = null;
     protected StyledText txtSourceInput = null;
     protected StyledText txtResult = null;
@@ -62,7 +61,6 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected Combo cboProject = null;
     protected ExecuteAnonymousController executeAnonymousController = null;
     protected LoggingComposite loggingComposite;
-    protected Composite cmpUserDebugLogs = null;
     protected StyledText txtUserDebugLogs = null;
     private static final int DEFAULT_PROJ_SELECTION = 0;
 
@@ -95,29 +93,32 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected void initialize() {
         GridLayout gridLayout = new GridLayout();
         setLayout(gridLayout);
-        setSize(new Point(566, 757));
+        setSize(new Point(566, 1200));
 
         createLoggingComposite();
-        createSash();
+        createInputAndOutputComposite();
 
         loadProjects();
         setActiveProject(executeAnonymousController.getProject());
     }
 
-    private void createSash() {
-        GridData gridData3 = new GridData();
-        gridData3.horizontalAlignment = GridData.FILL;
-        gridData3.grabExcessHorizontalSpace = true;
-        gridData3.grabExcessVerticalSpace = true;
-        gridData3.heightHint = 650;
-        gridData3.verticalAlignment = GridData.FILL;
+    private void createInputAndOutputComposite() {
+        GridData gridData = new GridData();
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.verticalAlignment = GridData.FILL;
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.grabExcessVerticalSpace = true;
+        gridData.heightHint = 650;
 
-        sashForm = new SashForm(this, SWT.BORDER_SOLID | SWT.HORIZONTAL);
-        sashForm.setSashWidth(2);
-        sashForm.setLayoutData(gridData3);
-        createSourceComposite();
-        createResultComposite();
-        createUserLogsComposite();
+        sashForm = new SashForm(this, SWT.BORDER | SWT.HORIZONTAL);
+        sashForm.setSashWidth(5);
+        sashForm.setLayoutData(gridData);
+        createSourceComposite(sashForm);
+
+        Composite composite = new Composite(sashForm, SWT.NONE);
+        composite.setLayout(new GridLayout(1, false));
+        createResultComposite(composite);
+        createUserLogsComposite(composite);
     }
 
     private void createLoggingComposite() {
@@ -130,8 +131,8 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                         LoggingInfo.SupportedFeatureEnum.ExecuteAnonymous);
     }
 
-    protected void createSourceComposite() {
-        cmpSource = new Composite(sashForm, SWT.NONE);
+    protected void createSourceComposite(Composite parent) {
+        cmpSource = new Composite(parent, SWT.NONE);
         cmpSource.setLayout(new GridLayout(2, false));
 
         // Source to execute: label
@@ -203,40 +204,37 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         job.schedule();
     }
 
-    protected void createResultComposite() {
-        cmpResult = new Composite(sashForm, SWT.NONE);
-        cmpResult.setLayout(new GridLayout(1, false));
-
-        CLabel lblResult = new CLabel(cmpResult, SWT.NONE);
+    protected void createResultComposite(Composite parent) {
+        CLabel lblResult = new CLabel(parent, SWT.NONE);
+        lblResult.setLayoutData(new GridData(GridData.BEGINNING));
         lblResult.setText("Results:");
 
-        txtResult = new StyledText(cmpResult, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
+        txtResult = new StyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
         txtResult.setBackground(color);
         txtResult.setLayoutData(getInputResultsGridData(1));
     }
     
-    private void createUserLogsComposite() {
-        cmpUserDebugLogs = new Composite(sashForm, SWT.NONE);
-        cmpUserDebugLogs.setLayout(new GridLayout(1, false));
-
-        CLabel lblResult = new CLabel(cmpResult, SWT.NONE);
+    private void createUserLogsComposite(Composite parent) {
+        CLabel lblResult = new CLabel(parent, SWT.NONE);
+        lblResult.setLayoutData(new GridData(GridData.BEGINNING));
         lblResult.setText("User Debug Logs:");
 
-        txtUserDebugLogs = new StyledText(cmpResult, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
+        txtUserDebugLogs = new StyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
         txtUserDebugLogs.setBackground(color);
         txtUserDebugLogs.setLayoutData(getInputResultsGridData(1));
-
     }
 
     protected void createProjectComposite(Composite cmpSource) {
         cmpProject = new Composite(cmpSource, SWT.NONE);
         cmpProject.setLayoutData(new GridData(SWT.BEGINNING));
-        GridLayout gridLayout1 = new GridLayout();
-        gridLayout1.numColumns = 3;
-        cmpProject.setLayout(gridLayout1);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 3;
+        cmpProject.setLayout(gridLayout);
+
         CLabel lblProject = new CLabel(cmpProject, SWT.NONE);
         lblProject.setLayoutData(new GridData(SWT.BEGINNING));
         lblProject.setText("Active Project:");
+
         cboProject = new Combo(cmpProject, SWT.DROP_DOWN | SWT.READ_ONLY);
         cboProject.addSelectionListener(new org.eclipse.swt.events.SelectionListener() {
             @Override
