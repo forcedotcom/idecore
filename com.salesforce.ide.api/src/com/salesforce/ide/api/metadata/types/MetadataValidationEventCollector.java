@@ -68,7 +68,7 @@ public class MetadataValidationEventCollector extends ValidationEventCollector {
             return null;
         }
 
-		List<String> messages = new ArrayList<String>(getEvents().length);
+		List<String> messages = new ArrayList<>(getEvents().length);
 		for (ValidationEvent validationEvent : getEvents()) {
 		    messages.add(getSeverity(validationEvent.getSeverity()) + ": " + validationEvent.getMessage());
 		}

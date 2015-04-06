@@ -31,7 +31,7 @@ public class RootElementFilter extends CompilationUnit.SwitchBlockWithDefault {
     private final List<Object> rootElements;
 
     RootElementFilter() {
-        this.rootElements = new ArrayList<Object>();
+        this.rootElements = new ArrayList<>();
     }
 
     @Override

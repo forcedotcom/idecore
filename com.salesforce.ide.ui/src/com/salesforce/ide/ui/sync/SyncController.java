@@ -72,7 +72,7 @@ public class SyncController extends Controller {
         super();
         model = new OrgModel(project);
         if (syncResources != null) {
-            List<IResource> list = new ArrayList<IResource>();
+            List<IResource> list = new ArrayList<>();
             for (IResource resource: syncResources) {
             	list.add(resource);
             }
@@ -201,7 +201,7 @@ public class SyncController extends Controller {
             ServiceException {
         monitorCheck(monitor);
         List<IResource> folders = getResourcesByType(syncResources, IResource.FOLDER);
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
         if (Utils.isNotEmpty(folders)) {
             for (IResource folder : folders) {
                 if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isComponentFolder(folder)) {
@@ -238,7 +238,7 @@ public class SyncController extends Controller {
         monitorCheck(monitor);
         List<IResource> files = getResourcesByType(syncResources, IResource.FILE);
         if (Utils.isNotEmpty(files)) {
-            List<IResource> sourceResources = new ArrayList<IResource>(files.size());
+            List<IResource> sourceResources = new ArrayList<>(files.size());
             for (IResource file : files) {
                 if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isSourceResource(file)) {
                     sourceResources.add(file);
@@ -413,7 +413,7 @@ public class SyncController extends Controller {
     }
 
     private IResource[] getResources(IProject project) throws CoreException {
-        Set<IResource> syncCandidates = new HashSet<IResource>();
+        Set<IResource> syncCandidates = new HashSet<>();
         IResource[] childResources = getProject().members();
         if (Utils.isNotEmpty(childResources)) {
             for (IResource childResource : childResources) {
@@ -446,9 +446,9 @@ public class SyncController extends Controller {
             return new IResource[0];
         }
 
-        Set<IResource> syncCandidates = new HashSet<IResource>();
+        Set<IResource> syncCandidates = new HashSet<>();
         List<IResource> members = null;
-        members = new ArrayList<IResource>(Arrays.asList(folder.members()));
+        members = new ArrayList<>(Arrays.asList(folder.members()));
 
         for (IResource resource : members) {
             if (resource.getType() == IResource.FOLDER) {
@@ -477,7 +477,7 @@ public class SyncController extends Controller {
             return new IResource[0];
         }
 
-        Set<IResource> syncCandidates = new HashSet<IResource>();
+        Set<IResource> syncCandidates = new HashSet<>();
         addFileResource(syncCandidates, file);
 
         addRemoteSyncCandidates(syncCandidates, remoteProjectPackageList);
@@ -490,7 +490,7 @@ public class SyncController extends Controller {
     private Set<IResource> getFolderResources(Set<IResource> syncCandidates, IFolder folder) throws CoreException {
         // for managed folders, consider managed files locally
         List<IResource> members = null;
-        members = new ArrayList<IResource>(Arrays.asList(folder.members()));
+        members = new ArrayList<>(Arrays.asList(folder.members()));
 
         for (IResource resource : members) {
             if (resource.getType() == IResource.FOLDER) {
@@ -627,8 +627,8 @@ public class SyncController extends Controller {
         }
 
         boolean result = true;
-        List<SyncInfo> projectDeletes = new ArrayList<SyncInfo>();
-        List<SyncInfo> projectSaves = new ArrayList<SyncInfo>();
+        List<SyncInfo> projectDeletes = new ArrayList<>();
+        List<SyncInfo> projectSaves = new ArrayList<>();
         for (SyncInfo syncInfo : syncInfos) {
             int change = SyncInfo.getChange(syncInfo.getKind());
             // outgoing
@@ -823,8 +823,8 @@ public class SyncController extends Controller {
         }
 
         boolean result = true;
-        List<SyncInfo> serverDeletes = new ArrayList<SyncInfo>();
-        List<SyncInfo> serverSaves = new ArrayList<SyncInfo>();
+        List<SyncInfo> serverDeletes = new ArrayList<>();
+        List<SyncInfo> serverSaves = new ArrayList<>();
         for (SyncInfo syncInfo : syncInfos) {
             int change = SyncInfo.getChange(syncInfo.getKind());
             if (SyncInfo.getDirection(syncInfo.getKind()) == SyncInfo.INCOMING) {
@@ -949,7 +949,7 @@ public class SyncController extends Controller {
             return null;
         }
 
-        List<IResource> resources = new ArrayList<IResource>();
+        List<IResource> resources = new ArrayList<>();
         for (SyncInfo syncInfo : syncInfos) {
             resources.add(syncInfo.getLocal());
         }
@@ -1125,7 +1125,7 @@ public class SyncController extends Controller {
             return null;
         }
 
-        List<IResource> specificResources = new ArrayList<IResource>(resources.size());
+        List<IResource> specificResources = new ArrayList<>(resources.size());
         for (IResource resource : resources) {
             if (resource.getType() == type) {
                 specificResources.add(resource);

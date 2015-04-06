@@ -77,7 +77,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
             }
         } else if (event.getType() == IResourceChangeEvent.POST_CHANGE && event.getDelta() != null) {
             // handle post-delete operations
-            final Set<IProject> deletedProjects = new HashSet<IProject>();
+            final Set<IProject> deletedProjects = new HashSet<>();
             IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
                 @Override
                 public boolean visit(IResourceDelta delta) {
@@ -124,7 +124,7 @@ public class ProjectDeletePreparator implements IResourceChangeListener {
             IProjectDescription description = project.getDescription();
             String[] natureIds = description.getNatureIds();
             if (Utils.isNotEmpty(natureIds)) {
-                List<String> newNatures = new ArrayList<String>();
+                List<String> newNatures = new ArrayList<>();
                 for (String natureId : natureIds) {
                     if (!natureId.startsWith(Constants.FORCE_PLUGIN_PREFIX)) {
                         newNatures.add(natureId);

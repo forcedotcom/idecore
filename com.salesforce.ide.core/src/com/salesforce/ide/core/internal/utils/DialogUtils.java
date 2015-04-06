@@ -194,7 +194,7 @@ public class DialogUtils {
     }
 
     public void invalidLoginDialog(String exceptionMessage, String projectName, boolean showProjectProperties) {
-        List<String> params = new ArrayList<String>();
+        List<String> params = new ArrayList<>();
 
         params.add(projectName == null ? "" : Messages.getString(
             "General.InvalidLogin.UpdateCredentials.Parms.project", new String[] { projectName }));

@@ -139,7 +139,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         if (Utils.isNotEmpty(wildCardSupportedComponentTypes)) {
             return wildCardSupportedComponentTypes;
         }
-        wildCardSupportedComponentTypes = new ArrayList<String>();
+        wildCardSupportedComponentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -160,7 +160,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getRegisteredComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -170,7 +170,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getInternalComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -187,7 +187,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getEnabledRegisteredComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
         ComponentList enabledComponents = getEnabledRegisteredComponents();
 
         if (Utils.isEmpty(enabledComponents)) {
@@ -306,7 +306,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getDeleteableRegisteredComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -379,7 +379,7 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        List<String> folderNames = new ArrayList<String>();
+        List<String> folderNames = new ArrayList<>();
         Component component = null;
         for (String componentType : componentTypes) {
             component = getComponentFactory().getComponentByComponentType(componentType);
@@ -767,7 +767,7 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        List<String> folderNames = new ArrayList<String>();
+        List<String> folderNames = new ArrayList<>();
         for (IComponent component : componentRegistry) {
             if (component.isWithinFolder()) {
                 folderNames.add(component.getDefaultFolder());
@@ -1318,7 +1318,7 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     public List<String> getSubComponentTypes() {
         List<String> componentTypes = getRegisteredComponentTypes();
-        List<String> childComponentTypes = new ArrayList<String>();
+        List<String> childComponentTypes = new ArrayList<>();
 
         if (Utils.isNotEmpty(componentTypes)) {
             Component component = null;
@@ -1335,7 +1335,7 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     public List<String> getParentTypesWithSubComponentTypes() {
         List<String> componentTypes = getRegisteredComponentTypes();
-        List<String> parentComponentTypes = new ArrayList<String>();
+        List<String> parentComponentTypes = new ArrayList<>();
 
         if (Utils.isNotEmpty(componentTypes)) {
             Component component = null;

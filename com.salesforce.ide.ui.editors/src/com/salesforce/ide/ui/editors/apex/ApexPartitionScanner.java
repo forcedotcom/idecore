@@ -84,7 +84,7 @@ public class ApexPartitionScanner extends RuleBasedPartitionScanner {
 
         IToken comment = new Token(APEX_MULTILINE_COMMENT);
 
-        List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
+        List<IPredicateRule> rules = new ArrayList<>();
 
         // Add rule for single line comments.
         rules.add(new EndOfLineRule("//", Token.UNDEFINED));

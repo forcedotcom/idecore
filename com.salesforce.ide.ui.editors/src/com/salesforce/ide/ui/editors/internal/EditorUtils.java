@@ -26,7 +26,7 @@ import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
  * @author ataylor
  */
 public class EditorUtils {
-    static Set<String> activitySet = new HashSet<String>();
+    static Set<String> activitySet = new HashSet<>();
     static IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI.getWorkbench().getActivitySupport();
     static IActivityManager activityManager = workbenchActivitySupport.getActivityManager();
 
@@ -39,7 +39,7 @@ public class EditorUtils {
      */
     @SuppressWarnings( { "unchecked" })
     public static void addCapabilites() {
-        Set<String> enabledActivityIds = new HashSet<String>(activityManager.getEnabledActivityIds());
+        Set<String> enabledActivityIds = new HashSet<>(activityManager.getEnabledActivityIds());
         boolean update = false;
 
         for (String activity : activitySet) {
@@ -54,7 +54,7 @@ public class EditorUtils {
      */
     @SuppressWarnings( { "unchecked" })
     public static void removeCapabilites() {
-        Set<String> enabledActivityIds = new HashSet<String>(activityManager.getEnabledActivityIds());
+        Set<String> enabledActivityIds = new HashSet<>(activityManager.getEnabledActivityIds());
         boolean update = false;
 
         for (String activity : activitySet) {

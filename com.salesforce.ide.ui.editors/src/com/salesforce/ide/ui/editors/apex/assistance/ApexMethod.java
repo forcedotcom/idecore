@@ -24,7 +24,7 @@ public class ApexMethod {
 
     private static Logger logger = Logger.getLogger(ApexMethod.class);
 
-    private final List<ApexArgument> arguments = new ArrayList<ApexArgument>();
+    private final List<ApexArgument> arguments = new ArrayList<>();
     private String className = "";
     private String returnType;
     private String documentation = "";

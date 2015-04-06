@@ -145,7 +145,7 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
     }
 
     public static Object[] validBlockMembers(List<BlockMember> values) {
-        final List<Object> children = new ArrayList<Object>();
+        final List<Object> children = new ArrayList<>();
         for (BlockMember member : values) {
             if (member != null) { // the parser can produce partial jADT with null members
                 member._switch(new BlockMemberFilter(children));
@@ -156,7 +156,7 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
     }
 
     public static Object[] validTriggerBlockMembers(List<BlockMember> values) {
-        final List<Object> children = new ArrayList<Object>();
+        final List<Object> children = new ArrayList<>();
         for (BlockMember member : values) {
             if (member != null) { // the parser can produce partial jADT with null members
                 member._switch(new TriggerMemberFilter(children));

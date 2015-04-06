@@ -71,7 +71,7 @@ public class PackageManifestDocumentUtils {
      * @return the list of found nodes, returns an empty list if none found
      */
     public static List<Node> getComponentTypes(Document doc) {
-        List<Node> list = new ArrayList<Node>();
+        List<Node> list = new ArrayList<>();
         Node packageNode = getPackageNode(doc);
 
         if (packageNode != null) {
@@ -95,7 +95,7 @@ public class PackageManifestDocumentUtils {
      * @return the list of found nodes, returns an empty list if none found
      */
     public static List<Node> getComponentMembers(Node component) {
-        List<Node> list = new ArrayList<Node>();
+        List<Node> list = new ArrayList<>();
 
         if (component != null) {
             NodeList nodeList = component.getChildNodes();

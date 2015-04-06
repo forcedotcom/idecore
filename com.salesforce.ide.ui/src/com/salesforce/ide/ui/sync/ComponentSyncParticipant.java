@@ -85,7 +85,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         super();
         this.project = project;
         if (syncResource != null) {
-            this.syncResources = new ArrayList<IResource>(1);
+            this.syncResources = new ArrayList<>(1);
             syncResources.add(syncResource);
         }
     }
@@ -129,7 +129,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         monitorCheck(monitor);
 
         if (Utils.isEmpty(syncResources)) {
-            this.syncResources = new ArrayList<IResource>(1);
+            this.syncResources = new ArrayList<>(1);
             syncResources.add(project);
         }
 

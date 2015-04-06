@@ -24,7 +24,7 @@ import com.salesforce.ide.ui.widgets.MultiCheckboxButton;
  * 
  */
 public class PackageTreeNode extends TreeNode {
-    List<PackageTreeNode> children = new ArrayList<PackageTreeNode>();
+    List<PackageTreeNode> children = new ArrayList<>();
     Image image;
     boolean retrieved;
     int state = MultiCheckboxButton.ENABLED;

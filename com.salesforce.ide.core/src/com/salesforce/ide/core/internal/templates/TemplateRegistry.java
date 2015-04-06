@@ -39,7 +39,7 @@ public class TemplateRegistry {
     private String templateDepotLocation = DEFAULT_TEMPLATE_DEPOT_LOCATION;
     private int maxCustomTemplates = 1;
     private String customPrefix = "Custom";
-    private final Map<String, Map<String, String>> templateRegistryMap = new HashMap<String, Map<String, String>>();
+    private final Map<String, Map<String, String>> templateRegistryMap = new HashMap<>();
 
     //   C O N S T R U C T O R
     public TemplateRegistry() {}
@@ -277,7 +277,7 @@ public class TemplateRegistry {
 
         Map<String, String> componentTemplates = getTemplatesByComponentType(componentType);
         if (Utils.isEmpty(componentTemplates)) {
-            componentTemplates = new HashMap<String, String>();
+            componentTemplates = new HashMap<>();
             templateRegistryMap.put(componentType, componentTemplates);
         }
 

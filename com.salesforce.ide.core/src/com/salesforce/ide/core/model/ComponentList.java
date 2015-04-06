@@ -223,7 +223,7 @@ public class ComponentList extends ArrayList<Component> {
             return filePaths;
         }
 
-        filePaths = new ArrayList<String>();
+        filePaths = new ArrayList<>();
         for (Component component : this) {
             String tmpFilePath = component.getMetadataFilePath();
 
@@ -278,7 +278,7 @@ public class ComponentList extends ArrayList<Component> {
             return null;
         }
 
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
         for (Component component : this) {
             componentTypes.add(component.getComponentType());
         }
@@ -287,7 +287,7 @@ public class ComponentList extends ArrayList<Component> {
     }
 
     public Collection<? extends IResource> getResources() {
-        List<IResource> resources = new ArrayList<IResource>();
+        List<IResource> resources = new ArrayList<>();
         for (Component component : this) {
             resources.add(component.getFileResource());
         }

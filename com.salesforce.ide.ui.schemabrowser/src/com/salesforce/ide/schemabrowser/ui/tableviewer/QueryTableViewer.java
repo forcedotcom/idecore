@@ -213,6 +213,7 @@ public class QueryTableViewer {
         
         final Table t = table;
         table.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
                 Point pt = new Point(e.x, e.y);
                 TableItem item = t.getItem(pt);
@@ -231,17 +232,17 @@ public class QueryTableViewer {
     }
     
     // This code was in the (deleted) CellModifier class
-    private void showDialog(XmlObject val) {
+    private static void showDialog(XmlObject val) {
         
-        Hashtable<String, String> columnNames = new Hashtable<String, String>();
-        Vector<Hashtable<String, Object>> rows = new Vector<Hashtable<String, Object>>();
+        Hashtable<String, String> columnNames = new Hashtable<>();
+        Vector<Hashtable<String, Object>> rows = new Vector<>();
 
         String dialogTitle = null;
         if ("sObject".equals(val.getXmlType().getLocalPart())) {
             dialogTitle = "Parent Record " + val.getName().getLocalPart();
             Iterator<XmlObject> iter = val.getChildren();
-            Hashtable<String, Object> row = new Hashtable<String, Object>();
-            ArrayList<String> rowsNames = new ArrayList<String>();
+            Hashtable<String, Object> row = new Hashtable<>();
+            ArrayList<String> rowsNames = new ArrayList<>();
             while (iter.hasNext()) {
                 XmlObject field = iter.next();
                 if (!XmlConstants.ELEM_TYPE.equals(field.getName().getLocalPart())
@@ -266,8 +267,8 @@ public class QueryTableViewer {
 
                 if ("records".equals(oneElement.getName().getLocalPart())) {
                     Iterator<XmlObject> children = oneElement.getChildren();
-                    Hashtable<String, Object> row = new Hashtable<String, Object>();
-                    ArrayList<String> rowsNames = new ArrayList<String>();
+                    Hashtable<String, Object> row = new Hashtable<>();
+                    ArrayList<String> rowsNames = new ArrayList<>();
                     while (children.hasNext()) {
                         XmlObject field = children.next();
                         if (!XmlConstants.ELEM_TYPE.equals(field.getName().getLocalPart())

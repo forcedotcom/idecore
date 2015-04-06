@@ -187,7 +187,7 @@ public class DeleteRefactorController extends BaseRefactorController {
             return null;
         }
 
-        List<RefactoringStatusEntry> entries = new ArrayList<RefactoringStatusEntry>();
+        List<RefactoringStatusEntry> entries = new ArrayList<>();
 
         // abort if online nature is not applied
         if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedOnlineProject(refactorModel.getProject())) {

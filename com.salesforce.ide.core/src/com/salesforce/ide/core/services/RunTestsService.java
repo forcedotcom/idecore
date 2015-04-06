@@ -111,7 +111,7 @@ public class RunTestsService extends BaseService {
 
         String namespacePrefix = null;
         String className = null;
-        Set<String> classNames = new HashSet<String>();
+        Set<String> classNames = new HashSet<>();
         IResource[] members = folder.members();
 
         if (Utils.isEmpty(members)) {

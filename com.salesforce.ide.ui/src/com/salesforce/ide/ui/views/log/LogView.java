@@ -104,8 +104,8 @@ public class LogView extends ViewPart implements ILogListener {
     	this( Platform.getLogFileLocation().toFile());
     }
     public LogView(File logFile) {
-        logEntries = new ArrayList<LogEntry>();
-        batchedLogEntries = new ArrayList<LogEntry>();
+        logEntries = new ArrayList<>();
+        batchedLogEntries = new ArrayList<>();
         this.logFile = logFile;
         // maintain instance of self so that the perspective listener focus on the particular log view instance
         instance = this;
@@ -354,7 +354,7 @@ public class LogView extends ViewPart implements ILogListener {
 
         try {
             // parse log file and create log entries
-            List<LogEntry> result = new ArrayList<LogEntry>();
+            List<LogEntry> result = new ArrayList<>();
             LogReader.parseLogFile(logFile, result);
             logEntries.addAll(result);
             limitEntriesCount();

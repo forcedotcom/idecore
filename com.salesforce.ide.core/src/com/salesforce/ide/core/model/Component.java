@@ -376,7 +376,7 @@ public class Component extends ComponentResource {
 
     public String getLastSupportedApiVersion() {
         if (Utils.isNotEmpty(supportedApiVersions)) {
-            TreeSet<String> tmpSupportedApiVersions = new TreeSet<String>();
+            TreeSet<String> tmpSupportedApiVersions = new TreeSet<>();
             tmpSupportedApiVersions.addAll(supportedApiVersions);
             return tmpSupportedApiVersions.last();
         }
@@ -385,7 +385,7 @@ public class Component extends ComponentResource {
 
     public String getFirstSupportedApiVersion() {
         if (Utils.isNotEmpty(supportedApiVersions)) {
-            TreeSet<String> tmpSupportedApiVersions = new TreeSet<String>();
+            TreeSet<String> tmpSupportedApiVersions = new TreeSet<>();
             tmpSupportedApiVersions.addAll(supportedApiVersions);
             return tmpSupportedApiVersions.first();
         }
@@ -642,7 +642,7 @@ public class Component extends ComponentResource {
     }
 
     public Map<String, String> getTemplates() {
-        return new HashMap<String, String>(0);
+        return new HashMap<>(0);
     }
 
     public Set<String> getTemplateNames() {
@@ -656,7 +656,7 @@ public class Component extends ComponentResource {
             return null;
         }
 
-        return sort ? new TreeSet<String>(templates.keySet()) : templates.keySet();
+        return sort ? new TreeSet<>(templates.keySet()) : templates.keySet();
     }
 
     public String getTemplate(String templateName) {
@@ -778,7 +778,7 @@ public class Component extends ComponentResource {
 
     // lookup method injection by container
     public List<String> getSubComponentTypes() {
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     public boolean hasSubComponentTypes() {

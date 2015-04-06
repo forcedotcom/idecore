@@ -135,7 +135,7 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
 
     // REVIEWME: why stored when we store in describe registry?
     private final Hashtable<String, DescribeSObjectResult> describeCache =
-            new Hashtable<String, DescribeSObjectResult>();
+            new Hashtable<>();
 
     // C O N S T R U C T O R S
     public SchemaBrowser() {
@@ -717,8 +717,8 @@ public class SchemaBrowser extends BaseMultiPageEditorPart {
         TreeItem childRelationShipsNode = getChildRelationshipsNode(customObjectNode);
 
         // Initialize a stack to hold subqueries
-        Stack<String> childRelationshipStack = new Stack<String>();
-        Stack<String> primaryFieldsStack = new Stack<String>();
+        Stack<String> childRelationshipStack = new Stack<>();
+        Stack<String> primaryFieldsStack = new Stack<>();
 
         SelectListChangedArguments slca = null;
         String parentAlias = customObjectNode.getText().toLowerCase().substring(0, 1);

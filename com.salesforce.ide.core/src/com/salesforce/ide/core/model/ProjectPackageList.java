@@ -190,7 +190,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public String[] getNamedPackageNames() {
-        List<String> packageNames = new ArrayList<String>();
+        List<String> packageNames = new ArrayList<>();
         for (ProjectPackage projectPackage : this) {
             String packageName = projectPackage.getName();
             if (Constants.DEFAULT_PACKAGED_NAME.equals(packageName)) {
@@ -202,7 +202,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public String[] getPackageNames(boolean includeDefault) {
-        List<String> packageNames = new ArrayList<String>();
+        List<String> packageNames = new ArrayList<>();
         for (ProjectPackage projectPackage : this) {
             String packageName = projectPackage.getName();
             if (Constants.DEFAULT_PACKAGED_NAME.equals(packageName) && !includeDefault) {
@@ -563,7 +563,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public List<String> getFilePaths(boolean stripSourcePrefix) {
-        List<String> filePaths = new ArrayList<String>();
+        List<String> filePaths = new ArrayList<>();
         for (ProjectPackage projectPackage : this) {
             List<String> tmpFilePaths = projectPackage.getFilePaths(stripSourcePrefix);
             if (Utils.isNotEmpty(tmpFilePaths)) {
@@ -574,7 +574,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public List<String> getComponentFilePaths(boolean stripSourcePrefix) {
-        List<String> filePaths = new ArrayList<String>();
+        List<String> filePaths = new ArrayList<>();
         for (ProjectPackage projectPackage : this) {
             List<String> tmpFilePaths = projectPackage.getComponentFilePaths(stripSourcePrefix);
             if (Utils.isNotEmpty(tmpFilePaths)) {
@@ -878,7 +878,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
      * @return
      */
     public List<Component> getComponentsById(String id) {
-        List<Component> components = new ArrayList<Component>();
+        List<Component> components = new ArrayList<>();
         if (!isEmpty() && Utils.isNotEmpty(id)) {
             for (ProjectPackage projectPackage : this) {
                 ComponentList componentList = projectPackage.getComponentList();
@@ -1050,7 +1050,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public List<IResource> getAllComponentResources(boolean includeManifest) {
-        List<IResource> resources = new ArrayList<IResource>();
+        List<IResource> resources = new ArrayList<>();
 
         if (isEmpty()) {
             return resources;
@@ -1072,7 +1072,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public List<IResource> getComponentResourcesForComponentTypes(String[] componentTypes) {
-        List<IResource> resources = new ArrayList<IResource>();
+        List<IResource> resources = new ArrayList<>();
 
         if (isEmpty() || Utils.isEmpty(componentTypes)) {
             return resources;
@@ -1263,7 +1263,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             return null;
         }
 
-        Set<String> componentTypes = new HashSet<String>();
+        Set<String> componentTypes = new HashSet<>();
         for (ProjectPackage projectPackage : this) {
             ComponentList componentList = projectPackage.getComponentList();
             if (Utils.isEmpty(componentList)) {

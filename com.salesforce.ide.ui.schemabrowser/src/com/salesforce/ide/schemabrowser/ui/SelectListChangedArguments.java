@@ -29,7 +29,7 @@ public class SelectListChangedArguments {
 
 	public void addField(String fieldName) {
 		if (selectedFields == null) {
-			selectedFields = new ArrayList<String>();
+			selectedFields = new ArrayList<>();
 		}
 		selectedFields.add(fieldName);
 	}
@@ -47,7 +47,7 @@ public class SelectListChangedArguments {
 	}
 
 	public void setSelectedFields(String[] fields) {
-		selectedFields = new ArrayList<String>();
+		selectedFields = new ArrayList<>();
 		for (String element : fields) {
 			selectedFields.add(element);
 		}

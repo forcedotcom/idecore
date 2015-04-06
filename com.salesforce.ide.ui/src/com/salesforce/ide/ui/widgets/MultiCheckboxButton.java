@@ -63,7 +63,7 @@ public class MultiCheckboxButton extends ManyStateButton {
         return FileLocator.find(ForceIdeUIPlugin.getDefault().getBundle(), new Path(path), null);
     }
 
-    static List<Image> images = new ArrayList<Image>();
+    static List<Image> images = new ArrayList<>();
     static {
         images.add(IMG_DISABLED.createImage()); // 0x000
         images.add(IMG_ENABLED.createImage()); // 0x001
@@ -81,7 +81,7 @@ public class MultiCheckboxButton extends ManyStateButton {
     MouseListener mouseClickListener;
     MouseMoveListener mouseMoveListener;
 
-    private Set<SelectionListener> selectionListeners = new HashSet<SelectionListener>();
+    private Set<SelectionListener> selectionListeners = new HashSet<>();
 
     public MultiCheckboxButton(Composite parent, int style) {
         super(parent, style);

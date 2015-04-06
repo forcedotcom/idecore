@@ -129,17 +129,17 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             List<IProblem> fReportedProblems;
         }
 
-        private final ThreadLocal<ProblemRequestorState> fProblemRequestorState = new ThreadLocal<ProblemRequestorState>();
+        private final ThreadLocal<ProblemRequestorState> fProblemRequestorState = new ThreadLocal<>();
         private int fStateCount = 0;
 
-        private final List<Annotation> fGeneratedAnnotations = new ArrayList<Annotation>();
+        private final List<Annotation> fGeneratedAnnotations = new ArrayList<>();
         private IProgressMonitor fProgressMonitor;
         private boolean fIsActive = false;
         private boolean fIsHandlingTemporaryProblems;
 
         private final ReverseMap fReverseMap = new ReverseMap();
         private List<Annotation> fPreviouslyOverlaid = null;
-        private List<Annotation> fCurrentlyOverlaid = new ArrayList<Annotation>();
+        private List<Annotation> fCurrentlyOverlaid = new ArrayList<>();
         private Thread fActiveThread;
 
         public ApexAnnotationModel(IResource resource) {
@@ -245,7 +245,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
                 boolean isCanceled = false;
 
                 fPreviouslyOverlaid = fCurrentlyOverlaid;
-                fCurrentlyOverlaid = new ArrayList<Annotation>();
+                fCurrentlyOverlaid = new ArrayList<>();
 
                 if (fGeneratedAnnotations.size() > 0) {
                     temporaryProblemsChanged = true;
@@ -411,7 +411,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
                     List<Annotation> list = (List<Annotation>) cached;
                     list.add(annotation);
                 } else if (cached instanceof Annotation) {
-                    List<Annotation> list = new ArrayList<Annotation>(2);
+                    List<Annotation> list = new ArrayList<>(2);
                     list.add((Annotation)cached);
                     list.add(annotation);
                     fReverseMap.put(position, list);
@@ -517,7 +517,7 @@ public class ApexDocumentProvider extends TextFileDocumentProvider {
             Object fValue;
         }
 
-        private final List<Entry> fList = new ArrayList<Entry>(2);
+        private final List<Entry> fList = new ArrayList<>(2);
         private int fAnchor = 0;
 
         public ReverseMap() {}

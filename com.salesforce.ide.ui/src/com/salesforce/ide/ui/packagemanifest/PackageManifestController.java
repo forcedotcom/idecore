@@ -80,16 +80,16 @@ public class PackageManifestController extends Controller {
     private static final String CACHE_ISSUBTYPE = "isSubType"; //$NON-NLS-1$
     private static final String CACHE_PARENT = "parent"; //$NON-NLS-1$
 
-    private final Map<String, PackageTreeNode> map = new HashMap<String, PackageTreeNode>();
+    private final Map<String, PackageTreeNode> map = new HashMap<>();
     private PackageTreeNode root;
     private FileMetadataExt ext;
     private Connection connection;
     private Document cache;
     private Document manifestDoc;
 
-    private final List<String> typeList = new ArrayList<String>();
-    private final List<String> subTypes = new ArrayList<String>();
-    private final Map<String, String> parentTypes = new HashMap<String, String>();
+    private final List<String> typeList = new ArrayList<>();
+    private final List<String> subTypes = new ArrayList<>();
+    private final Map<String, String> parentTypes = new HashMap<>();
 
     public PackageManifestController() {
         model = new OrgModel();
@@ -199,7 +199,7 @@ public class PackageManifestController extends Controller {
         }
     }
 
-    Map<String, Throwable> erroneousComponentTypes = new HashMap<String, Throwable>();
+    Map<String, Throwable> erroneousComponentTypes = new HashMap<>();
     boolean exceptionOccurred = false;
 
     /**
@@ -439,7 +439,7 @@ public class PackageManifestController extends Controller {
 
     public String getPath(PackageTreeNode node) {
         StringBuilder builder = new StringBuilder();
-        Stack<String> stack = new Stack<String>();
+        Stack<String> stack = new Stack<>();
         while (node != root) {
             String path = node.getName();
             if (node instanceof ComponentTypeNode) {
@@ -595,7 +595,7 @@ public class PackageManifestController extends Controller {
         constructTypeToSubTypeCompMap();
         List<Node> componentTypes = PackageManifestDocumentUtils.getComponentTypes(manifestDoc);
 
-        Map<String, Throwable> erroneousComponentTypes = new HashMap<String, Throwable>();
+        Map<String, Throwable> erroneousComponentTypes = new HashMap<>();
         for (Node componentType : componentTypes) {
             String componentTypeName = PackageManifestDocumentUtils.getComponentName(componentType);
 
@@ -816,7 +816,7 @@ public class PackageManifestController extends Controller {
         root = new PackageTreeNode(null);
         List<Node> componentTypes = getComponentTypesFromCache(cache, false);
 
-        Map<String, Throwable> erroneousComponentTypes = new HashMap<String, Throwable>();
+        Map<String, Throwable> erroneousComponentTypes = new HashMap<>();
         for (Node componentType : componentTypes) {
             Component comp = null;
             try {
@@ -983,7 +983,7 @@ public class PackageManifestController extends Controller {
     }
 
     public static List<Node> getComponentTypesFromCache(Document doc, boolean isSubType) {
-        List<Node> list = new ArrayList<Node>();
+        List<Node> list = new ArrayList<>();
         Node packageNode = PackageManifestDocumentUtils.getPackageNode(doc);
 
         if (packageNode != null) {
@@ -1003,7 +1003,7 @@ public class PackageManifestController extends Controller {
 
     public static List<Node> getSubComponentTypes(Document doc, String parent) {
         List<Node> componentTypes = getComponentTypesFromCache(doc, true);
-        List<Node> retList = new ArrayList<Node>(componentTypes);
+        List<Node> retList = new ArrayList<>(componentTypes);
         for (Node componentType : componentTypes) {
             if (!componentType.getAttributes().getNamedItem(CACHE_PARENT).getNodeValue().equals(parent)) {
                 retList.remove(componentType);

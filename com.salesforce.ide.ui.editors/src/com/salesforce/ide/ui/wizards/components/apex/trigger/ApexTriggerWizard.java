@@ -84,12 +84,12 @@ public class ApexTriggerWizard extends TemplateSelectionWizard {
         }
     }
 
-    private ContextTypeRegistry getTemplateContextRegistry() {
+    private static ContextTypeRegistry getTemplateContextRegistry() {
         // TODO: Inject the Apex template context registry.
         return ForceIdeEditorsPlugin.getDefault().getApexTemplateContextRegistry();
     }
 
-    private TemplateStore getTemplateStore() {
+    private static TemplateStore getTemplateStore() {
         // TODO: Inject the Apex template store.
         return ForceIdeEditorsPlugin.getDefault().getApexTemplateStore();
     }

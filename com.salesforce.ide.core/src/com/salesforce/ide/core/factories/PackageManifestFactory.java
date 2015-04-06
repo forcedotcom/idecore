@@ -1088,7 +1088,7 @@ public class PackageManifestFactory extends BaseFactory {
                 getPackageManifestFactory().getPackageManifest(project, Constants.DEFAULT_PACKAGED_NAME);
         PackageTypeMembers packageTypeMembers = getPackageType(packageManifest, componentType, false);
         Component componentInfo = getComponentFactory().getComponentByComponentType(componentType);
-        List<String> filePathListForComponentType = new ArrayList<String>();
+        List<String> filePathListForComponentType = new ArrayList<>();
         for (String member : packageTypeMembers.getMembers()) {
             if ("*".equals(member)) {
                 continue;

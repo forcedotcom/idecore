@@ -120,8 +120,7 @@ public abstract class ComponentController extends Controller {
         model = null;
     }
 
-    public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException,
-            FactoryException {
+    public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException {
         final ComponentModel componentWizardModel = getComponentWizardModel();
 
         final IProject project = componentWizardModel.getProject();
@@ -155,7 +154,7 @@ public abstract class ComponentController extends Controller {
     private static final QualifiedName KEY_ENABLEMENT_CACHE = new QualifiedName(Constants.FILE_PROP_PREFIX_ID,
             "componentTypeEnablementCache");
 
-    private Map<String, Boolean> getComponentTypeEnablementCache(final IProject project) {
+    private static Map<String, Boolean> getComponentTypeEnablementCache(final IProject project) {
         try {
             @SuppressWarnings("unchecked")
             Map<String, Boolean> cache = Map.class.cast(project.getSessionProperty(KEY_ENABLEMENT_CACHE));
@@ -170,8 +169,7 @@ public abstract class ComponentController extends Controller {
         }
     }
 
-    public boolean isNameUnique(IProgressMonitor monitor) throws ForceConnectionException, FactoryException,
-            ServiceException, ForceRemoteException, InterruptedException {
+    public boolean isNameUnique(IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException {
         return (isNameUniqueLocalCheck() && isNameUniqueRemoteCheck(monitor));
     }
 

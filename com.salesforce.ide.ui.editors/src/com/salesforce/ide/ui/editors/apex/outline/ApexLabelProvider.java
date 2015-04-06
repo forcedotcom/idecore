@@ -27,10 +27,10 @@ public class ApexLabelProvider extends LabelProvider {
     public static final String INNERCLASS_SUFFIX = "() " + ELLIPSIS_SUFFIX;
 
     private static final OutlineViewIconProvider iconProvider = new OutlineViewIconProvider();
-    private OutlineViewDispatcher<Image> fIconProvider = new OutlineViewDispatcher<Image>(iconProvider);
+    private OutlineViewDispatcher<Image> fIconProvider = new OutlineViewDispatcher<>(iconProvider);
 
     private static final OutlineViewElementTextProvider textProvider = new OutlineViewElementTextProvider();
-    private OutlineViewDispatcher<String> fTextProvider = new OutlineViewDispatcher<String>(textProvider);
+    private OutlineViewDispatcher<String> fTextProvider = new OutlineViewDispatcher<>(textProvider);
 
     @Override
     public Image getImage(Object element) {

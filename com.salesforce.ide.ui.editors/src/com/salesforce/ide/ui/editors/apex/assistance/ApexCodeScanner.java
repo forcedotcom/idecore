@@ -87,7 +87,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         IToken annotations =
                 new Token(new TextAttribute(apexCodeColorProvider.getColor(ApexCodeColorProvider.ANNOTATION)));
 
-        List<IRule> rules = new ArrayList<IRule>();
+        List<IRule> rules = new ArrayList<>();
 
         // end of line rule
         rules.add(new EndOfLineRule("//", comment));

@@ -29,7 +29,7 @@ public class UpgradeModel extends OrgModel {
 
     private static final Logger logger = Logger.getLogger(UpgradeModel.class);
 
-    private Map<String, List<UpgradeConflict>> upgradeConflicts = new HashMap<String, List<UpgradeConflict>>();
+    private Map<String, List<UpgradeConflict>> upgradeConflicts = new HashMap<>();
     private String ideBrandName = null;
     private String ideReleaseName = null;
     private String platformName = null;
@@ -86,7 +86,7 @@ public class UpgradeModel extends OrgModel {
         }
 
         if (Utils.isNotEmpty(upgradeConflicts)) {
-            TreeSet<String> tmpComponentTypes = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            TreeSet<String> tmpComponentTypes = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             tmpComponentTypes.addAll(upgradeConflicts.keySet());
             StringBuffer strBuff =
                     new StringBuffer("Found following upgrade conflicts for project '" + getProject().getName() + "'");

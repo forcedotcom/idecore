@@ -36,7 +36,7 @@ public class ConnectionFactory extends BaseFactory {
     private static final Logger logger = Logger.getLogger(ConnectionFactory.class);
 
     private static ConcurrentMap<ForceProject, Connection> connections =
-            new ConcurrentHashMap<ForceProject, Connection>();
+            new ConcurrentHashMap<>();
 
     protected DescribeObjectRegistry describeObjectRegistry = null;
     protected MergeFieldsRegistry mergeFieldsRegistry = null;

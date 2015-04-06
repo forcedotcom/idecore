@@ -200,7 +200,7 @@ public abstract class MetadataFormPage extends FormPage implements IMetadataSync
         @SuppressWarnings("unchecked")
         // This cast is save since we are using the object's type
         Class<T> type = (Class<T>) object.getClass();
-        marshaller.marshal(new JAXBElement<T>(qname, type, object), stringWriter);
+        marshaller.marshal(new JAXBElement<>(qname, type, object), stringWriter);
 
         return stringWriter.toString();
     }

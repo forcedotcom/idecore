@@ -32,7 +32,7 @@ public class LoggingInfo {
             LogCategoryExt.Visualforce, LogCategoryExt.System };
 
     private static final Map<LogCategoryExt, LogCategoryLevelExt[]> loggingMap =
-            new HashMap<LogCategoryExt, LogCategoryLevelExt[]>();
+            new HashMap<>();
 
     static LogCategoryLevelExt[] generateFreshLevels() {
         return new LogCategoryLevelExt[] { LogCategoryLevelExt.None, LogCategoryLevelExt.Error,

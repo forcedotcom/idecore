@@ -208,7 +208,7 @@ public class RunTestView extends BaseViewPart {
             return;
         }
 
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        HashMap<String, Integer> map = new HashMap<>();
         map.put(IMarker.LINE_NUMBER, location.getLine());
         try {
             IMarker marker = location.getFile().createMarker(IMarker.TEXT);
