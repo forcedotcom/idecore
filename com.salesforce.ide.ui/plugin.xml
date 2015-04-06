@@ -166,12 +166,29 @@
     	preferredPerspectives="com.salesforce.ide.perspective" 
     	project="false" />
     
-    <wizard id="com.salesforce.ide.ui.wizards.createWsdl2Apex" 
+    <wizard id="com.salesforce.ide.ui.wizards.createWSDL2Apex" 
     	category="com.salesforce.ide.ui.wizards" 
-    	class="com.salesforce.ide.ui.wizards.components.wsdl.Wsdl2apexWizard" 
+    	class="com.salesforce.ide.ui.wizards.components.wsdl.WSDL2ApexWizard" 
     	hasPages="true" 
     	icon="icons/appExDevIco16.png" 
     	name="Apex Class from WSDL" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+
+    <wizard id="com.salesforce.ide.ui.wizards.createApexComponent"
+        category="com.salesforce.ide.ui.wizards"
+        class="com.salesforce.ide.ui.wizards.components.apex.component.ApexComponentWizard"
+        hasPages="true"
+        icon="icons/appExDevIco16.png"
+        name="Visualforce Component"
+        preferredPerspectives="com.salesforce.ide.perspective"
+        project="false"/>
+
+    <wizard id="com.salesforce.ide.ui.wizards.createApexPage" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.apex.page.ApexPageWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Visualforce Page" 
     	preferredPerspectives="com.salesforce.ide.perspective" 
     	project="false" />
     
@@ -228,22 +245,6 @@
     	class="com.salesforce.ide.ui.wizards.components.profile.ProfileWizard" 
     	icon="icons/appExDevIco16.png" 
     	name="Profile" 
-    	preferredPerspectives="com.salesforce.ide.perspective" 
-    	project="false" />
-    
-    <wizard id="com.salesforce.ide.ui.wizards.createProfile" 
-    	category="com.salesforce.ide.ui.wizards"
-    	class="com.salesforce.ide.ui.wizards.components.profile.ProfileWizard"
-    	icon="icons/appExDevIco16.png" 
-    	name="Profile" 
-    	preferredPerspectives="com.salesforce.ide.perspective" 
-    	project ="false" />
-    
-    <wizard id="com.salesforce.ide.ui.wizards.createApexPage" 
-    	category="com.salesforce.ide.ui.wizards" 
-    	class="com.salesforce.ide.ui.wizards.components.apex.page.ApexPageWizard" 
-    	icon="icons/appExDevIco16.png" 
-    	name="Visualforce Page" 
     	preferredPerspectives="com.salesforce.ide.perspective" 
     	project="false" />
     

@@ -38,7 +38,7 @@ import com.salesforce.ide.ui.internal.utils.UIUtils;
  * @author kevin.ren
  * 
  */
-public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
+public class WSDL2ApexWizardFindPage extends DynamicWizardPage {
 
     private Text wsdlFileField;
     private String wsdlFileLocation = null;
@@ -60,7 +60,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
             shouldGenerate = false;
             String[] s = new String[] { getWsdlFileLocation() };
             try {
-                Wsdl2apexWizard w = (Wsdl2apexWizard) this.getWizard();
+                WSDL2ApexWizard w = (WSDL2ApexWizard) this.getWizard();
                 w.getApexGenerator().parse(s);
             } catch (Exception e) {
                 MessageDialog dialog =
@@ -93,7 +93,7 @@ public class Wsdl2apexWizardFindPage extends DynamicWizardPage {
         setWsdlFileLocation(a);
     }
 
-    public Wsdl2apexWizardFindPage() {
+    public WSDL2ApexWizardFindPage() {
         super("selectFiles");
         setTitle("Convert WSDL File to Apex");
         setDescription("This wizard generates Apex classes from a WSDL file.");

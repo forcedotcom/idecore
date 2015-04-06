@@ -42,10 +42,10 @@ import com.salesforce.ide.wsdl2apex.core.Wsdl2Apex;
  * 
  */
 
-public class Wsdl2apexWizard extends Wizard implements INewWizard {
+public class WSDL2ApexWizard extends Wizard implements INewWizard {
     private IStructuredSelection initialSelection;
-    private Wsdl2apexWizardFindPage convertPage;
-    private Wsdl2apexWizardRenameClasses createPage;
+    private WSDL2ApexWizardFindPage convertPage;
+    private WSDL2ApexWizardRenameClasses createPage;
     private IWorkbench currentWorkBench;
     private static final Logger logger = Logger.getLogger(ProjectPackageList.class);
     private Wsdl2Apex generator;
@@ -59,11 +59,11 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
         this.setForcePreviousAndNextButtons(true);
     }
 
-    public Wsdl2apexWizardFindPage getConvertPage() {
+    public WSDL2ApexWizardFindPage getConvertPage() {
         return this.convertPage;
     }
 
-    public Wsdl2apexWizardRenameClasses getCreatePage() {
+    public WSDL2ApexWizardRenameClasses getCreatePage() {
         return this.createPage;
     }
 
@@ -77,8 +77,8 @@ public class Wsdl2apexWizard extends Wizard implements INewWizard {
 
     @Override
     public void addPages() {
-        this.convertPage = new Wsdl2apexWizardFindPage();
-        this.createPage = new Wsdl2apexWizardRenameClasses();
+        this.convertPage = new WSDL2ApexWizardFindPage();
+        this.createPage = new WSDL2ApexWizardRenameClasses();
         addPage(convertPage);
         addPage(createPage);
     }

@@ -37,14 +37,14 @@ import com.salesforce.ide.ui.internal.utils.UIUtils;
  * 
  */
 @SuppressWarnings("restriction")
-public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
+public class WSDL2ApexWizardRenameClasses extends DynamicWizardPage {
 
     private Composite container = null;
     private ArrayList<Text> allText = null;
     private ScrolledComposite sc;
     private ArrayList<Label> allLabels = null;
 
-    public Wsdl2apexWizardRenameClasses() {
+    public WSDL2ApexWizardRenameClasses() {
         super("createFile");
         setTitle("Convert WSDL File to Apex");
         setDescription("This wizard generates Apex classes from a WSDL file.");
@@ -63,7 +63,7 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
     public void onEnterPage() {
         setErrorMessage(null);
         setPageComplete(true);
-        final Wsdl2apexWizard w = (Wsdl2apexWizard) this.getWizard();
+        final WSDL2ApexWizard w = (WSDL2ApexWizard) this.getWizard();
         if (allText != null) { //gets rid of all the old text widgets if there are any 
             for (Text t : allText) {
                 t.dispose();
