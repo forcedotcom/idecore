@@ -11,7 +11,6 @@
 package com.salesforce.ide.core.factories;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -862,7 +861,7 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @return
      * @throws FactoryException
      */
-    public Component getComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
+    private Component getComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
         if (file == null) {
             logger.error("File cannot be null");
             throw new IllegalArgumentException("File cannot be null");
@@ -1001,6 +1000,10 @@ public class ComponentFactory extends ApplicationContextFactory {
         return componentList;
     }
 
+    public Component getCompositeComponentFromFile(IFile file) throws FactoryException {
+        return getCompositeComponentFromFile(file, true);
+    }
+
     /**
      * Get existing composite component with given file resource. Boolean determines whether the body is included.
      *
@@ -1009,7 +1012,7 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @return
      * @throws FactoryException
      */
-    public Component getCompositeComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
+    private Component getCompositeComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
         if (file == null) {
             logger.error("File cannot be null");
             throw new IllegalArgumentException("File cannot be null");
@@ -1068,7 +1071,7 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @return
      * @throws FactoryException
      */
-    public Component getCompositeComponentFromComponent(Component component, boolean includeBody)
+    private Component getCompositeComponentFromComponent(Component component, boolean includeBody)
             throws FactoryException {
         if (component == null
                 || (Utils.isEmpty(component.getCompositeMetadataFilePath()) && Utils.isEmpty(component
@@ -1184,11 +1187,9 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         component.setFilePath(filePath);
         component.setPackageName(projectPackage.getName());
-        component.setFetchTime(Calendar.getInstance().getTimeInMillis());
         component.setInstalled(projectPackage.isInstalled());
         if (file != null) {
             component.setFile(file);
-            component.setBody(file);
         }
 
         if (filePath.endsWith(Constants.DEFAULT_METADATA_FILE_EXTENSION)) {
@@ -1199,8 +1200,6 @@ public class ComponentFactory extends ApplicationContextFactory {
         } else {
             setRemoteProperties(component, fileMetadataHandler);
         }
-
-        component.initChecksum();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Created component instance " + component.getFullDisplayName());

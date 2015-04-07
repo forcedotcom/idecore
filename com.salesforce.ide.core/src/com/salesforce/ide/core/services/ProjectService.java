@@ -36,7 +36,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -466,7 +465,7 @@ public class ProjectService extends BaseService {
         // check is file is a component and is a metadata composite, if so add composite
         Component component = null;
         try {
-            component = getComponentFactory().getComponentFromFile(file, true);
+            component = getComponentFactory().getComponentFromFile(file);
         } catch (FactoryException e) {
             logger.warn("Unable to detemine if file '" + file.getName() + "' is a component");
             return null;
@@ -681,7 +680,7 @@ public class ProjectService extends BaseService {
             } else if (IResource.FILE == componentFolderResource.getType()) {
                 IFile componentFile = (IFile) componentFolderResource;
                 try {
-                    Component tmpComponent = getComponentFactory().getComponentFromFile(componentFile, includeBody);
+                    Component tmpComponent = getComponentFactory().getComponentFromFile(componentFile);
                     componentList.add(tmpComponent, false, true);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Added component '"
@@ -1840,16 +1839,17 @@ public class ProjectService extends BaseService {
         return resource.getProject();
     }
 
+    // TODO: This method does not actually do anything.
     public void setResourceAttributes(IFile file) {
-        try {
-            Component component = getComponentFactory().getComponentFromFile(file, false);
-            if (component.isInstalled()) {
-                ResourceAttributes resourceAttributes = new ResourceAttributes();
-                resourceAttributes.setReadOnly(true);
-            }
-        } catch (Exception e) {
-            logger.error("Unable to set read-only access son file " + file.getName(), e);
-        }
+//        try {
+//            Component component = getComponentFactory().getComponentFromFile(file, false);
+//            if (component.isInstalled()) {
+//                ResourceAttributes resourceAttributes = new ResourceAttributes();
+//                resourceAttributes.setReadOnly(true);
+//            }
+//        } catch (Exception e) {
+//            logger.error("Unable to set read-only access son file " + file.getName(), e);
+//        }
     }
 
     public IFile saveToFile(IFile file, String content, IProgressMonitor monitor) throws CoreException {
@@ -2539,7 +2539,7 @@ public class ProjectService extends BaseService {
 
         Component component = null;
         try {
-            component = getComponentFactory().getComponentFromFile(file, true);
+            component = getComponentFactory().getComponentFromFile(file);
         } catch (FactoryException e) {
             logger.warn("Unable to check in sync for file '" + file.getName()
                     + "' - unable to create component from file");

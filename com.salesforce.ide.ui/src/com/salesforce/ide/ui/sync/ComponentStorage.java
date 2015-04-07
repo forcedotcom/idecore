@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.IPath;
 
 import com.salesforce.ide.core.model.Component;
 
-public class ComponentStorage implements IStorage {
+class ComponentStorage implements IStorage {
 
-	Component component;
+	private final Component component;
 
-	public ComponentStorage(Component component) {
+	ComponentStorage(Component component) {
 		this.component = component;
 	}
 

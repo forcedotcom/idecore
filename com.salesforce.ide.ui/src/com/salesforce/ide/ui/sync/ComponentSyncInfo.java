@@ -11,36 +11,28 @@
 package com.salesforce.ide.ui.sync;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.core.variants.IResourceVariantComparator;
 
+import com.salesforce.ide.core.model.Component;
+
 /**
  * Provides syncinfo with force.com
- *
  */
-public class ComponentSyncInfo extends SyncInfo {
+class ComponentSyncInfo extends SyncInfo {
 
-    public ComponentSyncInfo(IResource local, IResourceVariant base, IResourceVariant remote,
+    ComponentSyncInfo(IResource local, IResourceVariant base, IResourceVariant remote,
             IResourceVariantComparator comparator) {
         super(local, base, remote, comparator);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.team.core.subscribers.SyncInfo#calculateKind(org.eclipse.core.runtime.IProgressMonitor)
-     */
-    @Override
-    protected int calculateKind() throws TeamException {
-        return super.calculateKind();
     }
     
     @Override
     public String getLocalContentIdentifier() {
-    	if (getBase() != null && ((ComponentVariant) getBase()).getComponent() != null) {
-    		return String.valueOf(((ComponentVariant) getBase()).getComponent().getBodyChecksum());
+    	final ComponentVariant base = (ComponentVariant) getBase();
+        if (null != base) {
+            final Component component = base.getComponent();
+    		return null == component ? null : String.valueOf(component.getBodyChecksum());
     	}
 		return null;
 	}

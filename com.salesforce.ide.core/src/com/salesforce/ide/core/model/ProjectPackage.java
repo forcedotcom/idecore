@@ -612,7 +612,7 @@ public class ProjectPackage {
                     logger.warn("Component composite file not found at filepath '" + compositeComponentFilePath
                             + "' for component " + component.getFullDisplayName());
 
-                    compositeComponent = getComponentFactory().getCompositeComponentFromComponent(component, false);
+                    compositeComponent = getComponentFactory().getCompositeComponentFromComponent(component);
                 } else {
                     // create composite instance for object type
                     compositeComponent = getComponentFactory().getComponentFromFile(compositeComponentFile);
