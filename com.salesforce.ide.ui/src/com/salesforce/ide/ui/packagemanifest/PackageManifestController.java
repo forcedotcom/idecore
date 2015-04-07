@@ -720,7 +720,7 @@ public class PackageManifestController extends Controller {
         if (Utils.isNotEmpty(erroneousComponentTypes)) {
             StringBuilder warningDialogMsg = new StringBuilder();
             StringBuilder logMsg = new StringBuilder();
-            warningDialogMsg.append("The following component type(s) are not supported, so no component will be added to package manifest editor for these types. \n");
+            warningDialogMsg.append("The following component type(s) are not supported, so no component will be added to the package manifest editor for these types. \n");
             logMsg.append("Components skipped: \n");
             for (String compName : erroneousComponentTypes.keySet()) {
                 warningDialogMsg.append("* ").append(compName).append("\n");
