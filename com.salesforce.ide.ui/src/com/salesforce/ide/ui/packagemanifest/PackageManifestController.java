@@ -711,25 +711,22 @@ public class PackageManifestController extends Controller {
         if (Utils.isNotEmpty(erroneousComponentTypes)) {
             StringBuilder warningDialogMsg = new StringBuilder();
             StringBuilder logMsg = new StringBuilder();
-            warningDialogMsg.append("Exception happened when resolving component type(s), "
-                    + "so no component will be added to package manifest editor for these types. \n");
-            logMsg.append("Exception happened when PME creating model for: \n");
+            warningDialogMsg.append("The following component type(s) are not supported, so no component will be added to the package manifest editor for these types. \n");
+            logMsg.append("Components skipped: \n");
             for (String compName : erroneousComponentTypes.keySet()) {
                 warningDialogMsg.append("* ").append(compName).append("\n");
                 Throwable throwable = erroneousComponentTypes.get(compName);
                 logMsg.append("* Component type '").append(compName).append("' ");
 
                 if (Utils.isNotEmpty(throwable)) {
-                    logger.debug("Exception happened for component type '" + compName + "' in PME.", throwable);
+                    logger.debug("Component type '" + compName + "' not supported in package manifest editor.", throwable);
 
                 } else {
-                    logMsg
-                    .append("No exception occurred but the component factory is unable to resolve component type '"
-                            + compName + "'");
+                    logMsg.append("No exception occurred but the component factory is unable to resolve component type '" + compName + "'");
                 }
 
             }
-            warningDialogMsg.append("See log for detail exception messages.");
+            warningDialogMsg.append("See log for detailed messages.");
             Utils.openWarn(Messages.PackageManifest_content_Warning_text, warningDialogMsg.toString());
         }
     }

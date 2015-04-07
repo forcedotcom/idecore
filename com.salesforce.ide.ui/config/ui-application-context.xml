@@ -11,19 +11,4 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		scope="abstract">
 		<property name="componentFactory" ref="componentFactory" />
 	</bean>
-	<bean id="newWizardComponentContributionFactory"
-		class="com.salesforce.ide.ui.internal.factories.NewWizardComponentContributionFactory"
-		lazy-init="false" parent="componentContributionFactory" init-method="initContributions">
-		<property name="contributionTemplate" value="/templates/ComponentWizard.template" />
-	</bean>
-	<!--
-		actionComponentContributionFactory needs to be initialized after
-		wizardComponentContributionFactory
-	-->
-	<bean id="actionComponentContributionFactory"
-		class="com.salesforce.ide.ui.internal.factories.ActionComponentContributionFactory"
-		lazy-init="false" parent="componentContributionFactory" init-method="initContributions"
-		depends-on="newWizardComponentContributionFactory">
-		<property name="contributionTemplate" value="/templates/ComponentAction.template" />
-	</bean>
 </beans>

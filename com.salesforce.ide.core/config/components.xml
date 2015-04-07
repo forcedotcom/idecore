@@ -254,7 +254,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="maxNameLength" value="${CustomApplication.maxNameLength}" />
 
         <lookup-method name="getDefaultMetadataExtInstance" bean="customApplicationMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.application.CustomApplicationWizard" />
     </bean>
 
     <bean id="customApplicationMetadata" class="${xmlComponentType.package.name}.${CustomApplication.componentType}"
@@ -312,7 +311,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         </property>
         <lookup-method name="getSubComponentTypes" bean="subCustomObjectComponentTypeList"/>
         <lookup-method name="getDefaultMetadataExtInstance" bean="customObjectMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.object.CustomObjectWizard" />
     </bean>
 
     <util:list id="subCustomObjectComponentTypeList" list-class="java.util.ArrayList">
@@ -637,7 +635,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="maxNameLength" value="${Letterhead.maxNameLength}" />
 
         <lookup-method name="getDefaultMetadataExtInstance" bean="letterheadMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.letterhead.LetterheadWizard" />
     </bean>
 
     <bean id="letterheadMetadata" class="${xmlComponentType.package.name}.${Letterhead.componentType}" lazy-init="true">
@@ -701,7 +698,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="maxNameLength" value="${HomePageComponent.maxNameLength}" />
 
         <lookup-method name="getDefaultMetadataExtInstance" bean="homePageComponentMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.homepage.component.HomePageComponentWizard" />
     </bean>
 
     <bean id="homePageComponentMetadata" class="${xmlComponentType.package.name}.${HomePageComponent.componentType}" lazy-init="true">
@@ -727,7 +723,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="maxNameLength" value="${HomePageLayout.maxNameLength}" />
 
         <lookup-method name="getDefaultMetadataExtInstance" bean="homePageLayoutMetadata" />
-        <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.homepage.layout.HomePageLayoutWizard" />
     </bean>
 
     <bean id="homePageLayoutMetadata" class="${xmlComponentType.package.name}.${HomePageLayout.componentType}" lazy-init="true"/>
@@ -771,7 +766,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
       <property name="maxNameLength" value="${Profile.maxNameLength}" />
 
       <lookup-method name="getDefaultMetadataExtInstance" bean="profileMetadata" />
-      <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.profile.ProfileWizard" />
     </bean>
 
     <!--<util:list id="subProfileComponentTypeList" list-class="java.util.ArrayList">
@@ -1336,7 +1330,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
       </property>
       <lookup-method name="getSubComponentTypes" bean="subWorkflowComponentTypeList"/>
       <lookup-method name="getDefaultMetadataExtInstance" bean="workflowMetadata" />
-      <property name="wizardClassName" value="com.salesforce.ide.ui.wizards.components.workflow.WorkflowWizard" />
     </bean>
 
     <util:list id="subWorkflowComponentTypeList" list-class="java.util.ArrayList">
