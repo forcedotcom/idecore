@@ -160,17 +160,6 @@
             finalPerspective="com.salesforce.ide.perspective"
             project="true">
         </wizard>
-    
-        <wizard
-              category="com.salesforce.ide.ui.wizards"
-              class="com.salesforce.ide.ui.wizards.components.wsdl.Wsdl2apexWizard"
-              hasPages="true"
-              icon="icons/appExDevIco16.png"
-              id="com.salesforce.ide.ui.wizards.createWsdl2Apex"
-              name="Apex Class (from WSDL)"
-              preferredPerspectives="com.salesforce.ide.perspective"
-              project="false">
-        </wizard>
     </extension>
 
 

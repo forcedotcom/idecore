@@ -23,7 +23,7 @@ import com.salesforce.ide.api.metadata.types.ReportTypeCategory;
 public class ReportTypeCategoryExt {
 
     private static final String REPORT_TYPE_CATEGORY = "ReportTypeCategory";
-    private static List<ReportTypeCategoryExt> list = new ArrayList<ReportTypeCategoryExt>();
+    private static List<ReportTypeCategoryExt> list = new ArrayList<>();
 
     static {
         for (ReportTypeCategory reportTypeCategory : ReportTypeCategory.values()) {
@@ -33,7 +33,7 @@ public class ReportTypeCategoryExt {
     }
 
     public static List<String> getUiDisplayNames() {
-        List<String> uiDisplayNames = new ArrayList<String>();
+        List<String> uiDisplayNames = new ArrayList<>();
         for (ReportTypeCategoryExt categoryExt : list) {
             uiDisplayNames.add(categoryExt.getUiDisplayName());
         }

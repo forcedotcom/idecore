@@ -89,7 +89,7 @@ public class WebOnlyDeleteMessageDialog extends HyperLinkMessageDialog {
      *            the message
      */
     public static void openWarning(Shell parent, String title, String message, IResource resource) {
-        List<IResource> list = new ArrayList<IResource>();
+        List<IResource> list = new ArrayList<>();
         list.add(resource);
         openWarning(parent, title, message, list);
     }

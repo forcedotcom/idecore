@@ -81,7 +81,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
 
     public void addSelectedResource(IResource selectedResource) {
         if (selectedResources == null) {
-            selectedResources = new ArrayList<IResource>();
+            selectedResources = new ArrayList<>();
         }
         selectedResources.add(selectedResource);
     }
@@ -99,7 +99,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
         }
 
         if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
-            List<IResource> selectedResources = new ArrayList<IResource>();
+            List<IResource> selectedResources = new ArrayList<>();
             for (Iterator<?> iterator = ((IStructuredSelection) selection).iterator(); iterator.hasNext();) {
                 Object selectedObject = iterator.next();
                 if (!(selectedObject instanceof IResource)) {

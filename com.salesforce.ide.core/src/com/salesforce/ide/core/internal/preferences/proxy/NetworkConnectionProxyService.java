@@ -35,7 +35,7 @@ public class NetworkConnectionProxyService implements com.salesforce.ide.core.in
         private ServiceTracker<IProxyService, IProxyService> tracker = null;
 
         public void init() {
-            tracker = new ServiceTracker<IProxyService, IProxyService>(ForceIdeCorePlugin.getDefault().getBundle().getBundleContext(),
+            tracker = new ServiceTracker<>(ForceIdeCorePlugin.getDefault().getBundle().getBundleContext(),
                     IProxyService.class.getName(), null);
             tracker.open();
             proxyService = tracker.getService();

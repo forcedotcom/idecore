@@ -688,7 +688,7 @@ public class Utils {
 			return null;
 		}
 
-		List<String> properties = new ArrayList<String>();
+		List<String> properties = new ArrayList<>();
 		Method[] methods = clazz.getDeclaredMethods();
 		if (isNotEmpty(methods)) {
 			for (int i = 0; i < methods.length; i++) {
@@ -1116,7 +1116,7 @@ public class Utils {
 	}
 
 	protected static String[] getInvalidChars() {
-		Set<String> invalidCharSet = new HashSet<String>();
+		Set<String> invalidCharSet = new HashSet<>();
 		// invalid resource chars provided by eclipse platform
 		for (char osInvalidChar : OS.INVALID_RESOURCE_CHARACTERS) {
 			invalidCharSet.add(String.valueOf(osInvalidChar));
@@ -1309,7 +1309,7 @@ public class Utils {
 			return props;
 		}
 
-		List<FileProperties> newProps = new ArrayList<FileProperties>();
+		List<FileProperties> newProps = new ArrayList<>();
 
 		for (FileProperties prop : props) {
 			if (prop.getManageableState() != ManageableState.installed

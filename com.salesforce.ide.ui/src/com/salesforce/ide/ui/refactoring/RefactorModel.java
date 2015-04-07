@@ -31,7 +31,7 @@ public class RefactorModel {
     //   C O N S T R U C T O R S
     public RefactorModel() {
         super();
-        changeResources = new HashSet<IResource>();
+        changeResources = new HashSet<>();
     }
 
     public RefactorModel(Set<IResource> changeResources) {
@@ -71,7 +71,7 @@ public class RefactorModel {
 
     public void addChangeResources(List<IResource> changeResources) {
         if (this.changeResources != null) {
-            this.changeResources = new HashSet<IResource>();
+            this.changeResources = new HashSet<>();
         }
 
         if (Utils.isNotEmpty(changeResources)) {

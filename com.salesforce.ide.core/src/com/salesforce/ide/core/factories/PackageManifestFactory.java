@@ -218,7 +218,7 @@ public class PackageManifestFactory extends BaseFactory {
      */
     public Component getPackageManifestComponent(IProject project) throws FactoryException {
         IFile manfiestFile = getPackageManifestFile(project);
-        return getComponentFactory().getComponentFromFile(manfiestFile, true);
+        return getComponentFactory().getComponentFromFile(manfiestFile);
     }
 
     public IFile getPackageManifestFile(IProject project) {
@@ -1088,7 +1088,7 @@ public class PackageManifestFactory extends BaseFactory {
                 getPackageManifestFactory().getPackageManifest(project, Constants.DEFAULT_PACKAGED_NAME);
         PackageTypeMembers packageTypeMembers = getPackageType(packageManifest, componentType, false);
         Component componentInfo = getComponentFactory().getComponentByComponentType(componentType);
-        List<String> filePathListForComponentType = new ArrayList<String>();
+        List<String> filePathListForComponentType = new ArrayList<>();
         for (String member : packageTypeMembers.getMembers()) {
             if ("*".equals(member)) {
                 continue;

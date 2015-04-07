@@ -30,7 +30,7 @@ import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardComposite;
 public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
 
     private Group grpTriggerOperations = null;
-    private List<Button> checkboxOperationButtons = new ArrayList<Button>();
+    private List<Button> checkboxOperationButtons = new ArrayList<>();
     private ApexTrigger component = null;
     private List<String> triggerOperationsOptions = null;
 
@@ -85,7 +85,7 @@ public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
         grpTriggerOperations.setText("Apex Trigger Operations");
         grpTriggerOperations.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         grpTriggerOperations.setLayout(new GridLayout(4, false));
-        checkboxOperationButtons = new ArrayList<Button>();
+        checkboxOperationButtons = new ArrayList<>();
         // dynamically create trigger operation checkboxes
         if (Utils.isNotEmpty(triggerOperationsOptions)) {
             for (String operation : triggerOperationsOptions) {
@@ -131,7 +131,7 @@ public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
     }
 
     public List<String> getSelectedTriggerOperations() {
-        List<String> selectedTriggerOperations = new ArrayList<String>();
+        List<String> selectedTriggerOperations = new ArrayList<>();
         for (Button checkboxOperationButton : checkboxOperationButtons) {
             if (checkboxOperationButton.getSelection()) {
                 selectedTriggerOperations.add(checkboxOperationButton.getText());

@@ -58,7 +58,7 @@ public class BracketInserter implements VerifyKeyListener, ILinkedModeListener {
     private boolean fCloseAngularBrackets = true;
     private final String CATEGORY = toString();
     private IPositionUpdater fUpdater = new ExclusivePositionUpdater(CATEGORY);
-    private Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
+    private Stack<BracketLevel> fBracketLevelStack = new Stack<>();
 
     private AbstractDecoratedTextEditor editor;
     private ISourceViewer viewer;

@@ -45,6 +45,7 @@ public abstract class ApexCodeTemplateSelectionPage extends AbstractTemplateSele
      *            the parent control
      * @return a configured source viewer
      */
+    @Override
     protected final SourceViewer createViewer(Composite parent) {
         final ApexSourceViewerConfiguration configuration = new ApexSourceViewerConfiguration(preferenceStore(), null);
         configuration.init(this.componentModel.getProject());

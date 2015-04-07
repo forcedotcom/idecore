@@ -499,7 +499,7 @@ public class ProjectController extends Controller {
             throw new IllegalArgumentException("Project model cannot be null");
         }
 
-        // generate and save default pacakge manifest
+        // generate and save default package manifest
         savePackageManifest(monitor);
 
         monitorCheck(monitor);
@@ -524,8 +524,8 @@ public class ProjectController extends Controller {
             List<String> componentTypes =
                     ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
                             .getEnabledRegisteredComponentTypes();
-            List<String> componentTypesForListMetadata = new ArrayList<String>();
-            Map<String, List<String>> packageManifestMap = new HashMap<String, List<String>>();
+            List<String> componentTypesForListMetadata = new ArrayList<>();
+            Map<String, List<String>> packageManifestMap = new HashMap<>();
             // find a list of all non wildcard supported components. This would include folder based components also.
             for (String componentType : componentTypes) {
                 if (!ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
@@ -903,7 +903,7 @@ public class ProjectController extends Controller {
     }
 
     public TreeSet<String> getRemotePackageNames(IProgressMonitor monitor) throws InterruptedException, Exception {
-        TreeSet<String> packageNames = new TreeSet<String>();
+        TreeSet<String> packageNames = new TreeSet<>();
 
         // temporarily set timeout
         int timeoutMillis = getProjectModel().getForceProject().getReadTimeoutMillis();

@@ -10,8 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.sync;
 
-import java.util.Date;
-
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
@@ -19,12 +17,11 @@ import org.eclipse.team.core.variants.IResourceVariant;
 
 import com.salesforce.ide.core.model.Component;
 
-public class ComponentVariant implements IResourceVariant {
+class ComponentVariant implements IResourceVariant {
 
     private final Component component;
-    private boolean remote = false;
 
-    public ComponentVariant(Component component) {
+    ComponentVariant(Component component) {
         this.component = component;
     }
 
@@ -40,7 +37,7 @@ public class ComponentVariant implements IResourceVariant {
 
     @Override
     public String getContentIdentifier() {
-        return (new Date(component.getFetchTime())).toString();
+        return Long.toString(component.getBodyChecksum());
     }
 
     @Override
@@ -48,16 +45,8 @@ public class ComponentVariant implements IResourceVariant {
         return false;
     }
 
-    public Component getComponent() {
+    Component getComponent() {
         return component;
-    }
-
-    public boolean isRemote() {
-        return remote;
-    }
-
-    public void setRemote(boolean remote) {
-        this.remote = remote;
     }
 
     @Override

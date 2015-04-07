@@ -130,7 +130,7 @@ public class MetadataStubExt {
 
         //Does this do the same thing as below? if we even need it.
         DebuggingHeader_element header = metadataConnection.getDebuggingHeader();
-        Map<String, LogInfo> logInfoMap = new HashMap<String, LogInfo>();
+        Map<String, LogInfo> logInfoMap = new HashMap<>();
         //Add old headers
         if(header!=null){
             for (LogInfo info : header.getCategories()) {
@@ -291,7 +291,7 @@ public class MetadataStubExt {
         
         //break request into 3 queries per api call (api constraint)
         final int QUERIES_PER_CALL = 3;
-        List<FileProperties> filePropertiesList = new ArrayList<FileProperties>();
+        List<FileProperties> filePropertiesList = new ArrayList<>();
         try {
 	        for (List<ListMetadataQuery> queries : Lists.partition(allQueries, QUERIES_PER_CALL)) {
 	            try {
@@ -318,14 +318,14 @@ public class MetadataStubExt {
 			@Override
             public String apply(DescribeMetadataObject metadataObject) { return metadataObject.getXmlName(); }
 		};
-    	HashSet<String> supportedNames = new HashSet<String>();
+    	HashSet<String> supportedNames = new HashSet<>();
 		supportedNames.addAll(Lists.transform(metadataObjects, metadataObjectToName));
 		return supportedNames;
     }
 
     public Set<String> getSupportedMetadataComponents() throws ForceRemoteException {
     	List<DescribeMetadataObject> metadataObjects = Lists.newArrayList(describeMetadata().getMetadataObjects());
-    	HashSet<String> supportedNames = new HashSet<String>();
+    	HashSet<String> supportedNames = new HashSet<>();
     	for (DescribeMetadataObject object : metadataObjects) {
     		String name = object.getXmlName();
 
@@ -349,7 +349,7 @@ public class MetadataStubExt {
 	private List<FileProperties> tryOneByOne(List<ListMetadataQuery> queries,
 			IProgressMonitor monitor) throws MonitorCanceledException,
 			ForceRemoteException {
-		List<FileProperties> filePropertiesSubList = new ArrayList<FileProperties>();
+		List<FileProperties> filePropertiesSubList = new ArrayList<>();
 		for (List<ListMetadataQuery> listofOneQuery : Lists.partition(Lists.newArrayList(queries), 1)) {
 			try {
 				filePropertiesSubList.addAll(getFileProperties(listofOneQuery, monitor));
@@ -418,7 +418,7 @@ public class MetadataStubExt {
 
 	private static String getMonitorMessage(List<ListMetadataQuery> tmpListMetadataQueryList) {
         final StringBuffer strBuff = new StringBuffer();
-        Set<String> componentTypes = new HashSet<String>();
+        Set<String> componentTypes = new HashSet<>();
         for (Iterator<ListMetadataQuery> iterator = tmpListMetadataQueryList.iterator(); iterator.hasNext();) {
             ListMetadataQuery listMetadataQuery = iterator.next();
             if (Utils.isNotEmpty(listMetadataQuery.getFolder())) {

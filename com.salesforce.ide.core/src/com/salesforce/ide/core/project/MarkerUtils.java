@@ -121,7 +121,7 @@ public class MarkerUtils {
         if (isDirty(resource, markerId)) {
             return;
         }
-        Map<String, Object> attributes = new HashMap<String, Object>(4);
+        Map<String, Object> attributes = new HashMap<>(4);
 
         attributes.put(IMarker.MESSAGE, msg);
         // marker line numbers are 1-based: we set the marker arbitrarily on the first line
@@ -185,7 +185,7 @@ public class MarkerUtils {
         }
 
         String message = Messages.getString("Markers.CompilationPrefix.message") + " " + msg;
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, message);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, severity);
@@ -225,7 +225,7 @@ public class MarkerUtils {
         String message =
                 Messages.getString(severity == IMarker.SEVERITY_ERROR ? "Markers.SavePrefix.Error.message"
                         : "Markers.SavePrefix.Warning.message") + " " + msg;
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, message);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, severity);
@@ -279,7 +279,7 @@ public class MarkerUtils {
         }
 
         String message = Messages.getString("Markers.RetrievePrefix.message") + " " + msg;
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, message);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, severity);
@@ -315,7 +315,7 @@ public class MarkerUtils {
             return;
         }
 
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, msg);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
@@ -339,7 +339,7 @@ public class MarkerUtils {
             return;
         }
 
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, msg);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);

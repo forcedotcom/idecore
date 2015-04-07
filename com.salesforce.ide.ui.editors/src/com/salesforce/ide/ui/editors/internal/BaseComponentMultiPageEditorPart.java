@@ -122,14 +122,14 @@ public abstract class BaseComponentMultiPageEditorPart extends BaseMultiPageEdit
 
             if (!getProjectService().getComponentFactory().isComponentMetadata(file)) {
                 sourceEditorInput = input;
-                sourceComponent = getProjectService().getComponentFactory().getComponentFromFile(file, true);
+                sourceComponent = getProjectService().getComponentFactory().getComponentFromFile(file);
                 metadataEditorInput = getCompositeEditorInput(file);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Set metadata editor input from source file '"
                             + (metadataEditorInput != null ? metadataEditorInput.getName() : "n/a") + "'");
                 }
             } else {
-                metadataComponent = getProjectService().getComponentFactory().getComponentFromFile(file, true);
+                metadataComponent = getProjectService().getComponentFactory().getComponentFromFile(file);
                 sourceEditorInput = getCompositeEditorInput(file);
                 super.setInput(sourceEditorInput);
                 metadataEditorInput = input;
@@ -160,7 +160,7 @@ public abstract class BaseComponentMultiPageEditorPart extends BaseMultiPageEdit
     protected IEditorInput getCompositeEditorInput(IFile file) {
         IEditorInput editorInput = null;
         try {
-            Component component = getComponentFactory().getCompositeComponentFromFile(file, true);
+            Component component = getComponentFactory().getCompositeComponentFromFile(file);
             IFile compositeComponentFile = component.getFileResource();
 
             if (compositeComponentFile != null && compositeComponentFile.exists()) {

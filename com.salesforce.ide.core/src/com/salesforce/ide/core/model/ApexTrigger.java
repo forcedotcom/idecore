@@ -21,8 +21,8 @@ public class ApexTrigger extends Component {
     private static final Logger logger = Logger.getLogger(ApexTrigger.class);
 
     private String objectName = null;
-    private List<String> operationOptions = new ArrayList<String>();
-    private List<String> operations = new ArrayList<String>();
+    private List<String> operationOptions = new ArrayList<>();
+    private List<String> operations = new ArrayList<>();
 
     public ApexTrigger() {}
 

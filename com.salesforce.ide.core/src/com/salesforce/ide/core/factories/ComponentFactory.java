@@ -11,7 +11,6 @@
 package com.salesforce.ide.core.factories;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +138,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         if (Utils.isNotEmpty(wildCardSupportedComponentTypes)) {
             return wildCardSupportedComponentTypes;
         }
-        wildCardSupportedComponentTypes = new ArrayList<String>();
+        wildCardSupportedComponentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -160,7 +159,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getRegisteredComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -170,7 +169,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getInternalComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -187,7 +186,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getEnabledRegisteredComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
         ComponentList enabledComponents = getEnabledRegisteredComponents();
 
         if (Utils.isEmpty(enabledComponents)) {
@@ -306,7 +305,7 @@ public class ComponentFactory extends ApplicationContextFactory {
     }
 
     public List<String> getDeleteableRegisteredComponentTypes() {
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
@@ -379,7 +378,7 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        List<String> folderNames = new ArrayList<String>();
+        List<String> folderNames = new ArrayList<>();
         Component component = null;
         for (String componentType : componentTypes) {
             component = getComponentFactory().getComponentByComponentType(componentType);
@@ -767,7 +766,7 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        List<String> folderNames = new ArrayList<String>();
+        List<String> folderNames = new ArrayList<>();
         for (IComponent component : componentRegistry) {
             if (component.isWithinFolder()) {
                 folderNames.add(component.getDefaultFolder());
@@ -862,7 +861,7 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @return
      * @throws FactoryException
      */
-    public Component getComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
+    private Component getComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
         if (file == null) {
             logger.error("File cannot be null");
             throw new IllegalArgumentException("File cannot be null");
@@ -1001,6 +1000,10 @@ public class ComponentFactory extends ApplicationContextFactory {
         return componentList;
     }
 
+    public Component getCompositeComponentFromFile(IFile file) throws FactoryException {
+        return getCompositeComponentFromFile(file, true);
+    }
+
     /**
      * Get existing composite component with given file resource. Boolean determines whether the body is included.
      *
@@ -1009,7 +1012,7 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @return
      * @throws FactoryException
      */
-    public Component getCompositeComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
+    private Component getCompositeComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
         if (file == null) {
             logger.error("File cannot be null");
             throw new IllegalArgumentException("File cannot be null");
@@ -1068,7 +1071,7 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @return
      * @throws FactoryException
      */
-    public Component getCompositeComponentFromComponent(Component component, boolean includeBody)
+    private Component getCompositeComponentFromComponent(Component component, boolean includeBody)
             throws FactoryException {
         if (component == null
                 || (Utils.isEmpty(component.getCompositeMetadataFilePath()) && Utils.isEmpty(component
@@ -1184,11 +1187,9 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         component.setFilePath(filePath);
         component.setPackageName(projectPackage.getName());
-        component.setFetchTime(Calendar.getInstance().getTimeInMillis());
         component.setInstalled(projectPackage.isInstalled());
         if (file != null) {
             component.setFile(file);
-            component.setBody(file);
         }
 
         if (filePath.endsWith(Constants.DEFAULT_METADATA_FILE_EXTENSION)) {
@@ -1199,8 +1200,6 @@ public class ComponentFactory extends ApplicationContextFactory {
         } else {
             setRemoteProperties(component, fileMetadataHandler);
         }
-
-        component.initChecksum();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Created component instance " + component.getFullDisplayName());
@@ -1318,7 +1317,7 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     public List<String> getSubComponentTypes() {
         List<String> componentTypes = getRegisteredComponentTypes();
-        List<String> childComponentTypes = new ArrayList<String>();
+        List<String> childComponentTypes = new ArrayList<>();
 
         if (Utils.isNotEmpty(componentTypes)) {
             Component component = null;
@@ -1335,7 +1334,7 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     public List<String> getParentTypesWithSubComponentTypes() {
         List<String> componentTypes = getRegisteredComponentTypes();
-        List<String> parentComponentTypes = new ArrayList<String>();
+        List<String> parentComponentTypes = new ArrayList<>();
 
         if (Utils.isNotEmpty(componentTypes)) {
             Component component = null;

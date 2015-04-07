@@ -17,7 +17,6 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -35,8 +34,6 @@ import org.eclipse.swt.widgets.Shell;
 public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     protected static ICompletionProposal[] currentList;
-    private static String fileName = null;
-    private ContentAssistant assistant;
 
     /**
      * Simple content assist tip closer. The tip is valid in a range of 5 characters around its popup location.
@@ -75,10 +72,6 @@ public class ApexCompletionProcessor implements IContentAssistProcessor {
 
     //  C O N S T R U C T O R S
     public ApexCompletionProcessor() {}
-
-    public void setContentAssistant(ContentAssistant assistant) {
-        this.assistant = assistant;
-    }
 
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor

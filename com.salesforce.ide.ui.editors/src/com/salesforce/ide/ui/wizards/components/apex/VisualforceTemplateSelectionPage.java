@@ -45,14 +45,17 @@ public abstract class VisualforceTemplateSelectionPage extends AbstractTemplateS
      *            the parent control
      * @return a configured source viewer
      */
+    @Override
     protected final SourceViewer createViewer(Composite parent) {
         SourceViewerConfiguration sourceViewerConfiguration = new StructuredTextViewerConfiguration() {
             StructuredTextViewerConfiguration baseConfiguration = new StructuredTextViewerConfigurationHTML();
 
+            @Override
             public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
                 return baseConfiguration.getConfiguredContentTypes(sourceViewer);
             }
 
+            @Override
             public LineStyleProvider[] getLineStyleProviders(ISourceViewer sourceViewer, String partitionType) {
                 return baseConfiguration.getLineStyleProviders(sourceViewer, partitionType);
             }

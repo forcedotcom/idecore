@@ -33,7 +33,7 @@ public class MetadataFactory extends BaseFactory {
     private static final Logger logger = Logger.getLogger(MetadataFactory.class);
 
     private static ConcurrentMap<ForceProject, MetadataStubExt> metadataStubs =
-            new ConcurrentHashMap<ForceProject, MetadataStubExt>();
+            new ConcurrentHashMap<>();
 
     public MetadataFactory() {
         super();

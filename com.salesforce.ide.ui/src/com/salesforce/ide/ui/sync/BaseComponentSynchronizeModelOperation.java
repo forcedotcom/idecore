@@ -13,7 +13,6 @@ package com.salesforce.ide.ui.sync;
 import org.apache.log4j.Logger;
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.synchronize.SyncInfo;
@@ -21,14 +20,12 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.SynchronizeModelOperation;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.model.Component;
-import com.salesforce.ide.core.model.ProjectPackageList;
 
-public abstract class BaseComponentSynchronizeModelOperation extends SynchronizeModelOperation {
+abstract class BaseComponentSynchronizeModelOperation extends SynchronizeModelOperation {
     private static final Logger logger = Logger.getLogger(BaseComponentSynchronizeModelOperation.class);
 
-    protected SyncController syncController = null;
-    protected ComponentSubscriber subscriber = null;
+    private final SyncController syncController;
+    private final ComponentSubscriber subscriber;
 
     protected BaseComponentSynchronizeModelOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
             ComponentSubscriber subscriber) {
@@ -37,31 +34,21 @@ public abstract class BaseComponentSynchronizeModelOperation extends Synchronize
         this.syncController = subscriber.getSyncController();
     }
 
+    protected final SyncController getSyncController() {
+        return this.syncController;
+    }
+
+    protected final ComponentSubscriber getSubscriber() {
+        return this.subscriber;
+    }
+
     @Override
-    protected boolean canRunAsJob() {
+    public boolean canRunAsJob() {
         return true;
     }
 
-    protected boolean clearFromRemoteCache(SyncInfo[] syncInfos, IProgressMonitor monitor) {
-        boolean result = false;
-        if (Utils.isNotEmpty(syncInfos) && syncController != null) {
-            ProjectPackageList remoteProjectPackageList = syncController.getRemoteProjectPackageList();
-            for (SyncInfo syncInfo : syncInfos) {
-                ComponentVariant componentVariant = (ComponentVariant) syncInfo.getRemote();
-                if (componentVariant != null) {
-                    Component remoteComponent = componentVariant.getComponent();
-                    result = remoteProjectPackageList.removeComponent(remoteComponent);
-                    if (logger.isDebugEnabled()) {
-                        logger.info("Removed component " + remoteComponent.getFullDisplayName() + " from sync cache");
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     @Override
-    protected Shell getShell() {
+    public Shell getShell() {
         return Display.getDefault().getActiveShell();
     }
 
@@ -132,12 +119,12 @@ public abstract class BaseComponentSynchronizeModelOperation extends Synchronize
         });
     }
 
-    protected class ConfirmRunnable implements Runnable {
+    static class ConfirmRunnable implements Runnable {
         private String title = null;
         private String message = null;
         boolean confirm = false;
 
-        public ConfirmRunnable(String title, String message) {
+        ConfirmRunnable(String title, String message) {
             this.title = title;
             this.message = message;
         }
@@ -147,7 +134,7 @@ public abstract class BaseComponentSynchronizeModelOperation extends Synchronize
             confirm = Utils.openQuestion(title, message);
         }
 
-        public boolean getResult() {
+        boolean getResult() {
             return confirm;
         }
     }

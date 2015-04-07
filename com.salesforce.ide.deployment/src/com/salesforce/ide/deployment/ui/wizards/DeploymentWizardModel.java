@@ -34,7 +34,7 @@ public class DeploymentWizardModel extends OrgModel {
 
     public DeploymentWizardModel(IProject project) {
         super(project);
-        this.deployResources = new ArrayList<IResource>(1);
+        this.deployResources = new ArrayList<>(1);
         deployResources.add(project);
     }
 

@@ -39,7 +39,7 @@ public class LogEntry extends PlatformObject implements IWorkbenchAdapter {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(Constants.STANDARD_DATE_FORMAT);
 
-    private final List<LogEntry> children = new ArrayList<LogEntry>();
+    private final List<LogEntry> children = new ArrayList<>();
     private static final int MAX_LABEL_LENGTH = 325;
     public static final int TRACE_SEVERITY = 999;
     public static final String TRACE_SEVERITY_STR = "TRACE";

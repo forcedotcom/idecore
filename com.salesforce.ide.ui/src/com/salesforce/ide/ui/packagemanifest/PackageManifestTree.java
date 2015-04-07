@@ -84,7 +84,7 @@ public class PackageManifestTree extends FilteredTree {
     protected Status profileObjectStatus;
     protected Status filterStatus;
 
-    protected Set<IStatusChangedListener> statusChangedListeners = new HashSet<IStatusChangedListener>();
+    protected Set<IStatusChangedListener> statusChangedListeners = new HashSet<>();
     protected HideNonCheckedFilter checkFilter;
     protected Button hideCheckFilterButton;
     protected TreeColumn clmComponent;
@@ -398,7 +398,7 @@ public class PackageManifestTree extends FilteredTree {
 
     class PackageManifestTreeViewer extends TreeItemNotifyingTreeViewer {
         public boolean checkedAndFiltered = false;
-        public List<PackageTreeNode> filteredList = new ArrayList<PackageTreeNode>();
+        public List<PackageTreeNode> filteredList = new ArrayList<>();
 
         public PackageManifestTreeViewer(Composite parent, int style) {
             super(parent, style);

@@ -26,7 +26,7 @@ public class DeploymentComponentSorter {
     public static final Integer SORT_FILENAME = 4;
 
     static final Map<Integer, Comparator<DeploymentComponent>> sorters =
-            new HashMap<Integer, Comparator<DeploymentComponent>>();
+            new HashMap<>();
 
     static {
         sorters.put(SORT_ACTION, new Comparator<DeploymentComponent>() {

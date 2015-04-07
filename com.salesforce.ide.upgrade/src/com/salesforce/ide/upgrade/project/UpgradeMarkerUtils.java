@@ -61,7 +61,7 @@ public class UpgradeMarkerUtils {
             return;
         }
 
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, msg);
         attributes.put(IMarker.LINE_NUMBER, new Integer(1));
         attributes.put(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);

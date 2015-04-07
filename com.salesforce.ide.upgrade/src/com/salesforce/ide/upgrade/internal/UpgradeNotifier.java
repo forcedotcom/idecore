@@ -61,7 +61,7 @@ public class UpgradeNotifier implements IPartListener2, ISelectionChangedListene
 
     private static final Logger logger = Logger.getLogger(UpgradeProjectInspector.class);
 
-    private Set<String> notifiedProjectNames = new HashSet<String>();
+    private Set<String> notifiedProjectNames = new HashSet<>();
     private ServiceLocator serviceLocator = null;
     private IWorkbenchWindow window = null;
     private IWorkbenchPage page = null;

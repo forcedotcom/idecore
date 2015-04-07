@@ -78,7 +78,7 @@ public class ProjectContentSummaryAssembler {
     }
 
     public List<String> generateSummaryText(PackageManifestModel packageManifestModel, boolean augmentWithCache) {
-        List<String> summaries = new ArrayList<String>();
+        List<String> summaries = new ArrayList<>();
         if (packageManifestModel == null || packageManifestModel.getManifestDocument() == null) {
             summaries.add(Messages.getString("ProjectCreateWizard.ProjectContent.ContentSummary.NoContent.message"));
             return summaries;
@@ -144,7 +144,7 @@ public class ProjectContentSummaryAssembler {
                 StringBuffer summary = new StringBuffer();
 
                 // no parent-child relationship, handle normally
-                Set<String> members = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+                Set<String> members = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
                 members.addAll(typeStanza.getMembers());
                 // if members contain "*", add org members to display all
                 // content to be retrieved
@@ -197,7 +197,7 @@ public class ProjectContentSummaryAssembler {
                 if (cacheManifestComponentType != null) {
                     // augment project manifest content for type w/ cache
                     // content
-                    Set<String> tmpProjectManifestComponentMembers = new HashSet<String>();
+                    Set<String> tmpProjectManifestComponentMembers = new HashSet<>();
                     tmpProjectManifestComponentMembers.addAll(projectPackageComponentType.getMembers());
                     tmpProjectManifestComponentMembers.addAll(cacheManifestComponentType.getMembers());
                     projectPackageComponentType.getMembers().clear();
@@ -250,7 +250,7 @@ public class ProjectContentSummaryAssembler {
                     + typeStanza.getMembers().size() + "] components");
         }
 
-        Set<String> members = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        Set<String> members = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         members.addAll(typeStanza.getMembers());
 
         // custom objects require additional validation to differentiate between standard v. custom objects
@@ -299,7 +299,7 @@ public class ProjectContentSummaryAssembler {
             return;
         }
 
-        Set<String> members = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        Set<String> members = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         for (String typeMember : typeMembers) {
             if (!hasParentInManifest(typeMember, packageManifest)) {
                 members.add(typeMember);
@@ -358,7 +358,7 @@ public class ProjectContentSummaryAssembler {
      * @return
      */
     public List<String> generateSummaryText(FileMetadataExt fileMetadata, String[] componentTypes, boolean subscribe) {
-        List<String> summaries = new ArrayList<String>();
+        List<String> summaries = new ArrayList<>();
 
         if (componentTypes == null && fileMetadata != null) {
             Set<String> componentTypesSet = fileMetadata.getComponentTypes();
@@ -390,7 +390,7 @@ public class ProjectContentSummaryAssembler {
                 component = factoryLocator.getComponentFactory().getComponentByComponentType(componentType);
             }
 
-            Set<String> members = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            Set<String> members = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             String name = componentType;
             if (component == null) {
                 name = componentType;
@@ -500,7 +500,7 @@ public class ProjectContentSummaryAssembler {
 
         // pre-fetch the package stanza for each sub type to reduce looping thru
         // types superfluously
-        Map<String, List<String>> componentTypeMemberMap = new HashMap<String, List<String>>(subComponentTypes.size());
+        Map<String, List<String>> componentTypeMemberMap = new HashMap<>(subComponentTypes.size());
         for (String subComponentType : subComponentTypes) {
             if (parentComponentNames.contains(Constants.SUBSCRIBE_TO_ALL)
                     && packageManifestModel.getFileMetadatExt() != null) {
@@ -525,7 +525,7 @@ public class ProjectContentSummaryAssembler {
     protected List<String> getParentCustomObjectNames(Component component, PackageTypeMembers typeStanza,
             FileMetadataExt fileMetadatExt) {
         final List<String> members = typeStanza.getMembers();
-        List<String> parentComponentNames = new ArrayList<String>(members);
+        List<String> parentComponentNames = new ArrayList<>(members);
 
 
         if (parentComponentNames.contains(Constants.SUBSCRIBE_TO_ALL)

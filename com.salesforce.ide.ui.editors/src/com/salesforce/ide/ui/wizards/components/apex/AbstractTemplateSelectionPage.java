@@ -157,8 +157,9 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
     /**
      * Correctly resizes the table so no phantom columns appear
      */
-    private void configureTableResizing(final Composite parent, final Table table, final TableColumn column1, final TableColumn column2) {
+    private static void configureTableResizing(final Composite parent, final Table table, final TableColumn column1, final TableColumn column2) {
         parent.addControlListener(new ControlAdapter() {
+            @Override
             public void controlResized(ControlEvent e) {
                 Rectangle area = parent.getClientArea();
                 Point preferredSize = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -192,6 +193,7 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
         });
     }
 
+    @Override
     public final void createControl(Composite ancestor) {
         Composite parent = new Composite(ancestor, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -205,6 +207,7 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
         useTemplateButton.setLayoutData(data);
         useTemplateButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 enableTemplates();
             }
@@ -249,6 +252,7 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
         tableViewer.setContentProvider(new TemplateContentProvider(this.contextTypeId));
 
         tableViewer.setSorter(new ViewerSorter() {
+            @Override
             public int compare(Viewer viewer, Object object1, Object object2) {
                 if ((object1 instanceof Template) && (object2 instanceof Template)) {
                     Template left = (Template) object1;
@@ -262,12 +266,14 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
                 return super.compare(viewer, object1, object2);
             }
 
+            @Override
             public boolean isSorterProperty(Object element, String property) {
                 return true;
             }
         });
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent e) {
                 updateViewerInput();
             }
@@ -286,6 +292,7 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
             data = new GridData(SWT.END, SWT.FILL, true, false, 2, 1);
             link.setLayoutData(data);
             link.addSelectionListener(new SelectionAdapter() {
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     linkClicked();
                 }
@@ -447,7 +454,7 @@ public abstract class AbstractTemplateSelectionPage extends WizardPage {
     }
 
     // TODO: Inject the editor's logger.
-    private ILog logger() {
+    private static ILog logger() {
         return ForceIdeEditorsPlugin.getDefault().getLog();
     }
 

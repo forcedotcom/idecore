@@ -45,7 +45,7 @@ public class ApexModel {
 
     public static final String APEX_XML_MODEL = "/config/apexModel.xml";
 
-    private final HashMap<String, ApexObject> objects = new HashMap<String, ApexObject>();
+    private final HashMap<String, ApexObject> objects = new HashMap<>();
 
     private static final ApexModel INSTANCE;
 
@@ -147,7 +147,7 @@ public class ApexModel {
     }
 
     public Set<String> getObjectNames() {
-        TreeSet<String> objNameSet = new TreeSet<String>();
+        TreeSet<String> objNameSet = new TreeSet<>();
         if (Utils.isNotEmpty(objects)) {
             for (String objName : objects.keySet()) {
                 objNameSet.add(objName);

@@ -71,7 +71,7 @@ public abstract class BaseNature implements IProjectNature {
         // associate builder with project.
         ICommand newCmd = description.newCommand();
         newCmd.setBuilderName(builderId);
-        List<ICommand> newCmds = new ArrayList<ICommand>();
+        List<ICommand> newCmds = new ArrayList<>();
         newCmds.addAll(Arrays.asList(cmds));
         newCmds.add(newCmd);
         description.setBuildSpec(newCmds.toArray(new ICommand[newCmds.size()]));
@@ -116,7 +116,7 @@ public abstract class BaseNature implements IProjectNature {
         }
 
         // remove builder from project.
-        List<ICommand> newCmds = new ArrayList<ICommand>();
+        List<ICommand> newCmds = new ArrayList<>();
         newCmds.addAll(Arrays.asList(cmds));
         newCmds.remove(index);
         description.setBuildSpec(newCmds.toArray(new ICommand[newCmds.size()]));
@@ -159,7 +159,7 @@ public abstract class BaseNature implements IProjectNature {
         IProjectDescription description = project.getDescription();
         String[] prevNatures = description.getNatureIds();
 
-        List<String> newNatures = new ArrayList<String>();
+        List<String> newNatures = new ArrayList<>();
         for (String natureId : prevNatures) {
             newNatures.add(natureId);
         }
@@ -223,7 +223,7 @@ public abstract class BaseNature implements IProjectNature {
             String[] natures = description.getNatureIds();
 
             List<String> removeNatures = Arrays.asList(natureIds);
-            List<String> newNatures = new ArrayList<String>();
+            List<String> newNatures = new ArrayList<>();
             for (int i = 0; i < natures.length; i++) {
                 if (!removeNatures.contains(natures[i])) {
                     newNatures.add(natures[i]);

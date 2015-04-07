@@ -240,7 +240,7 @@ public class ProjectPackageFactory extends BaseFactory {
         projectPackageList.setProject(file.getProject());
 
         monitorCheck(monitor);
-        Component component = getComponentFactory().getComponentFromFile(file, true);
+        Component component = getComponentFactory().getComponentFromFile(file);
         if (component == null) {
             logger.warn("File '" + file.getProjectRelativePath().toPortableString()
                     + "' not supported by copy refactoring");

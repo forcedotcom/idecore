@@ -30,12 +30,12 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
  * 
  * @author cwall
  */
-public class ApplyToServerOperation extends BaseComponentSynchronizeModelOperation {
+class ApplyToServerOperation extends BaseComponentSynchronizeModelOperation {
     static final Logger logger = Logger.getLogger(ApplyToServerOperation.class);
 
-    public static final String OPERATION_TITLE = UIMessages.getString("SynchronizeHandler.ApplyLocalToOrganization.label");
+    static final String OPERATION_TITLE = UIMessages.getString("SynchronizeHandler.ApplyLocalToOrganization.label");
 
-    protected ApplyToServerOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
+    ApplyToServerOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
             ComponentSubscriber subscriber) {
         super(configuration, elements, subscriber);
     }
@@ -63,7 +63,7 @@ public class ApplyToServerOperation extends BaseComponentSynchronizeModelOperati
         }
 
         try {
-            applyToServer(subscriber, infos, monitor);
+            applyToServer(getSubscriber(), infos, monitor);
         } catch (InterruptedException e) {
             logger.warn("Operation cancelled: " + e.getMessage());
         } catch (InvocationTargetException e) {
@@ -93,8 +93,7 @@ public class ApplyToServerOperation extends BaseComponentSynchronizeModelOperati
                     monitor.beginTask(OPERATION_TITLE, 4 * infos.length);
                 }
                 try {
-                    clearFromRemoteCache(infos, monitor);
-                    syncController.applyToServer(subscriber, infos, monitor);
+                    getSyncController().applyToServer(subscriber, infos, monitor);
                 } catch (InterruptedException e) {
                     logger.warn("Operation cancelled: " + e.getMessage());
                 } catch (Exception e) {

@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.Subscriber;
-import org.eclipse.team.core.synchronize.SyncInfoTree;
 import org.eclipse.team.ui.TeamUI;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.ISynchronizeParticipantDescriptor;
@@ -37,7 +36,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
 
     private static final Logger logger = Logger.getLogger(ComponentSyncParticipant.class);
 
-    public static final String CONTRIBUTION_GROUP = "context_group_1";
+    private static final String CONTRIBUTION_GROUP = "context_group_1";
 
     //   M E N U   O P E R A T I O N S
     // TODO: need to enable actions conditionally
@@ -47,7 +46,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         }
 
         @Override
-        protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration,
+        public SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration,
                 IDiffElement[] elements) {
             return new ApplyToProjectOperation(configuration, elements, componentSubscriber);
         }
@@ -59,7 +58,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         }
 
         @Override
-        protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration,
+        public SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration,
                 IDiffElement[] elements) {
             return new ApplyToServerOperation(configuration, elements, componentSubscriber);
         }
@@ -76,49 +75,14 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         }
     }
 
-    protected IProject project = null;
-    protected ComponentSubscriber componentSubscriber = null;
-    protected List<IResource> syncResources = null;
-
-    //   C O N S T R U C T O R
-    public ComponentSyncParticipant(IProject project, IResource syncResource) {
-        super();
-        this.project = project;
-        if (syncResource != null) {
-            this.syncResources = new ArrayList<IResource>(1);
-            syncResources.add(syncResource);
-        }
-    }
+    private IProject project = null;
+    private ComponentSubscriber componentSubscriber = null;
+    private List<IResource> syncResources = null;
 
     public ComponentSyncParticipant(IProject project, List<IResource> syncResources) {
         super();
         this.project = project;
         this.syncResources = syncResources;
-    }
-
-    public List<IResource> getSyncResources() {
-        return syncResources;
-    }
-
-    public void setSyncResource(List<IResource> syncResources) {
-        this.syncResources = syncResources;
-    }
-
-    public void resetSyncResource(List<IResource> syncResources) {
-        clear();
-        this.syncResources = syncResources;
-    }
-
-    public ComponentSubscriber getComponentSubscriber() {
-        return componentSubscriber;
-    }
-
-    public IProject getProject() {
-        return project;
-    }
-
-    public void setProject(IProject project) {
-        this.project = project;
     }
 
     public void execute(IProgressMonitor monitor) throws TeamException, InterruptedException {
@@ -129,7 +93,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         monitorCheck(monitor);
 
         if (Utils.isEmpty(syncResources)) {
-            this.syncResources = new ArrayList<IResource>(1);
+            this.syncResources = new ArrayList<>(1);
             syncResources.add(project);
         }
 
@@ -143,7 +107,7 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
     }
 
     @Override
-    protected void setSubscriber(Subscriber subscriber) {
+    public void setSubscriber(Subscriber subscriber) {
         super.setSubscriber(subscriber);
         try {
             ISynchronizeParticipantDescriptor descriptor =
@@ -157,25 +121,13 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
     }
 
     @Override
-    protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
+    public void initializeConfiguration(ISynchronizePageConfiguration configuration) {
         super.initializeConfiguration(configuration);
         configuration.addMenuGroup(ISynchronizePageConfiguration.P_CONTEXT_MENU, CONTRIBUTION_GROUP);
         configuration.addActionContribution(new ComponentSyncActionContribution());
     }
 
-    @SuppressWarnings("restriction")
-    public void clear() {
-        if (getSubscriberSyncInfoCollector() != null && getSubscriberSyncInfoCollector().getSyncInfoSet() != null
-                && !getSubscriberSyncInfoCollector().getSyncInfoSet().isEmpty()) {
-            SyncInfoTree syncInfoTree = getSyncInfoSet();
-            if (logger.isInfoEnabled()) {
-                logger.info("Clearing [" + syncInfoTree.size() + "] sync infogs from tree");
-            }
-            syncInfoTree.clear();
-        }
-    }
-
-    protected void monitorCheck(IProgressMonitor monitor) throws InterruptedException {
+    private static void monitorCheck(IProgressMonitor monitor) throws InterruptedException {
         if (monitor != null) {
             if (monitor.isCanceled()) {
                 throw new InterruptedException("Operation cancelled");
@@ -183,24 +135,12 @@ public class ComponentSyncParticipant extends SubscriberParticipant {
         }
     }
 
-    protected void monitorWork(IProgressMonitor monitor, String subtask) {
-        if (monitor == null) {
-            return;
-        }
-
-        monitor.subTask(subtask);
-        monitor.worked(1);
-        if (logger.isDebugEnabled()) {
-            logger.debug(subtask);
-        }
-    }
-
-    protected void monitorWorkCheck(IProgressMonitor monitor) throws InterruptedException {
+    private static void monitorWorkCheck(IProgressMonitor monitor) throws InterruptedException {
         monitorCheck(monitor);
         monitorWork(monitor);
     }
 
-    protected void monitorWork(IProgressMonitor monitor) {
+    private static void monitorWork(IProgressMonitor monitor) {
         if (monitor == null) {
             return;
         }

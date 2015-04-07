@@ -30,11 +30,11 @@ import com.sforce.ws.MessageHandler;
  */
 public class MetadataDebuggingInfoHandler extends DefaultHandler implements MessageHandler {
 
-    private static ThreadLocal<String> LOCAL = new ThreadLocal<String>();
-    private final ThreadLocal<Boolean> isDebugLog = new ThreadLocal<Boolean>();
-    private final ThreadLocal<Boolean> isDebugLogFound = new ThreadLocal<Boolean>();
-    private final ThreadLocal<StringBuilder> log = new ThreadLocal<StringBuilder>();
-    private final ThreadLocal<CharacterLogger> characterLogger = new ThreadLocal<CharacterLogger>();
+    private static ThreadLocal<String> LOCAL = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> isDebugLog = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> isDebugLogFound = new ThreadLocal<>();
+    private final ThreadLocal<StringBuilder> log = new ThreadLocal<>();
+    private final ThreadLocal<CharacterLogger> characterLogger = new ThreadLocal<>();
     
     public MetadataDebuggingInfoHandler() {
     	

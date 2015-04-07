@@ -60,7 +60,7 @@ public class EquinoxAuthorization implements IAuthorizationService {
 		try {
 			ISecurePreferences root = SecurePreferencesFactory.getDefault();
 			ISecurePreferences node = root.node(FORCE_PROJECT + "/" + projectName);
-			Map<String, String> credentialMap = new HashMap<String, String>();
+			Map<String, String> credentialMap = new HashMap<>();
 			credentialMap.put(PROP_PASSWORD, node.get(PROP_PASSWORD, ""));
 			credentialMap.put(PROP_TOKEN, node.get(PROP_TOKEN, ""));
 			return credentialMap;

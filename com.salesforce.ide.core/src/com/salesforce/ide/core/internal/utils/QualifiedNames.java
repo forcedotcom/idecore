@@ -21,8 +21,6 @@ public class QualifiedNames {
     	new QualifiedName(Constants.FILE_PROP_PREFIX_ID, Constants.FILE_NAME);
     public static final QualifiedName QN_FULL_NAME =
             new QualifiedName(Constants.FILE_PROP_PREFIX_ID, Constants.FULL_NAME);
-    public static final QualifiedName QN_ORIGINAL_BODY_CHECKSUM =
-        new QualifiedName(Constants.FILE_PROP_PREFIX_ID, Constants.ORIGINAL_BODY_CHECKSUM);
     public static final QualifiedName QN_CREATED_BY_ID =
         new QualifiedName(Constants.FILE_PROP_PREFIX_ID, Constants.CREATED_BY_ID);
     public static final QualifiedName QN_CREATED_BY_NAME =
@@ -42,8 +40,6 @@ public class QualifiedNames {
     		Constants.LAST_MODIFIED_BY_NAME);
     public static final QualifiedName QN_PACKAGE_NAME = new QualifiedName(Constants.FILE_PROP_PREFIX_ID,
     		Constants.PACKAGE_NAME);
-    public static final QualifiedName QN_FETCH_DATE = new QualifiedName(Constants.FILE_PROP_PREFIX_ID,
-    		Constants.FETCH_DATE);
     public static final QualifiedName QN_STATE = new QualifiedName(Constants.FILE_PROP_PREFIX_ID,
     		Constants.STATE);
 

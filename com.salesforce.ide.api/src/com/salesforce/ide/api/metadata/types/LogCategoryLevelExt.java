@@ -23,7 +23,7 @@ import com.sforce.soap.metadata.LogCategoryLevel;
 public final class LogCategoryLevelExt {
     private final String externalVal;
     private final LogCategoryLevel logCategoryLevel;
-    private final static Map<String, LogCategoryLevelExt> map = new java.util.HashMap<String, LogCategoryLevelExt>();
+    private final static Map<String, LogCategoryLevelExt> map = new java.util.HashMap<>();
 
     protected LogCategoryLevelExt(LogCategoryLevel logCategoryLevel, String externalVal) {
         this.logCategoryLevel = logCategoryLevel;

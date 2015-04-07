@@ -105,7 +105,7 @@ public class ComponentPropertyPage extends BasePropertyPage {
 
         Component component = null;
         try {
-            component = getComponentFactory().getComponentFromFile(file, true);
+            component = getComponentFactory().getComponentFromFile(file);
             if (logger.isDebugEnabled()) {
                 logger.debug("Display properties for " + component.getFullDisplayName() + " for file '"
                         + file.getProjectRelativePath().toPortableString() + "'");

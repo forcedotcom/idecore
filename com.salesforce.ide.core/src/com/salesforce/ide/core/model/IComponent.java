@@ -71,8 +71,6 @@ public interface IComponent {
 
     long getOriginalBodyChecksum();
 
-    void initChecksum();
-
     boolean isMetadataComposite();
 
     boolean isWithinFolder();
