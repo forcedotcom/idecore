@@ -146,8 +146,16 @@
 
 
     <!--   W I Z A R D S   -->
-    <!-- project -->
-
+    <extension point="org.eclipse.ui.newWizards">
+    <category id="com.salesforce.ide.ui.wizards" name="%brandName" />
+    <wizard id="com.salesforce.ide.ui.wizards.createProject" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.project.ProjectCreateWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="%wizard.label.ForceProject" 
+    	finalPerspective="com.salesforce.ide.perspective" 
+    	project="true" />
+    </extension>
 
     <!--   M E N U S  -->
   <extension point="org.eclipse.ui.menus">
