@@ -16,7 +16,6 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -47,7 +45,6 @@ public class ProjectProjectContentComposite extends BaseComposite {
 
     protected ProjectProjectContentPage projectProjectContentPage = null;
     protected Composite parent = null;
-    protected Link lnkMoreInformation = null;
     protected Group grpComponentTypes = null;
     protected Button btnAll = null;
     protected Button btnAllApex = null;
@@ -87,28 +84,9 @@ public class ProjectProjectContentComposite extends BaseComposite {
         setLayout(new GridLayout(6, false));
 
         addListener(SWT.Resize, new Listener() {
+            @Override
             public void handleEvent(Event event) {
-                Rectangle rect = UIUtils.getClientArea(projectProjectContentPage.getProjectWizard().getShell());
-                GridData dataSelectContents = (GridData) lnkMoreInformation.getLayoutData();
-                dataSelectContents.widthHint = rect.width;
                 layout(true);
-            }
-        });
-
-        // OVERVIEW
-        lnkMoreInformation = new Link(this, SWT.WRAP);
-        lnkMoreInformation.setText(UIMessages.getString("ProjectCreateWizard.ProjectContentOverview.description"));
-        GridData dataSelectContents = new GridData(SWT.FILL, SWT.CENTER, true, false, 6, 0);
-        Rectangle rect = UIUtils.getClientArea(projectProjectContentPage.getProjectWizard().getShell());
-        dataSelectContents.widthHint = rect.width;
-        lnkMoreInformation.setLayoutData(dataSelectContents);
-        lnkMoreInformation.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(SelectionEvent e) {
-                widgetDefaultSelected(e);
-            }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                UIUtils.displayHelp(getClass().getSimpleName());
             }
         });
 
@@ -123,6 +101,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
             btnAll.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 5, 0));
             btnAll.setData(ProjectController.ALL_CONTENT);
             btnAll.addSelectionListener(new SelectionListener() {
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
                     if (btnAll.getSelection()) {
                         toggleButtons();
@@ -132,6 +111,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                     validateUserInput();
                 }
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     widgetDefaultSelected(e);
                 }
@@ -148,6 +128,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         btnAllApex.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 5, 0));
         btnAllApex.setData(ProjectController.ALL_APEX_CONTENT);
         btnAllApex.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (btnAllApex.getSelection()) {
                     toggleButtons();
@@ -157,6 +138,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -174,6 +156,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         btnCustomComponents.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 0));
         btnCustomComponents.setData(ProjectController.CUSTOM_COMPONENTS);
         btnCustomComponents.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (btnCustomComponents.getSelection()) {
                     toggleButtons();
@@ -183,6 +166,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -208,6 +192,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         btnSpecificPackage.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
         btnSpecificPackage.setData(ProjectController.SPECIFIC_PACKAGE);
         btnSpecificPackage.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (btnSpecificPackage.getSelection()) {
                     // enable drop-down
@@ -220,6 +205,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -228,6 +214,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         cmbPackageName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 0));
         cmbPackageName.setEnabled(false);
         cmbPackageName.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // set content summary text
                 projectProjectContentPage.setContentSummaryText();
@@ -235,6 +222,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -253,6 +241,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         btnNone.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 5, 0));
         btnNone.setData(ProjectController.NONE);
         btnNone.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 if (btnNone.getSelection()) {
                     toggleButtons();
@@ -261,6 +250,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
@@ -295,6 +285,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         btnCustomComponentsOpen.setText(btnText);
         btnCustomComponentsOpen.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 0));
         btnCustomComponentsOpen.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 try {
                     customComponentsDialog =
@@ -313,6 +304,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
                 validateUserInput();
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 widgetDefaultSelected(e);
             }
