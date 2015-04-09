@@ -25,7 +25,7 @@ public class LogCategoryExt {
     private final LogCategory logCategory;
     private final LogCategoryLevelExt defaultLogCategoryLevel;
     private final String externalVal;
-    private static Map<String, LogCategoryExt> map = new java.util.HashMap<String, LogCategoryExt>();
+    private static Map<String, LogCategoryExt> map = new java.util.HashMap<>();
 
     protected LogCategoryExt(LogCategory logCategory, LogCategoryLevelExt defaultLogCategoryLevel, String externalVal) {
         this.logCategory = logCategory;

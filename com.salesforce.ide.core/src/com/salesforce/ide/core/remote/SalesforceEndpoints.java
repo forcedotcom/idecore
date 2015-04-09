@@ -38,7 +38,7 @@ public class SalesforceEndpoints {
 
     private String defaultEndpointLabel = null;
     private Map<String, String> defaultEndpointServers = null;
-    private final TreeSet<String> userEndpointServers = new TreeSet<String>();
+    private final TreeSet<String> userEndpointServers = new TreeSet<>();
     private String userEndpointsFilePath = null;
     private String endpointUrlSuffix = null;
     private String defaultApiVersion = null;
@@ -119,7 +119,7 @@ public class SalesforceEndpoints {
     }
 
     public TreeSet<String> getAllEndpointServers() {
-        TreeSet<String> endpointServers = new TreeSet<String>();
+        TreeSet<String> endpointServers = new TreeSet<>();
         if (Utils.isNotEmpty(defaultEndpointServers)) {
             for (Object endpoint : defaultEndpointServers.values()) {
                 endpointServers.add((String) endpoint);

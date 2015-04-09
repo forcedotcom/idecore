@@ -50,7 +50,7 @@ public class ApexTriggerWizardPage extends ApexCodeWizardPage {
     protected void additionalInitialize(Composite parent) {
         super.additionalInitialize(parent);
         // capture selected operations
-        selectedTriggerOperations = new TreeSet<String>();
+        selectedTriggerOperations = new TreeSet<>();
         loadObjects(false);
     }
 

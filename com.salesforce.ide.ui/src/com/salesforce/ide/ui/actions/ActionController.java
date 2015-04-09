@@ -110,7 +110,7 @@ public abstract class ActionController {
 
     public void addSelectedResource(IResource selectedResource) {
         if (selectedResources == null) {
-            selectedResources = new ArrayList<IResource>();
+            selectedResources = new ArrayList<>();
         }
         selectedResources.add(selectedResource);
     }

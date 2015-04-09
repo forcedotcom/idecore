@@ -60,7 +60,7 @@ public class LoggingService extends BaseService {
      * @return
      */
     public LogInfo[] getAllLogInfo(IProject project, SupportedFeatureEnum supportedFeatureEnum) {
-        List<LogInfo> logInfoList = new ArrayList<LogInfo>();
+        List<LogInfo> logInfoList = new ArrayList<>();
         for (int i = 0; i < LoggingInfo.getLogCategories().length; i++) {
             LoggingInfo loggingInfo =
                     getLoggingInfoByCategory(project, LoggingInfo.getLogCategories()[i], supportedFeatureEnum);
@@ -72,7 +72,7 @@ public class LoggingService extends BaseService {
     }
 
     public LoggingInfo[] getAllLoggingInfo(IProject project, SupportedFeatureEnum supportedFeatureEnum) {
-        List<LoggingInfo> loggingInfoList = new ArrayList<LoggingInfo>();
+        List<LoggingInfo> loggingInfoList = new ArrayList<>();
         for (int i = 0; i < LoggingInfo.getLogCategories().length; i++) {
             LoggingInfo loggingInfo =
                     getLoggingInfoByCategory(project, LoggingInfo.getLogCategories()[i], supportedFeatureEnum);
@@ -144,7 +144,7 @@ public class LoggingService extends BaseService {
             SupportedFeatureEnum supportedFeatureEnum) {
         LogInfo[] metaLogInfo = getAllLogInfo(project, supportedFeatureEnum);
 
-        List<com.sforce.soap.apex.LogInfo> apexLogInfoList = new ArrayList<com.sforce.soap.apex.LogInfo>();
+        List<com.sforce.soap.apex.LogInfo> apexLogInfoList = new ArrayList<>();
         for (int i = 0; i < metaLogInfo.length; i++) {
             com.sforce.soap.apex.LogInfo apexLogInfo = new com.sforce.soap.apex.LogInfo();
             apexLogInfo.setCategory(com.sforce.soap.apex.LogCategory.valueOf(metaLogInfo[i].getCategory().name()));

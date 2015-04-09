@@ -72,7 +72,7 @@ public class ReportTypeModel extends ComponentModel {
         section.setMasterLabel(primaryObject.getLabelPlural()); // Master label is plural label of describeObject
 
         // exclude fields that describeSObject returned as extra: default + sobject specific set.
-        List<String> excludeFieldList = new ArrayList<String>();
+        List<String> excludeFieldList = new ArrayList<>();
         List<String> defaultExcludeFieldList =
                 describeObjectRegistry.getExcludedCrtFields().get(DEFAULT_EXCLUDED_FIELD_KEY);
         excludeFieldList.addAll(defaultExcludeFieldList);

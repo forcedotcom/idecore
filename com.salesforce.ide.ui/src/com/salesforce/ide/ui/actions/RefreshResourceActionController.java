@@ -257,7 +257,7 @@ public class RefreshResourceActionController extends ActionController {
             IOException, InvocationTargetException, Exception {
         monitorCheck(monitor);
         List<IResource> folders = getProjectService().getResourcesByType(selectedResources, IResource.FOLDER);
-        List<String> pkgNames = new ArrayList<String>();
+        List<String> pkgNames = new ArrayList<>();
         if (Utils.isNotEmpty(folders)) {
             for (IResource folder : folders) {
                 if (getProjectService().isReferencedPackageFolder(folder)) {
@@ -358,7 +358,7 @@ public class RefreshResourceActionController extends ActionController {
             ServiceException, Exception {
         monitorCheck(monitor);
         List<IResource> folders = getProjectService().getResourcesByType(selectedResources, IResource.FOLDER);
-        List<String> componentTypes = new ArrayList<String>();
+        List<String> componentTypes = new ArrayList<>();
         if (Utils.isNotEmpty(folders)) {
             for (IResource folder : folders) {
                 if (getProjectService().isComponentFolder(folder)) {
@@ -432,7 +432,7 @@ public class RefreshResourceActionController extends ActionController {
         monitorCheck(monitor);
         List<IResource> files = getProjectService().getResourcesByType(selectedResources, IResource.FILE);
         if (Utils.isNotEmpty(files)) {
-            List<IResource> sourceResources = new ArrayList<IResource>(files.size());
+            List<IResource> sourceResources = new ArrayList<>(files.size());
             for (IResource file : files) {
                 if (getProjectService().isSourceResource(file)) {
                     sourceResources.add(file);

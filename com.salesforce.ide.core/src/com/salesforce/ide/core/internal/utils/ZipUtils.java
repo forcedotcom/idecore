@@ -103,7 +103,7 @@ public class ZipUtils {
             throw new IllegalArgumentException("File zip cannot be null");
         }
 
-        List<String> filepaths = new ArrayList<String>();
+        List<String> filepaths = new ArrayList<>();
 
         try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
             final ZipInputStream zis = c.get();

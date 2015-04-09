@@ -37,7 +37,7 @@ public class ApexCodeColorProvider {
     public static final RGB APEX_SPECIFIC = new RGB(142, 35, 35);
     public static final RGB SOBJECTS_SPECIFIC = new RGB(34, 24, 230);
     public static final RGB TRIGGER_OPERATIONS = new RGB(142, 35, 35);
-    private static Map<RGB, Color> colorTable = new HashMap<RGB, Color>(10);
+    private static Map<RGB, Color> colorTable = new HashMap<>(10);
 
     public ApexCodeColorProvider() {
         super();

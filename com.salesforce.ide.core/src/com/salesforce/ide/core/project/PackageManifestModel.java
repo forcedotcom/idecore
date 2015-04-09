@@ -124,7 +124,7 @@ public class PackageManifestModel {
 
     public void addNodeAllSelection(String nodeName, boolean allSelected) {
         if (nodeAllSelection == null) {
-            nodeAllSelection = new HashMap<String, Boolean>();
+            nodeAllSelection = new HashMap<>();
         }
         nodeAllSelection.put(nodeName, new Boolean(allSelected));
     }
@@ -144,7 +144,7 @@ public class PackageManifestModel {
                     getPackageTypeMembers(updatedPackageComponentType, packageManifest);
             if (manifestComponentType != null) {
                 // augment project manifest content for type w/ cache content
-                Set<String> tmpProjectManifestComponentMembers = new HashSet<String>();
+                Set<String> tmpProjectManifestComponentMembers = new HashSet<>();
                 tmpProjectManifestComponentMembers.addAll(manifestComponentType.getMembers());
                 tmpProjectManifestComponentMembers.addAll(updatedPackageComponentType.getMembers());
                 manifestComponentType.getMembers().clear();

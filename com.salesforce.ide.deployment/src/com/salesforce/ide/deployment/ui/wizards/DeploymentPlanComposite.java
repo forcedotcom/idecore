@@ -336,7 +336,7 @@ public class DeploymentPlanComposite extends BaseDeploymentComposite {
     }
 
     class DeploymentPlanLabelProvider implements ITableLabelProvider {
-        List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
+        List<ILabelProviderListener> listeners = new ArrayList<>();
 
         // TODO: when we get action images
         @Override

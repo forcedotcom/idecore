@@ -287,7 +287,7 @@ public class ProjectPackage {
 
     public void addFilePathZipMapping(String filePath, byte[] fileContent) {
         if (filePathZipMapping == null) {
-            filePathZipMapping = new HashMap<String, byte[]>();
+            filePathZipMapping = new HashMap<>();
         }
 
         filePathZipMapping.put(filePath, fileContent);
@@ -316,7 +316,7 @@ public class ProjectPackage {
     }
 
     public TreeSet<String> getSortedFilePaths() {
-        TreeSet<String> filePaths = new TreeSet<String>();
+        TreeSet<String> filePaths = new TreeSet<>();
         if (Utils.isNotEmpty(filePathZipMapping)) {
             filePaths.addAll(filePathZipMapping.keySet());
         }
@@ -329,7 +329,7 @@ public class ProjectPackage {
 
     public List<String> getFilePaths(boolean stripSourcePrefix) {
         if (filePathZipMapping != null) {
-            return new ArrayList<String>(filePathZipMapping.keySet());
+            return new ArrayList<>(filePathZipMapping.keySet());
         } else if (Utils.isNotEmpty(componentList)) {
             return componentList.getFilePaths(stripSourcePrefix);
         } else {
@@ -339,7 +339,7 @@ public class ProjectPackage {
 
     public List<String> getComponentFilePaths(boolean stripSourcePrefix) {
         if (filePathZipMapping != null) {
-            return new ArrayList<String>(filePathZipMapping.keySet());
+            return new ArrayList<>(filePathZipMapping.keySet());
         } else if (Utils.isNotEmpty(componentList)) {
             return componentList.getFilePaths(stripSourcePrefix, false);
         } else {

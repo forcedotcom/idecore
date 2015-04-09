@@ -26,9 +26,9 @@ public class ApexObject {
 
     private static Logger logger = Logger.getLogger(ApexObject.class);
 
-    private Collection<ApexMethod> methods = new HashSet<ApexMethod>();
-    private List<ApexItem> items = new ArrayList<ApexItem>();
-    private List<ApexField> fields = new ArrayList<ApexField>();    
+    private Collection<ApexMethod> methods = new HashSet<>();
+    private List<ApexItem> items = new ArrayList<>();
+    private List<ApexField> fields = new ArrayList<>();    
     private String namespace = null;
     private String name = null;
     private boolean isPrimitive;

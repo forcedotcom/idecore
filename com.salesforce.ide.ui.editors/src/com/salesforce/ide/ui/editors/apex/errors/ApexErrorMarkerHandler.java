@@ -71,7 +71,7 @@ public class ApexErrorMarkerHandler {
             public Map<String, Object> _case(RealLoc x) {
                 try {
                     UserError userError = parseException.getUserError();
-                    Map<String, Object> config = new HashMap<String, Object>();
+                    Map<String, Object> config = new HashMap<>();
 
                     // There is the option to set the line number as well. However, that config is ignored if
                     // we set the CharStart and CharEnd. So, we only set the latter.

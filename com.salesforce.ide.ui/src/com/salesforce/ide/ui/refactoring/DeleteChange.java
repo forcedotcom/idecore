@@ -123,7 +123,7 @@ public class DeleteChange extends BaseChange {
                 logger.error("Unable to perform server delete", e);
             }
 
-            entries = new ArrayList<RefactoringStatusEntry>();
+            entries = new ArrayList<>();
             entries.add(refactorController.createFatalRefactoringStatusEntry("Unable to perform server delete: "
                     + e.getMessage() + ".  " + Messages.ResourceDeleteParticipant_exception_message));
         }

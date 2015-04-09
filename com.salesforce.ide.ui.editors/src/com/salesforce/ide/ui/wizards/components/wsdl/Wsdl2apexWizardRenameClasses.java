@@ -78,8 +78,8 @@ public class Wsdl2apexWizardRenameClasses extends DynamicWizardPage {
         }
 
         final HashMap<String, String> allClassNames = w.getApexGenerator().getResultFromParse();
-        allText = new ArrayList<Text>();
-        allLabels = new ArrayList<Label>();
+        allText = new ArrayList<>();
+        allLabels = new ArrayList<>();
         //generates the labels and widgets
         for (String classNS : allClassNames.keySet()) {
             Label label = new Label(container, SWT.NONE);

@@ -131,7 +131,7 @@ public abstract class BasePackageService extends BaseService {
     }
 
     protected List<String> getFilePaths(byte[] zipFile) throws IOException {
-        List<String> filePaths = new ArrayList<String>();
+        List<String> filePaths = new ArrayList<>();
         if (Utils.isNotEmpty(zipFile)) {
             try (final QuietCloseable<ZipInputStream> c = QuietCloseable.make(new ZipInputStream(new ByteArrayInputStream(zipFile)))) {
                 final ZipInputStream zis = c.get();

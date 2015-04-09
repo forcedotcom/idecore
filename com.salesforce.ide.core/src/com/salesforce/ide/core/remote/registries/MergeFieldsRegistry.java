@@ -41,9 +41,9 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
     private DescribeObjectRegistry describeObjectRegistry = null;
     private Hashtable<String, Hashtable<String, String>> standardMergeFields =
-            new Hashtable<String, Hashtable<String, String>>();
+            new Hashtable<>();
     private Hashtable<String, Hashtable<String, Hashtable<String, String>>> projectMergeFields =
-            new Hashtable<String, Hashtable<String, Hashtable<String, String>>>();
+            new Hashtable<>();
 
     private String userRoleKey = "userRole";
     private String profileKey = "profile";
@@ -163,7 +163,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
     // custom objects types
     public Hashtable<String, String> getAllObjectTypes(IProject project) throws ForceRemoteException {
-        Hashtable<String, String> tempTable = new Hashtable<String, String>();
+        Hashtable<String, String> tempTable = new Hashtable<>();
         Hashtable<String, String> standardObjectTypes = getStandardObjectTypes();
         Hashtable<String, String> customObjectTypes = getCustomObjectTypes(project);
 
@@ -189,7 +189,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
             if (Utils.isNotEmpty(customObjectTypes)) {
                 Hashtable<String, Hashtable<String, String>> tempTable =
-                        new Hashtable<String, Hashtable<String, String>>();
+                        new Hashtable<>();
                 tempTable.put(CUSTOM_OBJECT_TYPES, customObjectTypes);
                 projectMergeFields.put(project.getName(), tempTable);
             } else {
@@ -212,7 +212,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
             return null;
         }
 
-        Hashtable<String, String> customObjectTypes = new Hashtable<String, String>(objectTypes.size());
+        Hashtable<String, String> customObjectTypes = new Hashtable<>(objectTypes.size());
         for (String objectType : objectTypes) {
             customObjectTypes.put(objectType, "$ObjectType." + objectType);
         }
@@ -226,7 +226,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
     // custom object actions
     public Hashtable<String, String> getAllObjectActions(IProject project) throws ForceRemoteException {
-        Hashtable<String, String> tempTable = new Hashtable<String, String>();
+        Hashtable<String, String> tempTable = new Hashtable<>();
         Hashtable<String, String> standardObjectActions = standardMergeFields.get(getStandardObjectActionsKey());
         Hashtable<String, String> customObjectActions = getCustomObjectActions(project);
 
@@ -252,7 +252,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
             if (Utils.isNotEmpty(customObjectActions)) {
                 Hashtable<String, Hashtable<String, String>> tempTable =
-                        new Hashtable<String, Hashtable<String, String>>();
+                        new Hashtable<>();
                 tempTable.put(CUSTOM_OBJECT_ACTIONS, customObjectActions);
                 projectMergeFields.put(project.getName(), tempTable);
             } else {
@@ -275,7 +275,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
             return null;
         }
 
-        Hashtable<String, String> customObjectActions = new Hashtable<String, String>(objectTypes.size());
+        Hashtable<String, String> customObjectActions = new Hashtable<>(objectTypes.size());
         for (String objectType : objectTypes) {
             if (objectType.endsWith(Constants.CUSTOM_OBJECT_SUFFIX)) {
                 customObjectActions.put(objectType + ".ChangeOwner", "$Action." + objectType + ".ChangeOwner");
@@ -308,7 +308,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
             if (Utils.isNotEmpty(scontrols)) {
                 Hashtable<String, Hashtable<String, String>> tempTable =
-                        new Hashtable<String, Hashtable<String, String>>();
+                        new Hashtable<>();
                 tempTable.put(SCONTROL_LIST, scontrols != null ? scontrols : new Hashtable<String, String>());
                 projectMergeFields.put(project.getName(), tempTable);
             } else {
@@ -342,7 +342,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
             }
         });
 
-        Hashtable<String, String> scontrols = new Hashtable<String, String>(sobjects.length);
+        Hashtable<String, String> scontrols = new Hashtable<>(sobjects.length);
         for (SObject sobject : sobjects) {
             String name = (String) sobject.getField("Name");
             String dName = (String) sobject.getField("DeveloperName");
@@ -369,7 +369,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
 
             if (Utils.isNotEmpty(snippets)) {
                 Hashtable<String, Hashtable<String, String>> tempTable =
-                        new Hashtable<String, Hashtable<String, String>>();
+                        new Hashtable<>();
                 tempTable.put(SNIPPET_LIST, snippets != null ? snippets : new Hashtable<String, String>());
                 projectMergeFields.put(project.getName(), tempTable);
             } else {
@@ -403,7 +403,7 @@ public class MergeFieldsRegistry extends BaseRegistry {
             }
         });
 
-        Hashtable<String, String> snippets = new Hashtable<String, String>(scontrols.length);
+        Hashtable<String, String> snippets = new Hashtable<>(scontrols.length);
         for (SObject element : scontrols) {
             if (((String) element.getField("ContentSource")).equals("Snippet")) {
                 String name = (String) element.getField("Name");

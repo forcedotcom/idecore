@@ -126,7 +126,7 @@ public class ApexTriggerPropertySheet extends ApexClassAndTriggerPropertySheet {
 
         // Status
         statusCombo =
-                new ComboWidget<ApexCodeUnitStatus>(toolkit,
+                new ComboWidget<>(toolkit,
                         EditorMessages.getString("ApexMetadataFormPage.StatusLabel"), ApexCodeUnitStatus.ACTIVE); //$NON-NLS-1$
         statusCombo.addTo(sectionClient);
 

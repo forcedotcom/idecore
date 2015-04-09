@@ -92,7 +92,7 @@ public class UpgradeProjectInspector extends Job implements IResourceChangeListe
 
         IResourceDelta rootDelta = event.getDelta();
 
-        final Set<IProject> projects = new HashSet<IProject>();
+        final Set<IProject> projects = new HashSet<>();
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
             @Override
             public boolean visit(IResourceDelta delta) {

@@ -31,7 +31,7 @@ public class StopWatch {
     private boolean keepTaskList = true;
 
     /** List of TaskInfo objects */
-    private final List<TaskInfo> taskList = new LinkedList<TaskInfo>();
+    private final List<TaskInfo> taskList = new LinkedList<>();
     private TaskInfo lastTaskInfo = null;
 
     /**

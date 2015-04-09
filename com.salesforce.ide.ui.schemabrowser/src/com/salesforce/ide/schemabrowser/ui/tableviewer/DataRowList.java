@@ -33,9 +33,9 @@ public class DataRowList {
 
     private final int COUNT = 10;
 
-    private final Vector<DataRow> dataRows = new Vector<DataRow>(COUNT);
+    private final Vector<DataRow> dataRows = new Vector<>(COUNT);
 
-    private final Set<IDataRowListViewer> changeListeners = new HashSet<IDataRowListViewer>();
+    private final Set<IDataRowListViewer> changeListeners = new HashSet<>();
 
     // Combo box choices
     static final String[] OWNERS_ARRAY = { "?", "Nancy", "Larry", "Joe" };
@@ -114,7 +114,7 @@ public class DataRowList {
         // We only add a field names Id once.
         boolean hasId = record.getId() != null;
         Iterator<XmlObject> it = record.getChildren();
-        Vector<XmlObject> vRecord = new Vector<XmlObject>();
+        Vector<XmlObject> vRecord = new Vector<>();
         if (hasId) {
             vRecord.add(record.getChildren("Id").next());
         }

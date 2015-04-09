@@ -37,7 +37,7 @@ public class NestedClassMemberFilter extends BlockMember.SwitchBlockWithDefault 
     // So we keep the pseudo node and attach the members directly to it.
 
     public NestedClassMemberFilter() {
-        this.children = new ArrayList<Object>();
+        this.children = new ArrayList<>();
     }
 
     @Override

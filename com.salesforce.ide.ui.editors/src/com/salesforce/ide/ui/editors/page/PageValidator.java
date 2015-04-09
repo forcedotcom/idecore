@@ -67,7 +67,7 @@ public class PageValidator implements ISourceValidator, IValidator {
     void removeApexValidationErrors(IReporter reporter) {
         
         final List<IMessage> messages = reporter.getMessages();
-		final List<IMessage> copy = new ArrayList<IMessage>(messages);
+		final List<IMessage> copy = new ArrayList<>(messages);
 
 		for (Object o : messages) {
 			final IMessage msg = (IMessage) o;

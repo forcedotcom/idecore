@@ -43,7 +43,7 @@ public class ForceStartup implements IStartup {
 
     private static Logger logger = Logger.getLogger(ForceStartup.class);
 
-    private static Map<IResource, Package> manifestCache = new HashMap<IResource, Package>();
+    private static Map<IResource, Package> manifestCache = new HashMap<>();
     public static boolean PACKAGE_MANIFEST_LISTENER_FLAG = Utils.isManifestListenerEnabled();
 
     @Override

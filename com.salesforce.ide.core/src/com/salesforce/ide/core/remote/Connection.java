@@ -713,7 +713,7 @@ public class Connection {
      */
     public String[] retrieveTypes(boolean withClientId) throws ForceConnectionException,
             InsufficientPermissionsException {
-        List<String> types = new ArrayList<String>();
+        List<String> types = new ArrayList<>();
 
         if (!withClientId) {
             setNonCallOptions();
@@ -779,7 +779,7 @@ public class Connection {
             if (Utils.isNotEmpty(sComponentType)) {
                 // we're limited to the number of types we can send
                 if (sComponentType.length > 100) {
-                    List<DescribeSObjectResult> describeSObjectResultList = new ArrayList<DescribeSObjectResult>();
+                    List<DescribeSObjectResult> describeSObjectResultList = new ArrayList<>();
                     DescribeSObjectResult[] tmpResult = null;
                     List<String> sComponentTypeList = Arrays.asList(sComponentType);
                     int numOfTimes = 1 + (sComponentTypeList.size() / 100 > 0 ? sComponentTypeList.size() / 100 : 0);

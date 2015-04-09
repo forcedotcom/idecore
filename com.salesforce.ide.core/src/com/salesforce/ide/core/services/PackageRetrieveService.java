@@ -767,8 +767,8 @@ public class PackageRetrieveService extends BasePackageService {
     private String[] getFilePathsByComponentTypes(IProject project, Connection connection, String[] componentTypes)
             throws FactoryException, ForceConnectionException, ForceRemoteException, CoreException,
             InterruptedException {
-        List<String> filePathList = new ArrayList<String>();
-        List<ListMetadataQuery> queryList = new ArrayList<ListMetadataQuery>();
+        List<String> filePathList = new ArrayList<>();
+        List<ListMetadataQuery> queryList = new ArrayList<>();
         for (String componentType : componentTypes) {
             if (getComponentFactory().isWildCardSupportedComponentType(componentType)
                     && getPackageManifestFactory().isWildCardUsedForComponentType(project, componentType)) {

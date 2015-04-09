@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
 public class TreeItemNotifyingTreeViewer extends CheckboxTreeViewer {
-	Set<ITreeItemCreatedListener> itemCreationListeners = new HashSet<ITreeItemCreatedListener>();
+	Set<ITreeItemCreatedListener> itemCreationListeners = new HashSet<>();
 
 	public TreeItemNotifyingTreeViewer(Composite parent, int style) {
 		super(parent, style);

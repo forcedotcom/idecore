@@ -61,7 +61,7 @@ public class PackageManifestChangeListener implements IResourceChangeListener {
             return;
         IResourceDelta rootDelta = event.getDelta();
 
-        final Set<IResource> changed = new HashSet<IResource>();
+        final Set<IResource> changed = new HashSet<>();
         IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
             @Override
             public boolean visit(IResourceDelta delta) {

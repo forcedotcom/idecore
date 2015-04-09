@@ -162,7 +162,7 @@ public class RunTestsResultExt implements IRunTestsResultExt {
 
     @Override
     public List<String> getFailureMessages() {
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         if (metadataRunTestsResult.getNumFailures() > 0) {
             metadataRunTestsResult.getFailures();
             for (int i = 0; i < metadataRunTestsResult.getFailures().length; i++) {

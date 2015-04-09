@@ -66,7 +66,7 @@ public class ApexDocScanner extends RuleBasedScanner {
 
         setDefaultReturnToken(new Token(doc));
 
-        List<IRule> list = new ArrayList<IRule>();
+        List<IRule> list = new ArrayList<>();
 
         // Add rule for tags.
         list.add(new SingleLineRule("<", ">", tag));

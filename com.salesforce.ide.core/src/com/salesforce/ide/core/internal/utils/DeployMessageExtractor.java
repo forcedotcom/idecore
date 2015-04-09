@@ -32,7 +32,7 @@ public class DeployMessageExtractor {
     }
 
     public Collection<DeployMessage> getDeploySuccesses() {
-        Collection<DeployMessage> successes = new ArrayList<DeployMessage>();
+        Collection<DeployMessage> successes = new ArrayList<>();
         if (deployResult.getMessageCount() > 0) {
             for (DeployMessage message : deployResult.getMessageHandler().getMessages()) {
                 if (message.isSuccess() && message.getProblem() == null) {
@@ -44,7 +44,7 @@ public class DeployMessageExtractor {
     }
 
     public Collection<DeployMessage> getDeployFailures() {
-        Collection<DeployMessage> failures = new ArrayList<DeployMessage>();
+        Collection<DeployMessage> failures = new ArrayList<>();
         if (deployResult.getMessageCount() > 0) {
             for (DeployMessage message : deployResult.getMessageHandler().getMessages()) {
                 if (!message.isSuccess()) {
@@ -56,7 +56,7 @@ public class DeployMessageExtractor {
     }
 
     public Collection<DeployMessage> getDeployWarnings() {
-        Collection<DeployMessage> warnings = new ArrayList<DeployMessage>();
+        Collection<DeployMessage> warnings = new ArrayList<>();
         if (deployResult.getMessageCount() > 0) {
             for (DeployMessage message : deployResult.getMessageHandler().getMessages()) {
                 if (message.isSuccess() && message.getProblem() != null) {
@@ -73,7 +73,7 @@ public class DeployMessageExtractor {
     }
 
     public List<CodeCoverageWarning> getTestWarnings() {
-        List<CodeCoverageWarning> warnings = new ArrayList<CodeCoverageWarning>();
+        List<CodeCoverageWarning> warnings = new ArrayList<>();
         if (deployResult.getRunTestsResult() != null
                 && deployResult.getRunTestsResult().getCodeCoverageWarnings() != null
                 && deployResult.getRunTestsResult().getCodeCoverageWarnings().length > 0) {

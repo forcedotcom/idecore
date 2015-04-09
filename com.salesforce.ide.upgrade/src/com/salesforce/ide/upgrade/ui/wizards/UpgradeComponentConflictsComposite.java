@@ -312,7 +312,7 @@ public class UpgradeComponentConflictsComposite extends BaseUpgradeComposite {
     }
 
     protected void populateTree(Map<String, List<UpgradeConflict>> upgradeConflicts) {
-        TreeSet<String> sortedComponentTypes = new TreeSet<String>();
+        TreeSet<String> sortedComponentTypes = new TreeSet<>();
         sortedComponentTypes.addAll(upgradeConflicts.keySet());
 
         // loop thru sorted list creating upgrade component tree

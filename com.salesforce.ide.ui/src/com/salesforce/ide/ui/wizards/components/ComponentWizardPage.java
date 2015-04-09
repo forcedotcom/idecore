@@ -210,7 +210,7 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         projectField.select(projects.indexOf(project));
     }
 
-    private List<IProject> getProjects() {
+    private static List<IProject> getProjects() {
         final ArrayList<IProject> projects = new ArrayList<>();
         for (final IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) { // TODO: Inject the workspace.
             if (hasDefaultNature(project)) {
@@ -226,7 +226,7 @@ public abstract class ComponentWizardPage extends BaseWizardPage implements ICom
         return projects;
     }
 
-    private boolean hasDefaultNature(final IProject project) {
+    private static boolean hasDefaultNature(final IProject project) {
         try {
             return project.isAccessible() && project.hasNature(DefaultNature.NATURE_ID);
         } catch (final CoreException e) {

@@ -48,7 +48,7 @@ public class ApexAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * 
      * @return the String to use for indenting
      */
-    private String indentStringFromEditorsUIPreferences() {
+    private static String indentStringFromEditorsUIPreferences() {
         
         IPreferencesService ps = Platform.getPreferencesService();
         boolean spacesForTabs = ps.getBoolean(

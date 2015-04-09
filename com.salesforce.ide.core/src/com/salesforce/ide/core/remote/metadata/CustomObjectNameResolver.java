@@ -65,7 +65,7 @@ public class CustomObjectNameResolver {
     }
     
     public boolean check(String name, String type){
-        Pair<String> nameType = new Pair<String>(name, type);
+        Pair<String> nameType = new Pair<>(name, type);
         for(Predicate<Pair<String>> p:predicatesToCheck){
             if(!p.apply(nameType)){
                 return false;

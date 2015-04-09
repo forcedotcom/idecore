@@ -56,8 +56,8 @@ public class ServicePreProcessorAspect implements Ordered {
         }
 
         // look for and record same named packages
-        Set<String> packageNameSet = new HashSet<String>();
-        Set<String> sameNamedPackageSet = new HashSet<String>();
+        Set<String> packageNameSet = new HashSet<>();
+        Set<String> sameNamedPackageSet = new HashSet<>();
         for (String packageName : retrieveRequest.getPackageNames()) {
             if (!packageNameSet.add(packageName)) {
                 sameNamedPackageSet.add(packageName);

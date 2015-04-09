@@ -80,7 +80,7 @@ public class UpgradeController extends Controller {
 
     private ComponentList upgradeableComponentList = null;
     private List<String> excludeFileExtensions = null;
-    private final List<IInternalUpgrade> ideInternalUpgrades = new ArrayList<IInternalUpgrade>();
+    private final List<IInternalUpgrade> ideInternalUpgrades = new ArrayList<>();
 
     public UpgradeController() {
         super();
@@ -115,7 +115,7 @@ public class UpgradeController extends Controller {
         	upgradeableComponentList.add(ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByComponentType(type));
         }
         
-        excludeFileExtensions = new ArrayList<String>();
+        excludeFileExtensions = new ArrayList<>();
         
         String[] excludedFileExtensions = new String[] {
         		Constants.APEX_CLASS,
@@ -232,7 +232,7 @@ public class UpgradeController extends Controller {
         }
 
         // store to-be-upgrade components
-        Map<String, List<UpgradeConflict>> upgradeConflicts = new HashMap<String, List<UpgradeConflict>>();
+        Map<String, List<UpgradeConflict>> upgradeConflicts = new HashMap<>();
 
         monitorCheckSubTask(monitor, "Inspecting project contents for upgradeability");
         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN);
@@ -377,7 +377,7 @@ public class UpgradeController extends Controller {
         // list containing components - remote and local - stored together by type
         List<UpgradeConflict> componetTypeUpgradeConflict = null;
         if (!upgradeConflicts.containsKey(localComponent.getComponentType())) {
-            componetTypeUpgradeConflict = new ArrayList<UpgradeConflict>();
+            componetTypeUpgradeConflict = new ArrayList<>();
             upgradeConflicts.put(localComponent.getComponentType(), componetTypeUpgradeConflict);
         } else {
             componetTypeUpgradeConflict = upgradeConflicts.get(localComponent.getComponentType());
@@ -696,7 +696,7 @@ public class UpgradeController extends Controller {
             return null;
         }
 
-        ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+        ArrayList<Class<?>> classes = new ArrayList<>();
         if (path.contains(".jar!")) {
             String jarPath = path.substring(path.indexOf(":") + 1, path.lastIndexOf("!"));
             logger.info("Inspecting jar:\n " + jarPath);
