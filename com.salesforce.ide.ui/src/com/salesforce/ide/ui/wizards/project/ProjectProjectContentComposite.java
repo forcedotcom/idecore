@@ -16,7 +16,6 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -47,7 +45,6 @@ public class ProjectProjectContentComposite extends BaseComposite {
 
     protected ProjectProjectContentPage projectProjectContentPage = null;
     protected Composite parent = null;
-    protected Link lnkMoreInformation = null;
     protected Group grpComponentTypes = null;
     protected Button btnAll = null;
     protected Button btnAllApex = null;
@@ -89,29 +86,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
         addListener(SWT.Resize, new Listener() {
             @Override
             public void handleEvent(Event event) {
-                Rectangle rect = UIUtils.getClientArea(projectProjectContentPage.getProjectWizard().getShell());
-                GridData dataSelectContents = (GridData) lnkMoreInformation.getLayoutData();
-                dataSelectContents.widthHint = rect.width;
                 layout(true);
-            }
-        });
-
-        // OVERVIEW
-        lnkMoreInformation = new Link(this, SWT.WRAP);
-        lnkMoreInformation.setText(UIMessages.getString("ProjectCreateWizard.ProjectContentOverview.description"));
-        GridData dataSelectContents = new GridData(SWT.FILL, SWT.CENTER, true, false, 6, 0);
-        Rectangle rect = UIUtils.getClientArea(projectProjectContentPage.getProjectWizard().getShell());
-        dataSelectContents.widthHint = rect.width;
-        lnkMoreInformation.setLayoutData(dataSelectContents);
-        lnkMoreInformation.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                widgetDefaultSelected(e);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                UIUtils.displayHelp(getClass().getSimpleName());
             }
         });
 
