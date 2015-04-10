@@ -340,7 +340,6 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                     } catch (CoreException e) {
                         String logMessage = Utils.generateCoreExceptionLog(e);
                         logger.warn("Unable to process: " + logMessage);
-                        e.printStackTrace();
                     }
                     break;
                 default:
@@ -466,7 +465,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     
     @Override
     public void dispose() {
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
         super.dispose();
     }
 
