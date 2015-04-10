@@ -18,23 +18,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
@@ -43,9 +30,7 @@ import com.salesforce.ide.core.internal.preferences.proxy.ProxyManager;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.SalesforceEndpoints;
-import com.salesforce.ide.ui.internal.utils.UIConstants;
-import com.salesforce.ide.ui.internal.utils.UIMessages;
-import com.salesforce.ide.ui.internal.utils.UIUtils;
+import com.salesforce.ide.ui.internal.utils.*;
 import com.salesforce.ide.ui.properties.ProjectPropertyComposite;
 
 /**
@@ -170,6 +155,7 @@ public abstract class BaseOrganizationComposite extends BaseComposite {
         txtToken = new Text(grpOrg, SWT.BORDER | SWT.PASSWORD);
         txtToken.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
         txtToken.setSize(30, 1);
+        addValidateModifyListener(txtToken);
         addOrgModifyListener(txtToken);
 
         // SessionId, if using internal mode
