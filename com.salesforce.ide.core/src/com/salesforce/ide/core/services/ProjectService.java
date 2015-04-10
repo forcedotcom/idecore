@@ -10,8 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.core.services;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -319,17 +318,22 @@ public class ProjectService extends BaseService {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         if (Utils.isNotEmpty(projects)) {
             for (IProject project : projects) {
-                try {
-                    if (project.isOpen() && project.hasNature(DefaultNature.NATURE_ID)) {
-                        forceProjects.add(project);
-                    }
-                } catch (CoreException e) {
-                    String logMessage = Utils.generateCoreExceptionLog(e);
-                    logger.warn("Unable to determine project nature: " + logMessage);
+                if (project.isOpen() && isForceProject(project)) {
+                    forceProjects.add(project);
                 }
             }
         }
         return forceProjects;
+    }
+    
+    public boolean isForceProject(IProject project) {
+        try {
+            return project.hasNature(DefaultNature.NATURE_ID);
+        } catch (CoreException e) {
+            String logMessage = Utils.generateCoreExceptionLog(e);
+            logger.warn("Unable to determine project nature: " + logMessage);
+        }
+        return false;
     }
 
     /**

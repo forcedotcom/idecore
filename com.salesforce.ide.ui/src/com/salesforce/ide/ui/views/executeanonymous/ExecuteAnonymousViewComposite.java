@@ -10,33 +10,24 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.views.executeanonymous;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.progress.UIJob;
 
+import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.LoggingInfo;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -63,6 +54,8 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected LoggingComposite loggingComposite;
     protected StyledText txtUserDebugLogs = null;
     private static final int DEFAULT_PROJ_SELECTION = 0;
+    protected IResourceChangeListener resourceListener = null;
+    private static final Logger logger = Logger.getLogger(ExecuteAnonymousView.class);
 
     Color color = new Color(Display.getCurrent(), 240, 240, 240);
 
@@ -298,20 +291,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
         List<IProject> projects = executeAnonymousController.getForceProjects();
         if (Utils.isNotEmpty(projects)) {
-            cboProject.removeAll();
-            cboProject.setData(projects);
-            Collections.sort(projects, new Comparator<IProject>() {
-                @Override
-                public int compare(IProject o1, IProject o2) {
-                    return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
-                }
-            });
-
-            for (IProject project : projects) {
-                cboProject.add(project.getName());
-            }
-            cboProject.select(DEFAULT_PROJ_SELECTION);
-            cboProject.setEnabled(true);
+            loadProjects(projects);
         } else {
             cboProject.removeAll();
             cboProject.setData(null);
@@ -320,8 +300,109 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         }
 
         layout(true, true);
+        
+        final IResourceDeltaVisitor deltaVisitor = new IResourceDeltaVisitor() {
+            @Override
+            public boolean visit(IResourceDelta delta) throws CoreException {
+                IResource res = delta.getResource();
+                if (res instanceof IProject) {
+                    final IProject project = (IProject)res;
+                    switch(delta.getKind()) {
+                    case IResourceDelta.ADDED:
+                        if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isForceProject(project)) {
+                            updateProjectComboProjectedAdded();
+                        }
+                        break;
+                    case IResourceDelta.REMOVED:
+                        updateProjectComboProjectRemoved(project);
+                        break;
+                    case IResourceDelta.CHANGED:
+                        if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isForceProject(project)) {
+                            updateProjectComboProjectedAdded();
+                        }
+                        break;
+                    }
+                }
+
+                return true;
+            }
+        };
+        
+        resourceListener = new IResourceChangeListener() {
+            @Override
+            public void resourceChanged(IResourceChangeEvent event) {
+                switch (event.getType()) {
+                case IResourceChangeEvent.POST_CHANGE:
+                    try {
+                        event.getDelta().accept(deltaVisitor);
+                    } catch (CoreException e) {
+                        String logMessage = Utils.generateCoreExceptionLog(e);
+                        logger.warn("Unable to process: " + logMessage);
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    break;
+
+                }
+            }
+        };
+        
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
     }
 
+    private void loadProjects(List<IProject> projects) {
+        cboProject.removeAll();
+        cboProject.setData(projects);
+        Collections.sort(projects, new Comparator<IProject>() {
+            @Override
+            public int compare(IProject o1, IProject o2) {
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
+            }
+        });
+
+        for (IProject project : projects) {
+            cboProject.add(project.getName());
+        }
+        cboProject.select(DEFAULT_PROJ_SELECTION);
+        cboProject.setEnabled(true);
+        enableComposite(true);
+    }
+
+    private void updateProjectComboProjectRemoved(final IProject project) {
+        UIJob job = new UIJob("Update Exec Anon Projects Combo") {
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+                if (cboProject.getItemCount() > 0 && ArrayUtils.contains(cboProject.getItems(), project.getName())) {
+                    cboProject.remove(project.getName());
+                    if (cboProject.getItemCount() > 0) {
+                        cboProject.select(DEFAULT_PROJ_SELECTION);
+                    } else {
+                        cboProject.setData(null);
+                        cboProject.setEnabled(false);
+                        enableComposite(false);
+                    }
+                }
+                return new Status(Status.OK, ForceIdeCorePlugin.PLUGIN_ID, "Successfully updated projects combo");
+            }
+        };
+        job.setSystem(true);
+        job.schedule();
+    }
+
+    private void updateProjectComboProjectedAdded() {
+        UIJob job = new UIJob("Update Exec Anon Projects Combo") {
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+                List<IProject> projects = executeAnonymousController.getForceProjects();
+                loadProjects(projects);
+                return new Status(Status.OK, ForceIdeCorePlugin.PLUGIN_ID, "Successfully updated projects combo");
+            }
+        };
+        job.setSystem(true);
+        job.schedule();
+    }  
+    
     private void setSelectedProjectCombo(IProject selectedProject) {
         if (cboProject != null && Utils.isNotEmpty(selectedProject)) {
             selectComboContent(selectedProject.getName(), cboProject);
@@ -357,7 +438,6 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                             txtUserDebugLogs.setText(finalResult);
                         }
                     } else {
-                        Utils.openError("Error Occurred", executeAnonymousResult.getExceptionMessage());
                         StringBuffer errorMessage = new StringBuffer("DEBUG LOG\n");
                         if (executeAnonymousResult.getDebugInfo() != null) {
                             errorMessage.append(executeAnonymousResult.getDebugInfo().getDebugLog());
@@ -380,6 +460,12 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     @Override
     public void validateUserInput() {
 
+    }
+    
+    @Override
+    public void dispose() {
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
+        super.dispose();
     }
 
 }

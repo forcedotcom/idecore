@@ -15,24 +15,14 @@ import java.net.UnknownHostException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.*;
 
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.project.ForceProjectException;
-import com.salesforce.ide.core.remote.Connection;
-import com.salesforce.ide.core.remote.ForceConnectionException;
-import com.salesforce.ide.core.remote.ForceException;
-import com.salesforce.ide.core.remote.ForceRemoteException;
-import com.salesforce.ide.core.remote.InsufficientPermissionsException;
-import com.salesforce.ide.core.remote.InvalidLoginException;
+import com.salesforce.ide.core.remote.*;
 import com.salesforce.ide.core.services.RetrieveException;
 import com.sforce.soap.metadata.StatusCode;
-import com.sforce.soap.partner.fault.wsc.ApiFault;
-import com.sforce.soap.partner.fault.wsc.ExceptionCode;
-import com.sforce.soap.partner.fault.wsc.FaultCode;
-import com.sforce.soap.partner.fault.wsc.LoginFault;
+import com.sforce.soap.partner.fault.wsc.*;
 import com.sforce.ws.ConnectionException;
 import com.sforce.ws.ConnectorConfig;
 
@@ -101,8 +91,10 @@ public class ForceExceptionUtils {
         if (th.getCause() instanceof UnknownHostException && connectorConfig != null) {
             return getUnknownHostExceptionMessage(strBuff, connectorConfig, th);
         }
+        if(th.getCause() != null) {
 		strBuff.append("\n\n").append(th.getCause().getClass().getSimpleName()).append(": ").append(
 		    getStrippedRootCauseMessage(th.getCause()));
+        }
 		return strBuff.toString();
     }
 
