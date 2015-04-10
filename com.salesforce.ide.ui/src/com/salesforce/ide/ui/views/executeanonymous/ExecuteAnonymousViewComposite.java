@@ -319,6 +319,8 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                     case IResourceDelta.CHANGED:
                         if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isForceProject(project)) {
                             updateProjectComboProjectedAdded();
+                        } else {
+                            updateProjectComboProjectRemoved(project);
                         }
                         break;
                     }
