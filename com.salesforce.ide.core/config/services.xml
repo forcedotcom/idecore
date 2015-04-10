@@ -263,7 +263,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         lazy-init="true">
         <property name="ideBrandName" value="Force.com IDE" />
         <property name="platformBrandName" value="Force.com platform" />
-        <property name="ideReleaseName" value="Spring '15" />
+        <property name="ideReleaseName" value="Summer '15" />
         <property name="supportedEndpointVersions" ref="supportedApiVersions" />
     </bean>
 
