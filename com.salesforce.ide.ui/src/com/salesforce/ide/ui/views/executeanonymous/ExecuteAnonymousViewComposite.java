@@ -10,21 +10,41 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.views.executeanonymous;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.*;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
 
 import com.salesforce.ide.core.ForceIdeCorePlugin;
@@ -48,10 +68,11 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected Button btnExecute = null;
     protected StyledText txtSourceInput = null;
     protected StyledText txtResult = null;
-    protected Composite cmpProject = null;
-    protected Combo cboProject = null;
+    protected Composite projectAndLoggingContainerComposite = null;
+    protected Composite projectComposite = null;
+    protected LoggingComposite loggingComposite = null;
+    protected Combo projectCombo = null;
     protected ExecuteAnonymousController executeAnonymousController = null;
-    protected LoggingComposite loggingComposite;
     protected StyledText txtUserDebugLogs = null;
     private static final int DEFAULT_PROJ_SELECTION = 0;
     protected IResourceChangeListener resourceListener = null;
@@ -115,11 +136,11 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     }
 
     private void createLoggingComposite() {
-        Composite composite = new Composite(this, SWT.NONE);
-        composite.setLayout(new GridLayout(3, false));
-        createProjectComposite(composite);
+        projectAndLoggingContainerComposite = new Composite(this, SWT.NONE);
+        projectAndLoggingContainerComposite.setLayout(new GridLayout(3, false));
+        createProjectComposite(projectAndLoggingContainerComposite);
         loggingComposite =
-                new LoggingComposite(composite,
+                new LoggingComposite(projectAndLoggingContainerComposite,
                         ContainerDelegate.getInstance().getServiceLocator().getLoggingService(), SWT.NONE, false,
                         LoggingInfo.SupportedFeatureEnum.ExecuteAnonymous);
     }
@@ -218,18 +239,18 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     }
 
     protected void createProjectComposite(Composite cmpSource) {
-        cmpProject = new Composite(cmpSource, SWT.NONE);
-        cmpProject.setLayoutData(new GridData(SWT.BEGINNING));
+        projectComposite = new Composite(cmpSource, SWT.NONE);
+        projectComposite.setLayoutData(new GridData(SWT.BEGINNING));
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
-        cmpProject.setLayout(gridLayout);
+        projectComposite.setLayout(gridLayout);
 
-        CLabel lblProject = new CLabel(cmpProject, SWT.NONE);
+        CLabel lblProject = new CLabel(projectComposite, SWT.NONE);
         lblProject.setLayoutData(new GridData(SWT.BEGINNING));
         lblProject.setText("Active Project:");
 
-        cboProject = new Combo(cmpProject, SWT.DROP_DOWN | SWT.READ_ONLY);
-        cboProject.addSelectionListener(new org.eclipse.swt.events.SelectionListener() {
+        projectCombo = new Combo(projectComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
+        projectCombo.addSelectionListener(new org.eclipse.swt.events.SelectionListener() {
             @Override
             @SuppressWarnings("unchecked")
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -267,7 +288,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
             loggingComposite.setProject(project);
         }
 
-        if (project != null && project.getName().equals(cboProject.getText())) {
+        if (project != null && project.getName().equals(projectCombo.getText())) {
             enableComposite(true);
         } else {
             enableComposite(false);
@@ -277,15 +298,15 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     @SuppressWarnings("unchecked")
     private IProject getFirstProject() {
         IProject firstProject = null;
-        if (cboProject.getData() != null && cboProject.getData() instanceof List) {
-            List<IProject> projects = (List<IProject>) cboProject.getData();
+        if (projectCombo.getData() != null && projectCombo.getData() instanceof List) {
+            List<IProject> projects = (List<IProject>) projectCombo.getData();
             firstProject = Utils.isNotEmpty(projects) ? projects.get(0) : null;
         }
         return firstProject;
     }
 
     public void loadProjects() {
-        if (executeAnonymousController == null || cboProject == null) {
+        if (executeAnonymousController == null || projectCombo == null) {
             return;
         }
 
@@ -293,9 +314,11 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         if (Utils.isNotEmpty(projects)) {
             loadProjects(projects);
         } else {
-            cboProject.removeAll();
-            cboProject.setData(null);
-            cboProject.setEnabled(false);
+            if (projectCombo.getItemCount() > 0)
+                projectCombo.removeAll();
+
+            projectCombo.setData(null);
+            projectCombo.setEnabled(false);
             enableComposite(false);
         }
 
@@ -353,8 +376,10 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     }
 
     private void loadProjects(List<IProject> projects) {
-        cboProject.removeAll();
-        cboProject.setData(projects);
+        if (projectCombo.getItemCount() > 0)
+            projectCombo.removeAll();
+
+        projectCombo.setData(projects);
         Collections.sort(projects, new Comparator<IProject>() {
             @Override
             public int compare(IProject o1, IProject o2) {
@@ -363,10 +388,17 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         });
 
         for (IProject project : projects) {
-            cboProject.add(project.getName());
+            projectCombo.add(project.getName());
         }
-        cboProject.select(DEFAULT_PROJ_SELECTION);
-        cboProject.setEnabled(true);
+
+        projectCombo.select(DEFAULT_PROJ_SELECTION);
+        projectCombo.setEnabled(true);
+        
+        // Sets the width of the combo box to the width of the longest string
+        // Layouts everything
+        projectAndLoggingContainerComposite.pack();
+        projectAndLoggingContainerComposite.layout(true,true);
+
         enableComposite(true);
     }
 
@@ -374,13 +406,13 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         UIJob job = new UIJob("Update Exec Anon Projects Combo") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-                if (cboProject.getItemCount() > 0 && ArrayUtils.contains(cboProject.getItems(), project.getName())) {
-                    cboProject.remove(project.getName());
-                    if (cboProject.getItemCount() > 0) {
-                        cboProject.select(DEFAULT_PROJ_SELECTION);
+                if (projectCombo.getItemCount() > 0 && ArrayUtils.contains(projectCombo.getItems(), project.getName())) {
+                    projectCombo.remove(project.getName());
+                    if (projectCombo.getItemCount() > 0) {
+                        projectCombo.select(DEFAULT_PROJ_SELECTION);
                     } else {
-                        cboProject.setData(null);
-                        cboProject.setEnabled(false);
+                        projectCombo.setData(null);
+                        projectCombo.setEnabled(false);
                         enableComposite(false);
                     }
                 }
@@ -405,10 +437,10 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     }  
     
     private void setSelectedProjectCombo(IProject selectedProject) {
-        if (cboProject != null && Utils.isNotEmpty(selectedProject)) {
-            selectComboContent(selectedProject.getName(), cboProject);
+        if (projectCombo != null && Utils.isNotEmpty(selectedProject)) {
+            selectComboContent(selectedProject.getName(), projectCombo);
         } else {
-            cboProject.select(DEFAULT_PROJ_SELECTION);
+            projectCombo.select(DEFAULT_PROJ_SELECTION);
         }
     }
 
@@ -459,9 +491,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     }
 
     @Override
-    public void validateUserInput() {
-
-    }
+    public void validateUserInput() {}
     
     @Override
     public void dispose() {

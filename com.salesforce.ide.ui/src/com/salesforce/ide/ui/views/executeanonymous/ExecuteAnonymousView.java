@@ -72,6 +72,7 @@ public class ExecuteAnonymousView extends BaseViewPart {
     @Override
     public void dispose() {
         getSite().getPage().removeSelectionListener(fPostSelectionListener);
+        executeAnonymousViewComposite.dispose();
         super.dispose();
     }
 }
