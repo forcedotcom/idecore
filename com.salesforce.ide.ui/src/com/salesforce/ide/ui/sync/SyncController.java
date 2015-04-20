@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,8 +33,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.core.variants.IResourceVariant;
+import org.eclipse.team.core.synchronize.SyncInfoSet;
 
+import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.controller.Controller;
@@ -51,7 +51,10 @@ import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.metadata.DeployResultExt;
 import com.salesforce.ide.core.remote.metadata.RetrieveResultExt;
+import com.salesforce.ide.core.services.PackageRetrieveService;
+import com.salesforce.ide.core.services.ProjectService;
 import com.salesforce.ide.core.services.ServiceException;
+import com.salesforce.ide.core.services.ServiceLocator;
 import com.salesforce.ide.core.services.ServiceTimeoutException;
 
 /**
@@ -63,72 +66,17 @@ public class SyncController extends Controller {
 
     private static final Logger logger = Logger.getLogger(SyncController.class);
 
-    protected ProjectPackageList remoteProjectPackageList = null;
-    protected List<IResource> syncResources = null;
-    private long fetchRemoteTime = -1;
+    private ProjectPackageList remoteProjectPackageList;
+    private final List<IResource> syncResources;
 
     //   C O N S T R U C T O R S
-    public SyncController(IProject project, boolean filter, IResource... syncResources) {
-        super();
-        model = new OrgModel(project);
-        if (syncResources != null) {
-            List<IResource> list = new ArrayList<>();
-            for (IResource resource: syncResources) {
-            	list.add(resource);
-            }
-            
-            setSyncResources(list, filter);
-        }    	
-    }
-    
-    public SyncController(IProject project, IResource... syncResources) {
-    	this(project, false, syncResources);
-    }
-    
     public SyncController(IProject project, List<IResource> syncResources) {
-    	this(project, syncResources.toArray(new IResource[0]));
+        super();
+        this.model = new OrgModel(project);
+        this.syncResources = syncResources;      
     }
 
-    public SyncController(IProject project, List<IResource> syncResources, boolean filter) {
-    	this(project, filter, syncResources.toArray(new IResource[0]));
-    }
-
-    //   M E T H O D S
-    public void setSyncResources(List<IResource> syncResources, boolean filter) {
-        if (filter) {
-            try {
-                this.syncResources = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getAllFilesOnly(syncResources);
-            } catch (CoreException e) {
-                String logMessage = Utils.generateCoreExceptionLog(e);
-                logger.warn("Unable to get files from given resources: " + logMessage, e);
-                this.syncResources = syncResources;
-            }
-        } else {
-            this.syncResources = syncResources;
-        }
-    }
-
-    public List<IResource> getSyncResources() {
-        return syncResources;
-    }
-
-    public ProjectPackageList getRemoteProjectPackageList() {
-        return remoteProjectPackageList;
-    }
-
-    public void setProjectPackageList(ProjectPackageList projectPackageList) {
-        this.remoteProjectPackageList = projectPackageList;
-    }
-
-    public ComponentVariantComparator getResourceComparator() {
-        return getComponentVariantComparatorInstance();
-    }
-
-    public ComponentVariantComparator getComponentVariantComparatorInstance() {
-        return new ComponentVariantComparator(this);
-    }
-
-    public void loadRemoteComponents(IProgressMonitor monitor) throws InterruptedException, ForceConnectionException,
+    void loadRemoteComponents(IProgressMonitor monitor) throws InterruptedException, ForceConnectionException,
             FactoryException, CoreException, IOException, ForceRemoteException, ServiceException {
         if (getProject() == null) {
             throw new IllegalArgumentException("Resources and/or project cannot be null");
@@ -143,7 +91,6 @@ public class SyncController extends Controller {
         // initial store for remote components
         remoteProjectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
         remoteProjectPackageList.setProject(getProject());
-        fetchRemoteTime = Calendar.getInstance().getTimeInMillis();
 
         if (Utils.isEmpty(syncResources)) {
             if (logger.isInfoEnabled()) {
@@ -159,102 +106,128 @@ public class SyncController extends Controller {
         monitorCheck(monitor);
         monitorSubTask(monitor, "Retrieving remote components...");
 
-        // handle if source root was selected
-        handleSourceRetrieve(monitor);
+        final IProject project = getProject();
+        final IFolder srcFolder = project.getFolder(Constants.SOURCE_FOLDER_NAME);
+        if (syncResources.contains(project) || syncResources.contains(srcFolder)) {
+            // handle if source root was selected
+            handleSourceRetrieve(monitor);
+        } else {
+            // handle component folders
+            handleComponentFolderRefresh(monitor);
 
-        // source root covers everything
-        if (syncResources.size() == 1 && Utils.isNotEmpty(getFolder(syncResources, Constants.SOURCE_FOLDER_NAME))) {
-            return;
+            // handle component files
+            handleSourceComponentFileRefresh(monitor);
         }
-
-        // handle component folders
-        handleComponentFolderRefresh(monitor);
-
-        // handle component files
-        handleSourceComponentFileRefresh(monitor);
     }
 
-    protected void handleSourceRetrieve(IProgressMonitor monitor) throws InterruptedException,
+    private void handleSourceRetrieve(IProgressMonitor monitor) throws InterruptedException,
             ForceConnectionException, ForceRemoteException, FactoryException, IOException,
             ServiceException {
         monitorCheck(monitor);
-        if (Utils.isNotEmpty(getFolder(syncResources, Constants.SOURCE_FOLDER_NAME))) {
-            String packageName = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageName(getProject());
 
-            // perform retrieve
-            RetrieveResultExt retrieveResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrievePackage(getProject(), packageName, monitor);
+        final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
+        final PackageRetrieveService retrieveService = serviceLocator.getPackageRetrieveService();
+        final ProjectService projectService = serviceLocator.getProjectService();
 
-            if (retrieveResultHandler == null) {
-                logger.warn("Unable to sync source root - retrieve result is null");
+        final IProject project = getProject();
+        final String packageName = projectService.getPackageName(project);
+
+        // perform retrieve
+        final RetrieveResultExt result = retrieveService.retrievePackage(project, packageName, monitor);
+        if (null == result) {
+            logger.warn("Unable to sync source root - retrieve result is null");
+            return;
+        }
+
+        monitorWork(monitor);
+        remoteProjectPackageList.generateComponents(result.getZipFile(), result.getFileMetadataHandler(), new SubProgressMonitor(monitor, 3));
+    }
+
+    private void handleComponentFolderRefresh(IProgressMonitor monitor) throws InterruptedException,
+            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
+            ServiceException {
+        monitorCheck(monitor);
+
+        final IProject project = getProject();
+        final IFolder srcFolder = project.getFolder(Constants.SOURCE_FOLDER_NAME);
+        if (syncResources.contains(srcFolder)) {
+            // No need to do the work twice.
+            return;
+        }
+
+        final List<IResource> folders = getResourcesByType(syncResources, IResource.FOLDER);
+        if (Utils.isNotEmpty(folders)) {
+            final ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
+            final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
+            final ProjectService projectService = serviceLocator.getProjectService();
+            final PackageRetrieveService retrieveService = serviceLocator.getPackageRetrieveService();
+
+            // only save these types
+            final HashSet<String> types = new HashSet<>();
+            for (IResource folder : folders) {
+                if (projectService.isComponentFolder(folder)) {
+                    Component component = componentFactory.getComponentByFolderName(folder.getName());
+                    types.add(component.getComponentType());
+                } else if (projectService.isSubComponentFolder(folder)) {
+                    Component component = componentFactory.getComponentFromSubFolder((IFolder) folder, false);
+                    types.add(component.getSecondaryComponentType());
+                }
+            }
+
+            if (Utils.isNotEmpty(types)) {
+                // refresh component dirs
+                ProjectPackageList contents =
+                        projectService.getProjectPackageFactory().getProjectPackageListInstance(project);
+
+                // only save these types
+                // perform retrieve
+                final RetrieveResultExt result = retrieveService.retrieveSelective(contents, types.toArray(new String[0]), monitor);
+                if (null == result) {
+                    logger.warn("Unable to sync folders - retrieve result is null");
+                    return;
+                }
+
+                remoteProjectPackageList.generateComponents(result.getZipFile(), result.getFileMetadataHandler(), new SubProgressMonitor(monitor, 3));
+            }
+        }
+    }
+
+    private void handleSourceComponentFileRefresh(IProgressMonitor monitor) throws InterruptedException,
+            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
+            ServiceException {
+        monitorCheck(monitor);
+
+        final IProject project = getProject();
+        final IFolder srcFolder = project.getFolder(Constants.SOURCE_FOLDER_NAME);
+        if (syncResources.contains(srcFolder)) {
+            // No need to do the work twice.
+            return;
+        }
+
+        final List<IResource> files = getResourcesByType(syncResources, IResource.FILE);
+        if (Utils.isNotEmpty(files)) {
+            final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
+            final PackageRetrieveService retrieveService = serviceLocator.getPackageRetrieveService();
+            final ProjectService projectService = serviceLocator.getProjectService();
+
+            final ArrayList<IResource> resources = new ArrayList<>(files.size());
+            for (IResource file : files) {
+                if (projectService.isSourceResource(file)) {
+                    resources.add(file);
+                }
+            }
+
+            final ProjectPackageList contents = projectService.getProjectContents(resources, monitor);
+            contents.setProject(project);
+            monitorCheck(monitor);
+
+            final RetrieveResultExt result = retrieveService.retrieveSelective(contents, true, monitor);
+            if (null == result) {
+                logger.warn("Unable to sync files - retrieve result is null");
                 return;
             }
 
-            monitorWork(monitor);
-            remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                    .getFileMetadataHandler(), new SubProgressMonitor(monitor, 3));
-        }
-    }
-
-    protected void handleComponentFolderRefresh(IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
-            ServiceException {
-        monitorCheck(monitor);
-        List<IResource> folders = getResourcesByType(syncResources, IResource.FOLDER);
-        List<String> componentTypes = new ArrayList<>();
-        if (Utils.isNotEmpty(folders)) {
-            for (IResource folder : folders) {
-                if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isComponentFolder(folder)) {
-                    Component component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentByFolderName(folder.getName());
-                    componentTypes.add(component.getComponentType());
-                } else if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isSubComponentFolder(folder)) {
-                    Component component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentFromSubFolder((IFolder) folder, false);
-                    componentTypes.add(component.getSecondaryComponentType());
-                }
-            }
-
-            if (Utils.isNotEmpty(componentTypes)) {
-                // refresh component dirs
-                ProjectPackageList localProjectPackageList =
-                        ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageFactory().getProjectPackageListInstance(getProject());
-
-                // only save these types
-                String[] saveComponentTypes = componentTypes.toArray(new String[componentTypes.size()]);
-
-                // perform retrieve
-                RetrieveResultExt retrieveResultHandler =
-                        ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrieveSelective(localProjectPackageList,
-                            saveComponentTypes, monitor);
-
-                remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                        .getFileMetadataHandler(), new SubProgressMonitor(monitor, 3));
-            }
-        }
-    }
-
-    protected void handleSourceComponentFileRefresh(IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, FactoryException, CoreException, IOException,
-            ServiceException {
-        monitorCheck(monitor);
-        List<IResource> files = getResourcesByType(syncResources, IResource.FILE);
-        if (Utils.isNotEmpty(files)) {
-            List<IResource> sourceResources = new ArrayList<>(files.size());
-            for (IResource file : files) {
-                if (ContainerDelegate.getInstance().getServiceLocator().getProjectService().isSourceResource(file)) {
-                    sourceResources.add(file);
-                }
-            }
-
-            ProjectPackageList localProjectPackageList =
-                    ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectContents(sourceResources, monitor);
-            localProjectPackageList.setProject(getProject());
-            monitorCheck(monitor);
-            RetrieveResultExt retrieveResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService()
-                            .retrieveSelective(localProjectPackageList, true, monitor);
-
-            remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                    .getFileMetadataHandler(), new SubProgressMonitor(monitor, 3));
+            remoteProjectPackageList.generateComponents(result.getZipFile(), result.getFileMetadataHandler(), new SubProgressMonitor(monitor, 3));
         }
     }
 
@@ -266,7 +239,7 @@ public class SyncController extends Controller {
      * @throws FactoryException
      * @throws TeamException
      */
-    public SyncInfo getSyncInfo(IResource resource) throws TeamException {
+    SyncInfo getSyncInfo(IResource resource) throws TeamException {
         if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(resource)) {
             return null;
         }
@@ -285,7 +258,7 @@ public class SyncController extends Controller {
 
         Component baseComponent = null;
         try {
-            baseComponent = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentFromFile(file, true);
+            baseComponent = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentFromFile(file);
         } catch (FactoryException e) {
             logger.error("Unable to get component from file '" + file.getProjectRelativePath().toPortableString()
                     + "'. Skipping as sync candidate");
@@ -293,9 +266,7 @@ public class SyncController extends Controller {
         }
 
         // exclude default manifest
-        if (baseComponent == null
-                || (baseComponent.isPackageManifest() && Constants.DEFAULT_PACKAGED_NAME.equals(baseComponent
-                        .getPackageName()))) {
+        if (baseComponent == null || isDefaultPackageManifest(baseComponent)) {
             if (logger.isInfoEnabled()) {
                 logger.info("Base component is the default package manifest - skipping ");
             }
@@ -330,7 +301,6 @@ public class SyncController extends Controller {
         ComponentVariant remoteVariant = null;
         if (remoteComponent != null) {
             remoteVariant = new ComponentVariant(remoteComponent);
-            remoteVariant.setRemote(true);
         } else {
             if (logger.isInfoEnabled()) {
                 logger
@@ -341,17 +311,8 @@ public class SyncController extends Controller {
         }
 
         SyncInfo syncInfo =
-                new ComponentSyncInfo(resource, baseVariant, remoteVariant, getComponentVariantComparatorInstance());
+                new ComponentSyncInfo(resource, baseVariant, remoteVariant, new ComponentVariantComparator());
         syncInfo.init();
-
-        // if in sync, remove resource for further consideration
-        if (syncInfo.getKind() == SyncInfo.IN_SYNC) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Resource '" + resource.getProjectRelativePath().toPortableString()
-                        + "' is in sync - removing as a cached sync resource");
-            }
-            syncResources.remove(resource);
-        }
 
         return syncInfo;
     }
@@ -363,7 +324,7 @@ public class SyncController extends Controller {
      * @return
      * @throws CoreException
      */
-    public IResource[] members(IResource resource) throws CoreException {
+    IResource[] members(IResource resource) throws CoreException {
         if (logger.isDebugEnabled()) {
             logger.debug("Assembling list of members of '" + resource.getName() + "' resource");
         }
@@ -384,7 +345,7 @@ public class SyncController extends Controller {
     }
 
     // sync api calls this to determine the root from which project resources will be gathered for sync inspection
-    public IResource[] roots() {
+    IResource[] roots() {
         if (Utils.isEmpty(syncResources)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("No sync resource found");
@@ -408,7 +369,7 @@ public class SyncController extends Controller {
         return syncResources.toArray(new IResource[syncResources.size()]);
     }
 
-    public boolean isSupervised(IResource resource) {
+    boolean isSupervised(IResource resource) {
         return ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(resource);
     }
 
@@ -589,24 +550,7 @@ public class SyncController extends Controller {
             return null;
         }
 
-        Component remoteComponent =
-                remoteProjectPackageList.getComponentByFilePath(localComponent.getMetadataFilePath());
-
-        // REVIEWME: re-think impl; maybe refetch just out-of-date component 
-        // since we cache remote components, remote components become out-of-date.
-        if ((remoteComponent != null && !remoteComponent.isFetchedAfter(localComponent.getFetchTime()))
-                || localComponent.isFetchedAfter(fetchRemoteTime)) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Remote component " + (remoteComponent != null ? remoteComponent.getFullDisplayName() : "")
-                        + " is out-of-date - refreshing all remote components");
-            }
-            try {
-                loadRemoteComponents(null);
-            } catch (Exception e) {
-                logger.error("Unable to refetch remote compoents", e);
-            }
-        }
-        return remoteComponent;
+        return remoteProjectPackageList.getComponentByFilePath(localComponent.getMetadataFilePath());
     }
 
     private Component getRemoteComponentByFilePath(IFile file) {
@@ -619,7 +563,7 @@ public class SyncController extends Controller {
     }
 
     //  S Y N C   O P E R A T I O N S
-    public boolean applyToProject(ComponentSubscriber subscriber, SyncInfo[] syncInfos, IProgressMonitor monitor)
+    boolean applyToProject(ComponentSubscriber subscriber, SyncInfo[] syncInfos, IProgressMonitor monitor)
             throws InterruptedException, CoreException, InvocationTargetException, IOException, ForceProjectException,
             Exception {
         if (Utils.isEmpty(syncInfos)) {
@@ -657,8 +601,7 @@ public class SyncController extends Controller {
         }
 
         if (result && subscriber != null) {
-            // refresh sync view
-            subscriber.refresh(new SubProgressMonitor(monitor, 5));
+            subscriber.getSyncInfoSet().removeAll(new SyncInfoSet(syncInfos).getResources());
         }
 
         return result;
@@ -675,7 +618,7 @@ public class SyncController extends Controller {
      * @throws CoreException
      * @throws ForceProjectException
      */
-    protected boolean saveToProject(final List<SyncInfo> syncInfos, IProgressMonitor monitor)
+    private boolean saveToProject(final List<SyncInfo> syncInfos, IProgressMonitor monitor)
             throws InvocationTargetException, InterruptedException, CoreException, IOException, ForceProjectException,
             Exception {
         if (Utils.isEmpty(syncInfos)) {
@@ -701,7 +644,6 @@ public class SyncController extends Controller {
                                 ContainerDelegate.getInstance().getServiceLocator().getProjectService().flagSkipBuilder(getProject());
 
                                 monitorCheck(monitor);
-                                syncResources.remove(syncInfo.getLocal());
                                 IFile file = remoteComponent.saveToFile(true, monitor);
 
                                 if (logger.isInfoEnabled()) {
@@ -724,7 +666,7 @@ public class SyncController extends Controller {
         return true;
     }
 
-    public boolean deleteFromProject(final List<SyncInfo> syncInfos, IProgressMonitor monitor)
+    private boolean deleteFromProject(final List<SyncInfo> syncInfos, IProgressMonitor monitor)
             throws InterruptedException, CoreException, InvocationTargetException, Exception {
         if (Utils.isEmpty(syncInfos)) {
             throw new IllegalArgumentException("SyncInfo array cannot be null");
@@ -774,7 +716,7 @@ public class SyncController extends Controller {
         return result.result;
     }
 
-    protected boolean handleCompositeResourceDelete(IFile file, IProgressMonitor monitor) throws InterruptedException,
+    private boolean handleCompositeResourceDelete(IFile file, IProgressMonitor monitor) throws InterruptedException,
             CoreException {
         IFile compositeFile = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getCompositeFileResource(file);
         if (compositeFile != null) {
@@ -783,13 +725,12 @@ public class SyncController extends Controller {
         return true;
     }
 
-    protected void deleteResource(IResource resource, IProgressMonitor monitor) throws InterruptedException,
+    private void deleteResource(IResource resource, IProgressMonitor monitor) throws InterruptedException,
             CoreException {
         String resourceFilePath = resource.getProjectRelativePath().toPortableString();
         String projectName = resource.getProject().getName();
 
         monitorCheck(monitor);
-        syncResources.remove(resource);
         resource.delete(true, monitor);
 
         if (logger.isInfoEnabled()) {
@@ -815,7 +756,7 @@ public class SyncController extends Controller {
      * @throws ForceConnectionException
      * @throws InvocationTargetException
      */
-    public boolean applyToServer(ComponentSubscriber subscriber, SyncInfo[] syncInfos, IProgressMonitor monitor)
+    boolean applyToServer(ComponentSubscriber subscriber, SyncInfo[] syncInfos, IProgressMonitor monitor)
             throws SyncException, InterruptedException, ForceConnectionException, ForceRemoteException,
             FactoryException, ServiceException, CoreException, IOException, InvocationTargetException, Exception {
         if (Utils.isEmpty(syncInfos)) {
@@ -858,7 +799,7 @@ public class SyncController extends Controller {
         return result;
     }
 
-    protected boolean saveToServer(List<SyncInfo> syncInfos, IProgressMonitor monitor) throws InterruptedException,
+    private boolean saveToServer(List<SyncInfo> syncInfos, IProgressMonitor monitor) throws InterruptedException,
             FactoryException, ForceConnectionException, CoreException, IOException, ServiceException,
             ForceRemoteException, InvocationTargetException, Exception {
         if (logger.isDebugEnabled()) {
@@ -884,7 +825,6 @@ public class SyncController extends Controller {
                     logger.info("Remove '" + resource.getProjectRelativePath().toPortableString()
                             + "' as sync resource");
                 }
-                syncResources.remove(resource);
             }
         } else {
             logger.warn("Failed to apply saves to server");
@@ -893,7 +833,7 @@ public class SyncController extends Controller {
         return true;
     }
 
-    public boolean deleteFromServer(List<SyncInfo> syncInfos, IProgressMonitor monitor) throws FactoryException,
+    private boolean deleteFromServer(List<SyncInfo> syncInfos, IProgressMonitor monitor) throws FactoryException,
             InterruptedException, ForceConnectionException, ServiceException, CoreException, IOException,
             ForceRemoteException, InvocationTargetException, Exception {
         if (Utils.isEmpty(syncInfos)) {
@@ -935,7 +875,6 @@ public class SyncController extends Controller {
                     logger.info("Remove '" + resource.getProjectRelativePath().toPortableString()
                             + "' as sync resource");
                 }
-                syncResources.remove(resource);
             }
         } else {
             logger.warn("Failed to apply deletes to server");
@@ -944,7 +883,7 @@ public class SyncController extends Controller {
         return true;
     }
 
-    protected IResource[] getResources(SyncInfo[] syncInfos) {
+    private static IResource[] getResources(SyncInfo[] syncInfos) {
         if (Utils.isEmpty(syncInfos)) {
             return null;
         }
@@ -958,7 +897,7 @@ public class SyncController extends Controller {
 
     }
 
-    protected ProjectPackageList generateProjectPackageList(List<SyncInfo> syncInfos, IProgressMonitor monitor)
+    private ProjectPackageList generateProjectPackageList(List<SyncInfo> syncInfos, IProgressMonitor monitor)
             throws FactoryException, InterruptedException {
 
         ProjectPackageList projectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
@@ -974,113 +913,15 @@ public class SyncController extends Controller {
                 projectPackageList.setProject(file.getProject());
 
                 monitorCheck(monitor);
-                Component component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentFromFile(file, true);
+                Component component = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentFromFile(file);
                 projectPackageList.addComponent(component, true);
             }
         }
         return projectPackageList;
     }
 
-    //   C O M P A R A T O R   O P E R A T I O N S
-    public boolean compare(IResource file, IResourceVariant baseVariant) {
-        if (file == null || baseVariant == null) {
-            throw new IllegalArgumentException("Resource and/or variant cannot be null");
-        }
-
-        boolean changed = false;
-
-        if (file.getType() != IResource.FILE || !(baseVariant instanceof ComponentVariant)) {
-            logger.warn("Unable to compare local file and variant");
-            return changed;
-        }
-
-        IFile componentFile = (IFile) file;
-        ComponentVariant baseComponentVariant = (ComponentVariant) baseVariant;
-        Component baseComponent = baseComponentVariant.getComponent();
-
-        if (baseComponent == null) {
-            logger.warn("Unable to compare file and variant - base component is null");
-            return changed;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Comparing local file '" + componentFile.getName() + "' with base component "
-                    + baseComponent.getFullDisplayName());
-        }
-
-        Component localComponent = null;
-        try {
-            localComponent = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentFromFile(componentFile, true);
-        } catch (FactoryException e) {
-            logger.error("Unable to load component from file '" + componentFile.getName() + "'", e);
-            // REVIEWME: is assuming no change the best way to handle this scenario? 
-            return changed;
-        }
-
-        if (localComponent != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Is base variant a remote component? " + baseComponentVariant.isRemote());
-            }
-            changed = localComponent.hasLocalChanged();
-
-            if (logger.isInfoEnabled()) {
-                logger.info("Local " + localComponent.getFullDisplayName() + " body is " + (changed ? "OUT" : "IN")
-                        + " of sync with original body.");
-            }
-        } else {
-            logger.warn("Local component is null.");
-        }
-
-        // if changed, then we return that file and variant are not equal
-        return !changed;
-    }
-
-    public boolean compare(IResourceVariant baseVariant, IResourceVariant remoteVariant) {
-        if (remoteVariant == null || baseVariant == null) {
-            throw new IllegalArgumentException("Base and/or remote variant cannot be null");
-        }
-
-        boolean changed = false;
-        if (!(baseVariant instanceof ComponentVariant)
-                || !(remoteVariant instanceof ComponentVariant)) {
-            logger.warn("Unable to compare base and remote variant");
-            return changed;
-        }
-
-        ComponentVariant baseComponentVariant = (ComponentVariant) baseVariant;
-        Component baseComponent = baseComponentVariant.getComponent();
-
-        ComponentVariant remoteComponentVariant = (ComponentVariant) remoteVariant;
-        Component remoteComponent = remoteComponentVariant.getComponent();
-
-        if (remoteComponent == null || baseComponent == null || isDefaultPackageManifest(remoteComponent)
-                || isDefaultPackageManifest(baseComponent)) {
-            logger.warn("Unable to compare base and remote variant - base and/or remote component is null "
-                    + "or is default manifest");
-            return changed;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Comparing base and remote " + baseComponent.getFullDisplayName());
-        }
-
-        try {
-            changed = baseComponent.hasRemoteChanged(remoteComponent, false, new NullProgressMonitor());
-        } catch (InterruptedException e) {
-            // do nothing - thrown if user cancels
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Remote " + remoteComponent.getFullDisplayName() + " body is " + (changed ? "OUT" : "IN")
-                    + " of sync with local original body.");
-        }
-
-        // if changed, then we return that base and remote variant are not equal
-        return !changed;
-    }
-
     private static boolean isDefaultPackageManifest(Component component) {
-        return (component.isPackageManifest() && Constants.DEFAULT_PACKAGED_NAME.equals(component.getName()));
+        return (component.isPackageManifest() && Constants.DEFAULT_PACKAGED_NAME.equals(component.getPackageName()));
     }
 
     private static void logResources(Set<IResource> forceFolders) {
@@ -1108,13 +949,6 @@ public class SyncController extends Controller {
 
     }
 
-    public void clean() {
-        if (Utils.isEmpty(syncResources)) {
-            return;
-        }
-        syncResources.clear();
-    }
-
     @Override
     public void dispose() {
 
@@ -1132,19 +966,5 @@ public class SyncController extends Controller {
             }
         }
         return specificResources;
-    }
-
-    private static IResource getFolder(List<IResource> resources, String name) {
-        if (Utils.isEmpty(resources)) {
-            return null;
-        }
-
-        for (IResource resource : resources) {
-            if (resource.getType() == IResource.FOLDER && resource.getName().endsWith(name)) {
-                return resource;
-            }
-        }
-
-        return null;
     }
 }

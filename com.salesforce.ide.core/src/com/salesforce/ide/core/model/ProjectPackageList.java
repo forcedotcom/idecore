@@ -360,6 +360,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 if (ze == null) {
                     break;
                 }
+
                 byte[] fileContent = StreamUtils.getBytes(zis);
                 String name = ze.getName();
                 if (ze.isDirectory()) {
@@ -673,7 +674,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                     logger.warn("Component composite file not found at filepath '" + compositeComponentFilePath
                             + "' for component " + component.getFullDisplayName());
 
-                    compositeComponent = getComponentFactory().getCompositeComponentFromComponent(component, false);
+                    compositeComponent = getComponentFactory().getCompositeComponentFromComponent(component);
                 } else {
                     // create composite instance for object type
                     compositeComponent = getComponentFactory().getComponentFromFile(compositeComponentFile);
@@ -1128,7 +1129,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         saveResources(project, componentTypes, monitor);
     }
 
-    public void saveResources(IProject project, String[] componentTypes, IProgressMonitor monitor)
+    private void saveResources(IProject project, String[] componentTypes, IProgressMonitor monitor)
             throws InterruptedException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");

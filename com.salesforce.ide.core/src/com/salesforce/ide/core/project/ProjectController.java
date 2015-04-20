@@ -499,7 +499,7 @@ public class ProjectController extends Controller {
             throw new IllegalArgumentException("Project model cannot be null");
         }
 
-        // generate and save default pacakge manifest
+        // generate and save default package manifest
         savePackageManifest(monitor);
 
         monitorCheck(monitor);

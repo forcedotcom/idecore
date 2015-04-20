@@ -218,7 +218,7 @@ public class PackageManifestFactory extends BaseFactory {
      */
     public Component getPackageManifestComponent(IProject project) throws FactoryException {
         IFile manfiestFile = getPackageManifestFile(project);
-        return getComponentFactory().getComponentFromFile(manfiestFile, true);
+        return getComponentFactory().getComponentFromFile(manfiestFile);
     }
 
     public IFile getPackageManifestFile(IProject project) {

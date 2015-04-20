@@ -10,17 +10,40 @@
  ******************************************************************************/
 package com.salesforce.ide.core.services;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -30,11 +53,31 @@ import com.google.common.base.Preconditions;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.compatibility.auth.IAuthorizationService;
 import com.salesforce.ide.core.factories.FactoryException;
-import com.salesforce.ide.core.internal.utils.*;
-import com.salesforce.ide.core.model.*;
-import com.salesforce.ide.core.project.*;
-import com.salesforce.ide.core.remote.*;
-import com.salesforce.ide.core.remote.metadata.*;
+import com.salesforce.ide.core.internal.utils.Constants;
+import com.salesforce.ide.core.internal.utils.DeployMessageExtractor;
+import com.salesforce.ide.core.internal.utils.Messages;
+import com.salesforce.ide.core.internal.utils.QualifiedNames;
+import com.salesforce.ide.core.internal.utils.QuietCloseable;
+import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.model.ApexCodeLocation;
+import com.salesforce.ide.core.model.Component;
+import com.salesforce.ide.core.model.ComponentList;
+import com.salesforce.ide.core.model.IComponent;
+import com.salesforce.ide.core.model.ProjectPackage;
+import com.salesforce.ide.core.model.ProjectPackageList;
+import com.salesforce.ide.core.project.BaseNature;
+import com.salesforce.ide.core.project.DefaultNature;
+import com.salesforce.ide.core.project.ForceProject;
+import com.salesforce.ide.core.project.MarkerUtils;
+import com.salesforce.ide.core.project.OnlineNature;
+import com.salesforce.ide.core.remote.ForceConnectionException;
+import com.salesforce.ide.core.remote.ForceRemoteException;
+import com.salesforce.ide.core.remote.ICodeCoverageWarningExt;
+import com.salesforce.ide.core.remote.IRunTestFailureExt;
+import com.salesforce.ide.core.remote.metadata.DeployResultExt;
+import com.salesforce.ide.core.remote.metadata.RetrieveMessageExt;
+import com.salesforce.ide.core.remote.metadata.RetrieveResultExt;
+import com.salesforce.ide.core.remote.metadata.RunTestsResultExt;
 import com.sforce.soap.metadata.DeployMessage;
 import com.sforce.soap.metadata.RetrieveMessage;
 
@@ -427,7 +470,7 @@ public class ProjectService extends BaseService {
         // check is file is a component and is a metadata composite, if so add composite
         Component component = null;
         try {
-            component = getComponentFactory().getComponentFromFile(file, true);
+            component = getComponentFactory().getComponentFromFile(file);
         } catch (FactoryException e) {
             logger.warn("Unable to detemine if file '" + file.getName() + "' is a component");
             return null;
@@ -642,7 +685,7 @@ public class ProjectService extends BaseService {
             } else if (IResource.FILE == componentFolderResource.getType()) {
                 IFile componentFile = (IFile) componentFolderResource;
                 try {
-                    Component tmpComponent = getComponentFactory().getComponentFromFile(componentFile, includeBody);
+                    Component tmpComponent = getComponentFactory().getComponentFromFile(componentFile);
                     componentList.add(tmpComponent, false, true);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Added component '"
@@ -1793,18 +1836,6 @@ public class ProjectService extends BaseService {
         return resource.getProject();
     }
 
-    public void setResourceAttributes(IFile file) {
-        try {
-            Component component = getComponentFactory().getComponentFromFile(file, false);
-            if (component.isInstalled()) {
-                ResourceAttributes resourceAttributes = new ResourceAttributes();
-                resourceAttributes.setReadOnly(true);
-            }
-        } catch (Exception e) {
-            logger.error("Unable to set read-only access son file " + file.getName(), e);
-        }
-    }
-
     public IFile saveToFile(IFile file, String content, IProgressMonitor monitor) throws CoreException {
 
         if (file == null || file.getType() != IResource.FILE || Utils.isEmpty(content)) {
@@ -2492,7 +2523,7 @@ public class ProjectService extends BaseService {
 
         Component component = null;
         try {
-            component = getComponentFactory().getComponentFromFile(file, true);
+            component = getComponentFactory().getComponentFromFile(file);
         } catch (FactoryException e) {
             logger.warn("Unable to check in sync for file '" + file.getName()
                     + "' - unable to create component from file");

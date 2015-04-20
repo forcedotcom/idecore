@@ -74,7 +74,6 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.ForceIdeUIPlugin;
@@ -272,8 +271,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         }
 
         outlineUpdateResourceListener.setFilePath(file.getFullPath());
-
-        ContainerDelegate.getInstance().getServiceLocator().getProjectService().setResourceAttributes(file);
 
         setProject(file.getProject());
         if (logger.isInfoEnabled()) {

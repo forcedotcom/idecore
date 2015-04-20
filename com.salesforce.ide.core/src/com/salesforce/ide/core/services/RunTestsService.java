@@ -131,7 +131,7 @@ public class RunTestsService extends BaseService {
                     continue;
                 }
 
-                Component component = getComponentFactory().getComponentFromFile(componentFile, true);
+                Component component = getComponentFactory().getComponentFromFile(componentFile);
                 if (component == null) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Unable to handle run test candidate "
@@ -170,7 +170,7 @@ public class RunTestsService extends BaseService {
             return null;
         }
 
-        Component component = getComponentFactory().getComponentFromFile(componentFile, true);
+        Component component = getComponentFactory().getComponentFromFile(componentFile);
         if (component == null) {
             logger.warn("Unable to handle run test candidate "
                     + componentFile.getProjectRelativePath().toPortableString() + " - component is null");

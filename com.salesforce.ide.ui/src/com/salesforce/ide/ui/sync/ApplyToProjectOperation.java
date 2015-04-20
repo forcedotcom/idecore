@@ -30,12 +30,12 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
  * 
  * @author cwall
  */
-public class ApplyToProjectOperation extends BaseComponentSynchronizeModelOperation {
+class ApplyToProjectOperation extends BaseComponentSynchronizeModelOperation {
     static final Logger logger = Logger.getLogger(ApplyToProjectOperation.class);
 
-    public static final String OPERATION_TITLE = UIMessages.getString("SynchronizeHandler.ApplyRemoteToProject.label");
+    static final String OPERATION_TITLE = UIMessages.getString("SynchronizeHandler.ApplyRemoteToProject.label");
 
-    protected ApplyToProjectOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
+    ApplyToProjectOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements,
             ComponentSubscriber subscriber) {
         super(configuration, elements, subscriber);
     }
@@ -93,8 +93,7 @@ public class ApplyToProjectOperation extends BaseComponentSynchronizeModelOperat
                     monitor.beginTask(operationType, 4 * infos.length);
                 }
                 try {
-                    clearFromRemoteCache(infos, monitor);
-                    syncController.applyToProject(subscriber, infos, monitor);
+                    getSyncController().applyToProject(getSubscriber(), infos, monitor);
                 } catch (InterruptedException e) {
                     logger.warn("Operation cancelled: " + e.getMessage());
                 } catch (final Exception e) {

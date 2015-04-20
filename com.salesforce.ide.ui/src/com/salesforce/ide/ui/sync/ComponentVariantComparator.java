@@ -14,32 +14,29 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.core.variants.IResourceVariantComparator;
 
+import com.salesforce.ide.core.model.Component;
+
 public class ComponentVariantComparator implements IResourceVariantComparator {
-
-    protected SyncController syncController = null;
-
-    public ComponentVariantComparator(SyncController syncController) {
-        super();
-        this.syncController = syncController;
-    }
 
     @Override
     public boolean compare(IResource file, IResourceVariant baseVariant) {
-        return syncController.compare(file, baseVariant);
+        final Component base = ((ComponentVariant) baseVariant).getComponent();
+        return base.getOriginalBodyChecksum() == base.getBodyChecksum();
     }
 
     @Override
     public boolean compare(IResourceVariant baseVariant, IResourceVariant remoteVariant) {
-        return syncController.compare(baseVariant, remoteVariant);
+        final Component base = ((ComponentVariant) baseVariant).getComponent();
+        final Component remote = ((ComponentVariant) remoteVariant).getComponent();
+
+        if (base == remote) return true;
+        if (null == base || null == remote) return false;
+        return base.getOriginalBodyChecksum() == remote.getBodyChecksum();
     }
 
-    /**
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.team.core.variants.IResourceVariantComparator#isThreeWay()
-     */
     @Override
     public boolean isThreeWay() {
         return true;
     }
+
 }

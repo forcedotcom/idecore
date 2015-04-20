@@ -94,7 +94,7 @@ public final class ShowInBrowserHandler extends BaseHandler {
         }
 
         Connection connection = getConnectionFactory().getConnection(file.getProject());
-        Component component = getComponentFactory().getComponentFromFile(file, false);
+        Component component = getComponentFactory().getComponentFromFile(file);
 
         if (component == null) {
             handleSetupLanding(file.getProject());

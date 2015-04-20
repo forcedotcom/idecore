@@ -10,9 +10,9 @@
  ******************************************************************************/
 package com.salesforce.ide.core.model;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -44,6 +44,7 @@ import com.sforce.soap.metadata.FileProperties;
 public class Component extends ComponentResource {
 
     private static final Logger logger = Logger.getLogger(Component.class);
+    private static final Charset UTF_8 = Charset.forName(Constants.UTF_8);
 
     protected String defaultFolder;
     protected String componentType;
@@ -59,7 +60,6 @@ public class Component extends ComponentResource {
     protected String name;
     protected String fileName;
     protected String fullName;
-    protected String body;
     protected String apiVersion;
     protected String webComponentTypeUrlPart;
     protected String webComponentUrlPart;
@@ -173,19 +173,11 @@ public class Component extends ComponentResource {
     }
 
     @Override
-    public String getBody() {
-        return body;
-    }
-
-    @Override
-    public void setBody(String body) {
-        this.body = Utils.trim(body);
-    }
-
-    public void setBody(byte[] file) {
-        if (file == null) {
+    public final String getBody() {
+        final byte[] content = getFile();
+        if (null == content) {
             logger.warn("Unable to set component body - file byte array is null");
-            return;
+            return null;
         }
 
         // don't get body for, say, binary types; metadata files are always text (see static resources)
@@ -193,21 +185,15 @@ public class Component extends ComponentResource {
             if (logger.isInfoEnabled()) {
                 logger.info("Skipping body content setting - component type '" + componentType + "' is not text based");
             }
-            return;
+            return null;
         }
 
-        try {
-            String unicodeStr = new String(file, Constants.UTF_8);
+        return new String(content, UTF_8);
+    }
 
-            if (isCodeBody()) {
-                unicodeStr = unicodeStr.replaceAll("\r\n", "\n");
-            }
-
-            setBody(Utils.trim(unicodeStr));
-        } catch (UnsupportedEncodingException e) {
-            setBody(Utils.trim(new String(file)));
-            logger.warn("Unable to set body: " + e.getMessage());
-        }
+    @Override
+    public final void setBody(String body) {
+        setFile(null == body ? null : body.getBytes(UTF_8));
     }
 
     @Override
@@ -236,24 +222,24 @@ public class Component extends ComponentResource {
     }
 
     public String getPackageTypeMemberNameWithFolder() {
-        if (!isWithinFolder() || Utils.isEmpty(metadataFilePath)) {
+        if (!isWithinFolder() || Utils.isEmpty(getMetadataFilePath())) {
             return name;
         }
 
         String defaultFolderToken = defaultFolder + "/";
-        return Constants.DOCUMENT.equals(componentType) ? metadataFilePath.substring(metadataFilePath
-                .indexOf(defaultFolderToken) + defaultFolderToken.length()) : metadataFilePath.substring(
-            metadataFilePath.indexOf(defaultFolderToken) + defaultFolderToken.length(),
-            metadataFilePath.indexOf("." + fileExtension));
+        return Constants.DOCUMENT.equals(componentType) ? getMetadataFilePath().substring(getMetadataFilePath()
+                .indexOf(defaultFolderToken) + defaultFolderToken.length()) : getMetadataFilePath().substring(
+            getMetadataFilePath().indexOf(defaultFolderToken) + defaultFolderToken.length(),
+            getMetadataFilePath().indexOf("." + fileExtension));
     }
 
     // filename is
     @Override
     public String getFileName() {
-        if (Utils.isEmpty(fileName) && Utils.isNotEmpty(metadataFilePath) && metadataFilePath.lastIndexOf('/') > -1) {
-            fileName = metadataFilePath.substring(metadataFilePath.lastIndexOf('/') + 1);
+        if (Utils.isEmpty(fileName) && Utils.isNotEmpty(getMetadataFilePath()) && getMetadataFilePath().lastIndexOf('/') > -1) {
+            fileName = getMetadataFilePath().substring(getMetadataFilePath().lastIndexOf('/') + 1);
             if (logger.isDebugEnabled()) {
-                logger.debug("Derived file name '" + fileName + "' from metadata filepath '" + metadataFilePath + "'");
+                logger.debug("Derived file name '" + fileName + "' from metadata filepath '" + getMetadataFilePath() + "'");
             }
         }
         return fileName;
@@ -812,13 +798,13 @@ public class Component extends ComponentResource {
 
     public MetadataExt getMetadataExtFromBody() throws JAXBException {
         MetadataExt metadataExt = getDefaultMetadataExtInstance();
-        return metadataExt.getComponentFromXML(body);
+        return metadataExt.getComponentFromXML(getBody());
     }
 
     public MetadataExt getMetadataExtFromBody(boolean validate, ValidationEventHandler validationEventHandler)
             throws JAXBException {
         MetadataExt metadataExt = getDefaultMetadataExtInstance();
-        return metadataExt.getComponentFromXML(body, validate, validationEventHandler);
+        return metadataExt.getComponentFromXML(getBody(), validate, validationEventHandler);
     }
 
     public Object getSubMetadataExtFromBody(Class<? extends MetadataExt> componentClass) throws IllegalAccessException, JAXBException, IllegalArgumentException,
@@ -829,7 +815,7 @@ public class Component extends ComponentResource {
 
     public Object getSubMetadataExtFromBody(String componentType) throws IllegalAccessException, JAXBException, IllegalArgumentException,
             InvocationTargetException {
-        if (Utils.isEmpty(body) || Utils.isEmpty(componentType)) {
+        if (Utils.isEmpty(getBody()) || Utils.isEmpty(componentType)) {
             logger.warn("Component body and/or to-be-retrieved component type are null or empty");
             return null;
         }
@@ -867,7 +853,6 @@ public class Component extends ComponentResource {
 
     public final void intiNewBody(String body) {
         setBody(body);
-        setFile(body.getBytes());
     }
 
     @Override
@@ -918,7 +903,6 @@ public class Component extends ComponentResource {
     @Override
     protected void saveAdditionalFileProperties(IFile file) {
         // not implemented
-
     }
 
     public void setFileProperties(FileProperties fileProperties) {
@@ -1137,7 +1121,7 @@ public class Component extends ComponentResource {
                 .append("associatedComponentTypes=").append(this.associatedComponentTypes).append(TAB)
                 .append("builtInSubFolders=").append(this.builtInSubFolders).append(TAB);
         if (isTextContent() || (Utils.isNotEmpty(fileName) && fileName.endsWith("txt"))) {
-            retValue.append("body =\n").append(this.body);
+            retValue.append("body =\n").append(getBody());
         }
         retValue.append(")");
         return retValue.toString();
