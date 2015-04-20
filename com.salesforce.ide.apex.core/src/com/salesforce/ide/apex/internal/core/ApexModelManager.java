@@ -35,7 +35,7 @@ import com.salesforce.ide.apex.core.exceptions.InvalidCompilationUnitException;
 
 /**
  * Central point for getting any form of model information about the current project. Right now we have a jadt and
- * compilation unit cache. I'd like to reconcile both.
+ * compilation unit cache.
  * 
  * @author nchen
  * 
@@ -46,7 +46,7 @@ public class ApexModelManager {
     public static ApexModelManager INSTANCE = new ApexModelManager();
 
     // The cache should only store the last "good" version of the parse tree and AST
-    // If there is a parse error, you should not update the cache but leave the last version in there/
+    // If there is a parse error, you should not update the cache but leave the last version in there.
 
     // This is the parse tree - a lightweight model that should be good to store around
     private final LoadingCache<IFile, CompilationUnit> jadtCache = CacheBuilder.newBuilder().weakValues()
@@ -57,7 +57,7 @@ public class ApexModelManager {
                     try {
                         ApexParserImpl parser = ApexParserFactory.create(new InputStreamReader(file.getContents()));
                         return parser.compilationUnit();
-                    } catch (CoreException ce ) {
+                    } catch (CoreException ce) {
                         throw new InvalidCompilationUnitException(ce);
                     } catch (RecognitionException re) {
                         throw new InvalidCompilationUnitException(re);
@@ -127,7 +127,7 @@ public class ApexModelManager {
     public void cacheCompilation(IFile file, Compilation compilation) {
         astCache.put(file, compilation);
     }
-    
+
     public void evictCompilationUnit(IFile file) {
         jadtCache.invalidate(file);
     }
