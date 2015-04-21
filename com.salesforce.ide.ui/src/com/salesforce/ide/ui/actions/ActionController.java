@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -163,9 +162,9 @@ public abstract class ActionController {
         this.workbenchWindow = workbenchWindow;
     }
 
-    public abstract boolean preRun(IAction action);
+    public abstract boolean preRun();
 
-    public abstract void postRun(IAction action);
+    public abstract void postRun();
 
     /* (non-Javadoc)
      * @see com.salesforce.ide.ui.actions.IActionController#getWizardDialog()

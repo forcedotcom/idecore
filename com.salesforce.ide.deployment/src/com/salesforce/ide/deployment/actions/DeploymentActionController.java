@@ -12,7 +12,6 @@ package com.salesforce.ide.deployment.actions;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -35,12 +34,11 @@ public class DeploymentActionController extends ActionController {
     }
 
     @Override
-    public boolean preRun(IAction action) {
+    public boolean preRun() {
         boolean hasDeployableComponents = getServiceLocator().getProjectService().hasManagedComponents(selectedResources);
         if (!hasDeployableComponents) {
             logger.warn(DeploymentMessages.getString("Deployment.NoDeployable.message"));
-            Utils.openWarn(DeploymentMessages.getString("Deployment.NoDeployable.title"), DeploymentMessages
-                    .getString("Deployment.NoDeployable.message"));
+            Utils.openWarn(DeploymentMessages.getString("Deployment.NoDeployable.title"), DeploymentMessages.getString("Deployment.NoDeployable.message"));
             return false;
         }
 
@@ -56,5 +54,5 @@ public class DeploymentActionController extends ActionController {
     }
 
     @Override
-    public void postRun(IAction action) {}
+    public void postRun() {}
 }

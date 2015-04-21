@@ -53,11 +53,13 @@ public final class DeploymentHandler extends BaseHandler {
         if (null != actionController) {
 
             try {
+                actionController.preRun();
                 // instantiates the wizard container with the wizard and opens it
                 WizardDialog dialog = actionController.getWizardDialog();
                 dialog.create();
                 UIUtils.placeDialogInCenter(shell, dialog.getShell());
                 Utils.openDialog(actionController.getProject(), dialog);
+                actionController.postRun();
             } catch (Exception e) {
                 logger.error("Unable to open deployment wizard", e);
             }

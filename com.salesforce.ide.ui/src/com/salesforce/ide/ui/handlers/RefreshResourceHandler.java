@@ -54,7 +54,9 @@ public final class RefreshResourceHandler extends BaseHandler {
         if (!selection.isEmpty()) {
             final RefreshResourceActionController actionController = buildController(selection);
             if (null != actionController) {
+                actionController.preRun();
                 fetchRemoteComponents(workbench, actionController);
+                actionController.postRun();
             }
         }
     }

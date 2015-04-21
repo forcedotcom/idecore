@@ -199,7 +199,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
     public final void run(IAction action) {
         init();
 
-        boolean execute = actionController != null ? actionController.preRun(action) : true;
+        boolean execute = actionController != null ? actionController.preRun() : true;
         if (!execute) {
             logger.warn("Pre-run failed.  Action not executed.");
             return;
@@ -208,7 +208,7 @@ public abstract class BaseAction extends Action implements IObjectActionDelegate
         execute(action);
 
         if (actionController != null) {
-            actionController.postRun(action);
+            actionController.postRun();
         }
     }
 

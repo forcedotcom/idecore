@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.WizardDialog;
 
 import com.salesforce.ide.core.factories.FactoryException;
@@ -59,7 +58,7 @@ public class SaveToServerActionController extends ActionController {
     }
 
     @Override
-    public boolean preRun(IAction action) {
+    public boolean preRun() {
         if (Utils.isEmpty(selectedResources)) {
             logger.info("Operation cancelled.  Resources not provided.");
             return false;
@@ -123,9 +122,7 @@ public class SaveToServerActionController extends ActionController {
     }
 
     @Override
-    public void postRun(IAction action) {
-
-    }
+    public void postRun() {}
 
     private boolean deploy(IProgressMonitor monitor) throws ForceConnectionException, FactoryException,
     InterruptedException, CoreException, IOException, ServiceException, ForceRemoteException,

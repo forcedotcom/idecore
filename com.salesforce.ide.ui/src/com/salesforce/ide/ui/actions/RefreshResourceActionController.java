@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -68,7 +67,7 @@ public class RefreshResourceActionController extends ActionController {
     }
 
     @Override
-    public boolean preRun(IAction action) {
+    public boolean preRun() {
         if (Utils.isEmpty(selectedResources)) {
             logger.info("Operation cancelled.  Resources not provided.");
             return false;
@@ -461,7 +460,7 @@ public class RefreshResourceActionController extends ActionController {
     }
 
     @Override
-    public void postRun(IAction action) {}
+    public void postRun() {}
 
     private boolean checkForDirtyResource(IResource resource) {
         try {
