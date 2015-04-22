@@ -26,7 +26,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorSite;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
-import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.editors.internal.BaseComponentMultiPageEditorPart;
 import com.salesforce.ide.ui.editors.internal.utils.EditorConstants;
@@ -64,8 +63,8 @@ public class ApexCodeMultiPageEditor extends BaseComponentMultiPageEditorPart {
         super.init(site, editorInput);
         setPartName(editorInput.getName());
         setProject(getEditorInputFile().getProject());
-        ApexSystemCompletionsRepository.INSTANCE.getCompletionsFetchIfNecessary(getProjectService().getForceProject(
-            getProject()));
+//        ApexSystemCompletionsRepository.INSTANCE.getCompletionsFetchIfNecessary(getProjectService().getForceProject(
+//            getProject()));
         initSObjects();
     }
 
