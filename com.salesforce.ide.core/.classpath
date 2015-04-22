@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/commons-collections4-4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aopalliance-repackaged-2.3.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-api-2.3.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-locator-2.3.0-b05.jar"/>

@@ -127,7 +127,7 @@ public abstract class BaseMultiPageEditorPart extends MultiPageEditorPart {
                     } catch (Exception e) {
                         logger.error("Unable to get describe object for project '" + project.getName() + "'", e);
                         return new Status(IStatus.ERROR, ForceIdeUIPlugin.PLUGIN_ID, IStatus.ERROR,
-                            "Unable to get describe object for project '" + project.getName() + "'", e);
+                                "Unable to get describe object for project '" + project.getName() + "'", e);
                     }
                 }
                 return Status.OK_STATUS;

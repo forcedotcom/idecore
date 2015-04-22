@@ -62,7 +62,7 @@ public class HTTPConnection {
         Client client = ClientBuilder.newClient(clientConfig);
 
         String serviceEndpoint = getConnection().getServerUrlRoot();
-        serviceEndpoint = serviceEndpoint + constructDebugServiceEndpoint();
+        serviceEndpoint = serviceEndpoint + constructServiceEndpoint();
         endpoint = client.target(serviceEndpoint);
     }
 
@@ -70,7 +70,7 @@ public class HTTPConnection {
           return 20_000;
     }
 
-    private String constructDebugServiceEndpoint() {
+    private String constructServiceEndpoint() {
         return serviceEndpoint + getApiVersion();
     }
 

@@ -18,7 +18,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 /**
- * Parent class for collecting all the common functionality across all HTTP Debugger Transports.
+ * Parent class for collecting all the common functionality across all strongly-typed HTTP Transports.
  * 
  * @author nchen
  * 
@@ -50,7 +50,7 @@ public abstract class AbstractHTTPTransport {
     }
 
     public abstract WebTarget getSessionEndpoint();
-    
+
     public String getDebuggerSessionId() {
         return "";
     }
