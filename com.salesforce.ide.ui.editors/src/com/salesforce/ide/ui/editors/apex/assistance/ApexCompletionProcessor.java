@@ -10,203 +10,94 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.assistance;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.contentassist.IContextInformationPresenter;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+
+import com.google.common.collect.Lists;
+import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 
 /**
- * Example Java completion processor.
+ * @author nchen
  */
 public class ApexCompletionProcessor implements IContentAssistProcessor {
+    private StringBuilder errorCollector = new StringBuilder();
 
-    protected static ICompletionProposal[] currentList;
-
-    /**
-     * Simple content assist tip closer. The tip is valid in a range of 5 characters around its popup location.
-     */
-    protected static class Validator implements IContextInformationValidator, IContextInformationPresenter {
-
-        protected int fInstallOffset;
-
-        /*
-         * @see IContextInformationValidator#isContextInformationValid(int)
-         */
-        @Override
-        public boolean isContextInformationValid(int offset) {
-            return true; // Math.abs(fInstallOffset - offset) < 5;
-        }
-
-        /*
-         * @see IContextInformationValidator#install(IContextInformation, ITextViewer, int)
-         */
-        @Override
-        public void install(IContextInformation info, ITextViewer viewer, int offset) {
-            fInstallOffset = offset;
-        }
-
-        /*
-         * @see org.eclipse.jface.text.contentassist.IContextInformationPresenter#updatePresentation(int,
-         *      TextPresentation)
-         */
-        @Override
-        public boolean updatePresentation(int documentPosition, TextPresentation presentation) {
-            return false;
-        }
-    }
-
-    protected IContextInformationValidator contextValidator = new Validator();
-
-    //  C O N S T R U C T O R S
-    public ApexCompletionProcessor() {}
-
-    /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor
-     */
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        return new ICompletionProposal[0];
-    }
-
-    public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-        return new IInformationControlCreator() {
-            @Override
-            public IInformationControl createInformationControl(Shell parent) {
-                return new DefaultInformationControl(parent, presenter);
+        Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
+        String prefix = null;
+        try {
+            prefix = getPrefix(viewer, offset);
+            if (prefix == null || prefix.length() == 0) { // provide everything
+                suggestions = ApexSystemCompletionsRepository.INSTANCE.getCompletions().namespaceTrie.values();
+            } else { // use the prefix
+                suggestions = ApexSystemCompletionsRepository.INSTANCE.getCompletions().namespaceTrie.prefixMap(prefix).values();
             }
-        };
+        } catch (BadLocationException e) {}
+        return createProposal(suggestions, prefix, offset);
     }
 
-    static final DefaultInformationControl.IInformationPresenter presenter =
-            new DefaultInformationControl.IInformationPresenter() {
-                @Override
-                public String updatePresentation(Display display, String infoText, TextPresentation presentation,
-                        int maxWidth, int maxHeight) {
-                    int start = -1;
+    private ICompletionProposal[] createProposal(Collection<AbstractCompletionProposalDisplayable> suggestions,
+            String prefix, int offset) {
+        List<ICompletionProposal> proposals = Lists.newArrayList();
 
-                    // Loop over all characters of information text
-                    for (int i = 0; i < infoText.length(); i++) {
-                        switch (infoText.charAt(i)) {
-                        case '<':
-                            // Remember start of tag
-                            start = i;
-                            break;
-                        case '>':
-                            if (start >= 0) {
-                                // We have found a tag and create a new style range
-                                StyleRange range = new StyleRange(start, i - start + 1, null, null, SWT.BOLD);
-                                // Add this style range to the presentation
-                                presentation.addStyleRange(range);
-                                // Reset tag start indicator
-                                start = -1;
-                            }
-                            break;
-                        }
-                    }
-
-                    // Return the information text
-
-                    return infoText;
-                }
-            };
-
-    /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor
-     */
-    @Override
-    public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
-        /*
-         * IContextInformation[] result= new IContextInformation[5]; for (int i= 0; i < result.length; i++) result[i]=
-         * new ContextInformation(
-         * MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.ContextInfo.display.pattern"), new
-         * Object[] { Integer.valueOf(i), Integer.valueOf(documentOffset) }), //$NON-NLS-1$
-         * MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.ContextInfo.value.pattern"), new
-         * Object[] { Integer.valueOf(i), Integer.valueOf(documentOffset - 5), Integer.valueOf(documentOffset + 5)})); //$NON-NLS-1$
-         */
-        return null;
+        for (AbstractCompletionProposalDisplayable suggestion : suggestions) {
+            String completionProposal = suggestion.completionProposal();
+            int prefixLength = prefix != null ? prefix.length() : 0;
+            proposals.add(new CompletionProposal(completionProposal, offset - prefixLength, 0, completionProposal.length()));
+        }
+        return proposals.toArray(new ICompletionProposal[0]);
     }
 
-    /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor
-     */
     @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
-        return new char[] { '.', '(' };
+        return new char[] { '.' };
     }
 
-    /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor
-     */
-    @Override
-    public char[] getContextInformationAutoActivationCharacters() {
-        return new char[] { '#' };
+    private String getPrefix(ITextViewer viewer, int offset) throws BadLocationException {
+        IDocument doc = viewer.getDocument();
+        if (doc == null || offset > doc.getLength())
+            return null;
+
+        int length = 0;
+        while (--offset >= 0 && Character.isJavaIdentifierPart(doc.getChar(offset)))
+            length++;
+
+        return doc.get(offset + 1, length);
     }
 
-    /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor
-     */
     @Override
-    public IContextInformationValidator getContextInformationValidator() {
-        return contextValidator;
-    }
-
-    /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor
-     */
-    @Override
-    public String getErrorMessage() {
+    public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
         return null;
     }
 
-    /**
-     * Select the word at the current selection location. Return <code>true</code> if successful, <code>false</code>
-     * otherwise.
-     * 
-     * @return <code>true</code> if a word can be found at the current selection location, <code>false</code> otherwise
-     */
-    protected String matchWord(IDocument doc, int offset) {
-        try {
-            int pos = offset - 2;
-            char c;
-            while (pos >= 0) {
-                c = doc.getChar(pos);
-                if (!Character.isJavaIdentifierPart(c)) {
-                    break;
-                }
-                --pos;
-            }
+    @Override
+    public char[] getContextInformationAutoActivationCharacters() {
+        return null;
+    }
 
-            int fStartPos = ++pos;
-            pos = offset - 1;
+    @Override
+    public String getErrorMessage() {
+        return errorCollector.toString();
+    }
 
-            // situation when looking for subkeyword in which case we don't need to remove tailing . as looking for keyword, so ++ position
-            if (".".equals(doc.get(fStartPos - 1, 1))) {
-                pos++;
-            }
-
-            String returnValue = doc.get(fStartPos, pos - fStartPos);
-            return returnValue;
-
-        } catch (BadLocationException x) {}
-
-        return "";
+    @Override
+    public IContextInformationValidator getContextInformationValidator() {
+        return null;
     }
 
     public void clearState() {
-        currentList = null;
+        errorCollector = new StringBuilder();
     }
 
 }

@@ -12,6 +12,7 @@ package com.salesforce.ide.apex.core.tooling.systemcompletions;
 
 import org.apache.log4j.Logger;
 
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.HTTPAdapter;
@@ -72,5 +73,9 @@ public class ApexSystemCompletionsRepository {
 
     public synchronized void clear() {
         completions = NOT_INITIALIZED;
+    }
+    
+    public Completions getCompletions() {
+        return completions;
     }
 }

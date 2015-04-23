@@ -50,7 +50,6 @@ import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexAutoIndentStrategy;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexCompletionProcessor;
-import com.salesforce.ide.ui.editors.apex.assistance.ApexDocCompletionProcessor;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexDocScanner;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexDoubleClickSelector;
 import com.salesforce.ide.ui.editors.apex.util.ApexCodeColorProvider;
@@ -59,7 +58,7 @@ import com.salesforce.ide.ui.editors.apex.util.ApexCodeColorProvider;
  * Source viewer configuration for Apex editor.
  * 
  * @author nchen
- *
+ * 
  */
 @SuppressWarnings({ "restriction" })
 public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration {
@@ -81,10 +80,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         }
     }
 
-    @SuppressWarnings({ "unused" })
-    private ApexSourceViewerConfiguration() {
-
-    }
+    public ApexSourceViewerConfiguration() {}
 
     /**
      * Default constructor.
@@ -95,7 +91,6 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         apexCodeScanner = (ApexCodeScanner) ContainerDelegate.getInstance().getBean(ApexCodeScanner.class);
         apexDocScanner = (ApexDocScanner) ContainerDelegate.getInstance().getBean(ApexDocScanner.class);
         apexCompletionProcessor = new ApexCompletionProcessor();
-
         apexCodeColorProvider = ForceIdeEditorsPlugin.getApexCodeColorProvider();
     }
 
@@ -195,15 +190,14 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     @Override
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-
         ContentAssistant assistant = new ContentAssistant();
 
         assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+
         if (apexCompletionProcessor != null) {
             assistant.setContentAssistProcessor(apexCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
         }
 
-        assistant.setContentAssistProcessor(new ApexDocCompletionProcessor(), ApexPartitionScanner.APEX_DOC);
         assistant.enableAutoActivation(true);
         assistant.setAutoActivationDelay(500);
         assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_STACKED);
