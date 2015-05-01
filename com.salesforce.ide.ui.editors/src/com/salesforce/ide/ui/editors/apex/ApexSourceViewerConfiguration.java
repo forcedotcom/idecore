@@ -49,10 +49,10 @@ import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexAutoIndentStrategy;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner;
-import com.salesforce.ide.ui.editors.apex.assistance.ApexCompletionProcessor;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexDocScanner;
 import com.salesforce.ide.ui.editors.apex.assistance.ApexDoubleClickSelector;
 import com.salesforce.ide.ui.editors.apex.util.ApexCodeColorProvider;
+import com.salesforce.ide.ui.editors.internal.apex.completions.ApexCompletionCollector;
 
 /**
  * Source viewer configuration for Apex editor.
@@ -69,7 +69,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
     private ApexCodeScanner apexCodeScanner = null;
     private ApexDocScanner apexDocScanner = null;
     private ApexCodeColorProvider apexCodeColorProvider = null;
-    private ApexCompletionProcessor apexCompletionProcessor = null;
+    private ApexCompletionCollector apexCompletionCollector = null;
 
     /**
      * Single token scanner.
@@ -90,7 +90,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         fTextEditor = editor;
         apexCodeScanner = (ApexCodeScanner) ContainerDelegate.getInstance().getBean(ApexCodeScanner.class);
         apexDocScanner = (ApexDocScanner) ContainerDelegate.getInstance().getBean(ApexDocScanner.class);
-        apexCompletionProcessor = new ApexCompletionProcessor();
+        apexCompletionCollector = new ApexCompletionCollector();
         apexCodeColorProvider = ForceIdeEditorsPlugin.getApexCodeColorProvider();
     }
 
@@ -194,12 +194,11 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
 
         assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
-        if (apexCompletionProcessor != null) {
-            assistant.setContentAssistProcessor(apexCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+        if (apexCompletionCollector != null) {
+            assistant.setContentAssistProcessor(apexCompletionCollector, IDocument.DEFAULT_CONTENT_TYPE);
         }
 
         assistant.enableAutoActivation(true);
-        assistant.setAutoActivationDelay(500);
         assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_STACKED);
         assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);
         assistant.setShowEmptyList(true); // display no proposal when code assist is triggered by ctrl+space, but display nothing when triggered by auto-activation
@@ -211,7 +210,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         assistant.addCompletionListener(new ICompletionListener() {
             @Override
             public void assistSessionEnded(ContentAssistEvent event) {
-                ((ApexCompletionProcessor) event.assistant.getContentAssistProcessor(IDocument.DEFAULT_CONTENT_TYPE))
+                ((ApexCompletionCollector) event.assistant.getContentAssistProcessor(IDocument.DEFAULT_CONTENT_TYPE))
                         .clearState();
             }
 

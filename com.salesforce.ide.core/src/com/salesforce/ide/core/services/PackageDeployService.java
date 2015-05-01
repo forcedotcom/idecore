@@ -38,6 +38,7 @@ import com.sforce.soap.metadata.DeployOptions;
 import com.sforce.soap.metadata.DeployResult;
 import com.sforce.soap.metadata.DeployStatus;
 import com.sforce.soap.metadata.LogInfo;
+import com.sforce.soap.metadata.TestLevel;
 
 public class PackageDeployService extends BasePackageService {
     private static final Logger logger = Logger.getLogger(PackageDeployService.class);
@@ -72,6 +73,7 @@ public class PackageDeployService extends BasePackageService {
     public DeployOptions getRunTestDeployOptions(String[] tests) {
         DeployOptions deployOptions = makeDefaultDeployOptions(true);
         deployOptions.setPerformRetrieve(false);
+        deployOptions.setTestLevel(TestLevel.RunSpecifiedTests);
 
         if (Utils.isNotEmpty(tests)) {
             deployOptions.setRunTests(tests);

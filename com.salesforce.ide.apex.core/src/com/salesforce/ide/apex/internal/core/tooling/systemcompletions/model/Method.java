@@ -33,14 +33,29 @@ public class Method extends AbstractCompletionProposalDisplayable {
     public boolean isStatic;
 
     @Override
-    public String completionProposal() {
+    public String getReplacementString() {
         StringBuilder sb = new StringBuilder();
         sb.append(name);
-        if (!parameters.isEmpty()) {
-            sb.append('(');
+        sb.append("(...)");
+        return sb.toString();
+    }
+
+    /* (non-Javadoc)
+     * @see com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable#getDisplayString()
+     */
+    @Override
+    public String getDisplayString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+
+        sb.append('(');
+        if (parameters != null) {
             sb.append(StringUtils.join(parameters, ","));
-            sb.append(')');
         }
+        sb.append(')');
+
+        sb.append(" - ");
+        sb.append(returnType);
         return sb.toString();
     }
 }

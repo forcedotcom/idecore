@@ -11,8 +11,13 @@
 package com.salesforce.ide.apex.core.tooling.systemcompletions;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
+import com.google.common.base.Function;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
+import com.salesforce.ide.core.ForceIdeCorePlugin;
+import com.salesforce.ide.core.Messages;
 import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.HTTPAdapter;
@@ -36,6 +41,7 @@ public class ApexSystemCompletionsRepository {
     private static final String TOOLING_SERVICE_ENDPOINT = "/services/data/";
 
     private Completions completions = NOT_INITIALIZED;
+    private Boolean FETCHING_IN_PROGRESS = false;
     private HTTPConnection toolingRESTConnection;
 
     public static final ApexSystemCompletionsRepository INSTANCE = new ApexSystemCompletionsRepository();
@@ -43,23 +49,42 @@ public class ApexSystemCompletionsRepository {
     private ApexSystemCompletionsRepository() {}
 
     public synchronized Completions getCompletionsFetchIfNecessary(ForceProject project) {
-        if (completions == NOT_INITIALIZED) {
+        if (completions == NOT_INITIALIZED && !FETCHING_IN_PROGRESS) {
             try {
                 initializeConnectionIfNecessary(project);
                 PromiseableJob<Completions> job =
                         new SystemCompletionsCommand(new HTTPAdapter<>(Completions.class,
-                                new SystemCompletionTransport(toolingRESTConnection), HTTPMethod.GET));
-                job.schedule();
-                try {
-                    job.join();
-                    completions = job.getAnswer();
-                } catch (InterruptedException e) {
-                    completions = NOT_INITIALIZED;
-                }
+                                new SystemCompletionTransport(toolingRESTConnection), HTTPMethod.GET)) {
+                            {
+                                onSuccess = new Function<Completions, IStatus>() {
+                                    @Override
+                                    public IStatus apply(Completions c) {
+                                        if (c != null) {
+                                            completions = c;
+                                        }
+                                        FETCHING_IN_PROGRESS = false;
+                                        return Status.OK_STATUS;
+                                    }
+                                };
 
+                                onFailure = new Function<Throwable, IStatus>() {
+                                    @Override
+                                    public IStatus apply(Throwable t) {
+                                        completions = NOT_INITIALIZED;
+                                        FETCHING_IN_PROGRESS = false;
+                                        return new Status(Status.ERROR, ForceIdeCorePlugin.PLUGIN_ID,
+                                                Messages.PromiseableJob_GenericError, t);
+                                    }
+                                };
+                            }
+                        };
+
+                FETCHING_IN_PROGRESS = true;
+                job.schedule();
             } catch (InsufficientPermissionsException | ForceConnectionException e) {
                 logger.error("Failed to fetch system completions", e);
                 completions = NOT_INITIALIZED;
+                FETCHING_IN_PROGRESS = false;
             }
         }
         return completions;
@@ -74,7 +99,7 @@ public class ApexSystemCompletionsRepository {
     public synchronized void clear() {
         completions = NOT_INITIALIZED;
     }
-    
+
     public Completions getCompletions() {
         return completions;
     }

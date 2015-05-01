@@ -17,5 +17,7 @@ package com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model;
  * 
  */
 public abstract class AbstractCompletionProposalDisplayable {
-    public abstract String completionProposal();
+    public abstract String getReplacementString();
+
+    public abstract String getDisplayString();
 }

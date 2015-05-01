@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * This is the POJO that maps the response from services/data/vXX.0/tooling/completions?type=apex Hierarchy is
  * Completions --->* Namespace --->* Type ---> PublicDeclaration --->* {constructors, methods, properties}
@@ -27,10 +29,40 @@ import org.apache.commons.collections4.trie.PatriciaTrie;
  */
 @XmlRootElement
 public class Completions {
+
+    // Mirror what we have at https://www.salesforce.com/us/developer/docs/apexcode/Content/apex_reference.htm
+    // Since the completions?type=apex seems to return more than we would like
+    private static final List<String> kosherNamespace = ImmutableList.of(
+        "ApexPages",
+        "Approval",
+        "Auth",
+        "Canvas",
+        "ChatterAnswers",
+        "ConnectApi",
+        "Database",
+        "Datacloud",
+        "Dom",
+        "Flow",
+        "KbManagement",
+        "Messaging",
+        "Process",
+        "QuickAction",
+        "Reports",
+        "Schema",
+        "Site",
+        "Support",
+        "System",
+        "UserProvisioning"
+     );
+
     @XmlElement(name = "namespace", required = true)
     public List<Namespace> namespace;
 
     public PatriciaTrie<AbstractCompletionProposalDisplayable> namespaceTrie;
+    
+    public Namespace getSystemNamespace() {
+        return (Namespace) namespaceTrie.get("system");
+    }
 
     void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
         namespaceTrie = new PatriciaTrie<>();
@@ -38,7 +70,10 @@ public class Completions {
 
     void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
         for (Namespace ns : namespace) {
-            namespaceTrie.put(ns.name, ns);
+            String namespace = ns.name;
+            if (kosherNamespace.contains(namespace)) {
+                namespaceTrie.put(namespace.toLowerCase(), ns);
+            }
         }
     }
 }

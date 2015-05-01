@@ -20,7 +20,7 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "com.salesforce.ide.core.messages"; //$NON-NLS-1$
     public static String HTTPAdapter_GenericInvokeRequestError;
     public static String HTTPAdapter_NoResponseErrorMessage;
-    public static String PromiseableJob_ApexRemoteDebuggerGenericError;
+    public static String PromiseableJob_GenericError;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

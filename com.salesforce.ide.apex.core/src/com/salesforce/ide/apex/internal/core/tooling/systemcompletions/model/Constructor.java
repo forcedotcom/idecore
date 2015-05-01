@@ -24,10 +24,18 @@ public class Constructor extends AbstractCompletionProposalDisplayable {
     public List<Parameter> parameters;
 
     @Override
-    public String completionProposal() {
+    public String getReplacementString() {
         StringBuilder sb = new StringBuilder();
         sb.append(name);
-        if (!parameters.isEmpty()) {
+        sb.append("(...)");
+        return sb.toString();
+    }
+
+    @Override
+    public String getDisplayString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        if (parameters != null) {
             sb.append('(');
             sb.append(StringUtils.join(parameters, ","));
             sb.append(')');

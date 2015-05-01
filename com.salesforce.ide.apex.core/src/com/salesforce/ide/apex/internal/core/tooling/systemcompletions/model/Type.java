@@ -14,8 +14,9 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
+import org.apache.commons.lang3.StringUtils;
 
-public class Type {
+public class Type extends AbstractCompletionProposalDisplayable {
     @XmlElement(name = "name", required = true)
     public String name;
 
@@ -23,9 +24,9 @@ public class Type {
     public PublicDeclaration publicDeclarations;
 
     // The tries for the different types of members that we want for auto-completion
-    public PatriciaTrie<Constructor> constructorTrie;
-    public PatriciaTrie<Method> methodTrie;
-    public PatriciaTrie<Property> propertyTrie;
+    public PatriciaTrie<AbstractCompletionProposalDisplayable> constructorTrie;
+    public PatriciaTrie<AbstractCompletionProposalDisplayable> methodTrie;
+    public PatriciaTrie<AbstractCompletionProposalDisplayable> propertyTrie;
 
     void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
         constructorTrie = new PatriciaTrie<>();
@@ -34,22 +35,34 @@ public class Type {
     }
 
     void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+        name = StringUtils.capitalize(name);
+
         if (publicDeclarations.constructors != null) {
             for (Constructor c : publicDeclarations.constructors) {
-                constructorTrie.put(c.name, c);
+                constructorTrie.put(c.name.toLowerCase(), c);
             }
         }
 
         if (publicDeclarations.methods != null) {
             for (Method m : publicDeclarations.methods) {
-                methodTrie.put(m.name, m);
+                methodTrie.put(m.name.toLowerCase(), m);
             }
         }
 
         if (publicDeclarations.properties != null) {
             for (Property p : publicDeclarations.properties) {
-                propertyTrie.put(p.name, p);
+                propertyTrie.put(p.name.toLowerCase(), p);
             }
         }
+    }
+
+    @Override
+    public String getReplacementString() {
+        return name;
+    }
+
+    @Override
+    public String getDisplayString() {
+        return name;
     }
 }

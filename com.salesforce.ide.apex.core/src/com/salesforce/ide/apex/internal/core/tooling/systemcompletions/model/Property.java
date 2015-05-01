@@ -17,7 +17,12 @@ public class Property extends AbstractCompletionProposalDisplayable {
     public String name;
 
     @Override
-    public String completionProposal() {
+    public String getReplacementString() {
+        return name;
+    }
+
+    @Override
+    public String getDisplayString() {
         return name;
     }
 }

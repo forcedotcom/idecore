@@ -16,6 +16,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
+import org.apache.commons.lang3.StringUtils;
 
 public class Namespace extends AbstractCompletionProposalDisplayable {
     @XmlElement(name = "name", required = true)
@@ -24,20 +25,27 @@ public class Namespace extends AbstractCompletionProposalDisplayable {
     @XmlElement(name = "type", required = true)
     public List<Type> type;
 
-    public PatriciaTrie<Type> typeTrie;
+    public PatriciaTrie<AbstractCompletionProposalDisplayable> typeTrie;
 
     void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
         typeTrie = new PatriciaTrie<>();
     }
 
     void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+        name = StringUtils.capitalize(name);
+
         for (Type t : type) {
-            typeTrie.put(t.name, t);
+            typeTrie.put(t.name.toLowerCase(), t);
         }
     }
 
     @Override
-    public String completionProposal() {
+    public String getReplacementString() {
+        return name;
+    }
+
+    @Override
+    public String getDisplayString() {
         return name;
     }
 }
