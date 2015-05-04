@@ -31,6 +31,7 @@ public class ApexCompletionCollector implements IContentAssistProcessor {
 
     public ApexCompletionCollector() {
         processors = Lists.newArrayList();
+        processors.add(new ApexSystemConstructorProcessor());
         processors.add(new ApexSystemStaticMethodProcessor());
         processors.add(new ApexSystemTypeProcessor());
         processors.add(new ApexSystemNamespaceProcessor());

@@ -13,8 +13,10 @@ package com.salesforce.ide.ui.editors.internal.apex.completions;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -39,6 +41,7 @@ public class ApexCompletionUtils {
      * complete - it only handles system completions now. Need to augment to handle arbitrary types including
      * user-defined types (including inner classes). More importantly, we need to be able to support chaining of
      * type.method().method()...
+     * 
      * 
      * @author nchen
      * 
@@ -86,6 +89,16 @@ public class ApexCompletionUtils {
         public boolean shouldSuggestNamespacedMember() {
             return segments.size() == 3;
         }
+
+        // new SomeTyp<cursor>
+        public boolean shouldSuggestTopLevelConstructor() {
+            return segments.size() <= 1;
+        }
+
+        // new SomeNamespace.SomeTyp<cursor>
+        public boolean shouldSuggestNamespacedConstructor() {
+            return segments.size() == 2;
+        }
     }
 
     private ApexCompletionUtils() {};
@@ -108,6 +121,18 @@ public class ApexCompletionUtils {
         return doc.get(offset + 1, length);
     }
 
+    // Can we do this more accurately to determine when the user has entered a "new" expression even on a prior line?
+    // Seems like the parser should be able to handle it though it might signal a parse exception since it is expecting a complete new expression.
+    public boolean hasInvokedNewOnSameLine(ITextViewer viewer, int offset) throws BadLocationException {
+        IDocument doc = viewer.getDocument();
+        if (doc == null || offset > doc.getLength())
+            return false;
+
+        IRegion lineInfo = doc.getLineInformationOfOffset(offset);
+        String currentLine = doc.get(lineInfo.getOffset(), lineInfo.getLength());
+        return currentLine.matches(".*(\\bnew\\b).*");
+    }
+
     public boolean isInstantiatingNewType(ITextViewer viewer, int offset) {
         IDocument doc = viewer.getDocument();
         if (doc == null || offset > doc.getLength())
@@ -124,8 +149,9 @@ public class ApexCompletionUtils {
             int prefixLength = prefix != null ? prefix.length() : 0;
             String replacement = suggestion.getReplacementString();
             String displayString = suggestion.getDisplayString();
-            proposals.add(new CompletionProposal(replacement, offset - prefixLength, prefix.length(), replacement
-                    .length(), image, displayString, null, null));
+            if (!(StringUtils.isEmpty(replacement) || StringUtils.isEmpty(displayString)))
+                proposals.add(new CompletionProposal(replacement, offset - prefixLength, prefix.length(), suggestion
+                        .cursorPosition(), image, displayString, null, null));
         }
         return proposals.toArray(new ICompletionProposal[0]);
     }

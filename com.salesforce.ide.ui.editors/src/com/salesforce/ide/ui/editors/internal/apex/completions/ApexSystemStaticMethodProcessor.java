@@ -54,29 +54,16 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
         try {
-            Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
-            prefix = getUtil().getPrefix(viewer, offset);
-            completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
+            if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
+                Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
+                prefix = getUtil().getPrefix(viewer, offset);
+                completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 
-            if (completionPrefix.shouldSuggestTopLevelMember()) {
-                String typeName = completionPrefix.segments.get(0);
-                String methodPrefix = completionPrefix.segments.get(1);
+                if (completionPrefix.shouldSuggestTopLevelMember()) {
+                    String typeName = completionPrefix.segments.get(0);
+                    String methodPrefix = completionPrefix.segments.get(1);
 
-                Namespace namespace = completions.getSystemNamespace();
-                Type type = (Type) namespace.typeTrie.get(typeName);
-                if (type != null) {
-                    suggestions =
-                            Collections2.filter(type.methodTrie.prefixMap(methodPrefix).values(),
-                                new StaticMethodPredicate());
-                    return getUtil().createProposal(suggestions, methodPrefix, offset, getImage());
-                }
-            } else if (completionPrefix.shouldSuggestNamespacedMember()) {
-                String namespaceName = completionPrefix.segments.get(0);
-                String typeName = completionPrefix.segments.get(1);
-                String methodPrefix = completionPrefix.segments.get(2);
-
-                Namespace namespace = (Namespace) completions.namespaceTrie.get(namespaceName);
-                if (namespace != null) {
+                    Namespace namespace = completions.getSystemNamespace();
                     Type type = (Type) namespace.typeTrie.get(typeName);
                     if (type != null) {
                         suggestions =
@@ -84,8 +71,23 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
                                     new StaticMethodPredicate());
                         return getUtil().createProposal(suggestions, methodPrefix, offset, getImage());
                     }
-                }
+                } else if (completionPrefix.shouldSuggestNamespacedMember()) {
+                    String namespaceName = completionPrefix.segments.get(0);
+                    String typeName = completionPrefix.segments.get(1);
+                    String methodPrefix = completionPrefix.segments.get(2);
 
+                    Namespace namespace = (Namespace) completions.namespaceTrie.get(namespaceName);
+                    if (namespace != null) {
+                        Type type = (Type) namespace.typeTrie.get(typeName);
+                        if (type != null) {
+                            suggestions =
+                                    Collections2.filter(type.methodTrie.prefixMap(methodPrefix).values(),
+                                        new StaticMethodPredicate());
+                            return getUtil().createProposal(suggestions, methodPrefix, offset, getImage());
+                        }
+                    }
+
+                }
             }
         } catch (Exception e) {
             logger.warn("Error trying to generate auto-completion for system static method", e);

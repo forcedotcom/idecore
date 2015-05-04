@@ -25,21 +25,34 @@ public class Constructor extends AbstractCompletionProposalDisplayable {
 
     @Override
     public String getReplacementString() {
+        if (StringUtils.isEmpty(name))
+            return null;
+
         StringBuilder sb = new StringBuilder();
         sb.append(name);
-        sb.append("(...)");
+        sb.append("()");
         return sb.toString();
     }
 
     @Override
     public String getDisplayString() {
+        if (StringUtils.isEmpty(name))
+            return null;
+
         StringBuilder sb = new StringBuilder();
         sb.append(name);
+        sb.append('(');
         if (parameters != null) {
-            sb.append('(');
             sb.append(StringUtils.join(parameters, ","));
-            sb.append(')');
         }
+        sb.append(')');
         return sb.toString();
     }
+
+    @Override
+    public int cursorPosition() {
+        // Position inside the ()
+        return getReplacementString().length() - 1;
+    }
+
 }

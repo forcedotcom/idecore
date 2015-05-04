@@ -40,25 +40,27 @@ public class ApexSystemTypeProcessor extends ApexCompletionProcessor implements 
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
         try {
-            Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
+            if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
+                Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
 
-            prefix = getUtil().getPrefix(viewer, offset);
-            completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
+                prefix = getUtil().getPrefix(viewer, offset);
+                completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 
-            if (completionPrefix.shouldSuggestNamespacedType()) {
-                String namespaceName = completionPrefix.segments.get(0);
-                String typePrefix = completionPrefix.segments.get(1);
+                if (completionPrefix.shouldSuggestNamespacedType()) {
+                    String namespaceName = completionPrefix.segments.get(0);
+                    String typePrefix = completionPrefix.segments.get(1);
 
-                Namespace namespace = (Namespace) completions.namespaceTrie.get(namespaceName);
-                if (namespace != null) {
-                    suggestions = namespace.typeTrie.prefixMap(typePrefix).values();
+                    Namespace namespace = (Namespace) completions.namespaceTrie.get(namespaceName);
+                    if (namespace != null) {
+                        suggestions = namespace.typeTrie.prefixMap(typePrefix).values();
+                    }
+                    return getUtil().createProposal(suggestions, typePrefix, offset, getImage());
+                } else if (completionPrefix.shouldSuggestTopLevelType()) { // provide only system type since that doesn't need to be fully qualified
+                    String typePrefix = completionPrefix.segments.get(0);
+                    Namespace systemNS = completions.getSystemNamespace();
+                    suggestions = Lists.newArrayList(systemNS.typeTrie.prefixMap(typePrefix).values());
+                    return getUtil().createProposal(suggestions, typePrefix, offset, getImage());
                 }
-                return getUtil().createProposal(suggestions, typePrefix, offset, getImage());
-            } else if (completionPrefix.shouldSuggestTopLevelType()) { // provide only system type since that doesn't need to be fully qualified
-                String typePrefix = completionPrefix.segments.get(0);
-                Namespace systemNS = completions.getSystemNamespace();
-                suggestions = Lists.newArrayList(systemNS.typeTrie.prefixMap(typePrefix).values());
-                return getUtil().createProposal(suggestions, typePrefix, offset, getImage());
             }
         } catch (Exception e) {
             logger.warn("Error trying to generate auto-completion for system type", e);
