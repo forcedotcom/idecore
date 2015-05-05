@@ -6025,15 +6025,6 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
     </xsd:complexContent>
    </xsd:complexType>
    <xsd:element name="MalformedSearchFault" tns:type="MalformedSearchFault"/>
-   <xsd:complexType name="AggregateResult">
-     <xsd:complexContent>
-       <xsd:extension base="tns:sObject">
-         <xsd:sequence>
-          <xsd:element name="fields" minOccurs="0" maxOccurs="unbounded" type="xsd:anyType"/>
-         </xsd:sequence>
-       </xsd:extension>
-     </xsd:complexContent>
-   </xsd:complexType>
    <xsd:complexType name="sObject">
     <xsd:sequence>
      <xsd:element name="fieldsToNull" minOccurs="0" maxOccurs="unbounded" type="xsd:string" nillable="true"/>
