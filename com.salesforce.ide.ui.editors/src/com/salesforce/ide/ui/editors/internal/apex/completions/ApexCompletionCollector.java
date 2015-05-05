@@ -12,6 +12,7 @@ package com.salesforce.ide.ui.editors.internal.apex.completions;
 
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -19,6 +20,8 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import com.google.common.collect.Lists;
+import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
+import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
 
 /**
  * Collects all the possible completions for Apex and displays them.
@@ -37,12 +40,20 @@ public class ApexCompletionCollector implements IContentAssistProcessor {
         processors.add(new ApexSystemNamespaceProcessor());
     }
 
+    protected boolean shouldEnableAutoCompletion() {
+        IPreferenceStore preferenceStore = ForceIdeEditorsPlugin.getDefault().getPreferenceStore();
+        return preferenceStore.getBoolean(PreferenceConstants.EDITOR_AUTOCOMPLETION);
+    }
+
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         List<ICompletionProposal> suggestions = Lists.newArrayList();
 
-        for (IContentAssistProcessor processor : processors) {
-            suggestions.addAll(Lists.newArrayList(processor.computeCompletionProposals(viewer, offset)));
+        if (shouldEnableAutoCompletion()) {
+
+            for (IContentAssistProcessor processor : processors) {
+                suggestions.addAll(Lists.newArrayList(processor.computeCompletionProposals(viewer, offset)));
+            }
         }
 
         return suggestions.toArray(new ICompletionProposal[0]);
