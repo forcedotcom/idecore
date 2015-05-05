@@ -35,19 +35,19 @@ import com.salesforce.ide.core.Messages;
  */
 public abstract class PromiseableJob<T> extends Job {
     // Provide default handler for onSuccess and onFailure when we don't care
-    private Function<T, IStatus> onSuccess = new Function<T, IStatus>() {
+    protected Function<T, IStatus> onSuccess = new Function<T, IStatus>() {
         @Override
         public IStatus apply(T arg0) {
             return Status.OK_STATUS;
         }
     };
 
-    private Function<Throwable, IStatus> onFailure = new Function<Throwable, IStatus>() {
+    protected Function<Throwable, IStatus> onFailure = new Function<Throwable, IStatus>() {
 
         @Override
         public IStatus apply(Throwable throwable) {
             return new Status(Status.ERROR, ForceIdeCorePlugin.PLUGIN_ID,
-                    Messages.PromiseableJob_ApexRemoteDebuggerGenericError, throwable);
+                    Messages.PromiseableJob_GenericError, throwable);
         }
     };
 

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.preferences;
 
-@SuppressWarnings( { "nls" })
+@SuppressWarnings({ "nls" })
 public class PreferenceConstants {
     public final static String EDITOR_EVALUTE_TEMPORARY_PROBLEMS = "EDITOR_EVALUTE_TEMPORARY_PROBLEMS";
 
@@ -75,4 +75,9 @@ public class PreferenceConstants {
      * We set this as a preference because the new compiler is still in beta mode so errors could happen.
      */
     public final static String EDITOR_PARSE_WITH_NEW_COMPILER = "parseWithNewCompiler"; //$NON-NLS-1$
+
+    /**
+     * Controls whether we are going to display auto-completion
+     */
+    public final static String EDITOR_AUTOCOMPLETION = "editorAutoCompletion"; //$NON-NLS-1$
 }

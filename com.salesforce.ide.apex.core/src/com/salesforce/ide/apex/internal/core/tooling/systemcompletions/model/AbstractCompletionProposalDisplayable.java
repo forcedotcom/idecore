@@ -8,23 +8,20 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.core;
-
-import org.eclipse.osgi.util.NLS;
+package com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model;
 
 /**
+ * Implementors signal that they have a way to display themselves as a proposal string.
+ * 
  * @author nchen
- *
+ * 
  */
-public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "com.salesforce.ide.core.messages"; //$NON-NLS-1$
-    public static String HTTPAdapter_GenericInvokeRequestError;
-    public static String HTTPAdapter_NoResponseErrorMessage;
-    public static String PromiseableJob_GenericError;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
+public abstract class AbstractCompletionProposalDisplayable {
+    public abstract String getReplacementString();
 
-    private Messages() {}
+    public abstract String getDisplayString();
+
+    public int cursorPosition() {
+        return getReplacementString().length();
+    }
 }

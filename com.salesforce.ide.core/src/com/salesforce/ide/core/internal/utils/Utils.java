@@ -470,6 +470,19 @@ public class Utils {
         return Utils.isNotEmpty(forceProxy) && Constants.SYS_SETTING_SFDC_INTERNAL_VALUE.equals(forceProxy) ? true : false;
     }
 
+    public static int getApexManifestTimeoutMS() {
+        String apexManifestTimeoutMS = System.getProperty(Constants.SYS_SETTING_APEX_MANIFEST_TIMEOUT);
+        if (Utils.isNotEmpty(apexManifestTimeoutMS)) {
+            try {
+                return Integer.parseInt(apexManifestTimeoutMS);
+            } catch (Exception e) {
+                return Constants.APEX_MANIFEST_TIMEOUT_IN_MS_DEFAULT;
+            }
+        } else {
+            return Constants.APEX_MANIFEST_TIMEOUT_IN_MS_DEFAULT;
+        }
+    }
+
 	public static String getDefaultSystemApiVersion() {
 		String apiVersion = System
 				.getProperty(Constants.SYS_SETTING_DEFAULT_API_VERSION);

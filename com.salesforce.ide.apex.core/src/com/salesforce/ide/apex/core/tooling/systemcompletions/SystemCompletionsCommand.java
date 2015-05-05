@@ -14,6 +14,7 @@ package com.salesforce.ide.apex.core.tooling.systemcompletions;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.salesforce.ide.apex.core.Messages;
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.core.remote.IHTTPTransport;
 import com.salesforce.ide.core.remote.PromiseableJob;
 

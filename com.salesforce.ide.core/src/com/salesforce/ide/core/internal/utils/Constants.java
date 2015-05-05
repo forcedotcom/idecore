@@ -322,9 +322,7 @@ public interface Constants {
     String SYS_LOG_LEVEL = "force-ide-log-level";
     String SYS_SETTING_DEBUG_VALUE = "true";
     String SYS_SETTING_PROPERTIES = "force-ide-properties";
-    String SYS_SETTING_SFDC_DEBUGGER = "sfdc-debugger";
     String SYS_SETTING_SFDC_INTERNAL = "sfdc-internal";
-    String SYS_SETTING_X_FORCE_PROXY = "x-force-proxy";
     String SYS_SETTING_SFDC_INTERNAL_VALUE = "true";
     String SYS_SETTING_DEFAULT_API_VERSION = "force-ide-api-version";
     String SYS_SETTING_POLL_LIMIT_MILLIS = "force-ide-poll-limit";
@@ -332,6 +330,12 @@ public interface Constants {
     String SYS_SETTING_SKIP_COMPATIBILITY_CHECK = "force-ide-skip-compatibility-check";
     String SYS_SETTING_SKIP_COMPATIBILITY_CHECK_VALUE = "true";
     String SYS_SETTING_UPGRADE_ENABLE = "force-ide-upgrade-enable";
+    
+    // D E B U G G E R
+    String SYS_SETTING_SFDC_DEBUGGER = "sfdc-debugger";
+    String SYS_SETTING_X_FORCE_PROXY = "x-force-proxy";
+    String SYS_SETTING_APEX_MANIFEST_TIMEOUT = "manifestTimeout";
+    int APEX_MANIFEST_TIMEOUT_IN_MS_DEFAULT = 60_000;
 
     // P R O J E C T
     String LAST_USERNAME_SELECTED = "lastUserSelected";

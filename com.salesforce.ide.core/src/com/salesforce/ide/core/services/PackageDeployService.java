@@ -74,6 +74,7 @@ public class PackageDeployService extends BasePackageService {
         DeployOptions deployOptions = makeDefaultDeployOptions(true);
         deployOptions.setTestLevel(TestLevel.RunSpecifiedTests);
         deployOptions.setPerformRetrieve(false);
+        deployOptions.setTestLevel(TestLevel.RunSpecifiedTests);
 
         if (Utils.isNotEmpty(tests)) {
             deployOptions.setRunTests(tests);

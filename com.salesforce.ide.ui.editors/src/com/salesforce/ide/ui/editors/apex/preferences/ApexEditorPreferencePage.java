@@ -13,9 +13,12 @@ package com.salesforce.ide.ui.editors.apex.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -27,10 +30,22 @@ import com.salesforce.ide.ui.editors.internal.utils.EditorMessages;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 
 public class ApexEditorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+    private final class BooleanFieldEditorExtension extends BooleanFieldEditor {
+        private BooleanFieldEditorExtension(String name, String label, Composite parent) {
+            super(name, label, parent);
+        }
 
-    // Package access for testing purposes
+        @Override
+        public Button getChangeControl(Composite parent) {
+            // I want to be able to set the value of the checkbox programmatically
+            return super.getChangeControl(parent);
+        }
+    }
+
     BooleanFieldEditor enableNewParser;
-    Group startupGroup;
+    // This has a dependency with the new parser so toggling that one should also toggle this one
+    BooleanFieldEditorExtension enableAutoCompletion;
+    Group compilerGroup;
 
     public ApexEditorPreferencePage() {}
 
@@ -51,22 +66,49 @@ public class ApexEditorPreferencePage extends PreferencePage implements IWorkben
         GridLayout layout = new GridLayout();
         entryTable.setLayout(layout);
 
-        startupGroup = new Group(entryTable, SWT.NONE);
-        startupGroup.setText(EditorMessages.getString("ApexEditorPreferencePage.ApexParserGroup")); //$NON-NLS-1$
-        startupGroup.setLayout(new GridLayout());
-        startupGroup.setLayoutData(new GridData(768));
+        compilerGroup = new Group(entryTable, SWT.NONE);
+        compilerGroup.setText(EditorMessages.getString("ApexEditorPreferencePage.ApexParserGroup")); //$NON-NLS-1$
+        compilerGroup.setLayout(new GridLayout());
+        compilerGroup.setLayoutData(new GridData(768));
 
-        enableNewParser = instantiateBooleanFieldEditor(startupGroup);
+        enableNewParser = instantiateApexCompilerBooleanField(compilerGroup);
         enableNewParser.setPage(this);
         enableNewParser.setPreferenceStore(getPreferenceStore());
         enableNewParser.load();
 
+        enableAutoCompletion = instantiateAutoCompletionBooleanField(compilerGroup);
+        enableAutoCompletion.setPage(this);
+        enableAutoCompletion.setPreferenceStore(getPreferenceStore());
+        enableAutoCompletion.load();
+
+        enableNewParser.setPropertyChangeListener(new IPropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                Boolean newValue = (Boolean) event.getNewValue();
+
+                if (newValue) {
+                    enableAutoCompletion.setEnabled(true, compilerGroup);
+                } else {
+                    enableAutoCompletion.setEnabled(false, compilerGroup);
+                    Button autoCompletionButton = enableAutoCompletion.getChangeControl(compilerGroup);
+                    autoCompletionButton.setSelection(false);
+                }
+
+            }
+        });
+
         return entryTable;
     }
 
-    protected BooleanFieldEditor instantiateBooleanFieldEditor(Composite parent) {
+    protected BooleanFieldEditor instantiateApexCompilerBooleanField(Composite parent) {
         return new BooleanFieldEditor(PreferenceConstants.EDITOR_PARSE_WITH_NEW_COMPILER,
                 EditorMessages.getString("ApexEditorPreferencePage.EnableNewParserOption"), parent); //$NON-NLS-1$
+    }
+
+    protected BooleanFieldEditorExtension instantiateAutoCompletionBooleanField(Composite parent) {
+        return new BooleanFieldEditorExtension(PreferenceConstants.EDITOR_AUTOCOMPLETION, "Enable auto-completion",
+                parent);
     }
 
     @Override
@@ -83,11 +125,13 @@ public class ApexEditorPreferencePage extends PreferencePage implements IWorkben
     @Override
     protected void performDefaults() {
         enableNewParser.loadDefault();
+        enableAutoCompletion.loadDefault();
     }
 
     @Override
     public boolean performOk() {
         enableNewParser.store();
+        enableAutoCompletion.store();
         return super.performOk();
     }
 }
