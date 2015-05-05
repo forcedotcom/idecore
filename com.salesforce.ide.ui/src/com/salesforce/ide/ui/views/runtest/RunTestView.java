@@ -97,7 +97,7 @@ public class RunTestView extends BaseViewPart {
     }
     
     public static RunTestView getInstance() {
-    	if (Utils.isNotEmpty(INSTANCE)) {
+    	if (Utils.isEmpty(INSTANCE)) {
     		// We use Display.syncExec because getting a view has to be done
     		// on a UI thread.
     		Display display = PlatformUI.getWorkbench().getDisplay();
