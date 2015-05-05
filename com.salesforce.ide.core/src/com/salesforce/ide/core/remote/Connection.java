@@ -987,5 +987,6 @@ public class Connection {
 
     void setToolingEndPoint() {
         toolingConnectorConfig.setServiceEndpoint(toolingServerUrl);
+        toolingConnectorConfig.setAuthEndpoint(toolingServerUrl);
     }
 }

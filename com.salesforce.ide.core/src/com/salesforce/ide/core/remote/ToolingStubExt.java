@@ -18,12 +18,12 @@ import com.sforce.soap.tooling.DeleteResult;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SObject;
 import com.sforce.soap.tooling.SaveResult;
-import com.sforce.soap.tooling.SoapConnection;
+import com.sforce.soap.tooling.ToolingConnection;
 import com.sforce.ws.ConnectionException;
 
 /**
  * Wraps the Tooling Connection object and provides a facade to the general operations offered through SOAP. Also,
- * handles the initialization (and re-initialization) of the SoapConnection for ToolingAPI.
+ * handles the initialization (and re-initialization) of the ToolingConnection for ToolingAPI.
  * 
  * @see MetadataStubExt
  * @author nchen
@@ -33,9 +33,9 @@ public class ToolingStubExt {
     private static final Logger logger = Logger.getLogger(ToolingStubExt.class);
 
     private Connection connection;
-    private SoapConnection toolingConnection;
+    private ToolingConnection toolingConnection;
 
-    public SoapConnection getToolingConnection() {
+    public ToolingConnection getToolingConnection() {
         return toolingConnection;
     }
 
@@ -47,7 +47,7 @@ public class ToolingStubExt {
         this.connection = connection;
 
         try {
-            this.toolingConnection = new SoapConnection(connection.getToolingConnectorConfig());
+            this.toolingConnection = new ToolingConnection(connection.getToolingConnectorConfig());
         } catch (ConnectionException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Could not set tooling connection with connection:  " + connection.getLogDisplay());

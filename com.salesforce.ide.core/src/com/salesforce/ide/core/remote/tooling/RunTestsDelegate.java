@@ -302,7 +302,9 @@ public class RunTestsDelegate extends BaseService {
 					SObject sObj = qr.getRecords()[0];
 					if (sObj instanceof AggregateResult) {
 						AggregateResult aggRes = (AggregateResult) sObj;
-						totalTestDone = aggRes.getExpr0();
+						Object expr0 = aggRes.getField("expr0");
+						int updatedTestDone = (int) expr0;
+						totalTestDone = updatedTestDone;
 					}
 				}
 			}
@@ -457,7 +459,7 @@ public class RunTestsDelegate extends BaseService {
 	 * @throws ForceRemoteException
 	 */
 	private void initializeConnection(ForceProject forceProject) throws ForceConnectionException, ForceRemoteException {
-		if (toolingRESTConnection != null) return;
+		if (toolingRESTConnection != null && toolingStubExt != null) return;
 		
 		toolingRESTConnection = new HTTPConnection(forceProject, TOOLING_ENDPOINT);
         toolingRESTConnection.initialize();
