@@ -276,16 +276,6 @@
         <separator name="group2" visible="true"/>
         <separator name="group3" visible="true"/>
         <separator name="group4" visible="true"/>
-        <command commandId="com.salesforce.ide.ui.command.runTests" helpContextId="com.salesforce.ide.documentation.runTests" id="runTests" label="Run Tests" mnemonic="T" style="push" tooltip="%tooltip.13">
-          <visibleWhen checkEnabled="false">
-            <iterate ifEmpty="false" operator="and">
-              <reference definitionId="com.salesforce.ide.projectFile"/>
-              <adapt type="org.eclipse.core.resources.IResource">
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRunTestEnabledResources"/>
-              </adapt>
-            </iterate>
-          </visibleWhen>
-        </command>
         <separator name="group5" visible="true"/>
         <command commandId="com.salesforce.ide.ui.command.showInBrowser" helpContextId="com.salesforce.ide.documentation.showInBrowser" id="showInBrowser" label="Show in Salesforce Web" mnemonic="w" style="push" tooltip="%tooltip.12">
           <visibleWhen checkEnabled="false">
@@ -585,13 +575,6 @@
       />
     <command
       categoryId="com.salesforce.ide.ui.commands.category"
-      description="%tooltip.13"
-      helpContextId="com.salesforce.ide.documentation.runTests"
-      id="com.salesforce.ide.ui.command.runTests"
-      name="Run Tests"
-      />
-    <command
-      categoryId="com.salesforce.ide.ui.commands.category"
       description="%tooltip.16"
       helpContextId="com.salesforce.ide.documentation.openProjectPropertiesAction"
       id="com.salesforce.ide.ui.command.openProjectProperties"
@@ -706,16 +689,6 @@
         <iterate ifEmpty="false" operator="and">
           <adapt type="org.eclipse.core.resources.IResource">
             <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-          </adapt>
-          <reference definitionId="com.salesforce.ide.projectActive"/>
-        </iterate>
-      </enabledWhen>
-    </handler>
-    <handler class="com.salesforce.ide.ui.handlers.RunTestsHandler" commandId="com.salesforce.ide.ui.command.runTests">
-      <enabledWhen>
-        <iterate ifEmpty="false" operator="and">
-          <adapt type="org.eclipse.core.resources.IResource">
-            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRunTestEnabledResources"/>
           </adapt>
           <reference definitionId="com.salesforce.ide.projectActive"/>
         </iterate>

@@ -111,7 +111,7 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
 
     @Override
     public Entity<String> marshallRequest(Object data) {
-        payload = Entity.text(data.toString());
+        payload = Entity.entity(data.toString(), transport.getMediaType());
         return payload;
     }
 

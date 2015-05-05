@@ -8,48 +8,57 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
+
 package com.salesforce.ide.ui.views.runtest;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 import com.salesforce.ide.core.internal.utils.LoggingInfo;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.model.ApexCodeLocation;
+import com.salesforce.ide.core.services.LoggingService;
 import com.salesforce.ide.ui.views.LoggingComposite;
+import com.sforce.soap.metadata.LogInfo;
 
 /**
- * Legacy class
+ * The UI manager for Apex Test Runner view. All this does is generate and
+ * update texts.
  * 
- * @author cwall
+ * @author jwidjaja
+ *
  */
 public class RunTestViewComposite extends Composite {
 
+	public static final String CLEAR = "Clear";
+	public static final String RERUN = "Re-run";
+	public static final String STACK_TRACE = "Stack Trace";
+	public static final String SYSTEM_LOG = "System Debug Log";
+	public static final String USER_LOG = "User Debug Log";
+	
     private SashForm sashForm = null;
-    private Composite leftHandComposite = null;
-    private Composite rightHandComposite = null;
-    private Button btnClear = null, btnRun = null;
-    protected Tree resultsTree = null;
-    protected CLabel cLabel = null, cLabel1 = null;
-    protected Scale scale = null;
-    private Text textArea = null;
+    private Button btnClear = null;
+    private Tree resultsTree = null;
+    private TabFolder tabFolder = null;
+    private Text stackTraceArea = null;
+    private Text systemLogsTextArea = null;
     private Text userLogsTextArea = null;
-    protected RunTestView runView;
+    protected RunTestView runView = null;
     protected IProject project = null;
-    private LoggingComposite loggingComposite;
+    private LoggingComposite loggingComposite = null;
 
     public RunTestViewComposite(Composite parent, int style, RunTestView view) {
         super(parent, style);
@@ -62,8 +71,10 @@ public class RunTestViewComposite extends Composite {
         setSize(new Point(568, 344));
         setLayout(new GridLayout());
     }
-
-    // This method initializes sashForm
+    
+    /**
+     * Create a resizeable view with left and right columns.
+     */
     private void createSashForm() {
         GridData gridData = new GridData();
         gridData.horizontalAlignment = GridData.FILL;
@@ -75,119 +86,159 @@ public class RunTestViewComposite extends Composite {
         createLeftHandComposite();
         createRightHandComposite();
     }
-
+    
+    /**
+     * Create the left side which consists of a Clear button,
+     * the logging controls, and the test results tree.
+     */
     private void createLeftHandComposite() {
-        GridData gridData1 = new GridData();
-        gridData1.grabExcessHorizontalSpace = true;
-        gridData1.horizontalAlignment = GridData.FILL;
-        gridData1.verticalAlignment = GridData.FILL;
-        gridData1.horizontalSpan = 3;
-        gridData1.grabExcessVerticalSpace = true;
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 3;
-        leftHandComposite = new Composite(sashForm, SWT.NONE);
+        gridLayout.numColumns = 5;
+        Composite leftHandComposite = new Composite(sashForm, SWT.NONE);
         leftHandComposite.setLayout(gridLayout);
-        // clear button
+        
+        // Clear button
         btnClear = new Button(leftHandComposite, SWT.NONE);
-        btnClear.setText("Clear");
+        btnClear.setText(CLEAR);
         btnClear.setEnabled(false);
         btnClear.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
             @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
-                resultsTree.removeAll();
-                if (textArea != null) {
-                    textArea.setText("");
-                    userLogsTextArea.setText("");
-                }
+            	clearAll();
             }
         });
-
-        // run again button
-        btnRun = new Button(leftHandComposite, SWT.NONE);
-        btnRun.setText("Re-Run");
-        btnRun.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
-            @Override
-            public void mouseUp(org.eclipse.swt.events.MouseEvent event) {
-                runView.reRunTests();
-            }
-        });
-        btnRun.setEnabled(false);
+        
+        // Logging controls
+        loggingComposite =
+                new LoggingComposite(leftHandComposite, runView.getLoggingService(), SWT.NONE, false,
+                        LoggingInfo.SupportedFeatureEnum.RunTest);
+        
+        // Test results tree
+        GridData gridData1 = new GridData();
+        gridData1.grabExcessHorizontalSpace = true;
+        gridData1.horizontalAlignment = GridData.FILL;
+        gridData1.verticalAlignment = GridData.FILL;
+        gridData1.horizontalSpan = 4;
+        gridData1.grabExcessVerticalSpace = true;
         resultsTree = new Tree(leftHandComposite, SWT.BORDER);
         resultsTree.setLinesVisible(true);
         resultsTree.setLayoutData(gridData1);
         resultsTree.addMouseListener(new MouseListener() {
             @Override
-            public void mouseDoubleClick(MouseEvent arg0) {
-                if (arg0.getSource() != null && arg0.getSource() instanceof Tree
-                        && Utils.isNotEmpty(((Tree) arg0.getSource()).getSelection())) {
-                    Object data = ((Tree) arg0.getSource()).getSelection()[0].getData("location");
-                    if (data != null && data instanceof ApexCodeLocation) {
-                        if (((Tree) arg0.getSource()).getSelection()[0].getData("file") != null) {
-                            runView.highlightLine((ApexCodeLocation) data);
-                        }
-                    }
-                }
-            }
+            public void mouseDoubleClick(MouseEvent arg0) {}
 
             @Override
             public void mouseDown(MouseEvent arg0) {}
 
             @Override
             public void mouseUp(MouseEvent arg0) {
-                if (arg0.getSource() != null && arg0.getSource() instanceof Tree
+            	TreeItem selectedTreeItem = null;
+            	String selectedTabName = null;
+            	
+            	// Get the selected tree item
+            	if (arg0.getSource() != null && arg0.getSource() instanceof Tree
                         && Utils.isNotEmpty(((Tree) arg0.getSource()).getSelection())) {
-                    Object data = ((Tree) arg0.getSource()).getSelection()[0].getData("location");
-                    if (data != null && data instanceof ApexCodeLocation) {
-                        if (((Tree) arg0.getSource()).getSelection()[0].getData("line") != null) {
-                            runView.highlightLine((ApexCodeLocation) data);
-                        }
-                    }
+            		selectedTreeItem = ((Tree) arg0.getSource()).getSelection()[0];
                 }
+            	// Get the selected tab name
+            	if (tabFolder != null && tabFolder.getSelection() != null && tabFolder.getSelection().length > 0) {
+            		TabItem selectedTabItem = tabFolder.getSelection()[0];
+            		selectedTabName = selectedTabItem.getText();
+            	}
+            	// Let the view do the work
+            	runView.updateView(selectedTreeItem, selectedTabName);
             }
         });
     }
-
+    
+    /**
+     * Create the right side which consists of three tabs for
+     * Stack Trace, System Debug Log, and User Debug Log.
+     */
     private void createRightHandComposite() {
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 4;
-        rightHandComposite = new Composite(sashForm, SWT.NONE);
-        rightHandComposite.setLayout(gridLayout);
-
-        loggingComposite =
-                new LoggingComposite(rightHandComposite, runView.getLoggingService(), SWT.NONE, false,
-                        LoggingInfo.SupportedFeatureEnum.RunTest);
-
-        GridData gridData2 = new GridData(GridData.FILL_HORIZONTAL);
-        gridData2.grabExcessHorizontalSpace = true;
-        gridData2.grabExcessVerticalSpace = true;
-        gridData2.horizontalSpan = 2;
-        gridData2.minimumHeight=200;
-        @SuppressWarnings("unused")
-        Label filler1 = new Label(rightHandComposite, SWT.NONE);
-        textArea = new Text(rightHandComposite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
-        textArea.setLayoutData(gridData2);
-        
-        GridData gridData3 = new GridData(GridData.FILL_HORIZONTAL);
-        gridData3.grabExcessHorizontalSpace = true;
-        gridData3.grabExcessVerticalSpace = true;
-        gridData3.horizontalSpan = 2;
-        gridData3.minimumHeight=200;
-        @SuppressWarnings("unused")
-        Label filler2 = new Label(rightHandComposite, SWT.NONE);
-        userLogsTextArea = new Text(rightHandComposite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
-        userLogsTextArea.setLayoutData(gridData3);
+    	// A folder with three tabs
+    	tabFolder = new TabFolder(sashForm, SWT.NONE);
+    	// Stack trace
+    	TabItem tab1 = new TabItem(tabFolder, SWT.NONE);
+    	tab1.setText(STACK_TRACE);
+    	stackTraceArea = createTextAreaForTabItem(tabFolder, tab1);
+    	// System debug log
+    	TabItem tab2 = new TabItem(tabFolder, SWT.NONE);
+    	tab2.setText(SYSTEM_LOG);
+    	systemLogsTextArea = createTextAreaForTabItem(tabFolder, tab2);
+    	// User debug log
+    	TabItem tab3 = new TabItem(tabFolder, SWT.NONE);
+    	tab3.setText(USER_LOG);
+    	userLogsTextArea = createTextAreaForTabItem(tabFolder, tab3);
+    	
+    	tabFolder.addSelectionListener(new SelectionAdapter() {
+    		public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
+    			TreeItem selectedTreeItem = null;
+            	String selectedTabName = null;
+            	
+            	if (resultsTree != null && resultsTree.getSelectionCount() > 0) {
+            		selectedTreeItem = resultsTree.getSelection()[0];
+            	}
+            	
+            	if (event.getSource() != null && event.getSource() instanceof TabFolder) {
+            		selectedTabName = ((TabFolder) event.getSource()).getSelection()[0].getText();
+            	}
+            	
+            	runView.updateView(selectedTreeItem, selectedTabName);
+    		}
+    	});
+    }
+    
+    /**
+     * Create a default text area for a tab item.
+     * @param parent
+     * @param tab
+     * @return Text widget
+     */
+    private Text createTextAreaForTabItem(Composite parent, TabItem tab) {
+    	Text textArea = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER | SWT.H_SCROLL);
+    	textArea.setEditable(false);
+	    GridData gridData = new GridData();
+	    gridData.grabExcessHorizontalSpace = true;
+	    gridData.grabExcessVerticalSpace = true;
+	    textArea.setLayoutData(gridData);
+	    tab.setControl(textArea);
+	    
+	    return textArea;
     }
 
     public Tree getTree() {
         return resultsTree;
     }
 
-    public Text getTextArea() {
-        return textArea;
+    public Text getStackTraceArea() {
+        return stackTraceArea;
+    }
+    
+    public void setStackTraceArea(String data) {
+    	if (stackTraceArea != null) {
+    		stackTraceArea.setText(data);
+    	}
+    }
+    
+    public Text getSystemLogsTextArea() {
+    	return systemLogsTextArea;
+    }
+    
+    public void setSystemLogsTextArea(String data) {
+    	if (systemLogsTextArea != null) {
+    		systemLogsTextArea.setText(data);
+    	}
     }
     
     public Text getUserLogsTextArea() {
         return userLogsTextArea;
+    }
+    
+    public void setUserLogsTextArea(String data) {
+    	if (userLogsTextArea != null) {
+    		userLogsTextArea.setText(data);
+    	}
     }
 
     public void enableComposite() {
@@ -202,12 +253,35 @@ public class RunTestViewComposite extends Composite {
     public void setProject(IProject project) {
         this.project = project;
     }
-
-    public Button getBtnRun() {
-        return btnRun;
+    
+    public void clearAll() {
+    	clearLeftSide();
+    	clearRightSide();
     }
-
-    public void setBtnRun(Button btnRun) {
-        this.btnRun = btnRun;
+    
+    public void clearLeftSide() {
+    	if (resultsTree != null) {
+    		resultsTree.removeAll();
+    	}
     }
-} // @jve:decl-index=0:visual-constraint="10,10"
+    
+    public void clearRightSide() {
+    	if (stackTraceArea != null) {
+        	stackTraceArea.setText("");
+        }
+        if (systemLogsTextArea != null) {
+        	systemLogsTextArea.setText("");
+        }
+        if (userLogsTextArea != null) {
+        	userLogsTextArea.setText("");
+        }
+    }
+    
+    public LogInfo[] getLogInfoAndType() {
+    	if (Utils.isNotEmpty(loggingComposite)) {
+    		LoggingService loggingService = runView.getLoggingService();
+    		return loggingService.getAllLogInfo(project, LoggingInfo.SupportedFeatureEnum.RunTest);
+    	}
+    	return null;
+    }
+}

@@ -18,7 +18,6 @@ public class ServiceLocator {
     protected PackageDeployService packageDeployService = null;
     protected PackageRetrieveService packageRetrieveService = null;
     protected ProjectService projectService = null;
-    protected RunTestsService runTestsService = null;
     protected LoggingService loggingService = null;
     protected ApexService apexService = null;
     protected ToolingDeployService toolingDeployService = null;
@@ -61,14 +60,6 @@ public class ServiceLocator {
 
     public void setProjectService(ProjectService projectService) {
         this.projectService = projectService;
-    }
-
-    public RunTestsService getRunTestsService() {
-        return runTestsService;
-    }
-
-    public void setRunTestsService(RunTestsService runTestsService) {
-        this.runTestsService = runTestsService;
     }
 
     public LoggingService getLoggingService() {

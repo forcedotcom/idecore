@@ -226,7 +226,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <property name="packageRetrieveService" ref="packageRetrieveService" />
         <property name="projectService" ref="projectService" />
         <property name="metadataService" ref="metadataService" />
-        <property name="runTestsService" ref="runTestsService" />
         <property name="loggingService" ref="loggingService" />
         <property name="apexService" ref="apexService" />
         <property name="toolingDeployService" ref="toolingDeployService" />
@@ -268,9 +267,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     </bean>
 
     <bean id="metadataService" class="com.salesforce.ide.core.services.MetadataService" parent="baseService"
-        lazy-init="true" />
-
-    <bean id="runTestsService" class="com.salesforce.ide.core.services.RunTestsService" parent="baseService"
         lazy-init="true" />
 
     <bean id="loggingService" class="com.salesforce.ide.core.services.LoggingService" parent="baseService"

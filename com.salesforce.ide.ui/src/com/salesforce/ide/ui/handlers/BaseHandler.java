@@ -35,7 +35,6 @@ import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.factories.ConnectionFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.services.ProjectService;
-import com.salesforce.ide.core.services.RunTestsService;
 
 public abstract class BaseHandler extends AbstractHandler {
     private static final Logger logger = Logger.getLogger(BaseHandler.class);
@@ -50,10 +49,6 @@ public abstract class BaseHandler extends AbstractHandler {
 
     protected static final ProjectService getProjectService() {
         return ContainerDelegate.getInstance().getServiceLocator().getProjectService();
-    }
-
-    protected static final RunTestsService getRunTestsService() {
-        return ContainerDelegate.getInstance().getServiceLocator().getRunTestsService();
     }
 
     protected static final List<IResource> filter(final List<IResource> selectedResources) {

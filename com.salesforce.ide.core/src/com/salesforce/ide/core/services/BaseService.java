@@ -55,10 +55,6 @@ public abstract class BaseService {
         return serviceLocator.getLoggingService();
     }
 
-    public RunTestsService getRunTestsService() {
-        return serviceLocator.getRunTestsService();
-    }
-
     public PackageDeployService getPackageDeployService() {
         return serviceLocator.getPackageDeployService();
     }

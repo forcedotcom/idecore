@@ -30,7 +30,7 @@ import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 public class RootElementFilter extends CompilationUnit.SwitchBlockWithDefault {
     private final List<Object> rootElements;
 
-    RootElementFilter() {
+    public RootElementFilter() {
         this.rootElements = new ArrayList<>();
     }
 

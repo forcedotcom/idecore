@@ -68,6 +68,7 @@ Bundle-ClassPath: .,
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
 Export-Package: antlr,
+ com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.fasterxml.jackson.jaxrs.util,
