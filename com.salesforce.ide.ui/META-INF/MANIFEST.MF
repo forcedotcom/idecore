@@ -30,7 +30,8 @@ Require-Bundle: com.salesforce.ide.core;bundle-version="[34.0.0,35.0.0)",
  org.eclipse.help;bundle-version="3.6.0",
  org.eclipse.jface,
  org.eclipse.swt,
- org.eclipse.ui.workbench
+ org.eclipse.ui.workbench,
+ com.salesforce.ide.apex.core;bundle-version="34.0.0"
 Import-Package: org.apache.log4j
 Bundle-ClassPath: .
 Eclipse-LazyStart: true

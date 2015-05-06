@@ -43,7 +43,7 @@ import com.salesforce.ide.apex.core.exceptions.InvalidCompilationUnitException;
 public class ApexModelManager {
     private static final Logger logger = Logger.getLogger(ApexModelManager.class);
 
-    public static ApexModelManager INSTANCE = new ApexModelManager();
+    public static final ApexModelManager INSTANCE = new ApexModelManager();
 
     // The cache should only store the last "good" version of the parse tree and AST
     // If there is a parse error, you should not update the cache but leave the last version in there.

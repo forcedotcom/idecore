@@ -11,6 +11,14 @@
     <extension point="org.eclipse.ui.startup">
         <startup class="com.salesforce.ide.ui.internal.startup.ForceStartup"/>
     </extension>
+    
+    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTabGroup"
+            id="com.salesforce.ide.debug.ui.launch.RunTestsLaunchTabGroup"
+            type="com.salesforce.ide.debug.core.launch.RunTestsLaunchConfiguration">
+      </launchConfigurationTabGroup>
+   </extension>
 
     <!--   P E R S P E C T I V E   -->
     <extension point="org.eclipse.ui.perspectives">

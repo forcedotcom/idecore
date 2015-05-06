@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import apex.jorje.data.ast.CompilationUnit;
@@ -18,6 +17,8 @@ import apex.jorje.data.ast.CompilationUnit.ClassDeclUnit;
 import apex.jorje.data.ast.CompilationUnit.EnumDeclUnit;
 import apex.jorje.data.ast.CompilationUnit.InterfaceDeclUnit;
 import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
+
+import com.google.common.collect.Lists;
 
 /**
  * This is the top-level visitor to extract all the root elements. We display everything except anonymous blocks.
@@ -31,7 +32,7 @@ public class RootElementFilter extends CompilationUnit.SwitchBlockWithDefault {
     private final List<Object> rootElements;
 
     public RootElementFilter() {
-        this.rootElements = new ArrayList<>();
+        this.rootElements = Lists.newArrayList();
     }
 
     @Override
