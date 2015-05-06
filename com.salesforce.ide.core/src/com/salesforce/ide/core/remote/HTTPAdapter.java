@@ -56,6 +56,7 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
 
     private long sendWallTime;
     private long receiveWallTime;
+    private String errorBody;
 
     /*
      * Convenience method for instantiating since most of the commands will use POST
@@ -96,13 +97,15 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
         receiveWallTime = System.currentTimeMillis();
 
         if (response == null) {
-            logger.warn(String.format("%s for %s", Messages.HTTPAdapter_NoResponseErrorMessage, transport.getSessionEndpoint().getUri())); //$NON-NLS-1$
+            logger.warn(String.format(
+                "%s for %s", Messages.HTTPAdapter_NoResponseErrorMessage, transport.getSessionEndpoint().getUri())); //$NON-NLS-1$
             return null;
         }
 
         if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-            logger.warn(String.format("%s: %s from %s", response.getStatus(), //$NON-NLS-1$
-                    response.getStatusInfo().getReasonPhrase(), transport.getSessionEndpoint().getUri()));
+            errorBody = response.readEntity(String.class);
+            logger.warn(String.format("%s: %s from %s with error: %s", response.getStatus(), //$NON-NLS-1$
+                response.getStatusInfo().getReasonPhrase(), transport.getSessionEndpoint().getUri(), errorBody));
             return null;
         }
 
@@ -158,5 +161,24 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
     @Override
     public String getConnectionInfo() {
         return String.format("%s|%s|", transport.getDebuggerSessionId(), transport.getDebuggerRequestId()); //$NON-NLS-1$
+    }
+
+    // For debugging/error handling
+    ///////////////////////////////
+
+    /**
+     * Use this to get access to the status of the response and other error messages.
+     */
+    public Response getResponse() {
+        return response;
+    }
+
+    /**
+     * Use this to get the raw body in the event of an error;
+     * The raw body is only set in the event of an error (such as a 403, 404, etc).
+     * It is not set when it's a 200 response since you would be able to unmarshall to the responseClass that you want.
+     */
+    public String getRawBodyWhenError() {
+        return errorBody;
     }
 }
