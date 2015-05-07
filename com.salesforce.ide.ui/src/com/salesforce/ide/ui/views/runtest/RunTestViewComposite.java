@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -56,6 +57,8 @@ public class RunTestViewComposite extends Composite {
     private Text stackTraceArea = null;
     private Text systemLogsTextArea = null;
     private Text userLogsTextArea = null;
+    private ProgressBar progressBar = null;
+    private String progressText = "%d out of %d tests finished";
     protected RunTestView runView = null;
     protected IProject project = null;
     private LoggingComposite loggingComposite = null;
@@ -100,7 +103,7 @@ public class RunTestViewComposite extends Composite {
         // Clear button
         btnClear = new Button(leftHandComposite, SWT.NONE);
         btnClear.setText(CLEAR);
-        btnClear.setEnabled(false);
+        btnClear.setEnabled(true);
         btnClear.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
             @Override
             public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
@@ -116,8 +119,8 @@ public class RunTestViewComposite extends Composite {
         // Test results tree
         GridData gridData1 = new GridData();
         gridData1.grabExcessHorizontalSpace = true;
-        gridData1.horizontalAlignment = GridData.FILL;
-        gridData1.verticalAlignment = GridData.FILL;
+        gridData1.horizontalAlignment = SWT.FILL;
+        gridData1.verticalAlignment = SWT.FILL;
         gridData1.horizontalSpan = 4;
         gridData1.grabExcessVerticalSpace = true;
         resultsTree = new Tree(leftHandComposite, SWT.BORDER);
@@ -152,12 +155,16 @@ public class RunTestViewComposite extends Composite {
     }
     
     /**
-     * Create the right side which consists of three tabs for
+     * Create the right side which consists of a progress bar and three tabs for
      * Stack Trace, System Debug Log, and User Debug Log.
      */
     private void createRightHandComposite() {
+    	GridLayout gridLayout = new GridLayout();
+        Composite rightHandComposite = new Composite(sashForm, SWT.NONE);
+        rightHandComposite.setLayout(gridLayout);
+        
     	// A folder with three tabs
-    	tabFolder = new TabFolder(sashForm, SWT.NONE);
+    	tabFolder = new TabFolder(rightHandComposite, SWT.NONE);
     	// Stack trace
     	TabItem tab1 = new TabItem(tabFolder, SWT.NONE);
     	tab1.setText(STACK_TRACE);
@@ -187,6 +194,21 @@ public class RunTestViewComposite extends Composite {
             	runView.updateView(selectedTreeItem, selectedTabName);
     		}
     	});
+    	
+    	GridData gridData1 = new GridData();
+        gridData1.grabExcessHorizontalSpace = true;
+        gridData1.horizontalAlignment = SWT.FILL;
+        gridData1.verticalAlignment = SWT.FILL;
+        gridData1.grabExcessVerticalSpace = true;
+        tabFolder.setLayoutData(gridData1);
+        
+        GridData gridData2 = new GridData();
+        gridData2.grabExcessHorizontalSpace = true;
+        gridData2.horizontalAlignment = SWT.FILL;
+        gridData2.verticalAlignment = SWT.END;
+        progressBar = new ProgressBar(rightHandComposite, SWT.SMOOTH);
+        progressBar.setLayoutData(gridData2);
+        progressBar.setToolTipText(String.format(progressText, 0, 0));
     }
     
     /**
@@ -240,6 +262,19 @@ public class RunTestViewComposite extends Composite {
     		userLogsTextArea.setText(data);
     	}
     }
+    
+    public void setProgress(int min, int max, int cur) {
+    	if (progressBar != null && !progressBar.isDisposed()) {
+    		if (!progressBar.isVisible()) {
+    			progressBar.setVisible(true);
+    		}
+    		
+    		progressBar.setMinimum(min);
+    		progressBar.setMaximum(max);
+    		progressBar.setSelection(cur);
+    		progressBar.setToolTipText(String.format(progressText, cur, max));
+    	}
+    }
 
     public void enableComposite() {
         btnClear.setEnabled(true);
@@ -255,17 +290,18 @@ public class RunTestViewComposite extends Composite {
     }
     
     public void clearAll() {
-    	clearLeftSide();
-    	clearRightSide();
+    	clearResultsTree();
+    	clearTabs();
+    	clearProgress();
     }
     
-    public void clearLeftSide() {
+    public void clearResultsTree() {
     	if (resultsTree != null) {
     		resultsTree.removeAll();
     	}
     }
     
-    public void clearRightSide() {
+    public void clearTabs() {
     	if (stackTraceArea != null) {
         	stackTraceArea.setText("");
         }
@@ -274,6 +310,12 @@ public class RunTestViewComposite extends Composite {
         }
         if (userLogsTextArea != null) {
         	userLogsTextArea.setText("");
+        }
+    }
+    
+    public void clearProgress() {
+    	if (progressBar != null) {
+        	setProgress(0, 0, 0);
         }
     }
     

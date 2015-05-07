@@ -27,7 +27,6 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
-import com.salesforce.ide.core.remote.tooling.RunTestsDelegate;
 
 /**
  * A launch configuration delegate for Apex Test. This gets called when executing
@@ -53,17 +52,21 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		String tests = getTestsArray(configuration);
 		int totalTests = getTotalTests(configuration);
 		
-		// Initialize the worker that will handle the non-UI stuff for running tests
-		RunTestsDelegate runTestsDelegate = new RunTestsDelegate(totalTests);
-		
 		// Get the test files in the selected project
 		Map<String, IResource> testResources = ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
 		
 		// Get the Apex Test Runner view
 		RunTestView runTestsView = RunTestView.getInstance();
 		if (runTestsView != null) {
-			// Run the tests and update UI
-			runTestsView.runTests(project, testResources, tests, runTestsDelegate);
+			// Only allow one run at a time
+			if (runTestsView.canRun()) {
+				// Run the tests and update UI
+				runTestsView.runTests(project, testResources, tests, totalTests, monitor);
+			}
+			else {
+				throw new CoreException(new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, 
+						Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig, null));
+			}
 		}
 	}
 	
