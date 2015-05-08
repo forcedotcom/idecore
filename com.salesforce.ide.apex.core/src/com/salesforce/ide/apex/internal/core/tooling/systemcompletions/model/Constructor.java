@@ -51,8 +51,12 @@ public class Constructor extends AbstractCompletionProposalDisplayable {
 
     @Override
     public int cursorPosition() {
-        // Position inside the ()
-        return getReplacementString().length() - 1;
+        if (parameters == null || parameters.size() == 0) {
+            return getReplacementString().length();
+        } else {
+            // Position inside the ()
+            return getReplacementString().length() - 1;
+        }
     }
 
 }

@@ -99,6 +99,16 @@ public class ApexCompletionUtils {
         public boolean shouldSuggestNamespacedConstructor() {
             return segments.size() == 2;
         }
+
+        // someVariabl<cursor>
+        public boolean shouldSuggestVariableName() {
+            return segments.size() == 1;
+        }
+
+        // someVariable.someMembe<cursor>
+        public boolean shouldSuggestVariableMember() {
+            return segments.size() == 2;
+        }
     }
 
     private ApexCompletionUtils() {};
@@ -141,6 +151,11 @@ public class ApexCompletionUtils {
         return false;
     }
 
+    public ICompletionProposal[] createProposal(Iterable<AbstractCompletionProposalDisplayable> suggestions,
+            String prefix, int offset, Image image) {
+        return createProposal(Lists.newArrayList(suggestions), prefix, offset, image);
+    }
+
     public ICompletionProposal[] createProposal(Collection<AbstractCompletionProposalDisplayable> suggestions,
             String prefix, int offset, Image image) {
         List<ICompletionProposal> proposals = Lists.newArrayList();
@@ -149,7 +164,7 @@ public class ApexCompletionUtils {
             int prefixLength = prefix != null ? prefix.length() : 0;
             String replacement = suggestion.getReplacementString();
             String displayString = suggestion.getDisplayString();
-            if (!(StringUtils.isEmpty(replacement) || StringUtils.isEmpty(displayString)))
+            if (!StringUtils.isEmpty(replacement))
                 proposals.add(new CompletionProposal(replacement, offset - prefixLength, prefix.length(), suggestion
                         .cursorPosition(), image, displayString, null, null));
         }
@@ -159,4 +174,5 @@ public class ApexCompletionUtils {
     public ApexCompletionUtils.CompletionPrefix determineFullyQualifiedNameFromPrefix(String prefix) {
         return new CompletionPrefix(prefix);
     }
+
 }

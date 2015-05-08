@@ -18,6 +18,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.google.common.collect.Lists;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
@@ -32,8 +33,10 @@ public class ApexCompletionCollector implements IContentAssistProcessor {
     private StringBuilder errorCollector = new StringBuilder();
     private final List<IContentAssistProcessor> processors;
 
-    public ApexCompletionCollector() {
+    public ApexCompletionCollector(ITextEditor fTextEditor) {
         processors = Lists.newArrayList();
+        processors.add(new ApexSystemInstanceMembersProcessorForLocals(fTextEditor));
+        processors.add(new ApexSystemInstanceMembersProcessorForFields(fTextEditor));
         processors.add(new ApexSystemConstructorProcessor());
         processors.add(new ApexSystemStaticMethodProcessor());
         processors.add(new ApexSystemTypeProcessor());
@@ -52,7 +55,9 @@ public class ApexCompletionCollector implements IContentAssistProcessor {
         if (shouldEnableAutoCompletion()) {
 
             for (IContentAssistProcessor processor : processors) {
-                suggestions.addAll(Lists.newArrayList(processor.computeCompletionProposals(viewer, offset)));
+                try {
+                    suggestions.addAll(Lists.newArrayList(processor.computeCompletionProposals(viewer, offset)));
+                } catch (Throwable t) {}
             }
         }
 

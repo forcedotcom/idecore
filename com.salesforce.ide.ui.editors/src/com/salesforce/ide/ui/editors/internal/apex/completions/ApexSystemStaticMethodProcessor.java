@@ -10,7 +10,8 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.internal.apex.completions;
 
-import java.util.Collection;
+import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.filter;
 
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.ui.JavaElementImageDescriptor;
@@ -21,7 +22,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.swt.graphics.Image;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
@@ -49,7 +49,7 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
 
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
+        Iterable<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
         String prefix = null;
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
@@ -67,7 +67,7 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
                     Type type = (Type) namespace.typeTrie.get(typeName);
                     if (type != null) {
                         suggestions =
-                                Collections2.filter(type.methodTrie.prefixMap(methodPrefix).values(),
+                                filter(concat(type.methodTrie.prefixMap(methodPrefix).values()),
                                     new StaticMethodPredicate());
                         return getUtil().createProposal(suggestions, methodPrefix, offset, getImage());
                     }
@@ -81,7 +81,7 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
                         Type type = (Type) namespace.typeTrie.get(typeName);
                         if (type != null) {
                             suggestions =
-                                    Collections2.filter(type.methodTrie.prefixMap(methodPrefix).values(),
+                                    filter(concat(type.methodTrie.prefixMap(methodPrefix).values()),
                                         new StaticMethodPredicate());
                             return getUtil().createProposal(suggestions, methodPrefix, offset, getImage());
                         }
