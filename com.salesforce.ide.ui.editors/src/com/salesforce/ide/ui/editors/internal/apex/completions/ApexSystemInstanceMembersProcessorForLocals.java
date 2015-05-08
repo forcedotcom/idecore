@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.internal.ui.viewsupport.JavaElementImageProvider;
-import org.eclipse.jdt.ui.JavaElementImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
@@ -170,7 +169,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
 
     public Image getLocalsImage() {
         int accessorFlags_JVM = Flags.AccDefault;
-        int accessorFlags_JDT = JavaElementImageDescriptor.FINAL;
+        int accessorFlags_JDT = 0;
 
         ImageDescriptor desc = JavaElementImageProvider.getFieldImageDescriptor(false, accessorFlags_JVM);
         ApexElementImageDescriptor decoratedDesc =
