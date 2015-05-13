@@ -17,25 +17,16 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IPageListener;
-import org.eclipse.ui.IPartService;
-import org.eclipse.ui.IPerspectiveListener;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.salesforce.ide.core.factories.ComponentFactory;
@@ -68,11 +59,6 @@ public abstract class ActionController {
     //   C O N S T R U C T O R S
     public ActionController() {
         super();
-    }
-
-    public ActionController(IProject project, IWorkbenchWindow workbenchWindow) {
-        this.project = project;
-        this.workbenchWindow = workbenchWindow;
     }
 
     //   M E T H O D S
@@ -180,79 +166,6 @@ public abstract class ActionController {
             return workbenchWindow.getShell();
         }
         return null;
-    }
-
-    public boolean close() {
-        return workbenchWindow.close();
-    }
-
-    public IWorkbenchPage getActivePage() {
-        return workbenchWindow.getActivePage();
-    }
-
-    public IExtensionTracker getExtensionTracker() {
-        return workbenchWindow.getExtensionTracker();
-    }
-
-    public IWorkbenchPage[] getPages() {
-        return workbenchWindow.getPages();
-    }
-
-    public IPartService getPartService() {
-        return workbenchWindow.getPartService();
-    }
-
-    public ISelectionService getSelectionService() {
-        return workbenchWindow.getSelectionService();
-    }
-
-    public IWorkbench getWorkbench() {
-        return workbenchWindow.getWorkbench();
-    }
-
-    public boolean isApplicationMenu(String menuId) {
-        return workbenchWindow.isApplicationMenu(menuId);
-    }
-
-    public IWorkbenchPage openPage(IAdaptable input) throws WorkbenchException {
-        return workbenchWindow.openPage(input);
-    }
-
-    public IWorkbenchPage openPage(String perspectiveId, IAdaptable input) throws WorkbenchException {
-        return workbenchWindow.openPage(perspectiveId, input);
-    }
-
-    public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable) throws InvocationTargetException,
-    InterruptedException {
-        workbenchWindow.run(fork, cancelable, runnable);
-    }
-
-    public void setActivePage(IWorkbenchPage page) {
-        workbenchWindow.setActivePage(page);
-    }
-
-    public void addPageListener(IPageListener listener) {
-        workbenchWindow.addPageListener(listener);
-    }
-
-    public void addPerspectiveListener(IPerspectiveListener listener) {
-        workbenchWindow.addPerspectiveListener(listener);
-    }
-
-    public void removePageListener(IPageListener listener) {
-        workbenchWindow.removePageListener(listener);
-    }
-
-    public void removePerspectiveListener(IPerspectiveListener listener) {
-        workbenchWindow.removePerspectiveListener(listener);
-    }
-
-    public Object getService(Class<?> api) {
-        return workbenchWindow.getService(api);
-    }
-
-    public boolean hasService(Class<?> api) {
-        return workbenchWindow.hasService(api);
     }
 
     protected boolean syncCheck(boolean cancel) {

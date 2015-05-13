@@ -57,6 +57,7 @@ public final class SaveToServerHandler extends BaseHandler {
         if (!selection.isEmpty()) {
             final SaveToServerActionController actionController = buildController(selection);
             if (null != actionController) {
+                actionController.setWorkbenchWindow(workbench.getActiveWorkbenchWindow());
                 actionController.preRun();
                 fetchRemoteComponents(workbench, actionController);
                 actionController.postRun();
