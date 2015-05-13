@@ -10,11 +10,15 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model;
 
+import java.util.ArrayList;
+
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.Lists;
 
 public class Type extends AbstractCompletionProposalDisplayable {
     @XmlElement(name = "name", required = true)
@@ -24,8 +28,8 @@ public class Type extends AbstractCompletionProposalDisplayable {
     public PublicDeclaration publicDeclarations;
 
     // The tries for the different types of members that we want for auto-completion
-    public PatriciaTrie<AbstractCompletionProposalDisplayable> constructorTrie;
-    public PatriciaTrie<AbstractCompletionProposalDisplayable> methodTrie;
+    public PatriciaTrie<ArrayList<AbstractCompletionProposalDisplayable>> constructorTrie;
+    public PatriciaTrie<ArrayList<AbstractCompletionProposalDisplayable>> methodTrie;
     public PatriciaTrie<AbstractCompletionProposalDisplayable> propertyTrie;
 
     void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
@@ -39,13 +43,25 @@ public class Type extends AbstractCompletionProposalDisplayable {
 
         if (publicDeclarations.constructors != null) {
             for (Constructor c : publicDeclarations.constructors) {
-                constructorTrie.put(c.name.toLowerCase(), c);
+                String lowerCase = c.name.toLowerCase();
+                ArrayList<AbstractCompletionProposalDisplayable> list = constructorTrie.get(lowerCase);
+                if (list == null) {
+                    list = Lists.newArrayList();
+                }
+                list.add(c);
+                constructorTrie.put(lowerCase, list);
             }
         }
 
         if (publicDeclarations.methods != null) {
             for (Method m : publicDeclarations.methods) {
-                methodTrie.put(m.name.toLowerCase(), m);
+                String lowerCase = m.name.toLowerCase();
+                ArrayList<AbstractCompletionProposalDisplayable> list = methodTrie.get(lowerCase);
+                if (list == null) {
+                    list = Lists.newArrayList();
+                }
+                list.add(m);
+                methodTrie.put(lowerCase, list);
             }
         }
 

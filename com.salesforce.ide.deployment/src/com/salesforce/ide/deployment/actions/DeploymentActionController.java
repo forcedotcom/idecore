@@ -11,10 +11,8 @@
 package com.salesforce.ide.deployment.actions;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.IWorkbenchWindow;
 
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProjectException;
@@ -27,10 +25,6 @@ public class DeploymentActionController extends ActionController {
 
     public DeploymentActionController() {
         super();
-    }
-
-    public DeploymentActionController(IProject project, IWorkbenchWindow window) {
-        super(project, window);
     }
 
     @Override

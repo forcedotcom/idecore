@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.internal.apex.completions;
 
+import static com.google.common.collect.Iterables.concat;
+
 import java.util.Collection;
 
 import org.eclipse.jdt.core.Flags;
@@ -40,7 +42,7 @@ import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescri
 public class ApexSystemConstructorProcessor extends ApexCompletionProcessor implements IContentAssistProcessor {
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
+        Iterable<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
         String prefix = null;
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
@@ -58,7 +60,7 @@ public class ApexSystemConstructorProcessor extends ApexCompletionProcessor impl
                             namespace.typeTrie.prefixMap(typeName).values();
                     for (AbstractCompletionProposalDisplayable possibleType : possibleTypes) {
                         Type type = (Type) possibleType;
-                        suggestions.addAll(type.constructorTrie.prefixMap(typeName).values());
+                        suggestions = concat(suggestions, concat(type.constructorTrie.prefixMap(typeName).values()));
                     }
                     return getUtil().createProposal(suggestions, typeName, offset, getImage());
                 } else if (completionPrefix.shouldSuggestNamespacedConstructor()) {
@@ -71,7 +73,8 @@ public class ApexSystemConstructorProcessor extends ApexCompletionProcessor impl
                                 namespace.typeTrie.prefixMap(typeName).values();
                         for (AbstractCompletionProposalDisplayable possibleType : possibleTypes) {
                             Type type = (Type) possibleType;
-                            suggestions.addAll(type.constructorTrie.prefixMap(typeName).values());
+                            suggestions =
+                                    concat(suggestions, concat(type.constructorTrie.prefixMap(typeName).values()));
                         }
                         return getUtil().createProposal(suggestions, typeName, offset, getImage());
                     }
@@ -95,7 +98,5 @@ public class ApexSystemConstructorProcessor extends ApexCompletionProcessor impl
                 new ApexElementImageDescriptor(desc, accessorFlags_JDT, APEX_ICON_SIZE);
         return ForceImages.get(ForceImages.APEX_GLOBAL_METHOD, accessorFlags_JVM, decoratedDesc);
     }
-    
-    
 
 }

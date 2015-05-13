@@ -38,7 +38,7 @@ public class ApexSystemNamespaceProcessor extends ApexCompletionProcessor implem
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
         try {
-            if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
+            if (getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
                 Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
                 prefix = getUtil().getPrefix(viewer, offset);
                 completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);

@@ -90,7 +90,7 @@ public class ApexSourceViewerConfiguration extends TextSourceViewerConfiguration
         fTextEditor = editor;
         apexCodeScanner = (ApexCodeScanner) ContainerDelegate.getInstance().getBean(ApexCodeScanner.class);
         apexDocScanner = (ApexDocScanner) ContainerDelegate.getInstance().getBean(ApexDocScanner.class);
-        apexCompletionCollector = new ApexCompletionCollector();
+        apexCompletionCollector = new ApexCompletionCollector(fTextEditor);
         apexCodeColorProvider = ForceIdeEditorsPlugin.getApexCodeColorProvider();
     }
 

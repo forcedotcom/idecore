@@ -82,9 +82,8 @@ public class SaveToServerActionController extends ActionController {
             return false;
         }
 
-        boolean response =
-                Utils.openQuestion(getProject(), workbenchWindow.getShell(), "Confirm Save", UIMessages
-                    .getString("SaveToServerHandler.Overwrite.message"));
+        boolean response = Utils.openQuestion(getProject(), getShell(), "Confirm Save", UIMessages.getString("SaveToServerHandler.Overwrite.message"));
+
         if (!response) {
             if (logger.isInfoEnabled()) {
                 logger.info("Save to server cancelled by user");
