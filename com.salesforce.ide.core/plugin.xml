@@ -13,11 +13,9 @@
             delegate="com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationDelegate"
             delegateDescription="The Apex Test Launcher supports running Apex Tests on Salesforce.com instances."
             delegateName="Apex Test Launcher"
-            id="com.salesforce.ide.debug.core.launch.RunTestsLaunchConfiguration"
+            id="com.salesforce.ide.core.launch.RunTestsLaunchConfiguration"
             modes="run"
-            name="Apex Test"
-            sourceLocatorId="com.salesforce.ide.debug.core.sourceLocator.apex"
-            sourcePathComputerId="com.salesforce.ide.debug.core.sourcePathComputer.apex">
+            name="Apex Test">
       </launchConfigurationType>
    </extension>
 

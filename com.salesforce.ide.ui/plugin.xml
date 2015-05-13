@@ -16,8 +16,16 @@
       <launchConfigurationTabGroup
             class="com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTabGroup"
             id="com.salesforce.ide.debug.ui.launch.RunTestsLaunchTabGroup"
-            type="com.salesforce.ide.debug.core.launch.RunTestsLaunchConfiguration">
+            type="com.salesforce.ide.core.launch.RunTestsLaunchConfiguration">
       </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.salesforce.ide.core.launch.RunTestsLaunchConfiguration"
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.launch.ApexTestIcon">
+      </launchConfigurationTypeImage>
    </extension>
 
     <!--   P E R S P E C T I V E   -->
