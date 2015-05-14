@@ -768,6 +768,12 @@
       </enabledWhen>
     </handler>
   </extension>
+  <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="com.salesforce.ide.perspective">
+         <actionSet id="org.eclipse.debug.ui.launchActionSet">
+         </actionSet>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
 
