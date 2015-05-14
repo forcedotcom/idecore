@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.handlers;
 
-import static com.salesforce.ide.core.internal.utils.Constants.*;
+import static com.salesforce.ide.core.internal.utils.Constants.FORCE_PLUGIN_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -88,7 +88,7 @@ public abstract class BaseHandler extends AbstractHandler {
     }
 
     protected static final IProject getProjectChecked(final ExecutionEvent event) throws ExecutionException {
-        final IStructuredSelection selection = getSelection(event);
+        final IStructuredSelection selection = getStructuredSelection(event);
         switch (selection.size()) {
         case 0:
             throw new ExecutionException("No project found while executing " + event.getCommand().getId()); //$NON-NLS-1$
@@ -101,24 +101,25 @@ public abstract class BaseHandler extends AbstractHandler {
         final IProject project = (IProject) Platform.getAdapterManager().getAdapter(firstElement, IProject.class);
         if (null == project) {
             throw new ExecutionException("Incorrect type for project found while executing " //$NON-NLS-1$
-                + event.getCommand().getId()
-                + ", expected " + IProject.class.getName() //$NON-NLS-1$
-                + " found " + firstElement.getClass().getName()); //$NON-NLS-1$
+                    + event.getCommand().getId() + ", expected " + IProject.class.getName() //$NON-NLS-1$
+                    + " found " + firstElement.getClass().getName()); //$NON-NLS-1$
         }
         return project;
     }
 
-    protected static final IStructuredSelection getSelection(final ExecutionEvent event) throws ExecutionException {
+    protected static final ISelection getSelection(final ExecutionEvent event) throws ExecutionException {
+        return HandlerUtil.getCurrentSelectionChecked(event);
+    }
+    
+    protected static final IStructuredSelection getStructuredSelection(final ExecutionEvent event) throws ExecutionException {
         final ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
         if (selection instanceof IStructuredSelection) {
             return (IStructuredSelection) selection;
         }
         throw new ExecutionException("Incorrect type for " //$NON-NLS-1$
-            + ISources.ACTIVE_CURRENT_SELECTION_NAME
-            + " found while executing " //$NON-NLS-1$
-            + event.getCommand().getId()
-            + ", expected " + IStructuredSelection.class.getName() //$NON-NLS-1$
-            + " found " + selection.getClass().getName()); //$NON-NLS-1$
+                + ISources.ACTIVE_CURRENT_SELECTION_NAME + " found while executing " //$NON-NLS-1$
+                + event.getCommand().getId() + ", expected " + IStructuredSelection.class.getName() //$NON-NLS-1$
+                + " found " + selection.getClass().getName()); //$NON-NLS-1$
     }
 
 }

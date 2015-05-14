@@ -38,7 +38,7 @@ public class ResourceTester extends PropertyTester {
     public static final String IS_SOURCE_RESOURCE = "isSourceResource";
     public static final String IS_SOURCE_ROOT = "isSourceRoot";
     public static final String IS_REFRESHABLE_RESOURCE = "isRefreshableResource";
-    public static final String IS_DEPOLYABLE_RESOURCE = "isDeployableResource";
+    public static final String IS_DEPLOYABLE_RESOURCE = "isDeployableResource";
     public static final String IS_SOURCE_COMPONENT_FOLDER = "isSourceComponentFolder";
     public static final String IS_PRJ_OR_NON_REF_PKG_FOLDERS = "isPrjOrNonRefPkgFolders";
     public static final String IS_RUNTEST_ENABLED_RESOURCES = "isRunTestEnabledResources";
@@ -73,7 +73,7 @@ public class ResourceTester extends PropertyTester {
             return testIsSourceRoot(receiver, property, args, expectedValue);
         } else if (property.equals(IS_REFRESHABLE_RESOURCE)) {
             return testIsRefreshableResource(receiver, property, args, expectedValue);
-        } else if (property.equals(IS_DEPOLYABLE_RESOURCE)) {
+        } else if (property.equals(IS_DEPLOYABLE_RESOURCE)) {
             return testIsDeployableResource(receiver, property, args, expectedValue);
         } else if (property.equals(IS_SOURCE_COMPONENT_FOLDER)) {
             return testIsSourceComponentFolder(receiver, property, args, expectedValue);

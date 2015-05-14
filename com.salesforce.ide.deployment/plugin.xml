@@ -9,14 +9,12 @@ Force.com IDE Copyright (c) 2008 Salesforce.com
 
   <!--   M E N U S  -->
   <extension point="org.eclipse.ui.menus">
-    <menuContribution allPopups="false" locationURI="menu:com.salesforce.ide.ui.menu.context?before=group2">
-      <command commandId="com.salesforce.ide.ui.command.deploy" helpContextId="com.salesforce.ide.documentation.deploymentAction" id="deploy" label="Deploy to Server..." mnemonic="D" style="push" tooltip="%tooltip.Deploy">
-        <visibleWhen checkEnabled="false">
+    <menuContribution allPopups="false" locationURI="popup:com.salesforce.ide.ui.menu.context?before=group2">
+      <command commandId="com.salesforce.ide.ui.command.deploy" helpContextId="com.salesforce.ide.documentation.deploymentAction" id="deploy" label="Deploy to Server..." mnemonic="D" style="push" tooltip="%tooltip.Deploy"> 
+       <visibleWhen checkEnabled="false">
           <iterate ifEmpty="false" operator="and">
             <reference definitionId="com.salesforce.ide.projectFile"/>
-            <adapt type="org.eclipse.core.resources.IResource">
-              <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
-            </adapt>
+            <reference definitionId="com.salesforce.ide.projectDeployableResource"/>
           </iterate>
         </visibleWhen>
       </command>
@@ -49,9 +47,7 @@ Force.com IDE Copyright (c) 2008 Salesforce.com
     <handler class="com.salesforce.ide.deployment.handlers.DeploymentHandler" commandId="com.salesforce.ide.ui.command.deploy">
       <enabledWhen>
         <iterate ifEmpty="false" operator="and">
-          <adapt type="org.eclipse.core.resources.IResource">
-            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
-          </adapt>
+          <reference definitionId="com.salesforce.ide.projectDeployableResource"/>
           <reference definitionId="com.salesforce.ide.projectFile"/>
           <reference definitionId="com.salesforce.ide.projectActive"/>
         </iterate>

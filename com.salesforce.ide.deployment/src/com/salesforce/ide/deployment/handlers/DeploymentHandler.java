@@ -37,7 +37,7 @@ public final class DeploymentHandler extends BaseHandler {
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        final IStructuredSelection selection = getSelection(event);
+        final IStructuredSelection selection = getStructuredSelection(event);
         final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
         final Shell shell = HandlerUtil.getActiveShellChecked(event);
 

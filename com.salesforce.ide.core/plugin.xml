@@ -114,6 +114,21 @@
         <reference definitionId="com.salesforce.ide.projectInactive"/>
       </not>
     </definition>
+    <definition id="com.salesforce.ide.projectRefreshable">
+      <adapt type="org.eclipse.core.resources.IResource">
+        <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
+      </adapt>
+    </definition>
+    <definition id="com.salesforce.ide.projectSourceResource">
+      <adapt type="org.eclipse.core.resources.IResource">
+        <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
+      </adapt>
+    </definition>
+    <definition id="com.salesforce.ide.projectDeployableResource">
+       <adapt type="org.eclipse.core.resources.IResource">
+         <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isDeployableResource"/>
+       </adapt>
+    </definition>
   </extension>
 
     <!--   C O N T E N T   T Y P E S   -->

@@ -21,12 +21,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressService;
 
+import com.google.common.collect.Lists;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -42,29 +47,34 @@ public final class RefreshResourceHandler extends BaseHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final IWorkbench workbench = HandlerUtil.getActiveWorkbenchWindowChecked(event).getWorkbench();
-        final IStructuredSelection selection = getSelection(event);
-        execute(workbench, selection);
+        ISelection selection = getSelection(event);
+        if (selection instanceof ITextSelection) { // From text editor
+            execute(workbench, buildController(selection, HandlerUtil.getActiveEditorInput(event)));
+        } else if (selection instanceof IStructuredSelection) { // From package explorer
+            execute(workbench, buildController((IStructuredSelection) selection));
+        }
+
         return null;
     }
 
-    public static final void execute(final IWorkbench workbench, final IStructuredSelection selection) throws IllegalArgumentException {
-        if (null == workbench) throw new IllegalArgumentException("The workbench argument cannot be null");
-        if (null == selection) throw new IllegalArgumentException("The selection argument cannot be null");
+    public static final void execute(final IWorkbench workbench, IStructuredSelection selection) {
+        execute(workbench, buildController(selection));
+    }
 
-        if (!selection.isEmpty()) {
-            final RefreshResourceActionController actionController = buildController(selection);
-            if (null != actionController) {
-                actionController.preRun();
-                fetchRemoteComponents(workbench, actionController);
-                actionController.postRun();
-            }
+    public static final void execute(final IWorkbench workbench, final RefreshResourceActionController actionController) {
+        if (null != actionController) {
+            actionController.preRun();
+            fetchRemoteComponents(workbench, actionController);
+            actionController.postRun();
         }
     }
 
-    private static void fetchRemoteComponents(final IWorkbench workbench, final RefreshResourceActionController actionController) {
+    private static void fetchRemoteComponents(final IWorkbench workbench,
+            final RefreshResourceActionController actionController) {
         final WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
             @Override
-            protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+            protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+                    InterruptedException {
                 if (monitor == null) {
                     monitor = new NullProgressMonitor();
                 }
@@ -106,28 +116,44 @@ public final class RefreshResourceHandler extends BaseHandler {
                 DialogUtils.getInstance().invalidLoginDialog(ForceExceptionUtils.getRootCauseMessage(cause));
             } else {
                 logger.error("Unable to refresh resource(s)", ForceExceptionUtils.getRootCause(cause));
-                final StringBuilder msg = new StringBuilder()
-                    .append("Unable to refresh resources:\n\n")
-                    .append(ForceExceptionUtils.getStrippedRootCauseMessage(e))
-                    .append("\n\n ")
-                    ;
+                final StringBuilder msg =
+                        new StringBuilder().append("Unable to refresh resources:\n\n")
+                                .append(ForceExceptionUtils.getStrippedRootCauseMessage(e)).append("\n\n ");
                 Utils.openError("Refresh Error", msg.toString());
             }
         }
     }
 
+    private static RefreshResourceActionController buildController(ISelection selection, final IEditorInput editorInput) {
+        if (editorInput instanceof FileEditorInput) {
+            FileEditorInput input = (FileEditorInput) editorInput;
+            IResource file = input.getFile();
+            IProject project = file.getProject();
+            return buildController(selection, Lists.newArrayList(file), project);
+        } else {
+            return null;
+        }
+    }
+
     private static RefreshResourceActionController buildController(final IStructuredSelection selection) {
         final List<IResource> filteredResources = getFilteredResources(selection);
-        if (filteredResources.isEmpty()) return null;
+        if (filteredResources.isEmpty())
+            return null;
 
         final IProject project = filteredResources.get(0).getProject();
         for (final IResource resource : filteredResources) {
             if (!project.equals(resource.getProject())) {
-                logger.warn("Unable to refresh resources from multiple projects at the same time. Only refreshing resources from " + project.getName());
+                logger.warn("Unable to refresh resources from multiple projects at the same time. Only refreshing resources from "
+                        + project.getName());
                 break;
             }
         }
 
+        return buildController(selection, filteredResources, project);
+    }
+
+    private static RefreshResourceActionController buildController(final ISelection selection,
+            final List<IResource> filteredResources, final IProject project) {
         final RefreshResourceActionController actionController = new RefreshResourceActionController();
         actionController.setProject(project);
         actionController.setSelection(selection);

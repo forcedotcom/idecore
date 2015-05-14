@@ -30,7 +30,7 @@ public final class UpgradeHandler extends BaseHandler {
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        final IStructuredSelection selection = getSelection(event);
+        final IStructuredSelection selection = getStructuredSelection(event);
         if (!selection.isEmpty()) {
             final IWorkbench workbench = HandlerUtil.getActiveWorkbenchWindowChecked(event).getWorkbench();
             final Shell shell = HandlerUtil.getActiveShellChecked(event);

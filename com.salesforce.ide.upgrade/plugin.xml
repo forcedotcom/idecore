@@ -48,7 +48,7 @@ Force.com IDE Copyright (c) 2008 Salesforce.com
 
   <!--   M E N U S  -->
   <extension point="org.eclipse.ui.menus">
-    <menuContribution allPopups="false" locationURI="menu:com.salesforce.ide.ui.menu.context?before=group0">
+    <menuContribution allPopups="false" locationURI="popup:com.salesforce.ide.ui.menu.context?before=group0">
       <command commandId="com.salesforce.ide.ui.command.upgradeProject" helpContextId="com.salesforce.ide.documentation.upgradeProject" id="upgradeProject" label="Upgrade Project..." mnemonic="U" style="push" tooltip="%tooltip.upgrade">
         <visibleWhen checkEnabled="false">
           <and>

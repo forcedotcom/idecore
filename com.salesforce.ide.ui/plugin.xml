@@ -180,12 +180,11 @@
     <!--   M E N U S  -->
   <extension point="org.eclipse.ui.menus">
     <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any">
-      <menu id="com.salesforce.ide.ui.menu.context" label="Force.com" mnemonic=".">
-        <visibleWhen checkEnabled="false">
-          <iterate operator="or">
-            <reference definitionId="com.salesforce.ide.projectFile"/>
-          </iterate>
-        </visibleWhen>
+      <menu
+            icon="icons/appExDevIco16.png"
+            id="com.salesforce.ide.ui.menu.context"
+            label="Force.com"
+            mnemonic=".">
         <separator name="group0" visible="true"/>
         <command commandId="com.salesforce.ide.ui.command.addNature" helpContextId="com.salesforce.ide.documentation.addNatureAction" id="addNature" label="Add Force.com Nature" mnemonic="A" style="push" tooltip="%tooltip.0">
           <visibleWhen checkEnabled="false">
@@ -261,32 +260,41 @@
         <separator name="tools" visible="true"/>
         <command commandId="com.salesforce.ide.ui.command.refreshResource" helpContextId="com.salesforce.ide.documentation.refreshResource" id="refreshResource" label="Refresh from Server" mnemonic="R" style="push" tooltip="%tooltip.5">
           <visibleWhen checkEnabled="false">
-            <iterate ifEmpty="false" operator="and">
-              <reference definitionId="com.salesforce.ide.projectFile"/>
-              <adapt type="org.eclipse.core.resources.IResource">
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
-              </adapt>
-            </iterate>
+            <or>
+              <with variable="activeEditorInput">
+                <reference definitionId="com.salesforce.ide.projectRefreshable"/>
+              </with>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <reference definitionId="com.salesforce.ide.projectRefreshable"/>
+              </iterate>
+            </or>
           </visibleWhen>
         </command>
         <command commandId="com.salesforce.ide.ui.command.saveToServer" helpContextId="com.salesforce.ide.documentation.saveToServerAction" id="saveToServer" label="Save to Server" mnemonic="S" style="push" tooltip="%tooltip.4">
           <visibleWhen checkEnabled="false">
-            <iterate ifEmpty="false" operator="and">
-              <reference definitionId="com.salesforce.ide.projectFile"/>
-              <adapt type="org.eclipse.core.resources.IResource">
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-              </adapt>
-            </iterate>
+            <or>
+              <with variable="activeEditorInput">
+                <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+              </with>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+              </iterate>
+            </or>
           </visibleWhen>
         </command>
         <command commandId="com.salesforce.ide.ui.command.synchronize" helpContextId="com.salesforce.ide.documentation.syncAction" id="synchronize" label="Synchronize with Server" mnemonic="y" style="push" tooltip="%tooltip.6">
           <visibleWhen checkEnabled="false">
-            <iterate ifEmpty="false" operator="and">
-              <reference definitionId="com.salesforce.ide.projectFile"/>
-              <adapt type="org.eclipse.core.resources.IResource">
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-              </adapt>
-            </iterate>
+            <or>
+              <with variable="activeEditorInput">
+                <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+              </with>
+              <iterate ifEmpty="false" operator="and">
+                <reference definitionId="com.salesforce.ide.projectFile"/>
+                <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+              </iterate>
+            </or>
           </visibleWhen>
         </command>
         <separator name="group2" visible="true"/>
@@ -343,7 +351,7 @@
         </command>
         <separator name="group6" visible="true"/>
       </menu>
-    </menuContribution>org.eclipse.ui.views.showView.viewId
+    </menuContribution>
     <menuContribution locationURI="menu:help?before=additions">
       <command commandId="org.eclipse.ui.views.showView" id="openLogView" label="%action.label.OpenLogView">
         <parameter name="org.eclipse.ui.views.showView.viewId" value="com.salesforce.ide.ui.view.log"/>
@@ -682,32 +690,41 @@
     </handler>
     <handler class="com.salesforce.ide.ui.handlers.RefreshResourceHandler" commandId="com.salesforce.ide.ui.command.refreshResource">
       <enabledWhen>
-        <iterate ifEmpty="false" operator="and">
-          <adapt type="org.eclipse.core.resources.IResource">
-            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isRefreshableResource"/>
-          </adapt>
-          <reference definitionId="com.salesforce.ide.projectActive"/>
-        </iterate>
+        <or>
+          <with variable="activeEditorInput">
+            <reference definitionId="com.salesforce.ide.projectRefreshable"/>
+          </with>
+          <iterate ifEmpty="false" operator="and">
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+            <reference definitionId="com.salesforce.ide.projectRefreshable"/>
+          </iterate>
+        </or>
       </enabledWhen>
     </handler>
     <handler class="com.salesforce.ide.ui.handlers.SaveToServerHandler" commandId="com.salesforce.ide.ui.command.saveToServer">
       <enabledWhen>
-        <iterate ifEmpty="false" operator="and">
-          <adapt type="org.eclipse.core.resources.IResource">
-            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-          </adapt>
-          <reference definitionId="com.salesforce.ide.projectActive"/>
-        </iterate>
+        <or>
+          <with variable="activeEditorInput">
+            <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+          </with>
+          <iterate ifEmpty="false" operator="and">
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+            <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+          </iterate>
+        </or>
       </enabledWhen>
     </handler>
     <handler class="com.salesforce.ide.ui.handlers.SynchronizeHandler" commandId="com.salesforce.ide.ui.command.synchronize">
       <enabledWhen>
-        <iterate ifEmpty="false" operator="and">
-          <adapt type="org.eclipse.core.resources.IResource">
-            <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-          </adapt>
-          <reference definitionId="com.salesforce.ide.projectActive"/>
-        </iterate>
+        <or>
+          <with variable="activeEditorInput">
+            <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+          </with>
+          <iterate ifEmpty="false" operator="and">
+            <reference definitionId="com.salesforce.ide.projectSourceResource"/>
+            <reference definitionId="com.salesforce.ide.projectActive"/>
+          </iterate>
+        </or>
       </enabledWhen>
     </handler>
     <handler class="com.salesforce.ide.ui.handlers.OpenProjectPropertiesHandler" commandId="com.salesforce.ide.ui.command.openProjectProperties">

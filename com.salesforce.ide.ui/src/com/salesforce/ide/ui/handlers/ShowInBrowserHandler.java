@@ -48,7 +48,7 @@ public final class ShowInBrowserHandler extends BaseHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final IWorkbench workbench = HandlerUtil.getActiveWorkbenchWindowChecked(event).getWorkbench();
-        final IStructuredSelection selection = getSelection(event);
+        final IStructuredSelection selection = getStructuredSelection(event);
         execute(workbench, selection);
         return null;
     }
