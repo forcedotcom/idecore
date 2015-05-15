@@ -16,7 +16,7 @@ import org.osgi.framework.BundleContext;
 public class ForceIdeTest extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "com.salesforce.ide.test.all";
+    public static final String PLUGIN_ID = "com.salesforce.ide.test";
 
     // The shared instance
     private static ForceIdeTest plugin;
