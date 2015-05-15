@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <value>Not in pkg matt chinese</value>
+    </caseValues>
+    <fields>
+        <help>女孩的母親已代女兒向首都</help>
+        <label>首位被起訴的前調查局長</label>
+        <name>cust_checkbox__c</name>
+    </fields>
+    <fields>
+        <help>斯勒不但有優美的灌籃</help>
+        <label>對於葉盛茂被訴</label>
+        <name>matt_field_1__c</name>
+        <picklistValues>
+            <masterLabel>api</masterLabel>
+            <translation>全力</translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ide</masterLabel>
+            <translation>笑逗得大家</translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>mobile</masterLabel>
+            <translation>相討較</translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>odd</masterLabel>
+            <translation>具從美運</translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>sharin</masterLabel>
+            <translation>萊德滑翔</translation>
+        </picklistValues>
+    </fields>
+    <nameFieldLabel>testCustomObjectTranslation Name chinese</nameFieldLabel>
+    <recordTypes>
+        <label>灣的球迷再一次目睹他們當年的風</label>
+        <name>matt_record_type</name>
+    </recordTypes>
+    <sharingReasons>
+        <label>調查局也表示尊重司法</label>
+        <name>matt_sharing_reason</name>
+    </sharingReasons>
+    <validationRules>
+        <errorMessage>一開打就讓貴賓對這位籃球員的高</errorMessage>
+        <name>matt_validation_rule</name>
+    </validationRules>
+    <webLinks>
+        <label>此特別選了自已很拿手的</label>
+        <name>matt_custom_link</name>
+    </webLinks>
+    <webLinks>
+        <label>小白球推竿進洞求準度也</label>
+        <name>new_butt_for_list_view</name>
+    </webLinks>
+</CustomObjectTranslation>

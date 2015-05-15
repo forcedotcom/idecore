@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scontrol xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contentSource>HTML</contentSource>
+    <description>xyzpdq</description>
+    <encodingKey>UTF-8</encodingKey>
+    <fileContent>SGVsbG8=</fileContent>
+    <name>HelloSControl</name>
+    <supportsCaching>true</supportsCaching>
+</Scontrol>

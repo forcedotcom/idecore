@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Portal xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <description>Test Portal</description>
+    <emailSenderAddress>admin@TESTORGNUM</emailSenderAddress>
+    <emailSenderName>admin@TESTORGNUM</emailSenderName>
+    <enableSelfCloseCase>false</enableSelfCloseCase>
+    <isSelfRegistrationActivated>false</isSelfRegistrationActivated>
+    <showActionConfirmation>false</showActionConfirmation>
+    <type>CustomerSuccess</type>
+</Portal>

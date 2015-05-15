@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <leftSection>
+        <columnSize>medium</columnSize>
+    </leftSection>
+    <middleSection>
+        <columnSize>medium</columnSize>
+    </middleSection>
+    <rightSection>
+        <columnSize>narrow</columnSize>
+    </rightSection>
+    <textColor>#000000</textColor>
+    <title>test</title>
+    <titleColor>#000000</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

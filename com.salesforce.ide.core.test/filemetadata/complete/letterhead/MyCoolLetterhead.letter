@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Letterhead xmlns="http://soap.sforce.com/2006/04/metadata">
+<name>mycoolletterhead</name>
+    <available>true</available>
+    <backgroundColor>#000000</backgroundColor>
+    <bodyColor>#FF6600</bodyColor>
+    <bottomLine>
+        <color>#330099</color>
+        <height>5</height>
+    </bottomLine>
+    <description>blah</description>
+    <footer>
+        <backgroundColor>#3366FF</backgroundColor>
+        <height>120</height>
+        <horizontalAlignment>Left</horizontalAlignment>
+    </footer>
+    <header>
+        <backgroundColor>#FFFF66</backgroundColor>
+        <height>200</height>
+<!--
+        <logo>Random Doc/Picture.gif</logo>
+-->
+        <verticalAlignment>Top</verticalAlignment>
+    </header>
+    <middleLine>
+        <color>#006600</color>
+        <height>15</height>
+    </middleLine>
+    <topLine>
+        <color>#AAAAFF</color>
+        <height>25</height>
+    </topLine>
+</Letterhead>

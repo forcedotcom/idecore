@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>X3rd_cust_label</fullName>
+        <categories>3_cust_label_cat</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>3rd cust label</shortDescription>
+        <value>3rd cust label v123</value>
+    </labels>
+    <labels>
+        <fullName>another_cus_label</fullName>
+        <categories>anther category</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>another cus label</shortDescription>
+        <value>another cust label VAL1</value>
+    </labels>
+    <labels>
+        <fullName>matt_first_custom_label</fullName>
+        <categories>whateve category</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>matt first custom label</shortDescription>
+        <value>matt first custom label VALUE</value>
+    </labels>
+</CustomLabels>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <fields>
+        <fullName>cust_checkbox__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>testing refresh</description>
+        <inlineHelpText>wowowo</inlineHelpText>
+        <label>cust checkbox</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>matt_field_1__c</fullName>
+        <description>desc</description>
+        <inlineHelpText>help plz</inlineHelpText>
+        <label>matt_field_1</label>
+        <picklist>
+            <picklistValues>
+                <fullName>ide</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>odd</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>api</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>sharin</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>mobile</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <label>testCustomObjectTranslation</label>
+    <nameField>
+        <label>testCustomObjectTranslation Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>testCustomObjectTranslations</pluralLabel>
+    <recordTypes>
+        <fullName>matt_record_type</fullName>
+        <active>true</active>
+        <description>desc of matt record type</description>
+        <label>matt record type</label>
+        <picklistValues>
+            <picklist>matt_field_1__c</picklist>
+            <values>
+                <fullName>api</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ide</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>mobile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>odd</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>sharin</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <listViewButtons>new_butt_for_list_view</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <sharingReasons>
+        <fullName>matt_sharing_reason__c</fullName>
+        <label>matt sharing reason - from fchang_demo</label>
+    </sharingReasons>
+    <validationRules>
+        <fullName>matt_validation_rule</fullName>
+        <active>true</active>
+        <description>nonoono yes yes</description>
+        <errorConditionFormula>cust_checkbox__c=true</errorConditionFormula>
+        <errorMessage>wwow tht&apos;s wrong</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>matt_custom_link</fullName>
+        <availability>online</availability>
+        <description>desc</description>
+        <displayType>link</displayType>
+        <hasScrollbars>true</hasScrollbars>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>matt custom link</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <url>www.salesforce.com</url>
+    </webLinks>
+    <webLinks>
+        <fullName>new_butt_for_list_view</fullName>
+        <availability>online</availability>
+        <description>des</description>
+        <displayType>massActionButton</displayType>
+        <hasScrollbars>true</hasScrollbars>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>new butt for list view</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>www.sfdc.com</url>
+    </webLinks>
+</CustomObject>

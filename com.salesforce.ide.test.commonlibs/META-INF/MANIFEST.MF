@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %bundleName
+Bundle-SymbolicName: com.salesforce.ide.test.commonlibs;singleton:=true
+Bundle-Version: 34.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Activator: com.salesforce.ide.test.commonlibs.CommonLibsActivator
+Bundle-Vendor: %providerName
+Bundle-ClassPath: .,
+ lib/mockito-all-1.8.2.jar
+Export-Package: org.mockito,
+ org.mockito.invocation,
+ org.mockito.stubbing
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

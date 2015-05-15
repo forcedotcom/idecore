@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project name="wizard-test-objects-jaxb" default="all" basedir="." >
+
+	<property name="ide.bin" value="${basedir}/../bin"/>
+	<property name="jaxb-lib.dir" value="{basedir}/../lib"/>
+	<property name="schema.file" value="${basedir}/config/schema/wizardTests.xsd"/>
+	<property name="lib.dir" value="${basedir}/lib"/>
+	<property name="jar.name" value="ide-wizard-test.jar"/>
+	<property name="package.name" value="com.salesforce.ide.ui.wizards"/>
+
+	<property name="gen.dir" value="${basedir}/gen"/>
+	<property name="gen.src" value="${gen.dir}/src"/>
+	<property name="gen.bin" value="${gen.dir}/bin"/>
+
+    <path id="jaxb-classpath">
+    	<fileset dir="${jaxb-lib.dir}" includes="*.jar" />
+    </path>
+
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		<classpath refid="jaxb-classpath" />
+	</taskdef>
+
+	<target name="all" depends="cleanup-gen, generate.jaxb.objects, compile.jaxb.objects, jar.jaxb.objects"/>
+
+	<target name="cleanup-gen">
+	  	<delete dir="${gen.dir}"/>
+    </target>
+
+	<target name="init" depends="cleanup-gen">
+	  	<mkdir dir="${gen.src}"/>
+		<mkdir dir="${gen.bin}"/>
+    </target>
+
+    <target name="generate.jaxb.objects" depends="init">
+    	<echo message="Compiling the schema..." />
+    	<xjc schema="${schema.file}" package="${package.name}" destdir="${gen.src}">
+    		<produces dir="${gen.src}/com" includes="**/*.java" />
+    		<arg value="-verbose" />
+    	</xjc>
+    </target>
+
+    <target name="compile.jaxb.objects">
+        <echo message="Compiling xsd generated source files..." />
+        <javac destdir="${gen.bin}" debug="on" verbose="true">
+            <src path="${gen.src}" />
+            <classpath refid="jaxb-classpath" />
+        </javac>
+    </target>
+
+    <target name="jar.jaxb.objects">
+        <echo message="Jaring xsd generated class files..." />
+        <jar destfile="${lib.dir}/${jar.name}">
+        	<fileset dir="${gen.src}" includes="com/**"/>
+    		<fileset dir="${gen.bin}" includes="com/**"/>
+		</jar>
+    	<delete dir="${gen.dir}"/>
+    </target>
+
+</project>

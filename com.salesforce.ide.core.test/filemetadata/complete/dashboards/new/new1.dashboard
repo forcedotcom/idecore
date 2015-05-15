@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <description>wut</description>
+    <leftSection>
+        <columnSize>narrow</columnSize>
+        <components>
+            <componentType>Scontrol</componentType>
+            <footer>sdf</footer>
+            <header>df</header>
+            <scontrol>Feed</scontrol>
+            <scontrolHeightInPixels>300</scontrolHeightInPixels>
+        </components>
+    </leftSection>
+    <middleSection>
+        <columnSize>narrow</columnSize>
+    </middleSection>
+    <rightSection>
+        <columnSize>narrow</columnSize>
+    </rightSection>
+    <textColor>#000000</textColor>
+    <title>new1</title>
+    <titleColor>#000000</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

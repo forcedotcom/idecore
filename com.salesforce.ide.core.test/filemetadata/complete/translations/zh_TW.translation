@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label>英國氣候學家</label>
+        <name>Matt_cust_app</name>
+    </customApplications>
+    <customLabels>
+        <label>呼籲儘速返台</label>
+        <name>another_cus_label</name>
+    </customLabels>
+    <customTabs>
+        <label>回到台北與本土球員進行第1次</label>
+        <name>matt_test_cust_web_tab</name>
+    </customTabs>
+    <reportTypes>
+        <description>他們根據超強電腦計算程式</description>
+        <label>格陵蘭大部分地區都沒有冰雪</label>
+        <name>matt_account_report_type</name>
+    </reportTypes>
+    <scontrols>
+        <label>反常的溫室效應明顯是冰雪覆蓋</label>
+        <name>matt_s_control</name>
+    </scontrols>
+</Translations>
