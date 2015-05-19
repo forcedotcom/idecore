@@ -1904,7 +1904,7 @@ public class ProjectService extends BaseService {
         return deployResultHandler.isSuccess();
     }
 
-    protected void handleDeployWarningMessages(ProjectPackageList projectPackageList,
+    public void handleDeployWarningMessages(ProjectPackageList projectPackageList,
             Collection<DeployMessage> deployWarnings, IProgressMonitor monitor) throws InterruptedException {
         if (deployWarnings.size() == 0) {
             if (logger.isInfoEnabled()) {
