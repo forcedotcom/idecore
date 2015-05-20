@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.editors.apex.assistance;
+package com.salesforce.ide.ui.editors.apex.misc;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import org.eclipse.core.resources.IProject;
 
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
+import com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner;
 
 /**
  * 

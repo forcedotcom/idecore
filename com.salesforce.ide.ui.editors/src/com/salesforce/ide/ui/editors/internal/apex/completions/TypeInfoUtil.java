@@ -23,7 +23,6 @@ import apex.jorje.semantic.symbol.type.visitor.TypeInfoVisitor;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Method;
@@ -57,9 +56,11 @@ public class TypeInfoUtil {
     static final class SystemsInstanceMembersCompletionSuggestor extends
             TypeInfoVisitor.Default<Collection<AbstractCompletionProposalDisplayable>> {
         private final String memberPrefix;
+        private final Completions completions;
 
-        public SystemsInstanceMembersCompletionSuggestor(String memberPrefix) {
+        public SystemsInstanceMembersCompletionSuggestor(String memberPrefix, Completions completions) {
             this.memberPrefix = memberPrefix;
+            this.completions = completions;
         }
 
         @Override
@@ -91,7 +92,6 @@ public class TypeInfoUtil {
 
         private Collection<AbstractCompletionProposalDisplayable> suggestCompletions(String apexName) {
             Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
-            Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
 
             CompletionPrefix completionPrefix = new CompletionPrefix(apexName);
             if (completionPrefix.shouldSuggestTopLevelType()) {

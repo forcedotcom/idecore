@@ -52,6 +52,7 @@ import apex.jorje.semantic.symbol.member.variable.LocalInfo;
 import apex.jorje.semantic.symbol.resolver.SymbolResolverImpl;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
@@ -59,6 +60,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.apex.internal.core.ApexModelManager;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanceMembersProcessorForLocals.LocalVariablesVisitor.LocalInfoWrapper;
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
@@ -84,6 +86,10 @@ import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescri
  */
 public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionProcessor implements
         IContentAssistProcessor {
+    private final ITextEditor editor;
+    private LocalVariablesVisitor visitor;
+    private Compilation compilation;
+
     private static final class VariableNamePredicate implements Predicate<AbstractCompletionProposalDisplayable> {
         private final String variablePrefix;
 
@@ -97,15 +103,21 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         }
     }
 
-    private final ITextEditor editor;
-    private LocalVariablesVisitor visitor;
-
     public ApexSystemInstanceMembersProcessorForLocals(ITextEditor editor) {
         this.editor = editor;
     }
 
+    @VisibleForTesting
+    public ApexSystemInstanceMembersProcessorForLocals(ApexCompletionUtils utils, Completions completions,
+            ITextEditor editor, Compilation compilation) {
+        this(editor);
+        this.utils = utils;
+        this.completions = completions;
+        this.compilation = compilation;
+    }
+
     public Compilation getCompilationUnit(IResource resource) {
-        return ApexModelManager.INSTANCE.getCompilation((IFile) resource);
+        return compilation != null ? compilation : ApexModelManager.INSTANCE.getCompilation((IFile) resource);
     }
 
     @Override
@@ -137,7 +149,8 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
                         TypeInfo typeInfo = wrapper.localInfo.getType();
 
                         Collection<AbstractCompletionProposalDisplayable> accept =
-                                typeInfo.accept(new TypeInfoUtil.SystemsInstanceMembersCompletionSuggestor(memberPrefix));
+                                typeInfo.accept(new TypeInfoUtil.SystemsInstanceMembersCompletionSuggestor(
+                                        memberPrefix, getCompletions()));
                         return getUtil().createProposal(accept, memberPrefix, offset, getMembersImage());
                     }
                 }

@@ -143,14 +143,6 @@ public class ApexCompletionUtils {
         return currentLine.matches(".*(\\bnew\\b).*");
     }
 
-    public boolean isInstantiatingNewType(ITextViewer viewer, int offset) {
-        IDocument doc = viewer.getDocument();
-        if (doc == null || offset > doc.getLength())
-            return false;
-
-        return false;
-    }
-
     public ICompletionProposal[] createProposal(Iterable<AbstractCompletionProposalDisplayable> suggestions,
             String prefix, int offset, Image image) {
         return createProposal(Lists.newArrayList(suggestions), prefix, offset, image);

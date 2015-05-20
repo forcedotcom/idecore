@@ -2391,7 +2391,7 @@ public class ProjectService extends BaseService {
         monitorWork(monitor);
     }
 
-    void clearAllWarningMarkers(IProject project) {
+    public void clearAllWarningMarkers(IProject project) {
         MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     }
 

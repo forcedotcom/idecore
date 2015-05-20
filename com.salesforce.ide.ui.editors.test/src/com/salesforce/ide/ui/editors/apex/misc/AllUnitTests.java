@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.editors.apex.assistance;
+package com.salesforce.ide.ui.editors.apex.misc;
 
 import junit.framework.Test;
 

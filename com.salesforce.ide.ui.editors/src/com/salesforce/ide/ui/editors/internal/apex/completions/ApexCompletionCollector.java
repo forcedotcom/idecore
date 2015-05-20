@@ -20,6 +20,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
@@ -91,6 +92,11 @@ public class ApexCompletionCollector implements IContentAssistProcessor {
 
     public void clearState() {
         errorCollector = new StringBuilder();
+    }
+
+    @VisibleForTesting
+    public List<IContentAssistProcessor> getProcessors() {
+        return processors;
     }
 
 }

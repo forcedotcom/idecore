@@ -18,6 +18,11 @@ import org.antlr.runtime.RecognitionException;
 
 import apex.jorje.data.ast.CompilationUnit;
 import apex.jorje.parser.impl.ApexParserImpl;
+import apex.jorje.semantic.ast.AstNodeFactory;
+import apex.jorje.semantic.ast.compilation.Compilation;
+import apex.jorje.semantic.compiler.Namespace;
+import apex.jorje.semantic.compiler.SourceFile;
+import apex.jorje.semantic.symbol.type.UserTypeInfo;
 
 import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.test.common.utils.IdeTestUtil;
@@ -67,6 +72,16 @@ public class ParserTestUtil {
     }
 
     /*
+     * Convenience function for getting a compilation directly from a file path
+     */
+    public static Compilation parseCompilationFromFile(String path) throws IOException, URISyntaxException,
+            RecognitionException {
+        CompilationUnit compilationUnit = parseCompilationUnitFromFile(path);
+        SourceFile virtualSourceFile = SourceFile.builder().setSource("").setNamespace(Namespace.EMPTY).build();
+        return AstNodeFactory.create(virtualSourceFile, (UserTypeInfo) null, compilationUnit);
+    }
+
+    /*
      * Convenience function for getting a compilation unit directly from a string
      */
     public static CompilationUnit parseCompilationUnitFromString(String contents) throws IOException,
@@ -75,4 +90,13 @@ public class ParserTestUtil {
         return parser.compilationUnit();
     }
 
+    /*
+     * Convenience function for getting a compilation directly from a string
+     */
+    public static Compilation parseCompilationFromString(String contents) throws IOException, URISyntaxException,
+            RecognitionException {
+        CompilationUnit compilationUnit = parseCompilationUnitFromString(contents);
+        SourceFile virtualSourceFile = SourceFile.builder().setSource("").setNamespace(Namespace.EMPTY).build();
+        return AstNodeFactory.create(virtualSourceFile, (UserTypeInfo) null, compilationUnit);
+    }
 }

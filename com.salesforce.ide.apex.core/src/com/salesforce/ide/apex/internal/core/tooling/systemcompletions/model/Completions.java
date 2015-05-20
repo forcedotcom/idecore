@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -32,10 +33,10 @@ public class Completions {
 
     // Mirror what we have at https://www.salesforce.com/us/developer/docs/apexcode/Content/apex_reference.htm
     // Since the completions?type=apex seems to return more than we would like
-    private static final List<String> kosherNamespace = ImmutableList.of(
+    @VisibleForTesting
+    public static final List<String> kosherNamespace = ImmutableList.of(
         "ApexPages",
         "Approval",
-        "Auth",
         "Canvas",
         "ChatterAnswers",
         "ConnectApi",

@@ -108,7 +108,7 @@ public class ApexCodeScanner extends RuleBasedScanner {
         setRules(rules.toArray(new IRule[rules.size()]));
     }
 
-    WordRule generateKeywordRule(IProject project) {
+    public WordRule generateKeywordRule(IProject project) {
         IToken keyword = new Token(getBoldTextAttribute(apexCodeColorProvider.getColor(ApexCodeColorProvider.KEYWORD)));
         IToken other = new Token(new TextAttribute(apexCodeColorProvider.getColor(ApexCodeColorProvider.DEFAULT)));
 

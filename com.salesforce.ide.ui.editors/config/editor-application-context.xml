@@ -12,12 +12,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 	<import resource="static-editor-content.xml" />
 
 	<!-- E D I T O R S -->
-	<bean id="apexSysClassStaticMethodProposal"
-		class="com.salesforce.ide.ui.editors.apex.assistance.proposals.ApexSysClassStaticMethodProposal"
-		scope="prototype" lazy-init="true">
-		<property name="triggerContextVariables" ref="triggerContextVariables" />
-	</bean>
-
 	<bean id="apexDocScanner"
 		class="com.salesforce.ide.ui.editors.apex.assistance.ApexDocScanner"
 		scope="prototype" lazy-init="true" init-method="init">

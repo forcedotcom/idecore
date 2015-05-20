@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.salesforce.ide.ui.editors.test
 Bundle-Version: 34.0.0.qualifier
 Fragment-Host: com.salesforce.ide.ui.editors
 Bundle-Vendor: %providerName
-Require-Bundle: org.junit,
+Require-Bundle: org.junit;bundle-version="4.8.1",
  com.salesforce.ide.test.commonlibs
 Export-Package: com.salesforce.ide.ui.editors.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

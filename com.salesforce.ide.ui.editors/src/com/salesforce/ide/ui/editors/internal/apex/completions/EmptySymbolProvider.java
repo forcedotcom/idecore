@@ -15,6 +15,12 @@ import apex.jorje.semantic.compiler.SymbolProvider;
 import apex.jorje.semantic.symbol.resolver.SymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
+/**
+ * Taken from apex-jorje as a way to not do any type resolution.
+ * 
+ * @author nchen
+ * 
+ */
 class EmptySymbolProvider implements SymbolProvider {
 
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();

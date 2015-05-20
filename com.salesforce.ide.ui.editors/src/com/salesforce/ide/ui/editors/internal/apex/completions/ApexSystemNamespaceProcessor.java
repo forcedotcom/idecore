@@ -17,8 +17,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.swt.graphics.Image;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.internal.ForceImages;
@@ -31,6 +31,14 @@ import com.salesforce.ide.ui.internal.ForceImages;
  */
 public class ApexSystemNamespaceProcessor extends ApexCompletionProcessor implements IContentAssistProcessor {
 
+    public ApexSystemNamespaceProcessor() {}
+
+    @VisibleForTesting
+    public ApexSystemNamespaceProcessor(ApexCompletionUtils utils, Completions completions) {
+        this.utils = utils;
+        this.completions = completions;
+    }
+
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
@@ -38,16 +46,14 @@ public class ApexSystemNamespaceProcessor extends ApexCompletionProcessor implem
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
         try {
-            if (getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
-                Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
-                prefix = getUtil().getPrefix(viewer, offset);
-                completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
+            Completions completions = getCompletions();
+            prefix = getUtil().getPrefix(viewer, offset);
+            completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 
-                if (completionPrefix.shouldSuggestNamespace()) {
-                    String namespacePrefix = completionPrefix.segments.get(0);
-                    suggestions = completions.namespaceTrie.prefixMap(namespacePrefix).values();
-                    return getUtil().createProposal(suggestions, namespacePrefix, offset, getImage());
-                }
+            if (completionPrefix.shouldSuggestNamespace()) {
+                String namespacePrefix = completionPrefix.segments.get(0);
+                suggestions = completions.namespaceTrie.prefixMap(namespacePrefix).values();
+                return getUtil().createProposal(suggestions, namespacePrefix, offset, getImage());
             }
         } catch (Exception e) {
             logger.warn("Error trying to generate auto-completion for namespace type", e);

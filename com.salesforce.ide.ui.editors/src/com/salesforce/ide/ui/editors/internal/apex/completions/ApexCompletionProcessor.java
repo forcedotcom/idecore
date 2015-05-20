@@ -18,6 +18,10 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
+
 /**
  * @author nchen
  * 
@@ -29,9 +33,9 @@ public abstract class ApexCompletionProcessor implements IContentAssistProcessor
 
     protected StringBuilder errorCollector = new StringBuilder();
 
-    protected ApexCompletionUtils getUtil() {
-        return ApexCompletionUtils.INSTANCE;
-    }
+    protected ApexCompletionUtils utils;
+
+    protected Completions completions;
 
     @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
@@ -62,4 +66,13 @@ public abstract class ApexCompletionProcessor implements IContentAssistProcessor
         return null;
     }
 
+    @VisibleForTesting
+    protected ApexCompletionUtils getUtil() {
+        return utils != null ? utils : ApexCompletionUtils.INSTANCE;
+    }
+
+    @VisibleForTesting
+    protected Completions getCompletions() {
+        return completions != null ? completions : ApexSystemCompletionsRepository.INSTANCE.getCompletions();
+    }
 }

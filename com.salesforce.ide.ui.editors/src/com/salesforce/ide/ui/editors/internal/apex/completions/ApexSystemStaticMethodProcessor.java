@@ -21,9 +21,9 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.swt.graphics.Image;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Method;
@@ -47,6 +47,14 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
         }
     }
 
+    public ApexSystemStaticMethodProcessor() {}
+
+    @VisibleForTesting
+    public ApexSystemStaticMethodProcessor(ApexCompletionUtils sUtils, Completions completions) {
+        this.utils = sUtils;
+        this.completions = completions;
+    }
+
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         Iterable<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
@@ -55,7 +63,7 @@ public class ApexSystemStaticMethodProcessor extends ApexCompletionProcessor imp
 
         try {
             if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
-                Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
+                Completions completions = getCompletions();
                 prefix = getUtil().getPrefix(viewer, offset);
                 completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 

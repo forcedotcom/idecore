@@ -17,8 +17,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.swt.graphics.Image;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.salesforce.ide.apex.core.tooling.systemcompletions.ApexSystemCompletionsRepository;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Namespace;
@@ -32,6 +32,13 @@ import com.salesforce.ide.ui.internal.ForceImages;
  * 
  */
 public class ApexSystemTypeProcessor extends ApexCompletionProcessor implements IContentAssistProcessor {
+    public ApexSystemTypeProcessor() {}
+
+    @VisibleForTesting
+    public ApexSystemTypeProcessor(ApexCompletionUtils utils, Completions completions) {
+        this.utils = utils;
+        this.completions = completions;
+    }
 
     @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
@@ -41,7 +48,7 @@ public class ApexSystemTypeProcessor extends ApexCompletionProcessor implements 
 
         try {
             if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
-                Completions completions = ApexSystemCompletionsRepository.INSTANCE.getCompletions();
+                Completions completions = getCompletions();
 
                 prefix = getUtil().getPrefix(viewer, offset);
                 completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
