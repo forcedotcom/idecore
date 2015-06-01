@@ -124,6 +124,7 @@ Export-Package: antlr,
  org.apache.commons.collections4.trie,
  org.apache.commons.collections4.trie.analyzer,
  org.apache.commons.lang3,
+ org.apache.commons.lang3.reflect,
  org.aspectj.lang,
  org.objectweb.asm,
  org.springframework.core
