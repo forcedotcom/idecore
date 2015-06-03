@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
@@ -82,7 +83,7 @@ public class SaveToServerActionController extends ActionController {
             return false;
         }
 
-        boolean response = Utils.openQuestion(getProject(), getShell(), "Confirm Save", UIMessages.getString("SaveToServerHandler.Overwrite.message"));
+        boolean response = getUserConfirmation();
 
         if (!response) {
             if (logger.isInfoEnabled()) {
@@ -92,7 +93,7 @@ public class SaveToServerActionController extends ActionController {
         }
 
         try {
-            projectPackageList = getProjectService().getProjectContents(selectedResources, new NullProgressMonitor());
+            projectPackageList = getProjectPackageList();
             projectPackageList.setProject(project);
         } catch (FactoryException e) {
             logger.error("Unable to prepare project package list for resources", e);
@@ -154,7 +155,8 @@ public class SaveToServerActionController extends ActionController {
         return deployOptions;
     }
 
-    private boolean checkForDirtyResources() {
+    @VisibleForTesting
+    protected boolean checkForDirtyResources() {
         if (Utils.isEmpty(selectedResources)) {
             logger.info("Operation cancelled.  Resources not provided.");
             return false;
@@ -173,5 +175,15 @@ public class SaveToServerActionController extends ActionController {
         }
 
         return true;
+    }
+    
+    @VisibleForTesting
+    protected boolean getUserConfirmation() {
+    	return Utils.openQuestion(getProject(), getShell(), "Confirm Save", UIMessages.getString("SaveToServerHandler.Overwrite.message"));
+    }
+    
+    @VisibleForTesting
+    protected ProjectPackageList getProjectPackageList() throws CoreException, InterruptedException, FactoryException {
+    	return getProjectService().getProjectContents(selectedResources, new NullProgressMonitor());
     }
 }
