@@ -94,11 +94,11 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
 
     @Override
     public T unmarshallResponse() throws ForceConnectionException {
-        receiveWallTime = System.currentTimeMillis();
 
         if (response == null) {
             logger.warn(String.format(
                 "%s for %s", Messages.HTTPAdapter_NoResponseErrorMessage, transport.getSessionEndpoint().getUri())); //$NON-NLS-1$
+            receiveWallTime = System.currentTimeMillis();
             return null;
         }
 
@@ -106,10 +106,19 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
             errorBody = response.readEntity(String.class);
             logger.warn(String.format("%s: %s from %s with error: %s", response.getStatus(), //$NON-NLS-1$
                 response.getStatusInfo().getReasonPhrase(), transport.getSessionEndpoint().getUri(), errorBody));
+            receiveWallTime = System.currentTimeMillis();
             return null;
         }
 
-        return responseClass != null ? response.readEntity(responseClass) : response.readEntity(genericType);
+        T returnValue;
+        if (responseClass != null) {
+            returnValue = response.readEntity(responseClass);
+        } else {
+            returnValue = response.readEntity(genericType);
+        }
+
+        receiveWallTime = System.currentTimeMillis();
+        return returnValue;
     }
 
     @Override
@@ -174,9 +183,9 @@ public class HTTPAdapter<T> implements IHTTPAdapter<T, String>, IHTTPTransport<T
     }
 
     /**
-     * Use this to get the raw body in the event of an error;
-     * The raw body is only set in the event of an error (such as a 403, 404, etc).
-     * It is not set when it's a 200 response since you would be able to unmarshall to the responseClass that you want.
+     * Use this to get the raw body in the event of an error; The raw body is only set in the event of an error (such as
+     * a 403, 404, etc). It is not set when it's a 200 response since you would be able to unmarshall to the
+     * responseClass that you want.
      */
     public String getRawBodyWhenError() {
         return errorBody;
