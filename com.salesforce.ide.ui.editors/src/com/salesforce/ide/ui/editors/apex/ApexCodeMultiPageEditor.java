@@ -66,7 +66,7 @@ public class ApexCodeMultiPageEditor extends BaseComponentMultiPageEditorPart {
         setProject(getEditorInputFile().getProject());
         ApexSystemCompletionsRepository.INSTANCE.getCompletionsFetchIfNecessary(getProjectService().getForceProject(
             getProject()));
-        initSObjects();
+//        initSObjects();
     }
 
     @Override
