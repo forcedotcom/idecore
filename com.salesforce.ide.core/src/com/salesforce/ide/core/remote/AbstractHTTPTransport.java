@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
+import com.google.common.net.HttpHeaders;
+
 /**
  * Parent class for collecting all the common functionality across all strongly-typed HTTP Transports.
  * 
@@ -38,6 +40,7 @@ public abstract class AbstractHTTPTransport {
         Builder builder = getSessionEndpoint().request(getMediaType());
         builder.header("Authorization", "OAuth " + connection.getActiveSessionToken());
         builder.header("Content-Type", getMediaType());
+        builder.header(HttpHeaders.ACCEPT_ENCODING, "gzip");
         return builder;
     }
 

@@ -17,7 +17,9 @@ import javax.ws.rs.client.WebTarget;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.filter.EncodingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.message.GZipEncoder;
 
 import com.salesforce.ide.core.factories.ConnectionFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
@@ -57,6 +59,8 @@ public class HTTPConnection {
     private void initializeHTTPClient() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(JacksonFeature.class);
+        clientConfig.register(GZipEncoder.class);
+        clientConfig.register(EncodingFilter.class);
         clientConfig.property(ClientProperties.READ_TIMEOUT, getConnectionTimeoutPreference());
 
         Client client = ClientBuilder.newClient(clientConfig);
