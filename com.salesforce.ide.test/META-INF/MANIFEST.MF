@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-SymbolicName: com.salesforce.ide.test;singleton:=true
-Bundle-Version: 34.0.0.qualifier
+Bundle-Version: 35.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.test.ForceIdeTest
 Bundle-Vendor: %providerName
 Bundle-ClassPath: .

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.branding
-Bundle-Version: 34.0.0.qualifier
+Bundle-Version: 35.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.branding.Activator
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.8.0"

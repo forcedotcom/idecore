@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide; singleton:=true
-Bundle-Version: 34.0.0.qualifier
+Bundle-Version: 35.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.ForceIdePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
