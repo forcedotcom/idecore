@@ -47,10 +47,10 @@ import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.HTTPAdapter;
+import com.salesforce.ide.core.remote.HTTPAdapter.HTTPMethod;
 import com.salesforce.ide.core.remote.HTTPConnection;
 import com.salesforce.ide.core.remote.PromiseableJob;
 import com.salesforce.ide.core.remote.ToolingStubExt;
-import com.salesforce.ide.core.remote.HTTPAdapter.HTTPMethod;
 import com.salesforce.ide.core.remote.tooling.ApexLogCommand;
 import com.salesforce.ide.core.remote.tooling.ApexLogTransport;
 import com.salesforce.ide.core.remote.tooling.Limit;
@@ -275,7 +275,6 @@ public class RunTestView extends BaseViewPart {
 			
 			TraceFlag tf = new TraceFlag();
 			tf.setTracedEntityId(userId);
-			tf.setScopeId(userId);
 			
 			for (LogInfo logInfo : logInfos) {
 				// Translate Metadata's LogInfo into Tooling's ApexLogLevel and LogCategory
