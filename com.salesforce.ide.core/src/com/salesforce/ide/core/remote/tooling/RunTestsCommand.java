@@ -47,24 +47,11 @@ public class RunTestsCommand extends PromiseableJob<String> {
             monitor.worked(1);
 
             String response = transport.receive();
-            response = sanitize(response);
             monitor.worked(1);
 
             return response;
         } finally {
             monitor.done();
         }
-	}
-	
-	/**
-	 * Remove quotes
-	 * @param me
-	 * @return String without double quotes
-	 */
-	private String sanitize(String me) {
-		if (me != null) {
-			me = me.replace("\"", "");
-		}
-		return me;
 	}
 }

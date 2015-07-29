@@ -16,7 +16,7 @@ public class RunTestsConstants {
 	public static final String ATTR_FORCECOM_PROJECT_NAME = "forceComProjectName";
 	public static final String ATTR_FORCECOM_TESTS_ARRAY = "testsArray";
 	public static final String ATTR_FORCECOM_TESTS_TOTAL = "testsTotal";
-	
+	public static final String ATTR_FORCECOM_TEST_MODE = "isAsync";
 	public static final String ATTR_FORCECOM_TEST_CLASS = "forceComTestClass";
 	public static final String ATTR_FORCECOM_TEST_METHOD = "forceComTestMethod";
 }

@@ -30,14 +30,21 @@ public class Messages extends NLS {
 
     public static String RunTestsTab_TabTitle;
     public static String RunTestsTab_TabGroupTitle;
+    public static String RunTestsTab_ModeGroupTitle;
     public static String RunTestsTab_ProjectDialogInstruction;
     public static String RunTestsTab_TestClassGroupTitle;
     public static String RunTestsTab_ClassDialogInstruction;
     public static String RunTestsTab_TestMethodGroupTitle;
     public static String RunTestsTab_MethodDialogInstruction;
+    public static String RunTestsTab_RunAsync;
+    public static String RunTestsTab_RunSync;
+    public static String RunTestsTab_TooManyTestClassesForSyncErrorMessage;
 
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage;
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig;
+    public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging;
+    public static String RunTestsLaunchConfigurationDelegate_Confirm;
+    public static String RunTestsLaunchConfigurationDelegate_Abort;
     public static String LaunchConfigurationDelegate_CannotLaunchInvalidForceProject;
 
     static {

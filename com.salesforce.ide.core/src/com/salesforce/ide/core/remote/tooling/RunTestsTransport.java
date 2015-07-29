@@ -25,14 +25,19 @@ import com.salesforce.ide.core.remote.HTTPConnection;
  */
 public class RunTestsTransport extends AbstractHTTPTransport {
 	public static final String RUNTESTSASYNC_ENDPOINT = "tooling/runTestsAsynchronous/";
+	public static final String RUNTESTSSYNC_ENDPOINT = "tooling/runTestsSynchronous/";
+	
+	private final boolean isAsync;
 
-	public RunTestsTransport(HTTPConnection connection) {
+	public RunTestsTransport(HTTPConnection connection, boolean isAsync) {
 		super(connection);
+		this.isAsync = isAsync;
 	}
 
 	@Override
 	public WebTarget getSessionEndpoint() {
-		return connection.getEndpoint().path(RUNTESTSASYNC_ENDPOINT);
+		return (this.isAsync) ? connection.getEndpoint().path(RUNTESTSASYNC_ENDPOINT) 
+				: connection.getEndpoint().path(RUNTESTSSYNC_ENDPOINT);
 	}
 
 	@Override

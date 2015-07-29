@@ -24,9 +24,15 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.ILaunchGroup;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
+import com.salesforce.ide.core.services.hooks.DebugListenerBroadcaster;
 
 /**
  * A launch configuration delegate for Apex Test. This gets called when executing
@@ -39,11 +45,48 @@ import com.salesforce.ide.core.ForceIdeCorePlugin;
 public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDelegate {
 
 	@Override
+	public boolean preLaunchCheck(final ILaunchConfiguration configuration, final String mode, IProgressMonitor monitor) throws CoreException {
+		// Only supported in run mode
+		checkMode(mode);
+		
+		RunTestView runTestsView = RunTestView.getInstance();
+		if (runTestsView != null) {
+			// Only allow one run at a time
+			if (!runTestsView.canRun()) {
+				throw new CoreException(new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, 
+						Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig, null));
+			}
+			
+			IProject project = materializeForceProject(configuration);
+			// Check if user has an Apex Debugging session and wants to run tests asynchronously
+			boolean isAsync = getTestMode(configuration);
+			boolean isDebugging = DebugListenerBroadcaster.isDebugging(project);
+			if (isDebugging && isAsync) {
+				// If yes, inform user that asynchronous Apex tests are not debuggable.
+				if (!runTestsView.confirmAsyncTestRunWhileDebugging()) {
+					// If they want to abort, re-open the launch configuration
+					Display display = PlatformUI.getWorkbench().getDisplay();
+					display.asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							IWorkbenchWindow aww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+							ILaunchGroup launchGroup=DebugUITools.getLaunchGroup(configuration, mode);
+							DebugUITools.openLaunchConfigurationDialog(aww.getShell(), configuration, launchGroup.getIdentifier(), null);
+						}
+					});
+					return false;
+				}
+			}
+		}
+		
+		return super.preLaunchCheck(configuration, mode, monitor);
+	}
+	
+	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		
-		// Only support in Run configs for now
-		checkMode(mode);
+		// Get the Apex Test Runner view
+		RunTestView runTestsView = RunTestView.getInstance();
 		
 		// The tests array and number of total tests were calculated in RunTestsTab.java
 		// and saved as string & int respectively in the launch config so we can grab
@@ -51,22 +94,14 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		IProject project = materializeForceProject(configuration);
 		String tests = getTestsArray(configuration);
 		int totalTests = getTotalTests(configuration);
+		boolean isAsync = getTestMode(configuration);
 		
 		// Get the test files in the selected project
 		Map<String, IResource> testResources = ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
-		
-		// Get the Apex Test Runner view
-		RunTestView runTestsView = RunTestView.getInstance();
 		if (runTestsView != null) {
-			// Only allow one run at a time
-			if (runTestsView.canRun()) {
-				// Run the tests and update UI
-				runTestsView.runTests(project, testResources, tests, totalTests, monitor);
-			}
-			else {
-				throw new CoreException(new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, 
-						Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig, null));
-			}
+			// Run the tests and update UI
+			runTestsView.runTests(project, testResources, tests, totalTests,
+					isAsync, monitor);
 		}
 	}
 	
@@ -109,5 +144,10 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	
 	private int getTotalTests(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_TOTAL, 0);
+	}
+	
+	private boolean getTestMode(ILaunchConfiguration configuration) throws CoreException {
+		// Async = true, sync = false
+		return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
 	}
 }

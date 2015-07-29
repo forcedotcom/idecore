@@ -7,6 +7,7 @@
 
 <plugin>
    <extension-point id="syncServices" name="Force.com IDE Sync Services" schema="schema/syncServices.exsd"/>
+   <extension-point id="debugServices" name="Force.com IDE Debug Services" schema="schema/debugServices.exsd"/>
 	
    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType

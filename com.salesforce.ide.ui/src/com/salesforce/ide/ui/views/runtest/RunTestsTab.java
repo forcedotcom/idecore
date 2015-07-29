@@ -12,6 +12,7 @@
 package com.salesforce.ide.ui.views.runtest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -46,6 +48,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
+import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.remote.tooling.RunTests;
 import com.salesforce.ide.core.remote.tooling.RunTests.Test;
@@ -59,8 +62,8 @@ import com.salesforce.ide.core.remote.tooling.RunTests.Test;
  */
 public class RunTestsTab extends AbstractLaunchConfigurationTab {
 		
-	// POJO to hold Apex tests for a specific project
-	private RunTests allTests;
+	private Map<IProject, RunTests> allTests;
+	private RunTests currentSelectedTests;
 	
 	// Widgets for labels, input fields, buttons
 	private Label projectLabel;
@@ -72,6 +75,8 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     private Label testMethodLabel;
     private Text testMethodText;
     private Button testMethodButton;
+    private Button testAsyncButton;
+    private Button testSyncButton;
     
     // Default colors 
     private Color defaultGray;
@@ -79,6 +84,11 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     
     private final ApexTestsUtils sourceLookup = ApexTestsUtils.INSTANCE;
 
+    public RunTestsTab() {
+    	super();
+    	allTests = new HashMap<IProject, RunTests>();
+    }
+    
     @Override
     public String getName() {
         return Messages.RunTestsTab_TabTitle;
@@ -95,6 +105,10 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     private String getTestMethodName() {
     	return testMethodText.getText();
     }
+    
+    private boolean isTestModeAsync() {
+    	return (testAsyncButton != null && testAsyncButton.isEnabled() && testAsyncButton.getSelection()) ? true : false;
+    }
 
     @Override
     public void createControl(Composite parent) {
@@ -105,6 +119,7 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
         comp.setLayout(grid);
 
         createSingleTestEditor(comp);
+        createTestModeEditor(comp);
     }
 
     /**
@@ -124,6 +139,35 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	runSingleTestGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
         createDefaultLayout(runSingleTestGroup);
+    }
+    
+    private void createTestModeEditor(Composite parent) {
+    	Group testModeGroup = new Group(parent, SWT.NONE);
+    	testModeGroup.setText(Messages.RunTestsTab_ModeGroupTitle);
+    	testModeGroup.setLayout(new GridLayout(2, false));
+    	testModeGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    	
+    	// Run async or sync radio buttons (default is async)
+    	Composite composite = new Composite(testModeGroup, SWT.NULL);
+        composite.setLayout(new RowLayout());
+        testAsyncButton = makeDefaultRadioButton(composite, Messages.RunTestsTab_RunAsync, true, true);
+        testSyncButton = makeDefaultRadioButton(composite, Messages.RunTestsTab_RunSync, true, false);
+        
+        testAsyncButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+            	validatePage();
+                updateLaunchConfigurationDialog();
+            }
+        });
+        
+        testSyncButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+            	validatePage();
+                updateLaunchConfigurationDialog();
+            }
+        });
     }
     
     /**
@@ -201,6 +245,8 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	if (testMethodButton != null) testMethodButton.dispose();
     	if (defaultGray != null) defaultGray.dispose();
     	if (normalBlack != null) normalBlack.dispose();
+    	if (testAsyncButton != null) testAsyncButton.dispose();
+    	if (testSyncButton != null) testSyncButton.dispose();
     }
     
     /**
@@ -240,6 +286,21 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	button.setLayoutData(new GridData());
     	button.setEnabled(enabled);
     	return button;
+    }
+    
+    /**
+     * Create a radio button with specified text and enabled value
+     * @param parent
+     * @param defaultText
+     * @param enabled
+     * @return
+     */
+    private Button makeDefaultRadioButton(Composite parent, String defaultText, boolean enabled, boolean selected) {
+    	Button button = new Button(parent, SWT.RADIO);
+    	button.setText(defaultText);
+    	button.setEnabled(enabled);
+    	button.setSelection(selected);
+        return button;
     }
     
     /**
@@ -303,7 +364,9 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
         	resetSelectedTestMethod();
 
             // Retrieve all test classes and test methods in the new selected project
-            allTests = buildTestsForProject(selectedProject);
+        	if (!allTests.containsKey(selectedProject)) {
+        		allTests.put(selectedProject, buildTestsForProject(selectedProject));
+        	}
         }
         // Allow class selection after project is known
         classButton.setEnabled(true);
@@ -410,13 +473,14 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
      * Create the JSON of tests to run.
      * @return RunTests
      */
-    private RunTests buildTestsForConfig() {
+    private RunTests buildTestsForConfig(IProject selectedProject) {
     	/*
     	 * Clone the original RunTests because the following logic
     	 * will filter out unwanted test classes/methods. We need to maintain the
     	 * original so we don't to re-build when user changes test class/method.
     	 */
-    	RunTests rt = allTests.clone();
+    	RunTests rt = allTests.containsKey(selectedProject) ? allTests.get(selectedProject).clone() : null;
+    	if (Utils.isEmpty(rt)) return null;
     	
     	boolean oneTestClass = (classText != null && classText.getText() != null && !classText.getText().equals(Messages.GenericTab_AllClasses));
     	boolean oneTestMethod = (testMethodText != null && testMethodText.getText() != null && !testMethodText.getText().equals(Messages.GenericTab_AllMethods));
@@ -528,9 +592,11 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	
     	dialog.setTitle(Messages.GenericTab_ClassDialogTitle);
         dialog.setMessage(Messages.RunTestsTab_ClassDialogInstruction);
+        IProject selectedProject = getProjectFromName();
+        RunTests rt = allTests.get(selectedProject);
         // We already got the test classes earlier so just display them
-        if (allTests != null && allTests.getTests() != null && !allTests.getTests().isEmpty()) {
-        	dialog.setElements(allTests.getTests().toArray());
+        if (rt != null && rt.getTests() != null && !rt.getTests().isEmpty()) {
+        	dialog.setElements(rt.getTests().toArray());
         }
         
         if (dialog.open() == Window.OK) {
@@ -564,7 +630,9 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	// We already got test methods earlier so just display the ones
     	// for previously specified test class
     	List<String> testMethodNames = new ArrayList<String>();
-    	for (Test test : allTests.getTests()) {
+    	IProject selectedProject = getProjectFromName();
+        RunTests rt = allTests.get(selectedProject);
+    	for (Test test : rt.getTests()) {
     		if (test.getClassName().equals(classText.getText())) {
     			testMethodNames = test.getTestMethods();
     		}
@@ -592,6 +660,22 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	
     	return null;
     }
+    
+    /**
+     * If true, select asynchronous button and de-select synchronous button.
+     * If false, de-select asynchronous button and select synchronous button.
+     * @param isAsync
+     */
+    private void selectAsync(boolean isAsync) {
+    	if (Utils.isEmpty(testAsyncButton) || Utils.isEmpty(testSyncButton)) {
+    		return;
+    	}
+    	
+    	testAsyncButton.setEnabled(true);
+    	testAsyncButton.setSelection(isAsync);
+    	testSyncButton.setEnabled(true);
+    	testSyncButton.setSelection(!isAsync);
+    }
 
     @Override
     public boolean isValid(ILaunchConfiguration launchConfig) {
@@ -612,7 +696,7 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
         setErrorMessage(null);
         setMessage(null);
 
-        return validateProjectSelection();
+        return validateProjectSelection() && validateTestModeSelection();
     }
     
     /**
@@ -620,7 +704,7 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
      * @return True if all is okay. False otherwise.
      */
     public boolean validateProjectSelection() {
-        if (getProjectName().length() == 0) {
+        if (getProjectName() == null || getProjectName().length() == 0) {
             setErrorMessage(Messages.GenericTab_EmptyProjectErrorMessage);
             return false;
         }
@@ -639,6 +723,39 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
         } catch (CoreException e) {}
 
         return true;
+    }
+    
+    /**
+     * Validate test mode selection (async or sync)
+     * @return True if all is okay. False otherwise.
+     */
+    public boolean validateTestModeSelection() {
+    	/*
+    	 * Some rules regarding Apex test modes:
+    	 * 
+    	 * User cannot run tests asynchronously if there is an active
+    	 * Apex debugging session for the same project. We should not enforce
+    	 * that here because these launch configs are exportable and can be
+    	 * shared between people with and without the ability to debug Apex.
+    	 * The enforcement will take place after the config is launched.
+    	 * We inform the user of the rule and they get to decide if they want
+    	 * to continue with the asynchronous test run which will not be debuggable
+    	 * or abort to change the test mode.
+    	 * 
+    	 * User cannot run more than one test class synchronously. We should
+    	 * explicitly inform the user of this drawback instead of implicitly
+    	 * switching to an asynchronous test run or selecting a specific
+    	 * test class for them. This rule applies to everyone so we can enforce
+    	 * while the config is being saved. If the rule is broken, the config
+    	 * cannot be launched.
+    	 */
+    	
+    	if (!isTestModeAsync() && (currentSelectedTests != null && currentSelectedTests.getTests() != null && currentSelectedTests.getTests().size() > 1)) {
+    		setErrorMessage(Messages.RunTestsTab_TooManyTestClassesForSyncErrorMessage);
+            return false;
+    	}
+    	
+    	return true;
     }
 
     @Override
@@ -667,12 +784,15 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
         configuration.setAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, getTestMethodName());
         
         // Build and save JSON string from test run config
-        RunTests rt = buildTestsForConfig();
-        String allTestsInJson = convertTestsToJson(rt);
+        currentSelectedTests = buildTestsForConfig(getProjectFromName());
+        String allTestsInJson = convertTestsToJson(currentSelectedTests);
         configuration.setAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_ARRAY, allTestsInJson);
         
-        int totalTests = countTotalTests(rt);
+        int totalTests = countTotalTests(currentSelectedTests);
         configuration.setAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_TOTAL, totalTests);
+        
+        // Async = true, sync = false
+        configuration.setAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, isTestModeAsync());
     }
     
     @Override
@@ -683,7 +803,12 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
             setTextProperties(projectText, projectName, normalBlack);
             projectButton.setEnabled(true);
             // Build the POJO for that project
-            allTests = buildTestsForProject(getProjectFromName());
+            IProject selectedProject = getProjectFromName();
+            if (!allTests.containsKey(selectedProject)) {
+            	RunTests selectedTests = buildTestsForProject(selectedProject);
+            	allTests.put(selectedProject, selectedTests);
+            	currentSelectedTests = selectedTests;
+            }
             
             String testClassName = configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "");
             setTextProperties(classText, testClassName, normalBlack);
@@ -692,6 +817,9 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
             String testMethodName = configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "");
             setTextProperties(testMethodText, testMethodName, normalBlack);
             testMethodButton.setEnabled(shouldEnableBasedOnText(classText.getText()));
+            
+            boolean isAsync = configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
+            selectAsync(isAsync);
         } catch (CoreException e) {}
     }
 
