@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.Platform;
  * @author jwidjaja
  *
  */
-public class DebugListenerBroadcaster {
+public class DebugListener {
 
 	private static final String DEBUG_EXTENSION_ID = "com.salesforce.ide.core.debugServices";
-    private static Logger logger = Logger.getLogger(DebugListenerBroadcaster.class);
+    private static Logger logger = Logger.getLogger(DebugListener.class);
 
     /**
      * Return whether or not the project has an active debugging session
@@ -35,12 +35,17 @@ public class DebugListenerBroadcaster {
     public static boolean isDebugging(IProject project) {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor(DEBUG_EXTENSION_ID);
+        
+        if (configurationElements.length > 1) {
+        	logger.warn("Found multiple IDebugBroadcasters");
+        }
+        
         try {
             for (IConfigurationElement element : configurationElements) {
                 Object executable = element.createExecutableExtension("class");
-                if (executable instanceof IDebugListener) {
-                	IDebugListener debugListenerExecutable = (IDebugListener) executable;
-                	return debugListenerExecutable.getDebuggingState(project);
+                if (executable instanceof IDebugBroadcaster) {
+                	IDebugBroadcaster debugExecutable = (IDebugBroadcaster) executable;
+                	return debugExecutable.isDebuggingActive(project);
                 }
             }
         } catch (CoreException e) {

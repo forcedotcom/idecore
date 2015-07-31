@@ -32,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
-import com.salesforce.ide.core.services.hooks.DebugListenerBroadcaster;
+import com.salesforce.ide.core.services.hooks.DebugListener;
 
 /**
  * A launch configuration delegate for Apex Test. This gets called when executing
@@ -60,7 +60,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			IProject project = materializeForceProject(configuration);
 			// Check if user has an Apex Debugging session and wants to run tests asynchronously
 			boolean isAsync = getTestMode(configuration);
-			boolean isDebugging = DebugListenerBroadcaster.isDebugging(project);
+			boolean isDebugging = DebugListener.isDebugging(project);
 			if (isDebugging && isAsync) {
 				// If yes, inform user that asynchronous Apex tests are not debuggable.
 				if (!runTestsView.confirmAsyncTestRunWhileDebugging()) {

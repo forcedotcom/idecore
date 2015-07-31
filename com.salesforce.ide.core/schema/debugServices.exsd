@@ -6,7 +6,7 @@
          <meta.schema plugin="com.salesforce.ide.core" id="debugServices" name="Debug Services"/>
       </appInfo>
       <documentation>
-         This extension point allows interested parties to hook into Force.com IDE Debugger. Interested parties should implement the IDebugListener interface.
+         This extension point allows interested parties to hook into Force.com IDE Debugger. Interested parties should implement the IDebugBroadcaster interface.
       </documentation>
    </annotation>
 
@@ -49,10 +49,10 @@
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  The name of the extension point is the fully qualified name of a Java class implementing &lt;code&gt;com.salesforce.ide.core.services.hooks.IDebugListener&lt;/code&gt; used to notify listeners of any Apex debugging actions.
+                  The name of the extension point is the fully qualified name of a Java class implementing &lt;code&gt;com.salesforce.ide.core.services.hooks.IDebugBroadcaster&lt;/code&gt; used to notify listeners of any Apex debugging actions.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.salesforce.ide.core.services.hooks.IDebugListener"/>
+                  <meta.attribute kind="java" basedOn=":com.salesforce.ide.core.services.hooks.IDebugBroadcaster"/>
                </appInfo>
             </annotation>
          </attribute>

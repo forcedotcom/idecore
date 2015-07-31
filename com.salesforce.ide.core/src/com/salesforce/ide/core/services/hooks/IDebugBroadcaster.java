@@ -14,15 +14,15 @@ package com.salesforce.ide.core.services.hooks;
 import org.eclipse.core.resources.IProject;
 
 /**
- * Allows listeners to any debugging activities.
+ * Broadcast debugging info
  * 
  * @author jwidjaja
  *
  */
-public interface IDebugListener {
+public interface IDebugBroadcaster {
 	
 	/**
 	 * Return whether or not the project has an active debugging session
 	 */
-	public boolean getDebuggingState(IProject project);
+	public boolean isDebuggingActive(IProject project);
 }

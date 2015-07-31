@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -65,7 +67,6 @@ import com.salesforce.ide.core.remote.tooling.RunTestsSyncFailure;
 import com.salesforce.ide.core.remote.tooling.RunTestsSyncResponse;
 import com.salesforce.ide.core.remote.tooling.RunTestsSyncSuccess;
 import com.salesforce.ide.core.remote.tooling.RunTestsTransport;
-import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.views.BaseViewPart;
@@ -73,8 +74,10 @@ import com.sforce.soap.metadata.LogCategory;
 import com.sforce.soap.metadata.LogCategoryLevel;
 import com.sforce.soap.metadata.LogInfo;
 import com.sforce.soap.tooling.AggregateResult;
+import com.sforce.soap.tooling.ApexCodeCoverageAggregate;
 import com.sforce.soap.tooling.ApexLog;
 import com.sforce.soap.tooling.ApexLogLevel;
+import com.sforce.soap.tooling.ApexOrgWideCoverage;
 import com.sforce.soap.tooling.ApexTestOutcome;
 import com.sforce.soap.tooling.ApexTestQueueItem;
 import com.sforce.soap.tooling.ApexTestResult;
@@ -99,18 +102,6 @@ public class RunTestView extends BaseViewPart {
     private static RunTestView INSTANCE = null;
     private final ReentrantLock lock = new ReentrantLock();
     
-    private static String newLine = System.getProperty("line.separator");
-    
-    // The name that is shown on the view tab
-    public static final String VIEW_NAME = "Apex Test Runner";
-    
-    // Keys used to store data in a TreeItem
-    public static final String TREEDATA_TEST_RESULT = "ApexTestResult";
-    public static final String TREEDATA_CODE_LOCATION = "ApexCodeLocation";
-    public static final String TREEDATA_APEX_LOG = "ApexLog";
-    public static final String TREEDATA_APEX_LOG_USER_DEBUG = "ApexLogUserDebug";
-    public static final String TREEDATA_APEX_LOG_BODY = "ApexLogBody";
-    
     private RunTestViewComposite runTestComposite = null;
     private IProject project = null;
     private ForceProject forceProject = null;
@@ -118,27 +109,6 @@ public class RunTestView extends BaseViewPart {
     private HTTPConnection toolingRESTConnection = null;
 	private ToolingStubExt toolingStubExt = null;
     private ISelectionListener fPostSelectionListener = null;
-    
-    private final Image FAILURE_ICON = ForceImages.get(ForceImages.IMAGE_FAILURE);
-    private final int FAILURE_COLOR = SWT.COLOR_RED;
-    private final Image WARNING_ICON = ForceImages.get(ForceImages.IMAGE_WARNING);
-    private final int WARNING_COLOR = SWT.COLOR_DARK_YELLOW;
-    private final Image PASS_ICON = ForceImages.get(ForceImages.IMAGE_CONFIRM);
-    private final int PASS_COLOR = SWT.COLOR_DARK_GREEN;
-    
-    private final String TOOLING_ENDPOINT = "/services/data/";
-	
-	private final String QUERY_USER_ID = "SELECT Id, Username FROM User WHERE Username = '%s'";
-	private final String QUERY_TESTRESULT_COUNT = "SELECT COUNT(Id) FROM ApexTestResult WHERE AsyncApexJobId = '%s'";
-	private final String QUERY_TESTRESULT = "SELECT ApexClassId, ApexLogId, AsyncApexJobId, Message, "
-			+ "MethodName, Outcome, QueueItemId, StackTrace, TestTimestamp "
-			+ "FROM ApexTestResult WHERE AsyncApexJobId = '%s'";
-	private final String QUERY_APEX_LOG = "SELECT Id, Application, DurationMilliseconds, Location, LogLength, LogUserId, Operation, Request, StartTime, Status FROM ApexLog WHERE Id = '%s'";
-	private final String QUERY_APEX_TEST_QUEUE_ITEM = "SELECT Id, Status FROM ApexTestQueueItem WHERE ParentJobId = '%s'";
-	
-	private final int POLL_FAST = 5000;
-	private final int POLL_MED = 10000;
-	private final int POLL_SLOW = 15000;
     
     public RunTestView() {
         super();
@@ -250,6 +220,8 @@ public class RunTestView extends BaseViewPart {
             		 */
             		processTestResults(project, testResources, enqueueResult);
             	}
+            	
+            	displayCodeCoverage();
         	}
     	} finally {
     		// Whether or not user aborted, we want to delete the trace flag
@@ -287,7 +259,7 @@ public class RunTestView extends BaseViewPart {
 		try {
 			initializeConnection(forceProject);
 			
-			QueryResult qr = toolingStubExt.query(String.format(QUERY_USER_ID, userName));
+			QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_USER_ID, userName));
 			if (qr != null && qr.getSize() > 0) {
 				return qr.getRecords()[0].getId();
 			}
@@ -476,7 +448,7 @@ public class RunTestView extends BaseViewPart {
 			// If user wants to exit, then they can cancel the launch config.
 			while (totalTestDone < totalTestMethods) {
 				// Query for number of finished tests in specified test run
-				qr = toolingStubExt.query(String.format(QUERY_TESTRESULT_COUNT, testRunId));
+				qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT_COUNT, testRunId));
 				
 				// Update finished test counter
 				if (qr.getSize() == 1) {
@@ -503,7 +475,7 @@ public class RunTestView extends BaseViewPart {
 			}
 			
 			// Get all test results in the specified test run
-			qr = toolingStubExt.query(String.format(QUERY_TESTRESULT, testRunId));
+			qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId));
 			if (qr != null && qr.getSize() > 0) {
 				updateProgress(0, totalTestMethods, qr.getSize());
 				for (SObject sObj : qr.getRecords()) {
@@ -561,22 +533,22 @@ public class RunTestView extends BaseViewPart {
 	 * @return A poll interval
 	 */
 	public int getPollInterval(int totalTestRemaining, float apiRequestsRemaining) {
-		int intervalA = POLL_SLOW, intervalB = POLL_SLOW;
+		int intervalA = RunTestsConstants.POLL_SLOW, intervalB = RunTestsConstants.POLL_SLOW;
 		
 		if (totalTestRemaining <= 10) {
-			intervalA = POLL_FAST;
+			intervalA = RunTestsConstants.POLL_FAST;
 		} else if (totalTestRemaining <= 50) {
-			intervalA = POLL_MED;
+			intervalA = RunTestsConstants.POLL_MED;
 		} else {
-			intervalA = POLL_SLOW;
+			intervalA = RunTestsConstants.POLL_SLOW;
 		}
 		
 		if (apiRequestsRemaining <= 25f) {
-			intervalB = POLL_SLOW;
+			intervalB = RunTestsConstants.POLL_SLOW;
 		} else if (apiRequestsRemaining <= 50f) {
-			intervalB = POLL_MED;
+			intervalB = RunTestsConstants.POLL_MED;
 		} else {
-			intervalB = POLL_FAST;
+			intervalB = RunTestsConstants.POLL_FAST;
 		}
 		
 		return (intervalA + intervalB) / 2;
@@ -609,7 +581,7 @@ public class RunTestView extends BaseViewPart {
 			initializeConnection(forceProject);
 			
 			// Get all ApexTestQueueItem in the test run
-			QueryResult qr = toolingStubExt.query(String.format(QUERY_APEX_TEST_QUEUE_ITEM, testRunId));
+			QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_APEX_TEST_QUEUE_ITEM, testRunId));
 			if (Utils.isEmpty(qr) || qr.getSize() == 0) return;
 			
 			List<ApexTestQueueItem> abortedList = Lists.newArrayList();
@@ -676,7 +648,7 @@ public class RunTestView extends BaseViewPart {
 		    			if (Utils.isNotEmpty(testFile)) {
 		    				// For test classes, always point to the first line of the file
 		    				ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
-		    				newClassNode.setData(TREEDATA_CODE_LOCATION, location);
+		    				newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
 		    			}
 		    			
 		    			testClassNodes.put(classId, newClassNode);
@@ -741,7 +713,7 @@ public class RunTestView extends BaseViewPart {
 			    			if (Utils.isNotEmpty(testFile)) {
 			    				// For test classes, always point to the first line of the file
 			    				ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
-			    				newClassNode.setData(TREEDATA_CODE_LOCATION, location);
+			    				newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
 			    			}
 			    			
 			    			testClassNodes.put(classId, newClassNode);
@@ -767,7 +739,7 @@ public class RunTestView extends BaseViewPart {
 			    			if (Utils.isNotEmpty(testFile)) {
 			    				// For test classes, always point to the first line of the file
 			    				ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
-			    				newClassNode.setData(TREEDATA_CODE_LOCATION, location);
+			    				newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
 			    			}
 			    			
 			    			testClassNodes.put(classId, newClassNode);
@@ -787,6 +759,55 @@ public class RunTestView extends BaseViewPart {
 			    	// Expand the test classes that did not pass
 			    	expandProblematicTestClasses(resultsTree);
 				} catch (IOException e) {}
+			}
+    	});
+    }
+    
+    /**
+     * Display org wide and individual test class code coverage
+     */
+    private void displayCodeCoverage() {
+    	if (Utils.isEmpty(forceProject) || Utils.isEmpty(runTestComposite)) return;
+    	
+    	final ApexOrgWideCoverage orgWide = getApexOrgWideCoverage();
+    	final List<ApexCodeCoverageAggregate> codeCovs = getApexCodeCoverageAgg();
+    	
+    	Display display = PlatformUI.getWorkbench().getDisplay();
+    	display.asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				List<String> classNames = Lists.newArrayList();
+		    	List<String> percent = Lists.newArrayList();
+		    	List<String> lines = Lists.newArrayList();
+		    	
+		    	classNames.add(Messages.RunTestView_CodeCoverageOverall);
+		    	String orgWidePercent = (Utils.isNotEmpty(orgWide) ? orgWide.getPercentCovered() : 0) + "%";
+		    	percent.add(orgWidePercent);
+		    	lines.add("");
+		    	
+		    	Pattern pattern = Pattern.compile(".*? Name='(.*?)'.*?");
+		    	
+		    	for (ApexCodeCoverageAggregate codeCov : codeCovs) {
+		    		String className = codeCov.getApexClassOrTriggerId();
+		    		
+		    		if (Utils.isNotEmpty(codeCov.getApexClassOrTrigger())) {
+		    			className = codeCov.getApexClassOrTrigger().toString();
+		        		Matcher matcher = pattern.matcher(className);
+		        		className = matcher.find() ? matcher.group(1) : codeCov.getApexClassOrTriggerId();
+		    		}
+		    		
+		    		classNames.add(className);
+		    		
+		    		int linesCovered = codeCov.getNumLinesCovered();
+		    		int total = linesCovered + codeCov.getNumLinesUncovered();
+		    		percent.add(((int)Math.round(linesCovered * 100.0 / total)) + "%");
+		    		
+		    		lines.add(String.format("%d/%d", linesCovered, total));
+		    	}
+		    	
+		    	assert classNames.size() == percent.size();
+		    	assert classNames.size() == lines.size();
+				runTestComposite.setCodeCoverage(classNames, percent, lines);
 			}
     	});
     }
@@ -816,14 +837,14 @@ public class RunTestView extends BaseViewPart {
     	
     	Display display = node.getDisplay();
     	if (outcome.equals(ApexTestOutcome.Pass)) {
-    		node.setForeground(display.getSystemColor(PASS_COLOR));
-    		node.setImage(PASS_ICON);
+    		node.setForeground(display.getSystemColor(RunTestsConstants.PASS_COLOR));
+    		node.setImage(RunTestsConstants.PASS_ICON);
     	} else if (outcome.equals(ApexTestOutcome.Skip)) {
-    		node.setForeground(display.getSystemColor(WARNING_COLOR));
-    		node.setImage(WARNING_ICON);
+    		node.setForeground(display.getSystemColor(RunTestsConstants.WARNING_COLOR));
+    		node.setImage(RunTestsConstants.WARNING_ICON);
     	} else {
-    		node.setForeground(display.getSystemColor(FAILURE_COLOR));
-    		node.setImage(FAILURE_ICON);
+    		node.setForeground(display.getSystemColor(RunTestsConstants.FAILURE_COLOR));
+    		node.setImage(RunTestsConstants.FAILURE_ICON);
     	}
     }
     
@@ -837,8 +858,11 @@ public class RunTestView extends BaseViewPart {
     	if (Utils.isEmpty(node) || Utils.isEmpty(outcome)) return;
     	
     	Image curImage = node.getImage();
-    	boolean worseThanPass = curImage.equals(PASS_ICON) && !outcome.equals(ApexTestOutcome.Pass);
-    	boolean worseThanWarning = curImage.equals(WARNING_ICON) && !outcome.equals(ApexTestOutcome.Pass) && !outcome.equals(ApexTestOutcome.Skip);
+    	boolean worseThanPass = curImage.equals(RunTestsConstants.PASS_ICON) 
+    			&& !outcome.equals(ApexTestOutcome.Pass);
+    	boolean worseThanWarning = curImage.equals(RunTestsConstants.WARNING_ICON) 
+    			&& !outcome.equals(ApexTestOutcome.Pass) 
+    			&& !outcome.equals(ApexTestOutcome.Skip);
     	if (worseThanPass || worseThanWarning) {
     		setColorAndIconForNode(node, outcome);
     	}
@@ -854,10 +878,10 @@ public class RunTestView extends BaseViewPart {
     private TreeItem createTestMethodTreeItem(TreeItem classNode, ApexTestResult testResult, String className) {
     	TreeItem newTestMethodNode = new TreeItem(classNode, SWT.NONE);
     	newTestMethodNode.setText(testResult.getMethodName());
-    	newTestMethodNode.setData(TREEDATA_TEST_RESULT, testResult);
+    	newTestMethodNode.setData(RunTestsConstants.TREEDATA_TEST_RESULT, testResult);
     	
     	ApexCodeLocation location = getCodeLocationForTestMethod(newTestMethodNode, className, testResult.getMethodName(), testResult.getStackTrace());
-    	newTestMethodNode.setData(TREEDATA_CODE_LOCATION, location);
+    	newTestMethodNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
     	
     	return newTestMethodNode;
     }
@@ -874,10 +898,10 @@ public class RunTestView extends BaseViewPart {
     private TreeItem createTestMethodTreeItem(TreeItem classNode, Object testResult, String className, String methodName, String stackTrace) {
     	TreeItem newTestMethodNode = new TreeItem(classNode, SWT.NONE);
     	newTestMethodNode.setText(methodName);
-    	newTestMethodNode.setData(TREEDATA_TEST_RESULT, testResult);
+    	newTestMethodNode.setData(RunTestsConstants.TREEDATA_TEST_RESULT, testResult);
     	
     	ApexCodeLocation location = getCodeLocationForTestMethod(newTestMethodNode, className, methodName, stackTrace);
-    	newTestMethodNode.setData(TREEDATA_CODE_LOCATION, location);
+    	newTestMethodNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
     	
     	return newTestMethodNode;
     }
@@ -894,7 +918,7 @@ public class RunTestView extends BaseViewPart {
     private ApexCodeLocation getCodeLocationForTestMethod(TreeItem treeItem, String className, 
     		String methodName, String stackTrace) {    	
     	ApexCodeLocation tmLocation = getLocationFromStackLine(methodName, stackTrace);
-    	ApexCodeLocation tcLocation = (ApexCodeLocation) treeItem.getParentItem().getData(TREEDATA_CODE_LOCATION);
+    	ApexCodeLocation tcLocation = (ApexCodeLocation) treeItem.getParentItem().getData(RunTestsConstants.TREEDATA_CODE_LOCATION);
     	// If there is no test method location, best effort is to use test class location
     	if (Utils.isEmpty(tmLocation)) {
     		tmLocation = tcLocation;
@@ -955,7 +979,7 @@ public class RunTestView extends BaseViewPart {
     	if (Utils.isEmpty(resultsTree)) return;
     	
     	for (TreeItem classNode : resultsTree.getItems()) {
-    		if (!classNode.getImage().equals(PASS_ICON)) {
+    		if (!classNode.getImage().equals(RunTestsConstants.PASS_ICON)) {
     			classNode.setExpanded(true);
     		}
     	}
@@ -998,35 +1022,33 @@ public class RunTestView extends BaseViewPart {
     	runTestComposite.clearTabs();
     	
     	// Get the test result
-    	Object genericTestResult = selectedTreeItem.getData(TREEDATA_TEST_RESULT);
+    	Object genericTestResult = selectedTreeItem.getData(RunTestsConstants.TREEDATA_TEST_RESULT);
     	ApexTestResult asyncTestResult = null;
     	RunTestsSyncSuccess syncTestSuccess = null;
     	RunTestsSyncFailure syncTestFailure = null;
     	if (genericTestResult instanceof ApexTestResult) {
-    		asyncTestResult = (ApexTestResult) selectedTreeItem.getData(TREEDATA_TEST_RESULT);
+    		asyncTestResult = (ApexTestResult) selectedTreeItem.getData(RunTestsConstants.TREEDATA_TEST_RESULT);
     	} else if (genericTestResult instanceof RunTestsSyncSuccess) {
-    		syncTestSuccess = (RunTestsSyncSuccess) selectedTreeItem.getData(TREEDATA_TEST_RESULT);
+    		syncTestSuccess = (RunTestsSyncSuccess) selectedTreeItem.getData(RunTestsConstants.TREEDATA_TEST_RESULT);
     	} else if (genericTestResult instanceof RunTestsSyncFailure) {
-    		syncTestFailure = (RunTestsSyncFailure) selectedTreeItem.getData(TREEDATA_TEST_RESULT);
+    		syncTestFailure = (RunTestsSyncFailure) selectedTreeItem.getData(RunTestsConstants.TREEDATA_TEST_RESULT);
     	} else {
     		return;
     	}
     	
     	// Get the code location and open the file
-    	ApexCodeLocation location = (ApexCodeLocation) selectedTreeItem.getData(TREEDATA_CODE_LOCATION);
+    	ApexCodeLocation location = (ApexCodeLocation) selectedTreeItem.getData(RunTestsConstants.TREEDATA_CODE_LOCATION);
     	highlightLine(location);
     	
     	// Check which tab is in focus so we can update lazily
-    	switch(selectedTab) {
-    	case RunTestViewComposite.STACK_TRACE:
+    	if (selectedTab.equals(Messages.RunTestView_StackTrace)) {
     		// Stack trace only exists in a test failure
     		if (Utils.isNotEmpty(asyncTestResult)) {
     			showStackTrace(asyncTestResult.getMessage(), asyncTestResult.getStackTrace());
     		} else if (Utils.isNotEmpty(syncTestFailure)) {
     			showStackTrace(syncTestFailure.getMessage(), syncTestFailure.getStackTrace());
     		}
-    		break;
-    	case RunTestViewComposite.SYSTEM_LOG:
+    	} else if (selectedTab.equals(Messages.RunTestView_SystemLog)) {
     		if (Utils.isNotEmpty(asyncTestResult)) {
     			String systemLogId = asyncTestResult.getApexLogId();
         		String systemApexLog = tryToGetApexLog(selectedTreeItem, systemLogId);
@@ -1034,8 +1056,7 @@ public class RunTestView extends BaseViewPart {
     		} else if (Utils.isNotEmpty(syncTestSuccess) || Utils.isNotEmpty(syncTestFailure)) {
     			// TODO: Get apexlog of sync test run
     		}
-    		break;
-    	case RunTestViewComposite.USER_LOG:
+    	} else if (selectedTab.equals(Messages.RunTestView_UserLog)) {
     		if (Utils.isNotEmpty(asyncTestResult)) {
     			String userLogId = asyncTestResult.getApexLogId();
         		String userApexLog = tryToGetApexLog(selectedTreeItem, userLogId);
@@ -1043,7 +1064,6 @@ public class RunTestView extends BaseViewPart {
     		} else if (Utils.isNotEmpty(syncTestSuccess) || Utils.isNotEmpty(syncTestFailure)) {
     			// TODO: Get apexlog of sync test run
     		}
-    		break;
     	}
     }
     
@@ -1057,7 +1077,7 @@ public class RunTestView extends BaseViewPart {
 		try {
 			initializeConnection(forceProject);
 			
-			QueryResult qr = toolingStubExt.query(String.format(QUERY_APEX_LOG, logId));
+			QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_APEX_LOG, logId));
 			if (qr != null && qr.getSize() == 1) {
 				ApexLog apexLog = (ApexLog) qr.getRecords()[0];
 				return apexLog;
@@ -1106,7 +1126,7 @@ public class RunTestView extends BaseViewPart {
     	if (Utils.isEmpty(forceProject) || Utils.isEmpty(selectedTreeItem) || Utils.isEmpty(logId)) return null;
     	
     	// Do we already have the log body?
-    	String apexLogBody = (String) selectedTreeItem.getData(TREEDATA_APEX_LOG_BODY);
+    	String apexLogBody = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_APEX_LOG_BODY);
     	if (Utils.isNotEmpty(apexLogBody)) {
     		return apexLogBody;
     	}
@@ -1115,19 +1135,19 @@ public class RunTestView extends BaseViewPart {
     	apexLogBody = getApexLogBody(forceProject, logId);
     	if (Utils.isNotEmpty(apexLogBody)) {
     		// Save it for future uses
-    		selectedTreeItem.setData(TREEDATA_APEX_LOG_BODY, apexLogBody);
+    		selectedTreeItem.setData(RunTestsConstants.TREEDATA_APEX_LOG_BODY, apexLogBody);
     		return apexLogBody;
     	}
     	
     	// There is no ApexLog body, so try to retrieve a saved ApexLog
-    	ApexLog apexLog = (ApexLog) selectedTreeItem.getData(TREEDATA_APEX_LOG);
+    	ApexLog apexLog = (ApexLog) selectedTreeItem.getData(RunTestsConstants.TREEDATA_APEX_LOG);
     	if (Utils.isNotEmpty(apexLog)) {
     		return apexLog.toString();
     	}
     	
     	// Try to get the ApexLog object
     	apexLog = getApexLog(forceProject, logId);
-    	selectedTreeItem.setData(TREEDATA_APEX_LOG, apexLog);
+    	selectedTreeItem.setData(RunTestsConstants.TREEDATA_APEX_LOG, apexLog);
     	return (Utils.isNotEmpty(apexLog) ? apexLog.toString() : null);
     }
     
@@ -1141,7 +1161,7 @@ public class RunTestView extends BaseViewPart {
     		StringBuilder data = new StringBuilder();
     		
     		if (Utils.isNotEmpty(message)) {
-    			data.append(message + newLine + newLine);
+    			data.append(message + RunTestsConstants.NEW_LINE + RunTestsConstants.NEW_LINE);
     		}
     		
     		if (Utils.isNotEmpty(stackTrace)) {
@@ -1173,7 +1193,7 @@ public class RunTestView extends BaseViewPart {
     	}
     	
     	// Do we already have a filtered log?
-    	String userDebugLog = (String) selectedTreeItem.getData(TREEDATA_APEX_LOG_USER_DEBUG);
+    	String userDebugLog = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_APEX_LOG_USER_DEBUG);
     	if (Utils.isNotEmpty(userDebugLog)) {
     		runTestComposite.setUserLogsTextArea(userDebugLog);
     		return;
@@ -1193,11 +1213,52 @@ public class RunTestView extends BaseViewPart {
 
             }
             // Save it for future uses
-            selectedTreeItem.setData(TREEDATA_APEX_LOG_USER_DEBUG, userDebugLog);
+            selectedTreeItem.setData(RunTestsConstants.TREEDATA_APEX_LOG_USER_DEBUG, userDebugLog);
             // Update the tab
             runTestComposite.setUserLogsTextArea(userDebugLog);
     	}
     }
+    
+    /**
+     * Get the code coverage aggregate
+     * @param forceProject
+     * @return ApexCodeCoverageAggregate
+     */
+    public List<ApexCodeCoverageAggregate> getApexCodeCoverageAgg() {
+    	List<ApexCodeCoverageAggregate> codeCovs = Lists.newArrayList();
+    	
+		try {
+			initializeConnection(forceProject);
+			
+			QueryResult qr = toolingStubExt.query(RunTestsConstants.QUERY_APEX_CODE_COVERAGE_AGG);
+			if (qr != null) {
+				for (SObject sobj : qr.getRecords()) {
+					codeCovs.add((ApexCodeCoverageAggregate) sobj);
+				}
+			}
+		} catch (ForceRemoteException | ForceConnectionException e) {}
+		
+		return codeCovs;
+	}
+    
+    /**
+     * Get the org wide code coverage
+     * @param forceProject
+     * @return ApexOrgWideCoverage
+     */
+    public ApexOrgWideCoverage getApexOrgWideCoverage() {		
+		try {
+			initializeConnection(forceProject);
+			
+			QueryResult qr = toolingStubExt.query(RunTestsConstants.QUERY_APEX_ORG_WIDE_COVERAGE);
+			if (qr != null && qr.getSize() == 1) {
+				ApexOrgWideCoverage orgWideCov = (ApexOrgWideCoverage) qr.getRecords()[0];
+				return orgWideCov;
+			}
+		} catch (ForceRemoteException | ForceConnectionException e) {}
+		
+		return null;
+	}
     
     /**
 	 * Initialize Tooling connection.
@@ -1208,7 +1269,7 @@ public class RunTestView extends BaseViewPart {
 	private void initializeConnection(ForceProject forceProject) throws ForceConnectionException, ForceRemoteException {
 		if (toolingRESTConnection != null && toolingStubExt != null) return;
 		
-		toolingRESTConnection = new HTTPConnection(forceProject, TOOLING_ENDPOINT);
+		toolingRESTConnection = new HTTPConnection(forceProject, RunTestsConstants.TOOLING_ENDPOINT);
         toolingRESTConnection.initialize();
         toolingStubExt = ContainerDelegate.getInstance().getFactoryLocator().getToolingFactory().getToolingStubExt(forceProject);
 	}
@@ -1236,7 +1297,7 @@ public class RunTestView extends BaseViewPart {
     @Override
     public void createPartControl(Composite parent) {
         runTestComposite = new RunTestViewComposite(parent, SWT.NONE, this);
-        setPartName(VIEW_NAME);
+        setPartName(Messages.RunTestView_Name);
         setTitleImage(getImage());
 
         UIUtils.setHelpContext(runTestComposite, this.getClass().getSimpleName());

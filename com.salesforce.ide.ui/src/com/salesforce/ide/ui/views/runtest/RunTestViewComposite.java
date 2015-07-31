@@ -11,20 +11,29 @@
 
 package com.salesforce.ide.ui.views.runtest;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -43,17 +52,12 @@ import com.sforce.soap.metadata.LogInfo;
  *
  */
 public class RunTestViewComposite extends Composite {
-
-	public static final String CLEAR = "Clear";
-	public static final String RERUN = "Re-run";
-	public static final String STACK_TRACE = "Stack Trace";
-	public static final String SYSTEM_LOG = "System Debug Log";
-	public static final String USER_LOG = "User Debug Log";
 	
     private SashForm sashForm = null;
     private Button btnClear = null;
     private Tree resultsTree = null;
     private TabFolder tabFolder = null;
+    private Table codeCovArea = null;
     private Text stackTraceArea = null;
     private Text systemLogsTextArea = null;
     private Text userLogsTextArea = null;
@@ -102,7 +106,7 @@ public class RunTestViewComposite extends Composite {
         
         // Clear button
         btnClear = new Button(leftHandComposite, SWT.NONE);
-        btnClear.setText(CLEAR);
+        btnClear.setText(Messages.RunTestView_Clear);
         btnClear.setEnabled(true);
         btnClear.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
             @Override
@@ -165,18 +169,23 @@ public class RunTestViewComposite extends Composite {
         
     	// A folder with three tabs
     	tabFolder = new TabFolder(rightHandComposite, SWT.NONE);
-    	// Stack trace
+    	
+    	// Code coverage
     	TabItem tab1 = new TabItem(tabFolder, SWT.NONE);
-    	tab1.setText(STACK_TRACE);
-    	stackTraceArea = createTextAreaForTabItem(tabFolder, tab1);
-    	// System debug log
+    	tab1.setText(Messages.RunTestView_CodeCoverage);
+    	codeCovArea = createTableForTabItem(tabFolder, tab1);
+    	// Stack trace
     	TabItem tab2 = new TabItem(tabFolder, SWT.NONE);
-    	tab2.setText(SYSTEM_LOG);
-    	systemLogsTextArea = createTextAreaForTabItem(tabFolder, tab2);
-    	// User debug log
+    	tab2.setText(Messages.RunTestView_StackTrace);
+    	stackTraceArea = createTextAreaForTabItem(tabFolder, tab2);
+    	// System debug log
     	TabItem tab3 = new TabItem(tabFolder, SWT.NONE);
-    	tab3.setText(USER_LOG);
-    	userLogsTextArea = createTextAreaForTabItem(tabFolder, tab3);
+    	tab3.setText(Messages.RunTestView_SystemLog);
+    	systemLogsTextArea = createTextAreaForTabItem(tabFolder, tab3);
+    	// User debug log
+    	TabItem tab4 = new TabItem(tabFolder, SWT.NONE);
+    	tab4.setText(Messages.RunTestView_UserLog);
+    	userLogsTextArea = createTextAreaForTabItem(tabFolder, tab4);
     	
     	tabFolder.addSelectionListener(new SelectionAdapter() {
     		public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
@@ -228,6 +237,34 @@ public class RunTestViewComposite extends Composite {
 	    
 	    return textArea;
     }
+    
+    /**
+     * Create a default three column table for code coverage
+     * @param parent
+     * @param tab
+     * @return Table widget
+     */
+    private Table createTableForTabItem(Composite parent, TabItem tab) {
+    	Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+    	table.setLinesVisible(true);
+    	table.setHeaderVisible(true);
+    	GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+    	gridData.heightHint = 200;
+    	table.setLayoutData(gridData);
+    	
+    	TableColumn column1 = new TableColumn(table, SWT.NONE);
+    	column1.setText(Messages.RunTestView_CodeCoverageClass);
+    	
+    	TableColumn column2 = new TableColumn(table, SWT.NONE);
+    	column2.setText(Messages.RunTestView_CodeCoveragePercent);
+    	
+    	TableColumn column3 = new TableColumn(table, SWT.NONE);
+    	column3.setText(Messages.RunTestView_CodeCoverageLines);
+    	
+    	tab.setControl(table);
+    	
+    	return table;
+    }
 
     public Tree getTree() {
         return resultsTree;
@@ -275,6 +312,30 @@ public class RunTestViewComposite extends Composite {
     		progressBar.setToolTipText(String.format(progressText, cur, max));
     	}
     }
+    
+    public void setCodeCoverage(List<String> classNames, List<String> percent, List<String> lines) {
+    	if (codeCovArea != null) {
+    		FontRegistry registry = new FontRegistry();
+	        Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
+	        
+    		for (int i = 0; i < classNames.size(); i++) {
+    			TableItem classItem = new TableItem(codeCovArea, SWT.NONE);
+    			classItem.setText(new String[] {classNames.get(i), percent.get(i), lines.get(i)});
+    			if (classNames.get(i).equals(Messages.RunTestView_CodeCoverageOverall)) {
+    				classItem.setFont(boldFont);
+    			}
+    		}
+    		
+    		for (TableColumn col : codeCovArea.getColumns()) {
+    			col.pack();
+    		}
+    		
+    		Rectangle r = codeCovArea.getClientArea();
+    		codeCovArea.getColumn(0).setWidth(r.width * 50 / 100);
+    		codeCovArea.getColumn(1).setWidth(r.width * 25 / 100);
+    		codeCovArea.getColumn(2).setWidth(r.width * 25 / 100);
+    	}
+    }
 
     public void enableComposite() {
         btnClear.setEnabled(true);
@@ -298,6 +359,10 @@ public class RunTestViewComposite extends Composite {
     public void clearResultsTree() {
     	if (resultsTree != null) {
     		resultsTree.removeAll();
+    	}
+    	if (codeCovArea != null) {
+    		codeCovArea.removeAll();
+    		codeCovArea.clearAll();
     	}
     }
     

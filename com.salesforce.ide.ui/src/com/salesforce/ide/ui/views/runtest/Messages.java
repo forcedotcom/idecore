@@ -46,6 +46,18 @@ public class Messages extends NLS {
     public static String RunTestsLaunchConfigurationDelegate_Confirm;
     public static String RunTestsLaunchConfigurationDelegate_Abort;
     public static String LaunchConfigurationDelegate_CannotLaunchInvalidForceProject;
+    
+    public static String RunTestView_Name;
+    public static String RunTestView_Clear;
+    public static String RunTestView_Rerun;
+    public static String RunTestView_StackTrace;
+    public static String RunTestView_SystemLog;
+    public static String RunTestView_UserLog;
+    public static String RunTestView_CodeCoverage;
+    public static String RunTestView_CodeCoverageOverall;
+    public static String RunTestView_CodeCoverageClass;
+    public static String RunTestView_CodeCoveragePercent;
+    public static String RunTestView_CodeCoverageLines;
 
     static {
         // initialize resource bundle
