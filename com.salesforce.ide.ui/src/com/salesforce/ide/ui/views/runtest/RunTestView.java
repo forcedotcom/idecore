@@ -13,6 +13,7 @@ package com.salesforce.ide.ui.views.runtest;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,8 @@ import com.salesforce.ide.core.remote.tooling.Limit;
 import com.salesforce.ide.core.remote.tooling.LimitsCommand;
 import com.salesforce.ide.core.remote.tooling.LimitsTransport;
 import com.salesforce.ide.core.remote.tooling.RunTestsCommand;
+import com.salesforce.ide.core.remote.tooling.RunTestsSyncCodeCoverage;
+import com.salesforce.ide.core.remote.tooling.RunTestsSyncCodeCoverageWarning;
 import com.salesforce.ide.core.remote.tooling.RunTestsSyncFailure;
 import com.salesforce.ide.core.remote.tooling.RunTestsSyncResponse;
 import com.salesforce.ide.core.remote.tooling.RunTestsSyncSuccess;
@@ -212,16 +215,24 @@ public class RunTestView extends BaseViewPart {
             		List<ApexTestResult> testResults = getTestResults(enqueueResult, totalTestMethods, monitor);
             		// Whether or not user aborted, we want to show whatever test results we got back
                 	processTestResults(project, testResources, testResults);
+                	// Display code coverage from ApexCodeCoverageAggregate & ApexOrgWideCoverage
+                	displayCodeCoverage();
             	} else {
             		/*
             		 * Sync test runs do create ApexTestResult objects, but there's no way to query the
             		 * right ones for this test run because they don't have a sync test run ID, only async
             		 * test run ID. So, we have to rely on the response of runTestsSynchronous.
             		 */
-            		processTestResults(project, testResources, enqueueResult);
+            		ObjectMapper mapper = new ObjectMapper();
+		    		RunTestsSyncResponse testResults;
+					try {
+						testResults = mapper.readValue(enqueueResult, RunTestsSyncResponse.class);
+						processTestResults(project, testResources, testResults);
+						displayCodeCoverage(testResults);
+					} catch (IOException e) {
+						logger.error("Problem mapping runTestsSynchronous response: " + enqueueResult);
+					}
             	}
-            	
-            	displayCodeCoverage();
         	}
     	} finally {
     		// Whether or not user aborted, we want to delete the trace flag
@@ -679,7 +690,7 @@ public class RunTestView extends BaseViewPart {
      * @param testResources
      * @param testResults
      */
-    public void processTestResults(final IProject project, final Map<String, IResource> testResources, final String testResults) {
+    public void processTestResults(final IProject project, final Map<String, IResource> testResources, final RunTestsSyncResponse testResults) {
     	if (Utils.isEmpty(project) || Utils.isEmpty(testResources) || Utils.isEmpty(testResults)) {
 			return;
 		}
@@ -688,126 +699,151 @@ public class RunTestView extends BaseViewPart {
     	display.asyncExec(new Runnable() {
 			@Override
 			public void run() {
-		    	try {
-		    		ObjectMapper mapper = new ObjectMapper();
-		    		RunTestsSyncResponse results = mapper.readValue(testResults, RunTestsSyncResponse.class);
-					// Map of tree items whose key is apex class id and the value is the tree item
-			    	Map<String, TreeItem> testClassNodes = new HashMap<String, TreeItem>();
-			    	
-			    	FontRegistry registry = new FontRegistry();
-			        Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
-			        
-			        // Reset tree
-			    	Tree resultsTree = runTestComposite.getTree();
-			    	resultsTree.removeAll();
-			    	
-			    	for (RunTestsSyncSuccess testPassed : results.getSuccesses()) {
-			    		// Create or find the tree node for the test class
-			    		final String classId = testPassed.getId();
-			    		final String className = testPassed.getName();
-			    		if (!testClassNodes.containsKey(classId)) {
-			    			TreeItem newClassNode = createTestClassTreeItem(resultsTree, boldFont);
-			    			newClassNode.setText(className);
-			    			// Save the associated file in the tree item
-			    			IFile testFile = getFileFromId(testResources, classId);
-			    			if (Utils.isNotEmpty(testFile)) {
-			    				// For test classes, always point to the first line of the file
-			    				ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
-			    				newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
-			    			}
-			    			
-			    			testClassNodes.put(classId, newClassNode);
-			    		}
-			    		
-			    		// Add the a test method tree node to the test class tree node
-			    		TreeItem classNode = testClassNodes.get(classId);
-			    		// Create a tree item for the test method and save the test result
-			    		TreeItem newTestMethodNode = createTestMethodTreeItem(classNode, testPassed, className, testPassed.getMethodName(), "");
-			    		// Set the color and icon of test method tree node based on test outcome
-		    			setColorAndIconForNode(newTestMethodNode, ApexTestOutcome.Pass);
-			    	}
-			    	
-			    	for (RunTestsSyncFailure testFailed : results.getFailures()) {
-			    		// Create or find the tree node for the test class
-			    		final String classId = testFailed.getId();
-			    		final String className = testFailed.getName();
-			    		if (!testClassNodes.containsKey(classId)) {
-			    			TreeItem newClassNode = createTestClassTreeItem(resultsTree, boldFont);
-			    			newClassNode.setText(className);
-			    			// Save the associated file in the tree item
-			    			IFile testFile = getFileFromId(testResources, classId);
-			    			if (Utils.isNotEmpty(testFile)) {
-			    				// For test classes, always point to the first line of the file
-			    				ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
-			    				newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
-			    			}
-			    			
-			    			testClassNodes.put(classId, newClassNode);
-			    		}
-			    		
-			    		// Add the a test method tree node to the test class tree node
-			    		TreeItem classNode = testClassNodes.get(classId);
-			    		// Create a tree item for the test method and save the test result
-			    		TreeItem newTestMethodNode = createTestMethodTreeItem(classNode, testFailed, className, testFailed.getMethodName(), testFailed.getStackTrace());
-			    		// Set the color and icon of test method tree node based on test outcome
-		    			setColorAndIconForNode(newTestMethodNode, ApexTestOutcome.Fail);
-		    			// Update the color & icon of class tree node only if the test method
-		    			// outcome is worse than what the class tree node indicates
-		    			setColorAndIconForTheWorse(classNode, ApexTestOutcome.Fail);
-			    	}
-			    	
-			    	// Expand the test classes that did not pass
-			    	expandProblematicTestClasses(resultsTree);
-				} catch (IOException e) {}
+		    	// Map of tree items whose key is apex class id and the value is the tree item
+				Map<String, TreeItem> testClassNodes = new HashMap<String, TreeItem>();
+				
+				FontRegistry registry = new FontRegistry();
+				Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
+				
+				// Reset tree
+				Tree resultsTree = runTestComposite.getTree();
+				resultsTree.removeAll();
+				
+				for (RunTestsSyncSuccess testPassed : testResults.getSuccesses()) {
+					// Create or find the tree node for the test class
+					final String classId = testPassed.getId();
+					final String className = testPassed.getName();
+					if (!testClassNodes.containsKey(classId)) {
+						TreeItem newClassNode = createTestClassTreeItem(resultsTree, boldFont);
+						newClassNode.setText(className);
+						// Save the associated file in the tree item
+						IFile testFile = getFileFromId(testResources, classId);
+						if (Utils.isNotEmpty(testFile)) {
+							// For test classes, always point to the first line of the file
+							ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
+							newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
+						}
+						
+						testClassNodes.put(classId, newClassNode);
+					}
+					
+					// Add the a test method tree node to the test class tree node
+					TreeItem classNode = testClassNodes.get(classId);
+					// Create a tree item for the test method and save the test result
+					TreeItem newTestMethodNode = createTestMethodTreeItem(classNode, testPassed, className, testPassed.getMethodName(), "");
+					// Set the color and icon of test method tree node based on test outcome
+					setColorAndIconForNode(newTestMethodNode, ApexTestOutcome.Pass);
+				}
+				
+				for (RunTestsSyncFailure testFailed : testResults.getFailures()) {
+					// Create or find the tree node for the test class
+					final String classId = testFailed.getId();
+					final String className = testFailed.getName();
+					if (!testClassNodes.containsKey(classId)) {
+						TreeItem newClassNode = createTestClassTreeItem(resultsTree, boldFont);
+						newClassNode.setText(className);
+						// Save the associated file in the tree item
+						IFile testFile = getFileFromId(testResources, classId);
+						if (Utils.isNotEmpty(testFile)) {
+							// For test classes, always point to the first line of the file
+							ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
+							newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
+						}
+						
+						testClassNodes.put(classId, newClassNode);
+					}
+					
+					// Add the a test method tree node to the test class tree node
+					TreeItem classNode = testClassNodes.get(classId);
+					// Create a tree item for the test method and save the test result
+					TreeItem newTestMethodNode = createTestMethodTreeItem(classNode, testFailed, className, testFailed.getMethodName(), testFailed.getStackTrace());
+					// Set the color and icon of test method tree node based on test outcome
+					setColorAndIconForNode(newTestMethodNode, ApexTestOutcome.Fail);
+					// Update the color & icon of class tree node only if the test method
+					// outcome is worse than what the class tree node indicates
+					setColorAndIconForTheWorse(classNode, ApexTestOutcome.Fail);
+				}
+				
+				// Expand the test classes that did not pass
+				expandProblematicTestClasses(resultsTree);
 			}
     	});
     }
     
     /**
      * Display org wide and individual test class code coverage
+     * from ApexOrgWideCoverage & ApexCodeCoverageAgg
      */
     private void displayCodeCoverage() {
     	if (Utils.isEmpty(forceProject) || Utils.isEmpty(runTestComposite)) return;
-    	
-    	final ApexOrgWideCoverage orgWide = getApexOrgWideCoverage();
-    	final List<ApexCodeCoverageAggregate> codeCovs = getApexCodeCoverageAgg();
     	
     	Display display = PlatformUI.getWorkbench().getDisplay();
     	display.asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				List<String> classNames = Lists.newArrayList();
-		    	List<String> percent = Lists.newArrayList();
-		    	List<String> lines = Lists.newArrayList();
+				List<CodeCovResult> ccResults = Lists.newArrayList();
+				
+				ApexOrgWideCoverage orgWide = getApexOrgWideCoverage();
+		    	List<ApexCodeCoverageAggregate> codeCovs = getApexCodeCoverageAgg();
 		    	
-		    	classNames.add(Messages.RunTestView_CodeCoverageOverall);
-		    	String orgWidePercent = (Utils.isNotEmpty(orgWide) ? orgWide.getPercentCovered() : 0) + "%";
-		    	percent.add(orgWidePercent);
-		    	lines.add("");
+				// Overall code coverage
+		    	Integer orgWidePercent = Utils.isNotEmpty(orgWide) ? orgWide.getPercentCovered() : 0 ;
+		    	CodeCovResult ccResult = new CodeCovResult(Messages.RunTestView_CodeCoverageOverall, orgWidePercent, null, null);
+		    	ccResults.add(ccResult);
 		    	
 		    	Pattern pattern = Pattern.compile(".*? Name='(.*?)'.*?");
-		    	
 		    	for (ApexCodeCoverageAggregate codeCov : codeCovs) {
+		    		// Extract the class name from the toString
 		    		String className = codeCov.getApexClassOrTriggerId();
-		    		
 		    		if (Utils.isNotEmpty(codeCov.getApexClassOrTrigger())) {
 		    			className = codeCov.getApexClassOrTrigger().toString();
 		        		Matcher matcher = pattern.matcher(className);
 		        		className = matcher.find() ? matcher.group(1) : codeCov.getApexClassOrTriggerId();
 		    		}
-		    		
-		    		classNames.add(className);
-		    		
-		    		int linesCovered = codeCov.getNumLinesCovered();
-		    		int total = linesCovered + codeCov.getNumLinesUncovered();
-		    		percent.add(((int)Math.round(linesCovered * 100.0 / total)) + "%");
-		    		
-		    		lines.add(String.format("%d/%d", linesCovered, total));
+		    		// Get percent and lines covered
+		    		Integer linesCovered = codeCov.getNumLinesCovered();
+		    		Integer total = linesCovered + codeCov.getNumLinesUncovered();
+		    		Integer percent = (int) Math.round(linesCovered * 100.0 / total);
+		    		// Save to list
+		    		ccResults.add(new CodeCovResult(className, percent, linesCovered, total));
 		    	}
-		    	
-		    	assert classNames.size() == percent.size();
-		    	assert classNames.size() == lines.size();
-				runTestComposite.setCodeCoverage(classNames, percent, lines);
+		    	// Update UI with code coverage
+				runTestComposite.setCodeCoverage(ccResults);
+			}
+    	});
+    }
+    
+    /**
+     * Display code coverage from from sync test run
+     * @param testResults
+     */
+    public void displayCodeCoverage(final RunTestsSyncResponse testResults) {
+    	if ( Utils.isEmpty(runTestComposite)) return;
+    	
+    	Display display = PlatformUI.getWorkbench().getDisplay();
+    	display.asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				List<CodeCovResult> ccResults = Lists.newArrayList();
+				
+				final ApexOrgWideCoverage orgWide = getApexOrgWideCoverage();
+				Integer orgWidePercent = Utils.isNotEmpty(orgWide) ? orgWide.getPercentCovered() : 0 ;
+		    	CodeCovResult ccResult = new CodeCovResult(Messages.RunTestView_CodeCoverageOverall, orgWidePercent, null, null);
+		    	ccResults.add(ccResult);
+				
+				for (RunTestsSyncCodeCoverage rtscc : testResults.getCodeCoverage()) {
+					String className = rtscc.getName();
+					Integer linesCovered = rtscc.getNumLocations();
+					Integer total = linesCovered + rtscc.getNumLocationsNotCovered();
+					Integer percent = (int) Math.round(linesCovered * 100.0 / total);
+					ccResults.add(new CodeCovResult(className, percent, linesCovered, total));
+				}
+				
+				runTestComposite.setCodeCoverage(ccResults);
+				
+				for (RunTestsSyncCodeCoverageWarning warning : testResults.getCodeCoverageWarnings()) {
+					logger.warn(String.format("Apex Class or Trigger: %s | Problem: %s", warning.getName(), warning.getMessage()));
+				}
 			}
     	});
     }
@@ -1267,8 +1303,6 @@ public class RunTestView extends BaseViewPart {
 	 * @throws ForceRemoteException
 	 */
 	private void initializeConnection(ForceProject forceProject) throws ForceConnectionException, ForceRemoteException {
-		if (toolingRESTConnection != null && toolingStubExt != null) return;
-		
 		toolingRESTConnection = new HTTPConnection(forceProject, RunTestsConstants.TOOLING_ENDPOINT);
         toolingRESTConnection.initialize();
         toolingStubExt = ContainerDelegate.getInstance().getFactoryLocator().getToolingFactory().getToolingStubExt(forceProject);
@@ -1324,5 +1358,75 @@ public class RunTestView extends BaseViewPart {
                 }
             }
         };
+    }
+    
+    public class CodeCovResult {
+    	private final String className;
+    	private final Integer percent;
+    	private final Integer linesCovered;
+    	private final Integer linesTotal;
+    	private final Integer linesNotCovered;
+    	
+    	public CodeCovResult(String className, Integer percent, Integer linesCovered, Integer linesTotal) {
+    		this.className = className;
+    		this.percent = percent;
+    		this.linesCovered = linesCovered;
+    		this.linesTotal = linesTotal;
+    		this.linesNotCovered = (Utils.isNotEmpty(linesTotal) && Utils.isNotEmpty(linesCovered)) ? linesTotal - linesCovered : 0;
+    	}
+    	
+    	public String getClassName() {
+    		return this.className;
+    	}
+    	
+    	public Integer getPercent() {
+    		return this.percent;
+    	}
+    	
+    	public Integer getLinesCovered() {
+    		return this.linesCovered;
+    	}
+    	
+    	public Integer getLinesTotal() {
+    		return this.linesTotal;
+    	}
+    	
+    	public Integer getLinesNotCovered() {
+    		return this.linesNotCovered;
+    	}
+    }
+    
+    public static class CodeCovComparators {
+    	public static Comparator<CodeCovResult> CLASSNAME_ASC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageClass, -1);
+    	public static Comparator<CodeCovResult> PERCENT_ASC = sortByTypeWithDirection(Messages.RunTestView_CodeCoveragePercent, -1);
+    	public static Comparator<CodeCovResult> LINES_ASC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageLines, -1);
+    	public static Comparator<CodeCovResult> CLASSNAME_DESC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageClass, 1);
+    	public static Comparator<CodeCovResult> PERCENT_DESC = sortByTypeWithDirection(Messages.RunTestView_CodeCoveragePercent, 1);
+    	public static Comparator<CodeCovResult> LINES_DESC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageLines, 1);
+    	
+    	private static Comparator<CodeCovResult> sortByTypeWithDirection(final String type, final int direction) {
+    		return new Comparator<CodeCovResult>() {
+    			@Override
+    			public int compare(CodeCovResult o1, CodeCovResult o2) {
+    				if (o1.getClassName().equals(Messages.RunTestView_CodeCoverageOverall)) return -1;
+    				if (o2.getClassName().equals(Messages.RunTestView_CodeCoverageOverall)) return 1;
+    				
+    				int compareDir = -1;
+    				if (type.equals(Messages.RunTestView_CodeCoveragePercent)) {
+    					compareDir = o1.getPercent().compareTo(o2.getPercent());
+    				} else if (type.equals(Messages.RunTestView_CodeCoverageLines)) {
+    					compareDir = o1.getLinesNotCovered().compareTo(o2.getLinesNotCovered());
+    				} else {
+    					compareDir = o1.getClassName().compareTo(o2.getClassName());
+    				}
+    				
+    				if (direction > 0) {
+    					compareDir *= -1;
+    				}
+    				
+    				return compareDir;
+    			}
+        	};
+    	}
     }
 }

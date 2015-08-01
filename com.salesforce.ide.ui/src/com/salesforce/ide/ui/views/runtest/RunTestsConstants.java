@@ -30,12 +30,14 @@ public class RunTestsConstants {
 	public static final String ATTR_FORCECOM_TEST_CLASS = "forceComTestClass";
 	public static final String ATTR_FORCECOM_TEST_METHOD = "forceComTestMethod";
 	
-    // Keys used to store data in a TreeItem
+    // Keys used to store data in Eclipse widgets
     public static final String TREEDATA_TEST_RESULT = "ApexTestResult";
     public static final String TREEDATA_CODE_LOCATION = "ApexCodeLocation";
     public static final String TREEDATA_APEX_LOG = "ApexLog";
     public static final String TREEDATA_APEX_LOG_USER_DEBUG = "ApexLogUserDebug";
     public static final String TREEDATA_APEX_LOG_BODY = "ApexLogBody";
+    public static final String TABLE_CODE_COV_RESULT = "AllCodeCov";
+    public static final String TABLE_CODE_COV_COL_DIR = "OneColumnDirection";
     
     // Tooling API queries
     public static final String QUERY_USER_ID = "SELECT Id, Username FROM User WHERE Username = '%s'";
@@ -48,8 +50,8 @@ public class RunTestsConstants {
     public static final String QUERY_APEX_CODE_COVERAGE_AGG = "SELECT ApexClassOrTriggerId, ApexClassOrTrigger.Name, "
 			+ "NumLinesCovered, NumLinesUncovered FROM ApexCodeCoverageAggregate "
 			+ "WHERE ApexClassOrTriggerId != NULL AND ApexClassOrTrigger.Name != NULL "
-			+ "AND (NumLinesCovered > 0 OR NumLinesUncovered > 0) AND NumLinesCovered != NULL "
-			+ "AND NumLinesUncovered != NULL ORDER BY ApexClassOrTrigger.Name";
+			+ "AND NumLinesCovered != NULL AND NumLinesUncovered != NULL "
+			+ "ORDER BY ApexClassOrTrigger.Name";
     public static final String QUERY_APEX_ORG_WIDE_COVERAGE = "SELECT PercentCovered FROM ApexOrgWideCoverage";
     
     // Poll intervals

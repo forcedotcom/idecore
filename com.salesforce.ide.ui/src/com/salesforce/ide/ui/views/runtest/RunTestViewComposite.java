@@ -11,6 +11,7 @@
 
 package com.salesforce.ide.ui.views.runtest;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -28,6 +29,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -42,6 +45,8 @@ import com.salesforce.ide.core.internal.utils.LoggingInfo;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.services.LoggingService;
 import com.salesforce.ide.ui.views.LoggingComposite;
+import com.salesforce.ide.ui.views.runtest.RunTestView.CodeCovComparators;
+import com.salesforce.ide.ui.views.runtest.RunTestView.CodeCovResult;
 import com.sforce.soap.metadata.LogInfo;
 
 /**
@@ -245,21 +250,63 @@ public class RunTestViewComposite extends Composite {
      * @return Table widget
      */
     private Table createTableForTabItem(Composite parent, TabItem tab) {
-    	Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+    	final Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
     	table.setLinesVisible(true);
     	table.setHeaderVisible(true);
     	GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
     	gridData.heightHint = 200;
     	table.setLayoutData(gridData);
     	
-    	TableColumn column1 = new TableColumn(table, SWT.NONE);
-    	column1.setText(Messages.RunTestView_CodeCoverageClass);
+    	Listener sortListener = new Listener() {
+    		public void handleEvent(Event e) {
+    			@SuppressWarnings("unchecked")
+				List<CodeCovResult> testResults = (List<CodeCovResult>) table.getData(RunTestsConstants.TABLE_CODE_COV_RESULT);
+    			TableColumn column = (TableColumn) e.widget;
+    			@SuppressWarnings("unused")
+				int dir = table.getSortDirection();
+    			
+    			if (testResults == null || testResults.isEmpty()) return;
+    			
+    			if (column.getText().equals(Messages.RunTestView_CodeCoveragePercent)) {
+    				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
+    					Collections.sort(testResults, CodeCovComparators.PERCENT_ASC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    				} else {
+    					Collections.sort(testResults, CodeCovComparators.PERCENT_DESC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
+    				}
+    			} else if (column.getText().equals(Messages.RunTestView_CodeCoverageLines)) {
+    				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
+    					Collections.sort(testResults, CodeCovComparators.LINES_ASC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    				} else {
+    					Collections.sort(testResults, CodeCovComparators.LINES_DESC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
+    				}
+    			} else {
+    				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
+    					Collections.sort(testResults, CodeCovComparators.CLASSNAME_ASC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    				} else {
+    					Collections.sort(testResults, CodeCovComparators.CLASSNAME_DESC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
+    				}
+    			}
+    			
+    			setCodeCoverage(testResults);
+    		}
+    	};
     	
-    	TableColumn column2 = new TableColumn(table, SWT.NONE);
-    	column2.setText(Messages.RunTestView_CodeCoveragePercent);
+    	String[] columns = new String[] { Messages.RunTestView_CodeCoverageClass, 
+    			Messages.RunTestView_CodeCoveragePercent, 
+    			Messages.RunTestView_CodeCoverageLines};
     	
-    	TableColumn column3 = new TableColumn(table, SWT.NONE);
-    	column3.setText(Messages.RunTestView_CodeCoverageLines);
+    	for (String columnName : columns) {
+    		TableColumn column = new TableColumn(table, SWT.NONE);
+    		column.setText(columnName);
+    		column.addListener(SWT.Selection, sortListener);
+    		column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    	}
     	
     	tab.setControl(table);
     	
@@ -313,17 +360,24 @@ public class RunTestViewComposite extends Composite {
     	}
     }
     
-    public void setCodeCoverage(List<String> classNames, List<String> percent, List<String> lines) {
-    	if (codeCovArea != null) {
+    public void setCodeCoverage(List<CodeCovResult> ccResults) {
+    	if (codeCovArea != null && ccResults != null && !ccResults.isEmpty()) {
+    		clearCodeCov();
+    		
+    		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, ccResults);
+    		
     		FontRegistry registry = new FontRegistry();
 	        Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
 	        
-    		for (int i = 0; i < classNames.size(); i++) {
+    		for (CodeCovResult res : ccResults) {
     			TableItem classItem = new TableItem(codeCovArea, SWT.NONE);
-    			classItem.setText(new String[] {classNames.get(i), percent.get(i), lines.get(i)});
-    			if (classNames.get(i).equals(Messages.RunTestView_CodeCoverageOverall)) {
+    			String lines = String.format("%d/%d", res.getLinesCovered(), res.getLinesTotal());
+    			if (res.getClassName().equals(Messages.RunTestView_CodeCoverageOverall)) {
     				classItem.setFont(boldFont);
+    				lines = "";
     			}
+    			
+    			classItem.setText(new String[] {res.getClassName(), res.getPercent() + "%", lines});
     		}
     		
     		for (TableColumn col : codeCovArea.getColumns()) {
@@ -360,10 +414,7 @@ public class RunTestViewComposite extends Composite {
     	if (resultsTree != null) {
     		resultsTree.removeAll();
     	}
-    	if (codeCovArea != null) {
-    		codeCovArea.removeAll();
-    		codeCovArea.clearAll();
-    	}
+    	clearCodeCov();
     }
     
     public void clearTabs() {
@@ -382,6 +433,14 @@ public class RunTestViewComposite extends Composite {
     	if (progressBar != null) {
         	setProgress(0, 0, 0);
         }
+    }
+    
+    public void clearCodeCov() {
+    	if (codeCovArea != null) {
+    		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, null);
+    		codeCovArea.removeAll();
+    		codeCovArea.clearAll();
+    	}
     }
     
     public LogInfo[] getLogInfoAndType() {
