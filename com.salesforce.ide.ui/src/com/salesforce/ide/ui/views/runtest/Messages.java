@@ -43,7 +43,7 @@ public class Messages extends NLS {
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage;
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig;
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging;
-    public static String RunTestsLaunchConfigurationDelegate_Confirm;
+    public static String RunTestsLaunchConfigurationDelegate_Continue;
     public static String RunTestsLaunchConfigurationDelegate_Abort;
     public static String LaunchConfigurationDelegate_CannotLaunchInvalidForceProject;
     

@@ -164,7 +164,7 @@ public class RunTestView extends BaseViewPart {
 		    			null,
 		    			Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging,
 		    			MessageDialog.WARNING,
-		    			new String[] { Messages.RunTestsLaunchConfigurationDelegate_Abort, Messages.RunTestsLaunchConfigurationDelegate_Confirm },
+		    			new String[] { Messages.RunTestsLaunchConfigurationDelegate_Abort, Messages.RunTestsLaunchConfigurationDelegate_Continue },
 		    			0);
 		    	
 				choice.set(dialog.open());
