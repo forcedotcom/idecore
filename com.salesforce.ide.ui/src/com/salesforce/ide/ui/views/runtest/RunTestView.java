@@ -210,7 +210,9 @@ public class RunTestView extends BaseViewPart {
             	// Submit the tests for execution
             	String enqueueResult = enqueueTests(testsInJson, isAsync);
             	
-            	if (isAsync) {
+            	if (Utils.isEmpty(enqueueResult)) {
+            		logger.error("Problem enqueueing test run for tests: " + testsInJson);
+            	} else if (isAsync) {
             		// If it's an async run, the enqueue result is an async test run ID, so we poll for test results
             		List<ApexTestResult> testResults = getTestResults(enqueueResult, totalTestMethods, monitor);
             		// Whether or not user aborted, we want to show whatever test results we got back
@@ -406,7 +408,7 @@ public class RunTestView extends BaseViewPart {
 		}
 		
 		try {
-			initializeConnection(forceProject);
+			initializeConnection(forceProject, (isAsync ? RunTestsConstants.ASYNC_TIMEOUT : RunTestsConstants.SYNC_TIMEOUT));
 			
 			PromiseableJob<String> job = new RunTestsCommand(new HTTPAdapter<>(
 					String.class, new RunTestsTransport(toolingRESTConnection, isAsync), HTTPMethod.POST), testsInJson);
@@ -1304,6 +1306,12 @@ public class RunTestView extends BaseViewPart {
 	 */
 	private void initializeConnection(ForceProject forceProject) throws ForceConnectionException, ForceRemoteException {
 		toolingRESTConnection = new HTTPConnection(forceProject, RunTestsConstants.TOOLING_ENDPOINT);
+        toolingRESTConnection.initialize();
+        toolingStubExt = ContainerDelegate.getInstance().getFactoryLocator().getToolingFactory().getToolingStubExt(forceProject);
+	}
+	
+	private void initializeConnection(ForceProject forceProject, int timeout) throws ForceConnectionException, ForceRemoteException {
+		toolingRESTConnection = new HTTPConnection(forceProject, RunTestsConstants.TOOLING_ENDPOINT, timeout);
         toolingRESTConnection.initialize();
         toolingStubExt = ContainerDelegate.getInstance().getFactoryLocator().getToolingFactory().getToolingStubExt(forceProject);
 	}

@@ -37,10 +37,17 @@ public class HTTPConnection {
     private WebTarget endpoint;
     private String activeSessionToken;
     private final String serviceEndpoint;
+    private int timeout;
 
     public HTTPConnection(ForceProject forceProject, String serviceEndpoint) {
         this.forceProject = forceProject;
         this.serviceEndpoint = serviceEndpoint;
+        this.timeout = 20_000;
+    }
+    
+    public HTTPConnection(ForceProject forceProject, String serviceEndpoint, int timeout) {
+    	this(forceProject, serviceEndpoint);
+    	this.timeout = timeout;
     }
 
     public WebTarget initialize() throws InsufficientPermissionsException, ForceConnectionException {
@@ -71,7 +78,7 @@ public class HTTPConnection {
     }
 
     protected int getConnectionTimeoutPreference() {
-          return 20_000;
+          return this.timeout;
     }
 
     private String constructServiceEndpoint() {
