@@ -49,28 +49,27 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		// Only supported in run mode
 		checkMode(mode);
 		
-		RunTestView runTestsView = RunTestView.getInstance();
+		RunTestView runTestsView = getRunTestView();
 		if (runTestsView != null) {
 			// Only allow one run at a time
 			if (!runTestsView.canRun()) {
-				throw new CoreException(new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, 
-						Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig, null));
+				throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig);
 			}
 			
 			IProject project = materializeForceProject(configuration);
 			// Check if user has an Apex Debugging session and wants to run tests asynchronously
 			boolean isAsync = getTestMode(configuration);
-			boolean isDebugging = DebugListener.isDebugging(project);
+			boolean isDebugging = isProjectDebugging(project);
 			if (isDebugging && isAsync) {
 				// If yes, inform user that asynchronous Apex tests are not debuggable.
 				if (!runTestsView.confirmAsyncTestRunWhileDebugging()) {
 					// If they want to abort, re-open the launch configuration
-					Display display = PlatformUI.getWorkbench().getDisplay();
+					Display display = getDisplay();
 					display.asyncExec(new Runnable() {
 						@Override
 						public void run() {
 							IWorkbenchWindow aww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-							ILaunchGroup launchGroup=DebugUITools.getLaunchGroup(configuration, mode);
+							ILaunchGroup launchGroup = DebugUITools.getLaunchGroup(configuration, mode);
 							DebugUITools.openLaunchConfigurationDialog(aww.getShell(), configuration, launchGroup.getIdentifier(), null);
 						}
 					});
@@ -79,6 +78,10 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			}
 		}
 		
+		return secondPhasePreLaunchCheck(configuration, mode, monitor);
+	}
+	
+	protected boolean secondPhasePreLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
@@ -86,7 +89,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		// Get the Apex Test Runner view
-		RunTestView runTestsView = RunTestView.getInstance();
+		RunTestView runTestsView = getRunTestView();
 		
 		// The tests array and number of total tests were calculated in RunTestsTab.java
 		// and saved as string & int respectively in the launch config so we can grab
@@ -97,7 +100,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		boolean isAsync = getTestMode(configuration);
 		
 		// Get the test files in the selected project
-		Map<String, IResource> testResources = ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
+		Map<String, IResource> testResources = findTestClasses(project);
 		if (runTestsView != null) {
 			// Run the tests and update UI
 			runTestsView.runTests(project, testResources, tests, totalTests,
@@ -105,49 +108,64 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		}
 	}
 	
-	private void checkMode(String mode) throws CoreException {
-		if (!mode.equals(ILaunchManager.RUN_MODE)) {
-			throw new CoreException(new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, 
-					Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage, null));
+	protected void throwErrorMsg(String msg) throws CoreException {
+		if (msg != null && !msg.isEmpty()) {
+			throw new CoreException(
+					new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, msg, null));
 		}
 	}
 	
-	private IProject materializeForceProject(ILaunchConfiguration configuration) throws CoreException {
-		IProject project = retrieveProject(configuration);
+	protected boolean isProjectDebugging(IProject project) {
+		return DebugListener.isDebugging(project);
+	}
+	
+	protected void checkMode(String mode) throws CoreException {
+		if (!mode.equals(ILaunchManager.RUN_MODE)) {
+			throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage);
+		}
+	}
+	
+	protected IProject materializeForceProject(ILaunchConfiguration configuration) throws CoreException {
+		String forceProjectName = getProjectName(configuration);
+		IProject project = getProjectFromName(forceProjectName);
 
         if (project == null) {
-            throw new CoreException(new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, 
-            		Messages.LaunchConfigurationDelegate_CannotLaunchInvalidForceProject, null));
-        } else {
-            return project;
+        	throwErrorMsg(Messages.LaunchConfigurationDelegate_CannotLaunchInvalidForceProject);
         }
-    }
-	
-	private IProject retrieveProject(ILaunchConfiguration configuration) throws CoreException {
-		String forceProjectName = getProjectName(configuration);
-        IProject project = getProjectFromName(forceProjectName);
-
+        
         return project;
     }
 	
-	private String getProjectName(ILaunchConfiguration configuration) throws CoreException {
+	protected String getProjectName(ILaunchConfiguration configuration) throws CoreException {
         return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "");
     }
 
-	private IProject getProjectFromName(String name) {
+	protected IProject getProjectFromName(String name) {
         return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
     }
 	
-	private String getTestsArray(ILaunchConfiguration configuration) throws CoreException {
+	protected String getTestsArray(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_ARRAY, "");
 	}
 	
-	private int getTotalTests(ILaunchConfiguration configuration) throws CoreException {
+	protected int getTotalTests(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_TOTAL, 0);
 	}
 	
-	private boolean getTestMode(ILaunchConfiguration configuration) throws CoreException {
+	protected boolean getTestMode(ILaunchConfiguration configuration) throws CoreException {
 		// Async = true, sync = false
 		return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
+	}
+	
+	protected RunTestView getRunTestView() {
+		return RunTestView.getInstance();
+	}
+	
+	protected Display getDisplay() {
+		return PlatformUI.getWorkbench().getDisplay();
+	}
+	
+	protected Map<String, IResource> findTestClasses(IProject project) {
+		return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
 	}
 }

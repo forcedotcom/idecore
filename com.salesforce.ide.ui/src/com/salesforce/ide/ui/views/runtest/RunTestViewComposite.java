@@ -262,8 +262,6 @@ public class RunTestViewComposite extends Composite {
     			@SuppressWarnings("unchecked")
 				List<CodeCovResult> testResults = (List<CodeCovResult>) table.getData(RunTestsConstants.TABLE_CODE_COV_RESULT);
     			TableColumn column = (TableColumn) e.widget;
-    			@SuppressWarnings("unused")
-				int dir = table.getSortDirection();
     			
     			if (testResults == null || testResults.isEmpty()) return;
     			
