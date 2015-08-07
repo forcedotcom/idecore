@@ -390,6 +390,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.getTotalTests(configuration)).thenReturn(totalTests);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(isAsync);
 		when(mockedDelegate.findTestClasses(project)).thenReturn(testResources);
+		doNothing().when(mockedDelegate).removeLaunch(launch);
 		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, monitor);
 		
 		mockedDelegate.launch(configuration, mode, launch, monitor);
@@ -400,6 +401,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).getTotalTests(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).findTestClasses(project);
+		verify(mockedDelegate, times(1)).removeLaunch(launch);
 		verify(runTestsView, never()).runTests(project, testResources, tests, totalTests, isAsync, monitor);
 	}
 	
@@ -423,6 +425,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.getTotalTests(configuration)).thenReturn(totalTests);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(isAsync);
 		when(mockedDelegate.findTestClasses(project)).thenReturn(testResources);
+		doNothing().when(mockedDelegate).removeLaunch(launch);
 		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, monitor);
 		
 		mockedDelegate.launch(configuration, mode, launch, monitor);
@@ -433,6 +436,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).getTotalTests(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).findTestClasses(project);
+		verify(mockedDelegate, times(1)).removeLaunch(launch);
 		verify(runTestsView, times(1)).runTests(project, testResources, tests, totalTests, isAsync, monitor);
 	}
 }

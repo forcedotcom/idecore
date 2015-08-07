@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
@@ -88,23 +89,27 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		// Get the Apex Test Runner view
-		RunTestView runTestsView = getRunTestView();
-		
-		// The tests array and number of total tests were calculated in RunTestsTab.java
-		// and saved as string & int respectively in the launch config so we can grab
-		// them from this launch config delegate.
-		IProject project = materializeForceProject(configuration);
-		String tests = getTestsArray(configuration);
-		int totalTests = getTotalTests(configuration);
-		boolean isAsync = getTestMode(configuration);
-		
-		// Get the test files in the selected project
-		Map<String, IResource> testResources = findTestClasses(project);
-		if (runTestsView != null) {
-			// Run the tests and update UI
-			runTestsView.runTests(project, testResources, tests, totalTests,
-					isAsync, monitor);
+		try {
+			// Get the Apex Test Runner view
+			RunTestView runTestsView = getRunTestView();
+
+			// The tests array and number of total tests were calculated in
+			// RunTestsTab.java and saved as string & int respectively in the 
+			// launch config so we can grab them from this launch config delegate.
+			IProject project = materializeForceProject(configuration);
+			String tests = getTestsArray(configuration);
+			int totalTests = getTotalTests(configuration);
+			boolean isAsync = getTestMode(configuration);
+
+			// Get the test files in the selected project
+			Map<String, IResource> testResources = findTestClasses(project);
+			if (runTestsView != null) {
+				// Run the tests and update UI
+				runTestsView.runTests(project, testResources, tests,
+						totalTests, isAsync, monitor);
+			}
+		} finally {
+			removeLaunch(launch);
 		}
 	}
 	
@@ -167,5 +172,9 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	
 	protected Map<String, IResource> findTestClasses(IProject project) {
 		return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
+	}
+	
+	protected void removeLaunch(ILaunch launch) {
+		DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
 	}
 }
