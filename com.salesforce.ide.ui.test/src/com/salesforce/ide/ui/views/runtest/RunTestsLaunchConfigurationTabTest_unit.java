@@ -40,14 +40,14 @@ import com.salesforce.ide.core.remote.tooling.RunTests;
 
 import junit.framework.TestCase;
 
-public class RunTestsTabTest_unit extends TestCase {
+public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 	
-	private RunTestsTab mockedTab;
+	private RunTestsLaunchConfigurationTab mockedTab;
 	
 	@Before
     @Override
     public void setUp() throws Exception {
-		mockedTab = mock(RunTestsTab.class);
+		mockedTab = mock(RunTestsLaunchConfigurationTab.class);
 	}
 	
 	@Test

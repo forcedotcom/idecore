@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
+import apex.jorje.data.Loc.RealLoc;
 import apex.jorje.data.ast.BlockMember;
 import apex.jorje.data.ast.BlockMember.MethodMember;
 import apex.jorje.data.ast.CompilationUnit;
@@ -35,8 +36,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.internal.utils.QualifiedNames;
-import com.salesforce.ide.core.internal.utils.ResourceProperties;
+import com.salesforce.ide.core.model.ApexCodeLocation;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.services.ProjectService;
 
@@ -78,51 +78,36 @@ public class ApexTestsUtils {
      * @param project
      * @return Map of test resources whose key is the resource ID
      */
-    public Map<String, IResource> findTestClassesInProject(IProject project) {
-        final Map<String, IResource> testClasses = Maps.newHashMap();
+    public Map<IResource, List<String>> findTestClassesInProject(IProject project) {
+        final Map<IResource, List<String>> allTests = Maps.newHashMap();
 
         List<IResource> projectResources = findSourcesInProject(project);
         List<IResource> projectClasses = filterSourcesByClass(projectResources);
         try {
             for (final IResource projectResource : projectClasses) {
-                IFile projectClass = (IFile) projectResource;
-                CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(projectClass);
-                compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
-
-                    @Override
-                    public void _case(ClassDeclUnit classDeclUnit) {
-                        if (classDeclUnit.body != null) {
-                            if (hasTestModifier(classDeclUnit.body.modifiers)) {
-                                String resourceId =
-                                        ResourceProperties.getProperty(projectResource, QualifiedNames.QN_ID);
-                                testClasses.put(resourceId, projectResource);
-                            }
-                        }
-                    }
-
-                    @Override
-                    protected void _default(CompilationUnit x) {}
-                });
-
+            	List<String> methodNames = findTestMethodNamesInFile(projectResource);
+            	if (methodNames != null && methodNames.size() > 0) {
+            		allTests.put(projectResource, methodNames);
+            	}
             }
         } catch (Exception e) {
             logger.error("Encountered an issue trying to find test classes in the project", e);
         }
 
-        return testClasses;
+        return allTests;
     }
 
     /**
-     * Find test methods in a given resource. Test methods are annotated with @IsTest or 'testmethod'.
+     * Find names of test methods in a given resource.
+     * Test methods are annotated with @IsTest or 'testmethod'.
      * 
      * @param resource
-     * @return
+     * @return List of test method names
      */
-    public List<String> findTestMethodsInFile(IResource resource) {
+    public List<String> findTestMethodNamesInFile(IResource resource) {
         final List<String> methodNames = Lists.newArrayList();
 
         try {
-            // Get the compilation unit of this file
             IFile file = (IFile) resource;
             CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
             compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
@@ -151,12 +136,59 @@ public class ApexTestsUtils {
                 protected void _default(CompilationUnit x) {}
             });
         } catch (Exception e) {
-            logger.error("Encountered an issue trying to find test methods for " + resource.getName(), e);
+            logger.error("Encountered an issue trying to find test method names for " + resource.getName(), e);
         }
 
         return methodNames;
     }
+    
+    /**
+     * Find location of test methdods in a given resource.
+     * Test methods are annotated with @IsTest or 'testmethod'.
+     * 
+     * @param resource
+     * @return Map of test method names and their location
+     */
+    public Map<String, ApexCodeLocation> findTestMethodLocsInFile(IResource resource) {
+    	final Map<String, ApexCodeLocation> testMethods = Maps.newHashMap();
+    	
+    	try {
+            final IFile file = (IFile) resource;
+            CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
+            compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
 
+                @Override
+                public void _case(ClassDeclUnit classDeclUnit) {
+                    if (classDeclUnit.body != null && classDeclUnit.body.members != null) {
+                        for (final BlockMember member : classDeclUnit.body.members.values) {
+                            member._switch(new BlockMember.SwitchBlockWithDefault() {
+
+                                @Override
+                                public void _case(MethodMember x) {
+                                    if (hasTestModifier(x.methodDecl.modifiers)) {
+                                    	RealLoc realLoc = (RealLoc) x.methodDecl.name.loc;
+                                    	ApexCodeLocation loc = new ApexCodeLocation(file, realLoc.line, realLoc.column);
+                                    	testMethods.put(x.methodDecl.name.value, loc);
+                                    }
+                                }
+
+                                @Override
+                                protected void _default(BlockMember x) {}
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                protected void _default(CompilationUnit x) {}
+            });
+        } catch (Exception e) {
+            logger.error("Encountered an issue trying to find test methods for " + resource.getName(), e);
+        }
+    	
+    	return testMethods;
+    }
+    
     /**
      * Find all IResource in a given project.
      * 

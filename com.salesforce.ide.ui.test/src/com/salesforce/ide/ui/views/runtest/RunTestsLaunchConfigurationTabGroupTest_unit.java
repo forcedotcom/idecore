@@ -32,7 +32,7 @@ public class RunTestsLaunchConfigurationTabGroupTest_unit extends TestCase {
 		ILaunchConfigurationTab[] tabs = tabGroup.getTabs();
 		assertNotNull(tabs);
 		assertEquals(2, tabs.length);
-		assertTrue(tabs[0] instanceof RunTestsTab);
+		assertTrue(tabs[0] instanceof RunTestsLaunchConfigurationTab);
 		assertTrue(tabs[1] instanceof CommonTab);
 	}
 }

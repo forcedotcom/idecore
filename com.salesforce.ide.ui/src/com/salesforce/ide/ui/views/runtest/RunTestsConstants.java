@@ -39,15 +39,16 @@ public class RunTestsConstants {
     public static final String TREEDATA_APEX_LOG = "ApexLog";
     public static final String TREEDATA_APEX_LOG_USER_DEBUG = "ApexLogUserDebug";
     public static final String TREEDATA_APEX_LOG_BODY = "ApexLogBody";
+    public static final String TREEDATA_TEST_METHOD_LOCS = "ApexTestMethodCodeLocations";
     public static final String TABLE_CODE_COV_RESULT = "AllCodeCov";
     public static final String TABLE_CODE_COV_COL_DIR = "OneColumnDirection";
     
     // Tooling API queries
     public static final String QUERY_USER_ID = "SELECT Id, Username FROM User WHERE Username = '%s'";
     public static final String QUERY_TESTRESULT_COUNT = "SELECT COUNT(Id) FROM ApexTestResult WHERE AsyncApexJobId = '%s'";
-    public static final String QUERY_TESTRESULT = "SELECT ApexClassId, ApexLogId, AsyncApexJobId, Message, "
+    public static final String QUERY_TESTRESULT = "SELECT ApexClassId, ApexClass.Name, ApexLogId, AsyncApexJobId, Message, "
 			+ "MethodName, Outcome, QueueItemId, StackTrace, TestTimestamp "
-			+ "FROM ApexTestResult WHERE AsyncApexJobId = '%s'";
+			+ "FROM ApexTestResult WHERE AsyncApexJobId = '%s' ORDER BY ApexClass.Name, MethodName ASC";
     public static final String QUERY_APEX_LOG = "SELECT Id, Application, DurationMilliseconds, Location, LogLength, LogUserId, Operation, Request, StartTime, Status FROM ApexLog WHERE Id = '%s'";
     public static final String QUERY_APEX_TEST_QUEUE_ITEM = "SELECT Id, Status FROM ApexTestQueueItem WHERE ParentJobId = '%s'";
     public static final String QUERY_APEX_CODE_COVERAGE_AGG = "SELECT ApexClassOrTriggerId, ApexClassOrTrigger.Name, "

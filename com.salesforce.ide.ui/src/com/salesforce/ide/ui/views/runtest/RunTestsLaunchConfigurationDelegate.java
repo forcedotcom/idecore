@@ -11,6 +11,7 @@
 
 package com.salesforce.ide.ui.views.runtest;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -39,7 +40,7 @@ import com.salesforce.ide.core.services.hooks.DebugListener;
  * A launch configuration delegate for Apex Test. This gets called when executing
  * a launch config for Apex Test.
  * 
- * @see RunTestsTab.java
+ * @see RunTestsLaunchConfigurationTab.java
  * @author jwidjaja
  *
  */
@@ -50,7 +51,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		// Only supported in run mode
 		checkMode(mode);
 		
-		RunTestView runTestsView = getRunTestView();
+		RunTestsView runTestsView = getRunTestView();
 		if (runTestsView != null) {
 			// Only allow one run at a time
 			if (!runTestsView.canRun()) {
@@ -91,7 +92,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		try {
 			// Get the Apex Test Runner view
-			RunTestView runTestsView = getRunTestView();
+			RunTestsView runTestsView = getRunTestView();
 
 			// The tests array and number of total tests were calculated in
 			// RunTestsTab.java and saved as string & int respectively in the 
@@ -102,7 +103,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			boolean isAsync = getTestMode(configuration);
 
 			// Get the test files in the selected project
-			Map<String, IResource> testResources = findTestClasses(project);
+			Map<IResource, List<String>> testResources = findTestClasses(project);
 			if (runTestsView != null) {
 				// Run the tests and update UI
 				runTestsView.runTests(project, testResources, tests,
@@ -162,15 +163,15 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		return configuration.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
 	}
 	
-	protected RunTestView getRunTestView() {
-		return RunTestView.getInstance();
+	protected RunTestsView getRunTestView() {
+		return RunTestsView.getInstance();
 	}
 	
 	protected Display getDisplay() {
 		return PlatformUI.getWorkbench().getDisplay();
 	}
 	
-	protected Map<String, IResource> findTestClasses(IProject project) {
+	protected Map<IResource, List<String>> findTestClasses(IProject project) {
 		return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
 	}
 	

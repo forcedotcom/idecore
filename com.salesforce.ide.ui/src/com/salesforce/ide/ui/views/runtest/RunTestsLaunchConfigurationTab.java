@@ -47,6 +47,8 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
+import com.salesforce.ide.core.internal.utils.QualifiedNames;
+import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.remote.tooling.RunTests;
@@ -59,7 +61,7 @@ import com.salesforce.ide.core.remote.tooling.RunTests.Test;
  * @author jwidjaja
  *
  */
-public class RunTestsTab extends AbstractLaunchConfigurationTab {
+public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 		
 	protected Map<IProject, RunTests> allTests;
 	protected RunTests currentSelectedTests;
@@ -83,7 +85,7 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     
     private final ApexTestsUtils sourceLookup = ApexTestsUtils.INSTANCE;
 
-    public RunTestsTab() {
+    public RunTestsLaunchConfigurationTab() {
     	super();
     	allTests = new HashMap<IProject, RunTests>();
     }
@@ -443,11 +445,9 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     	RunTests rt = new RunTests();
     	List<Test> testClasses = new ArrayList<Test>();
     	
-    	Map<String, IResource> testResources = sourceLookup.findTestClassesInProject(project);
-    	for (String resourceId : testResources.keySet()) {
-    		IResource testResource = testResources.get(resourceId);
-    		List<String> testMethods = sourceLookup.findTestMethodsInFile(testResource);
-    		
+    	Map<IResource, List<String>> allTests = sourceLookup.findTestClassesInProject(project);
+    	for (IResource resource : allTests.keySet()) {
+    		List<String> testMethods = allTests.get(resource);
     		if (testMethods == null || testMethods.isEmpty()) {
     			continue;
     		}
@@ -457,9 +457,11 @@ public class RunTestsTab extends AbstractLaunchConfigurationTab {
     			testMethods.add(0, Messages.GenericTab_AllMethods);
     		}
     		
+    		String resourceId = ResourceProperties.getProperty(resource, QualifiedNames.QN_ID);
+    		
     		Test testClass = rt.new Test();
     		testClass.setClassId(resourceId);
-    		testClass.setClassName(testResource.getName());
+    		testClass.setClassName(resource.getName());
     		testClass.setTestMethods(testMethods);
     		
     		testClasses.add(testClass);

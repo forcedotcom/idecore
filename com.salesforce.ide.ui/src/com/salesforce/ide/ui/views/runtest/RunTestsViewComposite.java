@@ -45,8 +45,8 @@ import com.salesforce.ide.core.internal.utils.LoggingInfo;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.services.LoggingService;
 import com.salesforce.ide.ui.views.LoggingComposite;
-import com.salesforce.ide.ui.views.runtest.RunTestView.CodeCovComparators;
-import com.salesforce.ide.ui.views.runtest.RunTestView.CodeCovResult;
+import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovComparators;
+import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovResult;
 import com.sforce.soap.metadata.LogInfo;
 
 /**
@@ -56,7 +56,7 @@ import com.sforce.soap.metadata.LogInfo;
  * @author jwidjaja
  *
  */
-public class RunTestViewComposite extends Composite {
+public class RunTestsViewComposite extends Composite {
 	
     private SashForm sashForm = null;
     private Button btnClear = null;
@@ -68,11 +68,11 @@ public class RunTestViewComposite extends Composite {
     private Text userLogsTextArea = null;
     private ProgressBar progressBar = null;
     private String progressText = "%d out of %d tests finished";
-    protected RunTestView runView = null;
+    protected RunTestsView runView = null;
     protected IProject project = null;
     private LoggingComposite loggingComposite = null;
 
-    public RunTestViewComposite(Composite parent, int style, RunTestView view) {
+    public RunTestsViewComposite(Composite parent, int style, RunTestsView view) {
         super(parent, style);
         this.runView = view;
         initialize();

@@ -398,7 +398,7 @@
             id="com.salesforce.ide.ui.view.runTest"
             category="com.salesforce.ide.ui.view"
             icon="icons/appExDevIco16.png"
-            class="com.salesforce.ide.ui.views.runtest.RunTestView"
+            class="com.salesforce.ide.ui.views.runtest.RunTestsView"
             allowMultiple="false"
             name="%view.name.RunTest" />
         <view
