@@ -50,7 +50,7 @@ import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovResult;
 import com.sforce.soap.metadata.LogInfo;
 
 /**
- * The UI manager for Apex Test Runner view. All this does is generate and
+ * The UI manager for Apex Test Results view. All this does is generate and
  * update texts.
  * 
  * @author jwidjaja

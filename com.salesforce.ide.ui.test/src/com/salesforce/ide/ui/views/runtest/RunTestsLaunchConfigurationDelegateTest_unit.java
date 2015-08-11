@@ -384,6 +384,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		String tests = "";
 		int totalTests = 0;
 		boolean isAsync = false;
+		boolean isDebugging = false;
 		
 		DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
 		
@@ -395,7 +396,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(isAsync);
 		when(mockedDelegate.findTestClasses(project)).thenReturn(testResources);
 		doCallRealMethod().when(mockedDelegate).removeLaunch(launch);
-		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, monitor);
+		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, isDebugging, monitor);
 		
 		mockedDelegate.launch(configuration, mode, launch, monitor);
 		
@@ -406,7 +407,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).findTestClasses(project);
 		verify(mockedDelegate, times(1)).removeLaunch(launch);
-		verify(runTestsView, never()).runTests(project, testResources, tests, totalTests, isAsync, monitor);
+		verify(runTestsView, never()).runTests(project, testResources, tests, totalTests, isAsync, isDebugging, monitor);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		assertNotNull(launches);
@@ -425,6 +426,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		String tests = "";
 		int totalTests = 0;
 		boolean isAsync = false;
+		boolean isDebugging = false;
 		
 		DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
 		
@@ -436,7 +438,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(isAsync);
 		when(mockedDelegate.findTestClasses(project)).thenReturn(testResources);
 		doCallRealMethod().when(mockedDelegate).removeLaunch(launch);
-		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, monitor);
+		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, isDebugging, monitor);
 		
 		mockedDelegate.launch(configuration, mode, launch, monitor);
 		
@@ -447,7 +449,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).findTestClasses(project);
 		verify(mockedDelegate, times(1)).removeLaunch(launch);
-		verify(runTestsView, times(1)).runTests(project, testResources, tests, totalTests, isAsync, monitor);
+		verify(runTestsView, times(1)).runTests(project, testResources, tests, totalTests, isAsync, isDebugging, monitor);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		assertNotNull(launches);

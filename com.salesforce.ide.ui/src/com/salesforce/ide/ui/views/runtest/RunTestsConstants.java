@@ -22,8 +22,9 @@ public class RunTestsConstants {
 	
 	public static final String NEW_LINE = System.getProperty("line.separator");
 	
-	public static final int ASYNC_TIMEOUT = 20_000;
-	public static final int SYNC_TIMEOUT = 600_000;
+	public static final int ASYNC_TIMEOUT = 20_000; // 20 seconds
+	public static final int SYNC_WITHOUT_DEBUG_TIMEOUT = 120_000; // 2 minutes
+	public static final int SYNC_WITH_DEBUG_TIMEOUT = 3_600_000; // 1 hour
 	
 	// Launch config attributes
 	public static final String ATTR_FORCECOM_PROJECT_NAME = "forceComProjectName";

@@ -184,9 +184,10 @@ public class RunTestsView extends BaseViewPart {
      * @param testsInJson
      * @param totalTestMethods
      * @param isAsync
+     * @param isDebugging
      * @param monitor
      */
-    public void runTests(final IProject project, Map<IResource, List<String>> testResources, String testsInJson, int totalTestMethods, boolean isAsync, IProgressMonitor monitor) {
+    public void runTests(final IProject project, Map<IResource, List<String>> testResources, String testsInJson, int totalTestMethods, boolean isAsync, boolean isDebugging, IProgressMonitor monitor) {
     	lock.lock();
     	
     	String traceFlagId = null;
@@ -208,7 +209,7 @@ public class RunTestsView extends BaseViewPart {
         	// If user wants to cancel the launch, delete the trace flag and stop. Otherwise, proceed
         	if (!monitor.isCanceled()) {
             	// Submit the tests for execution
-            	String enqueueResult = enqueueTests(testsInJson, isAsync);
+            	String enqueueResult = enqueueTests(testsInJson, isAsync, isDebugging);
             	
             	if (Utils.isEmpty(enqueueResult)) {
             		logger.error("Problem enqueueing test run for tests: " + testsInJson);
@@ -421,9 +422,12 @@ public class RunTestsView extends BaseViewPart {
 	/**
 	 * Enqueue a tests array to Tooling's runTestsAsynchronous.
 	 * @param testsInJson
-	 * @return The test run ID if valid. Null otherwise.
+	 * @param isAsync
+	 * @param isDebugging
+	 * @return The test run ID if valid async run. 
+	 * The test results if valid sync run. Null otherwise.
 	 */
-	protected String enqueueTests(String testsInJson, boolean isAsync) {
+	protected String enqueueTests(String testsInJson, boolean isAsync, boolean isDebugging) {
 		String response = null;
 		
 		if (Utils.isEmpty(forceProject)) {
@@ -431,10 +435,10 @@ public class RunTestsView extends BaseViewPart {
 		}
 		
 		try {
-			initializeConnection(forceProject, (isAsync ? RunTestsConstants.ASYNC_TIMEOUT : RunTestsConstants.SYNC_TIMEOUT));
+			int timeoutVal = getConnTimeoutVal(isAsync, isDebugging);
+			initializeConnection(forceProject, timeoutVal);
 			
-			PromiseableJob<String> job = new RunTestsCommand(new HTTPAdapter<>(
-					String.class, new RunTestsTransport(toolingRESTConnection, isAsync), HTTPMethod.POST), testsInJson);
+			PromiseableJob<String> job = getRunTestsCommand(testsInJson, isAsync);
 			job.schedule();
 			
 			try {
@@ -449,6 +453,30 @@ public class RunTestsView extends BaseViewPart {
 		}
 		
 		return response;
+	}
+	
+	/**
+	 * Get connection timeout value depending on
+	 * test mode and debugging status.
+	 * @param isAsync
+	 * @param isDebugging
+	 * @return Timeout value
+	 */
+	protected int getConnTimeoutVal(boolean isAsync, boolean isDebugging) {
+		return (isAsync ? RunTestsConstants.ASYNC_TIMEOUT : 
+			(isDebugging ? RunTestsConstants.SYNC_WITH_DEBUG_TIMEOUT : 
+				RunTestsConstants.SYNC_WITHOUT_DEBUG_TIMEOUT));
+	}
+	
+	/**
+	 * Create the job to submit to Tooling API's run tests endpoint.
+	 * @param testsInJson
+	 * @param isAsync
+	 * @return Promiseable job
+	 */
+	protected PromiseableJob<String> getRunTestsCommand(String testsInJson, boolean isAsync) {
+		return new RunTestsCommand(new HTTPAdapter<>(
+				String.class, new RunTestsTransport(toolingRESTConnection, isAsync), HTTPMethod.POST), testsInJson);
 	}
 	
 	/**

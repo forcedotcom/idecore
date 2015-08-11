@@ -91,7 +91,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		try {
-			// Get the Apex Test Runner view
+			// Get the Apex Test Results view
 			RunTestsView runTestsView = getRunTestView();
 
 			// The tests array and number of total tests were calculated in
@@ -101,13 +101,14 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			String tests = getTestsArray(configuration);
 			int totalTests = getTotalTests(configuration);
 			boolean isAsync = getTestMode(configuration);
+			boolean isDebugging = isProjectDebugging(project);
 
 			// Get the test files in the selected project
 			Map<IResource, List<String>> testResources = findTestClasses(project);
 			if (runTestsView != null) {
 				// Run the tests and update UI
 				runTestsView.runTests(project, testResources, tests,
-						totalTests, isAsync, monitor);
+						totalTests, isAsync, isDebugging, monitor);
 			}
 		} finally {
 			removeLaunch(launch);
