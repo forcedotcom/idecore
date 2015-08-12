@@ -5,5 +5,9 @@ Bundle-SymbolicName: com.salesforce.ide.apex.core.test
 Bundle-Version: 35.0.0.qualifier
 Bundle-Vendor: salesforce.com
 Fragment-Host: com.salesforce.ide.apex.core;bundle-version="35.0.0"
+Require-Bundle: org.junit,
+ com.salesforce.ide.test.commonlibs
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: com.salesforce.ide.apex.core.utils
+Export-Package: com.salesforce.ide.apex.core,
+ com.salesforce.ide.apex.core.test,
+ com.salesforce.ide.apex.core.utils

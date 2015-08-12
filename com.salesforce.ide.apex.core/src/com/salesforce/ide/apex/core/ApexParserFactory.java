@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.core;
 
-import java.io.Reader;
+import java.util.regex.Matcher;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -31,9 +31,10 @@ import apex.jorje.services.exception.UnhandledException;
 public class ApexParserFactory {
     private static final Logger logger = Logger.getLogger(ApexParserFactory.class);
 
-    public static ApexParserImpl create(Reader reader) {
+    public static ApexParserImpl create(String inputString) {
         try {
-            CharStream stream = CaseInsensitiveReaderStream.create(reader);
+            String canonicalizedString = canonicalizeString(inputString);
+            CharStream stream = CaseInsensitiveReaderStream.create(canonicalizedString);
             ApexLexerImpl lexer = new ApexLexerImpl(stream);
             TokenStream tokenStream = new CommonTokenStream(lexer);
             return new ApexParserImpl(tokenStream);
@@ -42,16 +43,15 @@ public class ApexParserFactory {
         }
         return null;
     }
-
-    public static ApexParserImpl create(String inputString) {
-        try {
-            CharStream stream = CaseInsensitiveReaderStream.create(inputString);
-            ApexLexerImpl lexer = new ApexLexerImpl(stream);
-            TokenStream tokenStream = new CommonTokenStream(lexer);
-            return new ApexParserImpl(tokenStream);
-        } catch (UnhandledException ue) {
-            logger.error(ue);
-        }
-        return null;
+    
+    /**
+     * Canonicalizes \r\n and \r into \n.
+     * 
+     * @param inputString
+     * @return
+     */
+    public static String canonicalizeString(String inputString) {
+        String text = inputString.replaceAll("(\\r\\n|\\r)", Matcher.quoteReplacement("\n")); 
+        return text;
     }
 }

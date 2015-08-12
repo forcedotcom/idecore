@@ -31,8 +31,8 @@ import apex.jorje.data.Loc.RealLoc;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
-import apex.jorje.semantic.ast.member.FormalParameterNode;
 import apex.jorje.semantic.ast.member.Method;
+import apex.jorje.semantic.ast.member.Parameter;
 import apex.jorje.semantic.ast.statement.BlockStatement;
 import apex.jorje.semantic.ast.statement.ForEachStatement;
 import apex.jorje.semantic.ast.statement.ForLoopStatement;
@@ -59,6 +59,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.apex.internal.core.ApexModelManager;
+import com.salesforce.ide.apex.internal.core.EmptySymbolProvider;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanceMembersProcessorForLocals.LocalVariablesVisitor.LocalInfoWrapper;
@@ -203,7 +204,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
     protected void visitVariables(ITextViewer viewer) {
         IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
         SourceFile virtualSourceFile =
-                SourceFile.builder().setSource(viewer.getDocument().get())
+                SourceFile.builder().setBody(viewer.getDocument().get())
                         .setNamespace(apex.jorje.semantic.compiler.Namespace.EMPTY).build();
         Compilation compilation = getCompilationUnit(resource);
         ApexCompiler compiler =
@@ -211,7 +212,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
                         .builder()
                         .setInput(
                             new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
-                                    null, null)).build();
+                                    null, null, null)).build();
         SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler));
         visitor = new LocalVariablesVisitor();
         compilation.traverse(visitor, scope);
@@ -334,7 +335,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
          * This doesn't work for the parameters since FormalParameterNode doesn't produce a LocalInfo.
          */
         @Override
-        public boolean visit(FormalParameterNode node, SymbolScope scope) {
+        public boolean visit(Parameter node, SymbolScope scope) {
             return true;
         }
 

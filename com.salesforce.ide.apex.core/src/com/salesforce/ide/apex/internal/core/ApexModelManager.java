@@ -10,6 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.internal.core;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
 
@@ -24,11 +25,11 @@ import apex.jorje.semantic.ast.AstNodeFactory;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.compiler.Namespace;
 import apex.jorje.semantic.compiler.SourceFile;
-import apex.jorje.semantic.symbol.type.UserTypeInfo;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.io.CharStreams;
 import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.apex.core.exceptions.InvalidCompilationASTException;
 import com.salesforce.ide.apex.core.exceptions.InvalidCompilationUnitException;
@@ -55,12 +56,11 @@ public class ApexModelManager {
                 @Override
                 public CompilationUnit load(IFile file) throws InvalidCompilationUnitException {
                     try {
-                        ApexParserImpl parser = ApexParserFactory.create(new InputStreamReader(file.getContents()));
+                        String body = CharStreams.toString(new InputStreamReader(file.getContents()));
+                        ApexParserImpl parser = ApexParserFactory.create(body);
                         return parser.compilationUnit();
-                    } catch (CoreException ce) {
+                    } catch (CoreException | RecognitionException | IOException ce) {
                         throw new InvalidCompilationUnitException(ce);
-                    } catch (RecognitionException re) {
-                        throw new InvalidCompilationUnitException(re);
                     }
                 }
             });
@@ -74,12 +74,15 @@ public class ApexModelManager {
                 public Compilation load(IFile file) throws InvalidCompilationASTException {
                     try {
                         CompilationUnit compilationUnit = jadtCache.get(file);
+                        String body = "";
 
-                        // TODO: Maybe fill in the actual values since we can get them to make this a real source file
+                        try {
+                            body = ApexParserFactory.canonicalizeString(CharStreams.toString(new InputStreamReader(file.getContents())));
+                        } catch (CoreException | IOException e) {}
+
                         SourceFile virtualSourceFile =
-                                SourceFile.builder().setSource("").setNamespace(Namespace.EMPTY).build();
-
-                        return AstNodeFactory.create(virtualSourceFile, (UserTypeInfo) null, compilationUnit);
+                                SourceFile.builder().setBody(body).setNamespace(Namespace.EMPTY).build();
+                        return AstNodeFactory.create(virtualSourceFile, null, compilationUnit);
                     } catch (ExecutionException e) {
                         throw new InvalidCompilationASTException(e);
                     }

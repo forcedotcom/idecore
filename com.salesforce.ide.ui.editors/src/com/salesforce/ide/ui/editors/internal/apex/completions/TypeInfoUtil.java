@@ -14,9 +14,7 @@ import static com.google.common.collect.Iterables.filter;
 
 import java.util.Collection;
 
-import apex.jorje.semantic.symbol.type.CollectionTypeInfo;
-import apex.jorje.semantic.symbol.type.GenericTypeInfo2;
-import apex.jorje.semantic.symbol.type.MapTypeInfo;
+import apex.jorje.semantic.symbol.type.GenericTypeInfo;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 import apex.jorje.semantic.symbol.type.visitor.TypeInfoVisitor;
 
@@ -69,25 +67,8 @@ public class TypeInfoUtil {
         }
 
         @Override
-        public Collection<AbstractCompletionProposalDisplayable> visit(MapTypeInfo typeInfo) {
-            return suggestCompletions(typeInfo.getBasicType().toString());
-        }
-
-        /* 
-         * When you enter List<T> or Set<T>, you get this.
-         */
-        @Override
-        public Collection<AbstractCompletionProposalDisplayable> visit(CollectionTypeInfo typeInfo) {
-            return suggestCompletions(typeInfo.getBasicType().toString());
-        }
-
-        /*
-         * When you enter System.List<T> or System.Set<T>, you get this. 
-         * But, apparently, System.List<T> and System.Set<T> doesn't actually compile because we treat set, list and map as keywords.
-         */
-        @Override
-        public Collection<AbstractCompletionProposalDisplayable> visit(GenericTypeInfo2 typeInfo) {
-            return suggestCompletions(typeInfo.getDefiningType().getApexName());
+        public Collection<AbstractCompletionProposalDisplayable> visit(GenericTypeInfo typeInfo) {
+            return suggestCompletions(typeInfo.getUnreifiedType().getApexName());
         }
 
         private Collection<AbstractCompletionProposalDisplayable> suggestCompletions(String apexName) {

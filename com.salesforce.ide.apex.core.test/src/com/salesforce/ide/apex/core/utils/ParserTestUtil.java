@@ -22,7 +22,6 @@ import apex.jorje.semantic.ast.AstNodeFactory;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.compiler.Namespace;
 import apex.jorje.semantic.compiler.SourceFile;
-import apex.jorje.semantic.symbol.type.UserTypeInfo;
 
 import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.test.common.utils.IdeTestUtil;
@@ -77,8 +76,8 @@ public class ParserTestUtil {
     public static Compilation parseCompilationFromFile(String path) throws IOException, URISyntaxException,
             RecognitionException {
         CompilationUnit compilationUnit = parseCompilationUnitFromFile(path);
-        SourceFile virtualSourceFile = SourceFile.builder().setSource("").setNamespace(Namespace.EMPTY).build();
-        return AstNodeFactory.create(virtualSourceFile, (UserTypeInfo) null, compilationUnit);
+        SourceFile virtualSourceFile = SourceFile.builder().setBody("").setNamespace(Namespace.EMPTY).build();
+        return AstNodeFactory.create(virtualSourceFile, null, compilationUnit);
     }
 
     /*
@@ -96,7 +95,7 @@ public class ParserTestUtil {
     public static Compilation parseCompilationFromString(String contents) throws IOException, URISyntaxException,
             RecognitionException {
         CompilationUnit compilationUnit = parseCompilationUnitFromString(contents);
-        SourceFile virtualSourceFile = SourceFile.builder().setSource("").setNamespace(Namespace.EMPTY).build();
-        return AstNodeFactory.create(virtualSourceFile, (UserTypeInfo) null, compilationUnit);
+        SourceFile virtualSourceFile = SourceFile.builder().setBody("").setNamespace(Namespace.EMPTY).build();
+        return AstNodeFactory.create(virtualSourceFile, null, compilationUnit);
     }
 }

@@ -76,7 +76,8 @@ public class ApexParserRunnable implements ISafeRunnable {
 
     protected void parseCurrentEditorContents() throws Exception {
         // This uses the current contents of the file (before it is saved)
-        fParser = ApexParserFactory.create(this.apexReconcilingStrategy.fTextEditor.getText());
+        String text = this.apexReconcilingStrategy.fTextEditor.getText();
+        fParser = ApexParserFactory.create(text);
         fCompilationUnit = fParser.compilationUnit();
 
         refreshApexModelIfPossible();

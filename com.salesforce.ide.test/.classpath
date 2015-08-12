@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.salesforce.ide.upgrade.test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.salesforce.ide.ui.test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.salesforce.ide.ui.editors.test"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.salesforce.ide.apex.core.test"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

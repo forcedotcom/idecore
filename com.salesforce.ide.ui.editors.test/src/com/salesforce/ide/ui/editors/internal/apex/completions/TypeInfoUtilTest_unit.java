@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import apex.jorje.semantic.symbol.type.ApexTypeInfo;
-import apex.jorje.semantic.symbol.type.CollectionTypeInfo.ListTypeInfo;
-import apex.jorje.semantic.symbol.type.MapTypeInfo;
-import apex.jorje.semantic.symbol.type.TypeInfoFactory;
+import apex.jorje.semantic.symbol.type.GenericTypeInfo;
+import apex.jorje.semantic.symbol.type.GenericTypeInfoFactory;
+import apex.jorje.semantic.symbol.type.ScalarTypeInfo;
+import apex.jorje.semantic.symbol.type.TypeInfos;
 
 import com.google.common.collect.Lists;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
@@ -36,6 +36,7 @@ import com.salesforce.ide.ui.editors.internal.apex.completions.TypeInfoUtil.Syst
  * 
  */
 public class TypeInfoUtilTest_unit extends TestCase {
+
     private Completions completions;
 
     @Override
@@ -46,7 +47,7 @@ public class TypeInfoUtilTest_unit extends TestCase {
 
     @Test
     public void testHandleList() throws Exception {
-        ListTypeInfo listTypeInfo = TypeInfoFactory.createList(ApexTypeInfo.OBJECT);
+        GenericTypeInfo listTypeInfo = GenericTypeInfoFactory.createList(TypeInfos.OBJECT);
         SystemsInstanceMembersCompletionSuggestor suggestor =
                 new SystemsInstanceMembersCompletionSuggestor("add", completions);
 
@@ -61,23 +62,31 @@ public class TypeInfoUtilTest_unit extends TestCase {
 
     @Test
     public void testHandleMap() throws Exception {
-        MapTypeInfo mapTypeInfo = TypeInfoFactory.createMap(ApexTypeInfo.OBJECT, ApexTypeInfo.OBJECT);
+        GenericTypeInfo mapTypeInfo = GenericTypeInfoFactory.createMap(TypeInfos.OBJECT, TypeInfos.OBJECT);
         SystemsInstanceMembersCompletionSuggestor suggestor =
                 new SystemsInstanceMembersCompletionSuggestor("put", completions);
 
         List<AbstractCompletionProposalDisplayable> list = Lists.newArrayList(mapTypeInfo.accept(suggestor));
 
         assertEquals(3, list.size());
-        assertEquals("put(ANY,ANY) - String", list.get(0).getDisplayString());
+        assertEquals("put(ANY,ANY) - String", list.get(0).getDisplayString()); // FIXME: (Server) Why does the completions suggest put(ANY, ANY) returns String type?
         assertEquals("putAll(List) - void", list.get(1).getDisplayString());
         assertEquals("putAll(Map) - void", list.get(2).getDisplayString());
     }
 
     @Test
     @Ignore
-    public void _testHandleSet() throws Exception {
-        // For some reason, TypeInfoFactory doesn't have a convenience method for sets to convert them to CollectionTypeInfo
-        // Need to add that to jorje
+    public void testHandleSet() throws Exception {
+        GenericTypeInfo setTypeInfo = GenericTypeInfoFactory.createSet(TypeInfos.OBJECT);
+        SystemsInstanceMembersCompletionSuggestor suggestor =
+                new SystemsInstanceMembersCompletionSuggestor("add", completions);
+
+        List<AbstractCompletionProposalDisplayable> list = Lists.newArrayList(setTypeInfo.accept(suggestor));
+
+        assertEquals(3, list.size());
+        assertEquals("add(ANY) - Boolean", list.get(0).getDisplayString());
+        assertEquals("addAll(List) - Boolean", list.get(1).getDisplayString());
+        assertEquals("addAll(Set) - Boolean", list.get(2).getDisplayString());
     }
 
     @Test
@@ -85,7 +94,8 @@ public class TypeInfoUtilTest_unit extends TestCase {
         SystemsInstanceMembersCompletionSuggestor suggestor =
                 new SystemsInstanceMembersCompletionSuggestor("valueof", completions);
 
-        List<AbstractCompletionProposalDisplayable> list = Lists.newArrayList(ApexTypeInfo.STRING.accept(suggestor));
+        List<AbstractCompletionProposalDisplayable> list =
+                Lists.newArrayList(TypeInfos.STRING.accept(suggestor));
 
         assertEquals(0, list.size());
     }
@@ -95,7 +105,7 @@ public class TypeInfoUtilTest_unit extends TestCase {
         SystemsInstanceMembersCompletionSuggestor suggestor =
                 new SystemsInstanceMembersCompletionSuggestor("isa", completions);
 
-        List<AbstractCompletionProposalDisplayable> list = Lists.newArrayList(ApexTypeInfo.STRING.accept(suggestor));
+        List<AbstractCompletionProposalDisplayable> list = Lists.newArrayList(TypeInfos.STRING.accept(suggestor));
 
         assertEquals(7, list.size());
         assertEquals("isAllLowerCase() - Boolean", list.get(0).getDisplayString());
@@ -112,7 +122,7 @@ public class TypeInfoUtilTest_unit extends TestCase {
         SystemsInstanceMembersCompletionSuggestor suggestor =
                 new SystemsInstanceMembersCompletionSuggestor("isa", completions);
 
-        ApexTypeInfo mString = spy(ApexTypeInfo.STRING);
+        ScalarTypeInfo mString = spy(TypeInfos.STRING);
         doReturn("System.String").when(mString).getApexName();
         List<AbstractCompletionProposalDisplayable> list = Lists.newArrayList(mString.accept(suggestor));
 

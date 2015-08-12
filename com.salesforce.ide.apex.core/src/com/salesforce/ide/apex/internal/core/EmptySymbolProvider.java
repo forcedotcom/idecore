@@ -8,10 +8,11 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.editors.internal.apex.completions;
+package com.salesforce.ide.apex.internal.core;
 
 import apex.jorje.semantic.compiler.CodeUnit;
-import apex.jorje.semantic.compiler.SymbolProvider;
+import apex.jorje.semantic.compiler.Namespace;
+import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
 import apex.jorje.semantic.symbol.resolver.SymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
@@ -21,19 +22,18 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
  * @author nchen
  * 
  */
-class EmptySymbolProvider implements SymbolProvider {
-
+public class EmptySymbolProvider implements SymbolProvider {
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 
-    private EmptySymbolProvider() {}
+    private EmptySymbolProvider() {
+    }
 
     public static EmptySymbolProvider get() {
         return INSTANCE;
     }
 
     @Override
-    public void reportParsed(CodeUnit codeUnit) {
-
+    public void reportParsed(final CodeUnit codeUnit) {
     }
 
     @Override
@@ -42,26 +42,37 @@ class EmptySymbolProvider implements SymbolProvider {
     }
 
     @Override
-    public TypeInfo fetch(SymbolResolver symbols, String fullName) {
+    public TypeInfo fetch(final SymbolResolver resolver, final String fullName) {
         return null;
     }
 
     @Override
-    public TypeInfo getVfComponentType(SymbolResolver symbols, apex.jorje.semantic.compiler.Namespace namespace,
-            String name) {
+    public TypeInfo getVfComponentType(final SymbolResolver resolver, final Namespace namespace, final String name) {
         return null;
     }
 
     @Override
-    public TypeInfo getAuraComponentType(SymbolResolver symbols, apex.jorje.semantic.compiler.Namespace namespace,
-            String name) {
+    public TypeInfo getAuraComponentType(final SymbolResolver resolver, final Namespace namespace, final String name) {
         return null;
     }
 
     @Override
-    public TypeInfo getFlowInterviewType(SymbolResolver symbols, apex.jorje.semantic.compiler.Namespace namespace,
-            String name) {
+    public TypeInfo getFlowInterviewType(final SymbolResolver symbols, final Namespace namespace, final String name) {
         return null;
     }
 
+    @Override
+    public TypeInfo getSObjectType(final SymbolResolver symbols, final String name) {
+        return null;
+    }
+
+    @Override
+    public String getPageReference(final String name) {
+        return null;
+    }
+
+    @Override
+    public boolean hasLabelField(final Namespace namespace, final String name) {
+        return false;
+    }
 }
