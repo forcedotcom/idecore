@@ -13,6 +13,7 @@ package com.salesforce.ide.ui.views.runtest;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEFAULTS;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Before;
@@ -37,6 +39,7 @@ import org.eclipse.swt.widgets.*;
 
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.remote.tooling.RunTests;
+import com.sforce.soap.tooling.ApexLogLevel;
 
 import junit.framework.TestCase;
 
@@ -118,6 +121,55 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 	}
 	
 	@Test
+	public void testGetLogLevelsNullLogSettings() {
+		doCallRealMethod().when(mockedTab).getLogLevels();
+		mockedTab.logSettings = null;
+		
+		Map<String, String> logLevels = mockedTab.getLogLevels();
+		
+		assertNotNull(logLevels);
+		assertTrue(logLevels.isEmpty());
+	}
+	
+	@Test
+	public void testGetLogLevelsEmptyLogSettings() {
+		doCallRealMethod().when(mockedTab).getLogLevels();
+		mockedTab.logSettings = new LinkedHashMap<String, Combo>();
+		
+		Map<String, String> logLevels = mockedTab.getLogLevels();
+		
+		assertNotNull(logLevels);
+		assertTrue(logLevels.isEmpty());
+	}
+	
+	@Test
+	public void testGetLogLevelsNullComboBox() {
+		doCallRealMethod().when(mockedTab).getLogLevels();
+		mockedTab.logSettings = new LinkedHashMap<String, Combo>();
+		mockedTab.logSettings.put(RunTestsLaunchConfigurationTab.logCategories[0], null);
+		
+		Map<String, String> logLevels = mockedTab.getLogLevels();
+		
+		assertNotNull(logLevels);
+		assertTrue(logLevels.isEmpty());
+	}
+	
+	@Test
+	public void testGetLogLevels() {
+		doCallRealMethod().when(mockedTab).getLogLevels();
+		mockedTab.logSettings = new LinkedHashMap<String, Combo>();
+		Combo combo = mock(Combo.class);
+		when(combo.getText()).thenReturn(ApexLogLevel.DEBUG.name());
+		mockedTab.logSettings.put(RunTestsLaunchConfigurationTab.logCategories[0], combo);
+		
+		Map<String, String> logLevels = mockedTab.getLogLevels();
+		
+		assertNotNull(logLevels);
+		assertEquals(1, logLevels.size());
+		assertEquals(ApexLogLevel.DEBUG.name(), logLevels.get(RunTestsLaunchConfigurationTab.logCategories[0]));
+	}
+	
+	@Test
 	public void testCreateControlWithNullParentComposite() {
 		doCallRealMethod().when(mockedTab).createControl(null);
 		
@@ -125,6 +177,7 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		
 		verify(mockedTab, never()).createComposite(null, SWT.NONE);
 		verify(mockedTab, never()).createSingleTestEditor(null);
+		verify(mockedTab, never()).createLogEditor(null);
 		verify(mockedTab, never()).createTestModeEditor(null);
 	}
 	
@@ -192,9 +245,8 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		mockedTab.projectText = projectText;
 		when(projectText.getText()).thenReturn("");
 		
-		Button classButton = mock(Button.class);
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.classButton = classButton;
-		doNothing().when(classButton).setEnabled(false);
 		
 		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
 		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
@@ -214,9 +266,8 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		mockedTab.classText = classText;
 		when(classText.getText()).thenReturn("");
 		
-		Button testMethodButton = mock(Button.class);
+		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.testMethodButton = testMethodButton;
-		doNothing().when(testMethodButton).setEnabled(false);
 		
 		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
 		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
@@ -225,6 +276,102 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		mockedTab.resetSelectedTestMethod();
 		
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(Messages.GenericTab_AllMethods), eq(defaultGray));
+	}
+	
+	@Test
+	public void testShouldEnableLevelsNullLogStatus() {
+		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
+		mockedTab.logStatus = null;
+		
+		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
+		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
+		mockedTab.logSettings = logSettings;
+		
+		mockedTab.shouldEnableLevels(true);
+		
+		verify(combo, never()).setEnabled(true);
+	}
+	
+	@Test
+	public void testShouldEnableLevelsNullLogSettings() {
+		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
+		Button logStatus = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.logStatus = logStatus;
+		
+		mockedTab.logSettings = null;
+		
+		mockedTab.shouldEnableLevels(true);
+		
+		verify(logStatus, never()).setSelection(true);
+	}
+	
+	@Test
+	public void testShouldEnableLevels() {
+		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
+		Button logStatus = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.logStatus = logStatus;
+		
+		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
+		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
+		mockedTab.logSettings = logSettings;
+		
+		mockedTab.shouldEnableLevels(true);
+		
+		verify(logStatus, times(1)).setSelection(true);
+		verify(combo, times(1)).setEnabled(true);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSetLogLevelsNoneProvided() {
+		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
+		
+		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
+		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
+		mockedTab.logSettings = logSettings;
+		
+		mockedTab.setLogLevels(null);
+		
+		verify(combo, never()).setText(any(String.class));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSetLogLevelsUnsupportedCategory() {
+		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
+		
+		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
+		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
+		mockedTab.logSettings = logSettings;
+		
+		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		logLevels.put("nope", ApexLogLevel.DEBUG.name());
+		
+		mockedTab.setLogLevels(logLevels);
+		
+		verify(combo, never()).setText(ApexLogLevel.DEBUG.name());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSetLogLevelsSupportedCategory() {
+		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
+		
+		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
+		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
+		mockedTab.logSettings = logSettings;
+		
+		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		logLevels.put(RunTestsLaunchConfigurationTab.logCategories[7], ApexLogLevel.DEBUG.name());
+		
+		mockedTab.setLogLevels(logLevels);
+		
+		verify(combo, times(1)).setText(ApexLogLevel.DEBUG.name());
 	}
 	
 	@Test
@@ -304,8 +451,7 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 	public void testHandleProjectButtonDifferentProjectSelectedForTheFirstTime() {
 		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
 		
-		Button classButton = mock(Button.class);
-		doNothing().when(classButton).setEnabled(true);
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.classButton = classButton;
 		
 		String newProject = "NewProject";
@@ -345,8 +491,7 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 	public void testHandleProjectButtonDifferentProjectSelectedBefore() {
 		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
 		
-		Button classButton = mock(Button.class);
-		doNothing().when(classButton).setEnabled(true);
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.classButton = classButton;
 		
 		String newProject = "NewProject";
@@ -386,8 +531,7 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 	public void testHandleProjectButtonSameProject() {
 		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
 		
-		Button classButton = mock(Button.class);
-		doNothing().when(classButton).setEnabled(true);
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.classButton = classButton;
 		
 		String projectName = "MyProject";
@@ -464,8 +608,7 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		
 		doNothing().when(mockedTab).resetSelectedTestMethod();
 		
-		Button testMethodButton = mock(Button.class);
-		doNothing().when(testMethodButton).setEnabled(true);
+		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.testMethodButton = testMethodButton;
 		
 		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
@@ -496,8 +639,7 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		
 		doNothing().when(mockedTab).resetSelectedTestMethod();
 		
-		Button testMethodButton = mock(Button.class);
-		doNothing().when(testMethodButton).setEnabled(true);
+		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.testMethodButton = testMethodButton;
 		
 		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
@@ -764,15 +906,20 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		when(mockedTab.convertTestsToJson(any(RunTests.class))).thenReturn("testsGalore");
 		when(mockedTab.countTotalTests(any(RunTests.class))).thenReturn(5);
 		when(mockedTab.isTestModeAsync()).thenReturn(true);
+		when(mockedTab.isLoggingEnabled()).thenReturn(true);
+		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		when(mockedTab.getLogLevels()).thenReturn(logLevels);
 		
 		mockedTab.performApply(config);
 		
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "MyProject");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "MyClass");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "MyMethod");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_ARRAY, "testsGalore");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_FORCECOM_TESTS_TOTAL, 5);
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "MyProject");
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_CLASS, "MyClass");
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_METHOD, "MyMethod");
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TESTS_ARRAY, "testsGalore");
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TESTS_TOTAL, 5);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, true);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_LOG_LEVELS, logLevels);
 	}
 	
 	@Test
@@ -785,20 +932,17 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		String methodName = "MyMethod";
 		boolean isAsync = false;
 		
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "")).thenReturn(projectName);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "")).thenReturn(className);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "")).thenReturn(methodName);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true)).thenReturn(isAsync);
+		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "")).thenReturn(methodName);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(isAsync);
 		
-		Button projectButton = mock(Button.class);
-		doNothing().when(projectButton).setEnabled(any(Boolean.class));
+		Button projectButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.projectButton = projectButton;
-		Button classButton = mock(Button.class);
-		doNothing().when(classButton).setEnabled(any(Boolean.class));
-		mockedTab.classButton = projectButton;
-		Button testMethodButton = mock(Button.class);
-		doNothing().when(testMethodButton).setEnabled(any(Boolean.class));
-		mockedTab.testMethodButton = projectButton;
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.classButton = classButton;
+		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.testMethodButton = testMethodButton;
 		
 		Text projectText = mock(Text.class);
 		when(projectText.getText()).thenReturn("");
@@ -817,14 +961,15 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		
 		mockedTab.initializeFrom(config);
 		
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(projectName), eq(normalBlack));
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(className), eq(normalBlack));
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(methodName), eq(normalBlack));
 		verify(mockedTab, times(1)).selectAsync(isAsync);
+		verify(mockedTab, never()).buildTestsForProject(any(IProject.class));
 	}
 	
 	@Test
@@ -837,20 +982,17 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		String methodName = "MyMethod";
 		boolean isAsync = false;
 		
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "")).thenReturn(projectName);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "")).thenReturn(className);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "")).thenReturn(methodName);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true)).thenReturn(isAsync);
+		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "")).thenReturn(methodName);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(isAsync);
 		
-		Button projectButton = mock(Button.class);
-		doNothing().when(projectButton).setEnabled(any(Boolean.class));
+		Button projectButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.projectButton = projectButton;
-		Button classButton = mock(Button.class);
-		doNothing().when(classButton).setEnabled(any(Boolean.class));
-		mockedTab.classButton = projectButton;
-		Button testMethodButton = mock(Button.class);
-		doNothing().when(testMethodButton).setEnabled(any(Boolean.class));
-		mockedTab.testMethodButton = projectButton;
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.classButton = classButton;
+		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.testMethodButton = testMethodButton;
 		
 		Text projectText = mock(Text.class);
 		when(projectText.getText()).thenReturn("");
@@ -874,10 +1016,10 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		
 		mockedTab.initializeFrom(config);
 		
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(projectName), eq(normalBlack));
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(className), eq(normalBlack));
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(methodName), eq(normalBlack));
@@ -895,21 +1037,22 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		String className = "MyClass";
 		String methodName = "MyMethod";
 		boolean isAsync = false;
+		boolean isLoggingEnabled = true;
+		Map<String, String> logLevels = new LinkedHashMap<String, String>();
 		
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "")).thenReturn(projectName);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "")).thenReturn(className);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "")).thenReturn(methodName);
-		when(config.getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true)).thenReturn(isAsync);
+		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "")).thenReturn(methodName);
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(isAsync);
+		when(config.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false)).thenReturn(isLoggingEnabled);
+		when(config.getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap())).thenReturn(logLevels);
 		
-		Button projectButton = mock(Button.class);
-		doNothing().when(projectButton).setEnabled(any(Boolean.class));
+		Button projectButton = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.projectButton = projectButton;
-		Button classButton = mock(Button.class);
-		doNothing().when(classButton).setEnabled(any(Boolean.class));
-		mockedTab.classButton = projectButton;
-		Button testMethodButton = mock(Button.class);
-		doNothing().when(testMethodButton).setEnabled(any(Boolean.class));
-		mockedTab.testMethodButton = projectButton;
+		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.classButton = classButton;
+		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
+		mockedTab.testMethodButton = testMethodButton;
 		
 		Text projectText = mock(Text.class);
 		when(projectText.getText()).thenReturn("");
@@ -934,15 +1077,19 @@ public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
 		
 		mockedTab.initializeFrom(config);
 		
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_PROJECT_NAME, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_CLASS, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_METHOD, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_FORCECOM_TEST_MODE, true);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "");
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap());
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(projectName), eq(normalBlack));
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(className), eq(normalBlack));
 		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(methodName), eq(normalBlack));
-		verify(mockedTab, times(1)).selectAsync(isAsync);
 		verify(mockedTab, times(1)).buildTestsForProject(project);
+		verify(mockedTab, times(1)).selectAsync(isAsync);
+		verify(mockedTab, times(1)).shouldEnableLevels(isLoggingEnabled);
+		verify(mockedTab, times(1)).setLogLevels(logLevels);
 		assertEquals(1, allTests.size());
 		assertEquals(rt, mockedTab.currentSelectedTests);
 	}

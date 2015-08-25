@@ -38,6 +38,8 @@ public class RunTestsSyncResponse {
 	private List<RunTestsSyncCodeCoverage> codeCoverage = new ArrayList<RunTestsSyncCodeCoverage>();
 	@JsonProperty("numFailures")
 	private int numFailures;
+	@JsonProperty("apexLogId")
+	private String apexLogId;
 
 	@JsonCreator
 	public RunTestsSyncResponse(
@@ -47,7 +49,8 @@ public class RunTestsSyncResponse {
 			@JsonProperty("codeCoverageWarnings") List<RunTestsSyncCodeCoverageWarning> codeCoverageWarnings,
 			@JsonProperty("numTestsRun") int numTestsRun,
 			@JsonProperty("codeCoverage") List<RunTestsSyncCodeCoverage> codeCoverage,
-			@JsonProperty("numFailures") int numFailures) {
+			@JsonProperty("numFailures") int numFailures,
+			@JsonProperty("apexLogId") String apexLogId) {
 		this.successes = successes;
 		this.failures = failures;
 		this.totalTime = totalTime;
@@ -55,6 +58,7 @@ public class RunTestsSyncResponse {
 		this.numTestsRun = numTestsRun;
 		this.codeCoverage = codeCoverage;
 		this.numFailures = numFailures;
+		this.apexLogId = apexLogId;
 	}
 
 	/**
@@ -189,5 +193,24 @@ public class RunTestsSyncResponse {
 	@JsonProperty("numFailures")
 	public void setNumFailures(int numFailures) {
 		this.numFailures = numFailures;
+	}
+	
+	/**
+	 * 
+	 * @return The apexLogId
+	 */
+	@JsonProperty("apexLogId")
+	public String getApexLogId() {
+		return apexLogId;
+	}
+	
+	/**
+	 * 
+	 * @param apexLogId
+	 *            The apexLogId
+	 */
+	@JsonProperty("apexLogId")
+	public void setApexLogId(String apexLogId) {
+		this.apexLogId = apexLogId;
 	}
 }

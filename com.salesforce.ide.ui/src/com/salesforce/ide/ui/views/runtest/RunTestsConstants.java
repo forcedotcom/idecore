@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2015 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,25 +27,28 @@ public class RunTestsConstants {
 	public static final int SYNC_WITH_DEBUG_TIMEOUT = 3_600_000; // 1 hour
 	
 	// Launch config attributes
-	public static final String ATTR_FORCECOM_PROJECT_NAME = "forceComProjectName";
-	public static final String ATTR_FORCECOM_TESTS_ARRAY = "testsArray";
-	public static final String ATTR_FORCECOM_TESTS_TOTAL = "testsTotal";
-	public static final String ATTR_FORCECOM_TEST_MODE = "isAsync";
-	public static final String ATTR_FORCECOM_TEST_CLASS = "forceComTestClass";
-	public static final String ATTR_FORCECOM_TEST_METHOD = "forceComTestMethod";
+	public static final String ATTR_PROJECT_NAME = "forceComProjectName";
+	public static final String ATTR_TESTS_ARRAY = "testsArray";
+	public static final String ATTR_TESTS_TOTAL = "testsTotal";
+	public static final String ATTR_TEST_MODE = "isAsync";
+	public static final String ATTR_TEST_CLASS = "forceComTestClass";
+	public static final String ATTR_TEST_METHOD = "forceComTestMethod";
+	public static final String ATTR_ENABLE_LOGGING = "enableLogging";
+	public static final String ATTR_LOG_LEVELS = "logLevels";
 	
     // Keys used to store data in Eclipse widgets
-    public static final String TREEDATA_TEST_RESULT = "ApexTestResult";
     public static final String TREEDATA_CODE_LOCATION = "ApexCodeLocation";
     public static final String TREEDATA_APEX_LOG = "ApexLog";
+    public static final String TREEDATA_APEX_LOG_ID = "ApexLog";
     public static final String TREEDATA_APEX_LOG_USER_DEBUG = "ApexLogUserDebug";
     public static final String TREEDATA_APEX_LOG_BODY = "ApexLogBody";
     public static final String TREEDATA_TEST_METHOD_LOCS = "ApexTestMethodCodeLocations";
+    public static final String TREEDATA_RESULT_MESSAGE = "ApexTestResultMessage";
+    public static final String TREEDATA_RESULT_STACKTRACE = "ApexTestResultStacktrace";
     public static final String TABLE_CODE_COV_RESULT = "AllCodeCov";
     public static final String TABLE_CODE_COV_COL_DIR = "OneColumnDirection";
     
     // Tooling API queries
-    public static final String QUERY_USER_ID = "SELECT Id, Username FROM User WHERE Username = '%s'";
     public static final String QUERY_TESTRESULT_COUNT = "SELECT COUNT(Id) FROM ApexTestResult WHERE AsyncApexJobId = '%s'";
     public static final String QUERY_TESTRESULT = "SELECT ApexClassId, ApexClass.Name, ApexLogId, AsyncApexJobId, Message, "
 			+ "MethodName, Outcome, QueueItemId, StackTrace, TestTimestamp "
@@ -73,4 +76,9 @@ public class RunTestsConstants {
     public static final int FAILURE_COLOR = SWT.COLOR_RED;
     public static final int WARNING_COLOR = SWT.COLOR_DARK_YELLOW;
     public static final int PASS_COLOR = SWT.COLOR_DARK_GREEN;
+    
+    // TraceFlags
+    public static final String DEBUG_LEVEL_NAME = "SFDC_Eclipse_ApexTest_";
+    public static final int TF_LENGTH_MINS = 5;
+    public static final int TF_INTERVAL_MINS = 4;
 }

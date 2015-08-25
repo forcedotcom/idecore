@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2015 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,13 +41,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.salesforce.ide.core.internal.utils.LoggingInfo;
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.core.services.LoggingService;
-import com.salesforce.ide.ui.views.LoggingComposite;
 import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovComparators;
 import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovResult;
-import com.sforce.soap.metadata.LogInfo;
 
 /**
  * The UI manager for Apex Test Results view. All this does is generate and
@@ -70,7 +66,6 @@ public class RunTestsViewComposite extends Composite {
     private String progressText = "%d out of %d tests finished";
     protected RunTestsView runView = null;
     protected IProject project = null;
-    private LoggingComposite loggingComposite = null;
 
     public RunTestsViewComposite(Composite parent, int style, RunTestsView view) {
         super(parent, style);
@@ -105,7 +100,7 @@ public class RunTestsViewComposite extends Composite {
      */
     private void createLeftHandComposite() {
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 5;
+        gridLayout.numColumns = 4;
         Composite leftHandComposite = new Composite(sashForm, SWT.NONE);
         leftHandComposite.setLayout(gridLayout);
         
@@ -119,11 +114,6 @@ public class RunTestsViewComposite extends Composite {
             	clearAll();
             }
         });
-        
-        // Logging controls
-        loggingComposite =
-                new LoggingComposite(leftHandComposite, runView.getLoggingService(), SWT.NONE, false,
-                        LoggingInfo.SupportedFeatureEnum.RunTest);
         
         // Test results tree
         GridData gridData1 = new GridData();
@@ -391,7 +381,6 @@ public class RunTestsViewComposite extends Composite {
 
     public void enableComposite() {
         btnClear.setEnabled(true);
-        loggingComposite.enable(runView.getProject());
     }
 
     public IProject getProject() {
@@ -439,13 +428,5 @@ public class RunTestsViewComposite extends Composite {
     		codeCovArea.removeAll();
     		codeCovArea.clearAll();
     	}
-    }
-    
-    public LogInfo[] getLogInfoAndType() {
-    	if (Utils.isNotEmpty(loggingComposite)) {
-    		LoggingService loggingService = runView.getLoggingService();
-    		return loggingService.getAllLogInfo(project, LoggingInfo.SupportedFeatureEnum.RunTest);
-    	}
-    	return null;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2015 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ public class Messages extends NLS {
     public static String GenericTab_EmptyProjectErrorMessage;
     public static String GenericTab_InvalidForceProjectErrorMessage;
     public static String GenericTab_NonExistingProjectErrorMessage;
-    public static String GenericTab_BrowseButtonText;
     public static String GenericTab_SearchButtonText;
     public static String GenericTab_ProjectGroupTitle;
     public static String GenericTab_AllClasses;
@@ -39,17 +38,26 @@ public class Messages extends NLS {
     public static String RunTestsTab_RunAsync;
     public static String RunTestsTab_RunSync;
     public static String RunTestsTab_TooManyTestClassesForSyncErrorMessage;
-
+    public static String RunTestsTab_LogGroupTitle;
+    public static String RunTestsTab_LogEnableLogging;
+    public static String RunTestsTab_LogCategoryDatabase;
+    public static String RunTestsTab_LogCategoryWorkflow;
+    public static String RunTestsTab_LogCategoryValidation;
+    public static String RunTestsTab_LogCategoryCallout;
+    public static String RunTestsTab_LogCategoryApexCode;
+    public static String RunTestsTab_LogCategoryApexProfiling;
+    public static String RunTestsTab_LogCategoryVisualforce;
+    public static String RunTestsTab_LogCategorySystem;
+    
+    public static String RunTestsLaunchConfigurationDelegate_ConfirmDialogTitle;
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage;
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig;
     public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging;
-    public static String RunTestsLaunchConfigurationDelegate_Continue;
-    public static String RunTestsLaunchConfigurationDelegate_Abort;
-    public static String LaunchConfigurationDelegate_CannotLaunchInvalidForceProject;
+    public static String RunTestsLaunchConfigurationDelegate_ExistingTraceFlag;
+    public static String RunTestsLaunchConfigurationDelegate_CannotLaunchInvalidForceProject;
     
     public static String RunTestView_Name;
     public static String RunTestView_Clear;
-    public static String RunTestView_Rerun;
     public static String RunTestView_StackTrace;
     public static String RunTestView_SystemLog;
     public static String RunTestView_UserLog;
@@ -58,6 +66,10 @@ public class Messages extends NLS {
     public static String RunTestView_CodeCoverageClass;
     public static String RunTestView_CodeCoveragePercent;
     public static String RunTestView_CodeCoverageLines;
+    public static String RunTestsView_ErrorStartingTestsTitle;
+    public static String RunTestsView_ErrorStartingTestsSolution;
+    public static String RunTestsView_ErrorGetAsyncTestResultsTitle;
+    public static String RunTestsView_ErrorGetAsyncTestResultsSolution;
 
     static {
         // initialize resource bundle
