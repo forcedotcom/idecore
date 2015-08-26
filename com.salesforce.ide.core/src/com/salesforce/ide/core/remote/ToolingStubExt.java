@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
 import com.sforce.soap.tooling.DeleteResult;
+import com.sforce.soap.tooling.DescribeGlobalResult;
+import com.sforce.soap.tooling.DescribeSObjectResult;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SObject;
 import com.sforce.soap.tooling.SaveResult;
@@ -131,5 +133,29 @@ public class ToolingStubExt {
             ForceExceptionUtils.throwTranslatedException(e, connection);
         }
         return saveResults;
+    }
+    
+    public DescribeGlobalResult describeGlobal() throws ForceRemoteException {
+    	DescribeGlobalResult describeResult = null;
+    	
+    	try {
+    		describeResult = toolingConnection.describeGlobal();
+		} catch (ConnectionException e) {
+			ForceExceptionUtils.throwTranslatedException(e, connection);
+		}
+    	
+    	return describeResult;
+    }
+    
+    public DescribeSObjectResult describe(String entityName) throws ForceRemoteException {
+    	DescribeSObjectResult describeResult = null;
+    	
+    	try {
+    		describeResult = toolingConnection.describeSObject(entityName);
+		} catch (ConnectionException e) {
+			ForceExceptionUtils.throwTranslatedException(e, connection);
+		}
+    	
+    	return describeResult;
     }
 }
