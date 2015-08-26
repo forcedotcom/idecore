@@ -102,9 +102,12 @@ public class RunTestsView extends BaseViewPart {
     
     private static RunTestsView INSTANCE = null;
     
-    protected ReentrantLock lock = new ReentrantLock();
-    protected ForceProject forceProject = null;
-    protected ToolingStubExt toolingStubExt = null;
+    @VisibleForTesting
+    public ReentrantLock lock = new ReentrantLock();
+    @VisibleForTesting
+    public ForceProject forceProject = null;
+    @VisibleForTesting
+    public ToolingStubExt toolingStubExt = null;
     
     private RunTestsViewComposite runTestComposite = null;
     private IProject project = null;
@@ -262,7 +265,7 @@ public class RunTestsView extends BaseViewPart {
      * Do some UI prep work
      */
     @VisibleForTesting
-    protected void prepareForRunningTests() {
+	public void prepareForRunningTests() {
     	Display display = PlatformUI.getWorkbench().getDisplay();
     	display.syncExec(new Runnable() {
 			@Override
@@ -279,7 +282,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @return ForceProject
 	 */
     @VisibleForTesting
-    protected ForceProject materializeForceProject(IProject project) {
+	public ForceProject materializeForceProject(IProject project) {
 		if (Utils.isEmpty(project) || !project.exists())
             return null;
 
@@ -293,7 +296,7 @@ public class RunTestsView extends BaseViewPart {
      * @param forceProject
      */
     @VisibleForTesting
-    protected TraceFlagUtil getTraceFlagUtil(ForceProject forceProject) {
+	public TraceFlagUtil getTraceFlagUtil(ForceProject forceProject) {
     	return new TraceFlagUtil(forceProject);
     }
 	
@@ -306,7 +309,7 @@ public class RunTestsView extends BaseViewPart {
 	 * The test results if valid sync run. Null otherwise.
 	 */
     @VisibleForTesting
-	protected String enqueueTests(String testsInJson, boolean isAsync, boolean isDebugging) {
+	public String enqueueTests(String testsInJson, boolean isAsync, boolean isDebugging) {
 		String response = null;
 		
 		if (Utils.isEmpty(forceProject)) {
@@ -343,7 +346,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @return Timeout value
 	 */
     @VisibleForTesting
-	protected int getConnTimeoutVal(boolean isAsync, boolean isDebugging) {
+	public int getConnTimeoutVal(boolean isAsync, boolean isDebugging) {
 		return (isAsync ? RunTestsConstants.ASYNC_TIMEOUT : 
 			(isDebugging ? RunTestsConstants.SYNC_WITH_DEBUG_TIMEOUT : 
 				RunTestsConstants.SYNC_WITHOUT_DEBUG_TIMEOUT));
@@ -356,7 +359,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @return Promiseable job
 	 */
     @VisibleForTesting
-	protected PromiseableJob<String> getRunTestsCommand(String testsInJson, boolean isAsync) {
+	public PromiseableJob<String> getRunTestsCommand(String testsInJson, boolean isAsync) {
 		return new RunTestsCommand(new HTTPAdapter<>(
 				String.class, new RunTestsTransport(toolingRESTConnection, isAsync), HTTPMethod.POST), testsInJson);
 	}
@@ -369,7 +372,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @return List of ApexTestResult
 	 */
     @VisibleForTesting
-	protected List<ApexTestResult> getTestResults(String testRunId, final int totalTestMethods, IProgressMonitor monitor) {
+	public List<ApexTestResult> getTestResults(String testRunId, final int totalTestMethods, IProgressMonitor monitor) {
 		List<ApexTestResult> testResults = Lists.newArrayList();
 		if (Utils.isEmpty(forceProject) || Utils.isEmpty(testRunId)) return testResults;
 		testRunId = testRunId.replace("\"", "");
@@ -446,7 +449,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @see Limit.java
 	 */
     @VisibleForTesting
-	protected Limit getApiLimit(ForceProject forceProject, LimitsCommand.Type type) {
+	public Limit getApiLimit(ForceProject forceProject, LimitsCommand.Type type) {
 		try {
 			initializeConnection(forceProject);
 			
@@ -479,7 +482,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @return A poll interval
 	 */
     @VisibleForTesting
-	protected int getPollInterval(int totalTestRemaining, float apiRequestsRemaining) {
+	public int getPollInterval(int totalTestRemaining, float apiRequestsRemaining) {
 		int intervalA = RunTestsConstants.POLL_SLOW, intervalB = RunTestsConstants.POLL_SLOW;
 		
 		if (totalTestRemaining <= 10) {
@@ -508,7 +511,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @param cur
 	 */
     @VisibleForTesting
-	protected void updateProgress(final int min, final int max, final int cur) {
+	public void updateProgress(final int min, final int max, final int cur) {
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(new Runnable(){
 			@Override
@@ -525,7 +528,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @param testRunId
 	 */
     @VisibleForTesting
-	protected boolean abortTestRun(String testRunId) {
+	public boolean abortTestRun(String testRunId) {
 		if (Utils.isEmpty(forceProject) || Utils.isEmpty(testRunId)) {
 			return false;
 		}
@@ -570,7 +573,7 @@ public class RunTestsView extends BaseViewPart {
      * @param testResults
      */
     @VisibleForTesting
-	protected void processAsyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, 
+	public void processAsyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, 
     		final List<ApexTestResult> testResults) {
     	if (Utils.isEmpty(project) || Utils.isEmpty(testResources) || Utils.isEmpty(testResults)) {
 			return;
@@ -626,7 +629,7 @@ public class RunTestsView extends BaseViewPart {
      * @param testResults
      */
     @VisibleForTesting
-	protected void processSyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, final RunTestsSyncResponse testResults) {
+	public void processSyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, final RunTestsSyncResponse testResults) {
     	if (Utils.isEmpty(project) || Utils.isEmpty(testResources) || Utils.isEmpty(testResults)) {
 			return;
 		}
@@ -696,7 +699,7 @@ public class RunTestsView extends BaseViewPart {
      * from ApexOrgWideCoverage & ApexCodeCoverageAgg
      */
     @VisibleForTesting
-    protected void displayAsyncCodeCoverage() {
+	public void displayAsyncCodeCoverage() {
     	if (Utils.isEmpty(forceProject) || Utils.isEmpty(runTestComposite)) return;
     	
     	Display display = PlatformUI.getWorkbench().getDisplay();
@@ -743,7 +746,7 @@ public class RunTestsView extends BaseViewPart {
      * @param testResults
      */
     @VisibleForTesting
-    protected void displaySyncCodeCoverage(final RunTestsSyncResponse testResults) {
+	public void displaySyncCodeCoverage(final RunTestsSyncResponse testResults) {
     	if ( Utils.isEmpty(runTestComposite)) return;
     	
     	Display display = PlatformUI.getWorkbench().getDisplay();
@@ -1246,7 +1249,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @throws ForceRemoteException
 	 */
     @VisibleForTesting
-	protected void initializeConnection(ForceProject forceProject) throws ForceConnectionException, ForceRemoteException {
+	public void initializeConnection(ForceProject forceProject) throws ForceConnectionException, ForceRemoteException {
 		toolingRESTConnection = new HTTPConnection(forceProject, RunTestsConstants.TOOLING_ENDPOINT);
         toolingRESTConnection.initialize();
         toolingStubExt = ContainerDelegate.getInstance().getFactoryLocator().getToolingFactory().getToolingStubExt(forceProject);
@@ -1260,7 +1263,7 @@ public class RunTestsView extends BaseViewPart {
      * @throws ForceRemoteException
      */
 	@VisibleForTesting
-	protected void initializeConnection(ForceProject forceProject, int timeout) throws ForceConnectionException, ForceRemoteException {
+	public void initializeConnection(ForceProject forceProject, int timeout) throws ForceConnectionException, ForceRemoteException {
 		toolingRESTConnection = new HTTPConnection(forceProject, RunTestsConstants.TOOLING_ENDPOINT, timeout);
         toolingRESTConnection.initialize();
         toolingStubExt = ContainerDelegate.getInstance().getFactoryLocator().getToolingFactory().getToolingStubExt(forceProject);

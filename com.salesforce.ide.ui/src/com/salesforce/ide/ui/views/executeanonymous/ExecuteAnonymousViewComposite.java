@@ -76,6 +76,7 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
     protected StyledText txtUserDebugLogs = null;
     private static final int DEFAULT_PROJ_SELECTION = 0;
     protected IResourceChangeListener resourceListener = null;
+    protected IProject selectedProject = null;
     private static final Logger logger = Logger.getLogger(ExecuteAnonymousView.class);
 
     Color color = new Color(Display.getCurrent(), 240, 240, 240);
@@ -259,7 +260,8 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
                     List<IProject> projects = (List<IProject>) tmpCboProject.getData();
                     if (Utils.isNotEmpty(projects)) {
                         int selectionIndex = ((Combo) e.widget).getSelectionIndex();
-                        IProject selectedProject = projects.get(selectionIndex);
+                        // Save selected project
+                        selectedProject = projects.get(selectionIndex);
                         if (selectedProject != null) {
                             setActiveProject(selectedProject);
                         }
@@ -275,6 +277,11 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         });
     }
 
+    /**
+     * Update the combo box and ExecuteAnonymousController
+     * with the selected project
+     * @param project
+     */
     public void setActiveProject(IProject project) {
         if (project == null) {
             project = getFirstProject();
@@ -377,8 +384,8 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
 
     private void loadProjects(List<IProject> projects) {
         if (projectCombo.getItemCount() > 0)
-            projectCombo.removeAll();
-
+        	projectCombo.removeAll();
+        
         projectCombo.setData(projects);
         Collections.sort(projects, new Comparator<IProject>() {
             @Override
@@ -391,22 +398,33 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
             projectCombo.add(project.getName());
         }
 
-        projectCombo.select(DEFAULT_PROJ_SELECTION);
+        // Stay on the selected project even though we've
+        // updated the list of active projects
+        setActiveProject(selectedProject);
         projectCombo.setEnabled(true);
         
         // Sets the width of the combo box to the width of the longest string
         // Layouts everything
         projectAndLoggingContainerComposite.pack();
         projectAndLoggingContainerComposite.layout(true,true);
-
-        enableComposite(true);
     }
 
+    /**
+     * Remove the project from the combo box and 
+     * select first item in project list.
+     */
     private void updateProjectComboProjectRemoved(final IProject project) {
         UIJob job = new UIJob("Update Exec Anon Projects Combo") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                 if (projectCombo.getItemCount() > 0 && ArrayUtils.contains(projectCombo.getItems(), project.getName())) {
+                	/*
+                	 * When user selects a project in workspace to remove,
+                	 * the combo box is updated to that project. So, after
+                	 * we actually remove that project, we should
+                	 * select the first item in the project combo. If there
+                	 * is none, then disable the composite.
+                	 */
                     projectCombo.remove(project.getName());
                     if (projectCombo.getItemCount() > 0) {
                         projectCombo.select(DEFAULT_PROJ_SELECTION);
@@ -423,6 +441,11 @@ public class ExecuteAnonymousViewComposite extends BaseComposite {
         job.schedule();
     }
 
+    /**
+     * Refresh the list of active projects, update
+     * the combo box, and stay on the already selected
+     * project
+     */
     private void updateProjectComboProjectedAdded() {
         UIJob job = new UIJob("Update Exec Anon Projects Combo") {
             @Override

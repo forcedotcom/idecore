@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.ui.views.runtest;
+package com.salesforce.ide.ui.views.runtest.test;
 
 import junit.framework.Test;
 

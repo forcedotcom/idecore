@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.ui.views.runtest;
+package com.salesforce.ide.ui.views.runtest.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -41,6 +41,8 @@ import com.salesforce.ide.core.remote.tooling.Limit;
 import com.salesforce.ide.core.remote.tooling.LimitsCommand;
 import com.salesforce.ide.core.remote.tooling.RunTestsSyncResponse;
 import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
+import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
+import com.salesforce.ide.ui.views.runtest.RunTestsView;
 import com.sforce.soap.tooling.AggregateResult;
 import com.sforce.soap.tooling.ApexLogLevel;
 import com.sforce.soap.tooling.ApexTestQueueItem;

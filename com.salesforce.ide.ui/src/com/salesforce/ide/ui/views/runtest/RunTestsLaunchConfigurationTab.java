@@ -68,7 +68,8 @@ import com.sforce.soap.tooling.ApexLogLevel;
  */
 public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 	
-	protected static final String[] logCategories = new String[] { 
+	@VisibleForTesting
+	public static final String[] logCategories = new String[] { 
 		Messages.RunTestsTab_LogCategoryDatabase,
 		Messages.RunTestsTab_LogCategoryWorkflow,
 		Messages.RunTestsTab_LogCategoryValidation,
@@ -91,27 +92,41 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
 		}
 	}
 	
-	protected Map<IProject, RunTests> allTests;
-	protected RunTests currentSelectedTests;
+	@VisibleForTesting
+	public Map<IProject, RunTests> allTests;
+	@VisibleForTesting
+	public RunTests currentSelectedTests;
 	
 	// Widgets for labels, input fields, buttons
 	private Label projectLabel;
-	protected Text projectText;
-	protected Button projectButton;
+	@VisibleForTesting
+	public Text projectText;
+	@VisibleForTesting
+	public Button projectButton;
     private Label classLabel;
-    protected Text classText;
-    protected Button classButton;
+    @VisibleForTesting
+    public Text classText;
+    @VisibleForTesting
+    public Button classButton;
     private Label testMethodLabel;
-    protected Text testMethodText;
-    protected Button testMethodButton;
-    protected Button testAsyncButton;
-    protected Button testSyncButton;
-    protected Button logStatus;
-    protected LinkedHashMap<String, Combo> logSettings;
+    @VisibleForTesting
+    public Text testMethodText;
+    @VisibleForTesting
+    public Button testMethodButton;
+    @VisibleForTesting
+    public Button testAsyncButton;
+    @VisibleForTesting
+    public Button testSyncButton;
+    @VisibleForTesting
+    public Button logStatus;
+    @VisibleForTesting
+    public LinkedHashMap<String, Combo> logSettings;
     
-    // Default colors 
-    protected Color defaultGray;
-    protected Color normalBlack;
+    // Default colors
+    @VisibleForTesting
+    public Color defaultGray;
+    @VisibleForTesting
+    public Color normalBlack;
     
     private final ApexTestsUtils sourceLookup = ApexTestsUtils.INSTANCE;
 
@@ -126,32 +141,32 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
     }
     
     @VisibleForTesting
-    protected String getProjectName() {
+	public String getProjectName() {
         return (Utils.isEmpty(projectText) ? "" : projectText.getText());
     }
     
     @VisibleForTesting
-    protected String getTestClassName() {
+	public String getTestClassName() {
     	return (Utils.isEmpty(classText) ? "": classText.getText());
     }
     
     @VisibleForTesting
-    protected String getTestMethodName() {
+	public String getTestMethodName() {
     	return (Utils.isEmpty(testMethodText) ? "" : testMethodText.getText());
     }
     
     @VisibleForTesting
-    protected boolean isTestModeAsync() {
+	public boolean isTestModeAsync() {
     	return (Utils.isNotEmpty(testAsyncButton) && testAsyncButton.isEnabled() && testAsyncButton.getSelection()) ? true : false;
     }
     
     @VisibleForTesting
-    protected boolean isLoggingEnabled() {
+	public boolean isLoggingEnabled() {
     	return (Utils.isNotEmpty(logStatus) && logStatus.getSelection());
     }
     
     @VisibleForTesting
-    protected Map<String, String> getLogLevels() {
+	public Map<String, String> getLogLevels() {
     	Map<String, String> logLevels = new LinkedHashMap<String, String>();
     	
     	if (Utils.isEmpty(logSettings)) {
@@ -175,7 +190,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
     }
     
     @VisibleForTesting
-    protected Composite createComposite(Composite parent, int style) {
+	public Composite createComposite(Composite parent, int style) {
     	return new Composite(parent, style);
     }
     
@@ -209,7 +224,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      *   The Composite widget to hold all the labels, input fields, buttons, etc.
      */
     @VisibleForTesting
-    protected void createSingleTestEditor(Composite parent) {
+	public void createSingleTestEditor(Composite parent) {
     	Group runSingleTestGroup = createGroup(parent, SWT.NONE);
     	runSingleTestGroup.setText(Messages.RunTestsTab_TabGroupTitle);
     	runSingleTestGroup.setLayout(new GridLayout(3, false));
@@ -223,7 +238,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * log categories, and log levels.
      */
     @VisibleForTesting
-    protected void createLogEditor(Composite parent) {
+	public void createLogEditor(Composite parent) {
     	Group logGroup = createGroup(parent, SWT.NONE);
     	logGroup.setText(Messages.RunTestsTab_LogGroupTitle);
     	logGroup.setLayout(new GridLayout(4, true));
@@ -277,7 +292,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * modes.
      */
     @VisibleForTesting
-    protected void createTestModeEditor(Composite parent) {
+	public void createTestModeEditor(Composite parent) {
     	Group testModeGroup = createGroup(parent, SWT.NONE);
     	testModeGroup.setText(Messages.RunTestsTab_ModeGroupTitle);
     	testModeGroup.setLayout(new GridLayout(2, false));
@@ -469,7 +484,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return Text widget
      */
     @VisibleForTesting
-    protected Text setTextProperties(Text text, String defaultText, Color defaultColor) {
+	public Text setTextProperties(Text text, String defaultText, Color defaultColor) {
     	if (Utils.isEmpty(text)) return null;
     	
     	text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -488,7 +503,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      *   to default strings (all classes) (all methods). False otherwise.
      */
     @VisibleForTesting
-    protected boolean shouldEnableBasedOnText(String text) {
+	public boolean shouldEnableBasedOnText(String text) {
     	return StringUtils.isNotBlank(text) && !text.equals(Messages.GenericTab_AllClasses)
     			&& !text.equals(Messages.GenericTab_AllMethods);
     }
@@ -497,7 +512,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * Set the search class button to its defaults.
      */
     @VisibleForTesting
-    protected void resetSelectedTestClass() {
+	public void resetSelectedTestClass() {
     	setTextProperties(classText, Messages.GenericTab_AllClasses, defaultGray);
     	classButton.setEnabled(shouldEnableBasedOnText(projectText.getText()));
     }
@@ -506,7 +521,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * Set the search method button to its defaults.
      */
     @VisibleForTesting
-    protected void resetSelectedTestMethod() {
+	public void resetSelectedTestMethod() {
     	setTextProperties(testMethodText, Messages.GenericTab_AllMethods, defaultGray);
     	testMethodButton.setEnabled(shouldEnableBasedOnText(classText.getText()));
     }
@@ -516,7 +531,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @param shouldEnable
      */
     @VisibleForTesting
-    protected void shouldEnableLevels(boolean shouldEnable) {
+	public void shouldEnableLevels(boolean shouldEnable) {
     	if (Utils.isEmpty(logStatus) || Utils.isEmpty(logSettings)) {
     		return;
     	}
@@ -533,7 +548,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @param logLevels
      */
     @VisibleForTesting
-    protected void setLogLevels(Map<String, String> logLevels) {
+	public void setLogLevels(Map<String, String> logLevels) {
     	if (Utils.isEmpty(logLevels)) {
     		return;
     	}
@@ -552,7 +567,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * project is chosen.
      */
     @VisibleForTesting
-    protected void handleProjectButtonSelected() {
+	public void handleProjectButtonSelected() {
     	IProject selectedProject = chooseProject();
 
         if (Utils.isEmpty(selectedProject)) return;
@@ -581,7 +596,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return IProject
      */
     @VisibleForTesting
-    protected IProject chooseProject() {
+	public IProject chooseProject() {
     	// Get all projects in workspace
         ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new LabelProvider() {
             @Override
@@ -631,7 +646,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return RunTests POJO
      */
     @VisibleForTesting
-    protected RunTests buildTestsForProject(IProject project) {
+	public RunTests buildTestsForProject(IProject project) {
     	RunTests rt = new RunTests();
     	List<Test> testClasses = new ArrayList<Test>();
     	
@@ -678,7 +693,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return RunTests
      */
     @VisibleForTesting
-    protected RunTests buildTestsForConfig(IProject selectedProject) {
+	public RunTests buildTestsForConfig(IProject selectedProject) {
     	/*
     	 * Clone the original RunTests because the following logic
     	 * will filter out unwanted test classes/methods. We need to maintain the
@@ -727,7 +742,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return JSON string
      */
     @VisibleForTesting
-    protected String convertTestsToJson(RunTests rt) {
+	public String convertTestsToJson(RunTests rt) {
     	String result = "";
     	ObjectMapper mapper = new ObjectMapper();
     	try {
@@ -743,7 +758,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return Total test methods
      */
     @VisibleForTesting
-    protected int countTotalTests(RunTests rt) {
+	public int countTotalTests(RunTests rt) {
     	int total = 0;
     	
     	if (rt != null) {
@@ -763,7 +778,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * when test class is chosen.
      */
     @VisibleForTesting
-    protected void handleClassButtonSelected() {
+	public void handleClassButtonSelected() {
     	String selectedTestClass = chooseTestClass();
     	
     	if (StringUtils.isBlank(selectedTestClass) || Utils.isEmpty(classText)) {
@@ -786,7 +801,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return Name of test class
      */
     @VisibleForTesting
-    protected String chooseTestClass() {
+	public String chooseTestClass() {
     	// Display the test classes in dialog
     	ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new LabelProvider() {
             @Override
@@ -820,7 +835,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * appropriate widgets when test method is chosen.
      */
     @VisibleForTesting
-    protected void handleTestMethodButtonSelected() {
+	public void handleTestMethodButtonSelected() {
     	String selectedTestMethod = chooseTestMethod();
     	
     	if (StringUtils.isEmpty(selectedTestMethod) || Utils.isEmpty(testMethodText)) {
@@ -837,7 +852,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return Name of test method
      */
     @VisibleForTesting
-    protected String chooseTestMethod() {
+	public String chooseTestMethod() {
     	// We already got test methods earlier so just display the ones
     	// for previously specified test class
     	List<String> testMethodNames = new ArrayList<String>();
@@ -878,7 +893,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @param isAsync
      */
     @VisibleForTesting
-    protected void selectAsync(boolean isAsync) {
+	public void selectAsync(boolean isAsync) {
     	if (Utils.isEmpty(testAsyncButton) || Utils.isEmpty(testSyncButton)) {
     		return;
     	}
@@ -900,7 +915,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return True if all is okay. False otherwise.
      */
     @VisibleForTesting
-    protected boolean validatePage() {
+	public boolean validatePage() {
         // Reset the messages first to a clean slate
         setErrorMessage(null);
         setMessage(null);
@@ -913,7 +928,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return True if all is okay. False otherwise.
      */
     @VisibleForTesting
-    protected boolean validateProjectSelection() {
+	public boolean validateProjectSelection() {
         if (getProjectName() == null || getProjectName().length() == 0) {
             setErrorMessage(Messages.GenericTab_EmptyProjectErrorMessage);
             return false;
@@ -940,7 +955,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return True if all is okay. False otherwise.
      */
     @VisibleForTesting
-    protected boolean validateTestModeSelection() {
+	public boolean validateTestModeSelection() {
     	/*
     	 * Some rules regarding Apex test modes:
     	 * 
@@ -979,7 +994,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return IProject
      */
     @VisibleForTesting
-    protected IProject getProjectFromName() {
+	public IProject getProjectFromName() {
     	String projectName = getProjectName();
     	if (StringUtils.isNotBlank(projectName)) {
     		return ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);

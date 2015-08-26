@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.ui.views.runtest;
+package com.salesforce.ide.ui.views.runtest.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -39,6 +39,9 @@ import org.eclipse.swt.widgets.*;
 
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.remote.tooling.RunTests;
+import com.salesforce.ide.ui.views.runtest.Messages;
+import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
+import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTab;
 import com.sforce.soap.tooling.ApexLogLevel;
 
 import junit.framework.TestCase;

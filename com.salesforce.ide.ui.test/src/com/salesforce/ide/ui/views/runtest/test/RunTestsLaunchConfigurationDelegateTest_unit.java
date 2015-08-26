@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.ui.views.runtest;
+package com.salesforce.ide.ui.views.runtest.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -39,6 +39,10 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.salesforce.ide.ui.views.runtest.Messages;
+import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
+import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationDelegate;
+import com.salesforce.ide.ui.views.runtest.RunTestsView;
 import com.sforce.soap.tooling.ApexLogLevel;
 import com.sforce.soap.tooling.LogCategory;
 

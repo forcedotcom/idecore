@@ -28,6 +28,6 @@ public class AllUnitTests extends SimpleTestSuite {
         addTest(new com.salesforce.ide.ui.actions.AllUnitTests());
         addTest(new com.salesforce.ide.ui.packagemanifest.AllUnitTests());
         addTest(new com.salesforce.ide.ui.views.log.AllUnitTests());
-        addTest(new com.salesforce.ide.ui.views.runtest.AllUnitTests());
+        addTest(new com.salesforce.ide.ui.views.runtest.test.AllUnitTests());
     }
 }

@@ -103,7 +103,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	}
 	
 	@VisibleForTesting
-	protected boolean secondPhasePreLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
+	public boolean secondPhasePreLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
@@ -143,7 +143,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	}
 	
 	@VisibleForTesting
-	protected void throwErrorMsg(String msg) throws CoreException {
+	public void throwErrorMsg(String msg) throws CoreException {
 		if (Utils.isNotEmpty(msg)) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, ForceIdeCorePlugin.PLUGIN_ID, 0, msg, null));
@@ -151,19 +151,19 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	}
 	
 	@VisibleForTesting
-	protected boolean isProjectDebugging(IProject project) {
+	public boolean isProjectDebugging(IProject project) {
 		return DebugListener.isDebugging(project);
 	}
 	
 	@VisibleForTesting
-	protected void checkMode(String mode) throws CoreException {
+	public void checkMode(String mode) throws CoreException {
 		if (!mode.equals(ILaunchManager.RUN_MODE)) {
 			throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage);
 		}
 	}
 	
 	@VisibleForTesting
-	protected IProject materializeForceProject(ILaunchConfiguration configuration) throws CoreException {
+	public IProject materializeForceProject(ILaunchConfiguration configuration) throws CoreException {
 		String forceProjectName = getProjectName(configuration);
 		IProject project = getProjectFromName(forceProjectName);
 
@@ -175,45 +175,45 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
     }
 	
 	@VisibleForTesting
-	protected String getProjectName(ILaunchConfiguration configuration) throws CoreException {
+	public String getProjectName(ILaunchConfiguration configuration) throws CoreException {
         return configuration.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
     }
 	
 	@VisibleForTesting
-	protected IProject getProjectFromName(String name) {
+	public IProject getProjectFromName(String name) {
         return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
     }
 	
 	@VisibleForTesting
-	protected String getTestsArray(ILaunchConfiguration configuration) throws CoreException {
+	public String getTestsArray(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_TESTS_ARRAY, "");
 	}
 	
 	@VisibleForTesting
-	protected int getTotalTests(ILaunchConfiguration configuration) throws CoreException {
+	public int getTotalTests(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_TESTS_TOTAL, 0);
 	}
 	
 	@VisibleForTesting
-	protected boolean getTestMode(ILaunchConfiguration configuration) throws CoreException {
+	public boolean getTestMode(ILaunchConfiguration configuration) throws CoreException {
 		// Async = true, sync = false
 		return configuration.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
 	}
 	
 	@VisibleForTesting
-	protected boolean shouldEnableLogging(ILaunchConfiguration configuration) throws CoreException {
+	public boolean shouldEnableLogging(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
 	}
 	
 	@VisibleForTesting
-	protected void disableLogging(ILaunchConfiguration configuration) throws CoreException {
+	public void disableLogging(ILaunchConfiguration configuration) throws CoreException {
 		ILaunchConfigurationWorkingCopy realConfig = configuration.getWorkingCopy();
 		realConfig.setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
 		realConfig.doSave();
 	}
 	
 	@VisibleForTesting
-	protected Map<LogCategory, ApexLogLevel> getLogLevels(ILaunchConfiguration configuration) throws CoreException {
+	public Map<LogCategory, ApexLogLevel> getLogLevels(ILaunchConfiguration configuration) throws CoreException {
 		Map<LogCategory, ApexLogLevel> finalLogLevels = new LinkedHashMap<LogCategory, ApexLogLevel>();
 		
 		if (Utils.isEmpty(configuration)) {
@@ -249,22 +249,22 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	}
 	
 	@VisibleForTesting
-	protected RunTestsView getRunTestView() {
+	public RunTestsView getRunTestView() {
 		return RunTestsView.getInstance();
 	}
 	
 	@VisibleForTesting
-	protected Display getDisplay() {
+	public Display getDisplay() {
 		return PlatformUI.getWorkbench().getDisplay();
 	}
 	
 	@VisibleForTesting
-	protected Map<IResource, List<String>> findTestClasses(IProject project) {
+	public Map<IResource, List<String>> findTestClasses(IProject project) {
 		return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
 	}
 	
 	@VisibleForTesting
-	protected void removeLaunch(ILaunch launch) {
+	public void removeLaunch(ILaunch launch) {
 		DebugPlugin.getDefault().getLaunchManager().removeLaunch(launch);
 	}
 	
@@ -273,7 +273,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
      * @return False if abort, true if continue
      */
 	@VisibleForTesting
-    protected boolean confirmAsyncTestRunWhileDebugging() {
+	public boolean confirmAsyncTestRunWhileDebugging() {
     	Display display = getDisplay();
     	final AtomicInteger choice = new AtomicInteger(0);
     	
@@ -295,7 +295,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
      * @return False if abort, true if continue
      */
 	@VisibleForTesting
-    protected boolean confirmExistingTraceFlag() {
+	public boolean confirmExistingTraceFlag() {
     	Display display = getDisplay();
     	final AtomicInteger choice = new AtomicInteger(0);
     	
@@ -318,7 +318,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
      * @param mode
      */
     @VisibleForTesting
-	protected void reopenLaunchConfig(final ILaunchConfiguration configuration, final String mode) {
+	public void reopenLaunchConfig(final ILaunchConfiguration configuration, final String mode) {
 		if (Utils.isNotEmpty(configuration) && Utils.isNotEmpty(mode)) {
 			Display display = getDisplay();
 			display.asyncExec(new Runnable() {

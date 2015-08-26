@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.ui.views.runtest;
+package com.salesforce.ide.ui.views.runtest.test;
 
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
@@ -18,6 +18,9 @@ import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.junit.Test;
+
+import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTab;
+import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTabGroup;
 
 public class RunTestsLaunchConfigurationTabGroupTest_unit extends TestCase {
 
