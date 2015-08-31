@@ -260,10 +260,10 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
     	});
     	
     	String[] logLevels = new String[] { ApexLogLevel.NONE.name(),
-				ApexLogLevel.FINEST.name(), ApexLogLevel.FINER.name(),
-				ApexLogLevel.FINE.name(), ApexLogLevel.DEBUG.name(),
-				ApexLogLevel.INFO.name(), ApexLogLevel.WARN.name(),
-				ApexLogLevel.ERROR.name()};
+    			ApexLogLevel.ERROR.name(), ApexLogLevel.WARN.name(),
+    			ApexLogLevel.INFO.name(), ApexLogLevel.DEBUG.name(),
+    			ApexLogLevel.FINE.name(), ApexLogLevel.FINER.name(),
+    			ApexLogLevel.FINEST.name()};
     	
     	logSettings = new LinkedHashMap<String, Combo>();
     	

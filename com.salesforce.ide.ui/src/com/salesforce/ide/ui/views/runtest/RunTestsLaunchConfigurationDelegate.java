@@ -66,31 +66,28 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			// Only allow one run at a time
 			if (!runTestsView.canRun()) {
 				throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig);
-			}
-			
-			IProject project = materializeForceProject(configuration);
-			// Check if user has an Apex Debugging session and wants to run tests asynchronously
-			boolean isAsync = getTestMode(configuration);
-			boolean isDebugging = isProjectDebugging(project);
-			if (isDebugging && isAsync) {
-				// If yes, inform user that asynchronous Apex tests are not debuggable.
-				if (!confirmAsyncTestRunWhileDebugging()) {
-					// If they want to abort, re-open the launch configuration
-					reopenLaunchConfig(configuration, mode);
-					return false;
+			} else {
+				IProject project = materializeForceProject(configuration);
+				// Check if user has an Apex Debugging session and wants to run tests asynchronously
+				boolean isAsync = getTestMode(configuration);
+				boolean isDebugging = isProjectDebugging(project);
+				if (isDebugging && isAsync) {
+					// If yes, inform user that asynchronous Apex tests are not debuggable.
+					if (!confirmAsyncTestRunWhileDebugging()) {
+						// If they want to abort, re-open the launch configuration
+						reopenLaunchConfig(configuration, mode);
+						return false;
+					}
 				}
-			}
-			
-			boolean shouldEnableLogging = shouldEnableLogging(configuration);
-			if (shouldEnableLogging) {
-				// Check for existing Trace Flags that would hinder with
-				// the new one
+				
+				boolean shouldCreateTraceFlag = shouldCreateTraceFlag(configuration);
 				boolean hasExistingTraceFlag = runTestsView.hasExistingTraceFlag(project);
-				if (hasExistingTraceFlag) {
-					if (confirmExistingTraceFlag()) {
-						// If they want to continue, disable logging and proceed
-						disableLogging(configuration);
-					} else {
+				setExistingTraceFlag(configuration, hasExistingTraceFlag);
+				
+				if (shouldCreateTraceFlag && hasExistingTraceFlag) {
+					// Check for existing Trace Flags that would hinder with
+					// the new one
+					if (!confirmExistingTraceFlag()) {
 						// If they want to abort, re-open the launch configuration
 						reopenLaunchConfig(configuration, mode);
 						return false;
@@ -124,9 +121,10 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 				int totalTests = getTotalTests(configuration);
 				boolean isAsync = getTestMode(configuration);
 				boolean isDebugging = isProjectDebugging(project);
-				boolean shouldEnableLogging = shouldEnableLogging(configuration);
+				boolean shouldCreateTraceFlag = shouldCreateTraceFlag(configuration);
+				boolean hasExistingTraceFlag = hasExistingTraceFlag(configuration);
 				@SuppressWarnings("unchecked")
-				Map<LogCategory, ApexLogLevel> logLevels = (Map<LogCategory, ApexLogLevel>) (shouldEnableLogging ? getLogLevels(configuration)
+				Map<LogCategory, ApexLogLevel> logLevels = (Map<LogCategory, ApexLogLevel>) (shouldCreateTraceFlag ? getLogLevels(configuration)
 						: Collections.emptyMap());
 
 				// Get the test files in the selected project
@@ -134,7 +132,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 
 				// Run the tests and update UI
 				runTestsView.runTests(project, testResources, tests,
-						totalTests, isAsync, isDebugging, shouldEnableLogging,
+						totalTests, isAsync, isDebugging, hasExistingTraceFlag, shouldCreateTraceFlag,
 						logLevels, monitor);
 			}
 		} finally {
@@ -201,14 +199,18 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	}
 	
 	@VisibleForTesting
-	public boolean shouldEnableLogging(ILaunchConfiguration configuration) throws CoreException {
+	public boolean shouldCreateTraceFlag(ILaunchConfiguration configuration) throws CoreException {
 		return configuration.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
 	}
 	
+	private boolean hasExistingTraceFlag(ILaunchConfiguration configuration) throws CoreException {
+		return configuration.getAttribute(RunTestsConstants.ATTR_EXISTING_TF, false);
+	}
+	
 	@VisibleForTesting
-	public void disableLogging(ILaunchConfiguration configuration) throws CoreException {
+	public void setExistingTraceFlag(ILaunchConfiguration configuration, boolean existing) throws CoreException {
 		ILaunchConfigurationWorkingCopy realConfig = configuration.getWorkingCopy();
-		realConfig.setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
+		realConfig.setAttribute(RunTestsConstants.ATTR_EXISTING_TF, existing);
 		realConfig.doSave();
 	}
 	
@@ -280,7 +282,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
     	display.syncExec(new Runnable() {
 			@Override
 			public void run() {
-				choice.set(DialogUtils.getInstance().abortContinueMessage(
+				choice.set(DialogUtils.getInstance().cancelContinueMessage(
 						Messages.RunTestsLaunchConfigurationDelegate_ConfirmDialogTitle, 
 						Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging, 
 						MessageDialog.WARNING));
@@ -302,7 +304,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
     	display.syncExec(new Runnable() {
 			@Override
 			public void run() {
-				choice.set(DialogUtils.getInstance().abortContinueMessage(
+				choice.set(DialogUtils.getInstance().cancelContinueMessage(
 						Messages.RunTestsLaunchConfigurationDelegate_ConfirmDialogTitle, 
 						Messages.RunTestsLaunchConfigurationDelegate_ExistingTraceFlag, 
 						MessageDialog.INFORMATION));

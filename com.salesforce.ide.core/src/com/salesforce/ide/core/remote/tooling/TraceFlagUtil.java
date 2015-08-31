@@ -131,7 +131,7 @@ public class TraceFlagUtil {
 					debugLevelId = srs[0].getId();
 					logger.info(String.format("Created DebugLevel %s", debugLevelId));
 				} else {
-					logger.error(String.format("Failed to create DebugLevel: %s", srs[0].getErrors().toString()));
+					logger.error(String.format("Failed to create DebugLevel: %s", srs[0].getErrors()[0].toString()));
 				}
 			} else {
 				logger.error("SaveResult is empty");
@@ -177,7 +177,7 @@ public class TraceFlagUtil {
 					traceFlagId = srs[0].getId();
 					logger.info(String.format("Created TraceFlag %s", traceFlagId));
 				} else {
-					logger.error(String.format("Failed to create TraceFlag: %s", srs[0].getErrors().toString()));
+					logger.error(String.format("Failed to create TraceFlag: %s", srs[0].getErrors()[0].toString()));
 				}
 			} else {
 				logger.error("SaveResult[] is empty");
@@ -217,15 +217,10 @@ public class TraceFlagUtil {
 				if (drs[0].isSuccess()) {
 					logger.info(String.format("Deleted TraceFlag %s", traceFlagId));
 				} else {
-					logger.error(String.format("Failed to delete TraceFlag %s: ", traceFlagId, drs[0].getErrors()[0].toString()));
+					logger.error(String.format("Failed to delete TraceFlag %s: %s", traceFlagId, drs[0].getErrors()[0].toString()));
 				}
 			} else {
 				logger.error("DeleteResult[] is empty");
-			}
-			for (DeleteResult dr : drs) {
-				if (!dr.isSuccess()) {
-					logger.error(String.format("Failed to delete: ", dr.getErrors()[0].toString()));
-				}
 			}
 		} catch (ForceConnectionException | ForceRemoteException e) {
 			logger.error("Failed to connect to Tooling API", e);
@@ -249,7 +244,7 @@ public class TraceFlagUtil {
 				if (drs[0].isSuccess()) {
 					logger.info(String.format("Deleted DebugLevel %s", debugLevelId));
 				} else {
-					logger.error(String.format("Failed to delete DebugLevel %s: ", debugLevelId, drs[0].getErrors()[0].toString()));
+					logger.error(String.format("Failed to delete DebugLevel %s: %s", debugLevelId, drs[0].getErrors()[0].toString()));
 				}
 			} else {
 				logger.error("DeleteResult[] is empty");

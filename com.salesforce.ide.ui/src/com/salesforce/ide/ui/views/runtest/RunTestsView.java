@@ -13,6 +13,7 @@ package com.salesforce.ide.ui.views.runtest;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +115,7 @@ public class RunTestsView extends BaseViewPart {
     private HTTPConnection toolingRESTConnection = null;
     private ISelectionListener fPostSelectionListener = null;
     private TraceFlagUtil tfUtil = null;
+    private boolean shouldCreateTraceFlag = false;
     
     public RunTestsView() {
         super();
@@ -189,8 +191,8 @@ public class RunTestsView extends BaseViewPart {
      * @param monitor
      */
     public void runTests(final IProject project, Map<IResource, List<String>> testResources, 
-    		String testsInJson, int totalTestMethods, boolean isAsync, boolean isDebugging, 
-    		boolean shouldEnableLogging, Map<LogCategory, ApexLogLevel> logLevels, IProgressMonitor monitor) {
+    		String testsInJson, int totalTestMethods, boolean isAsync, boolean isDebugging, boolean hasExistingTraceFlag,
+    		boolean shouldCreateTraceFlag, Map<LogCategory, ApexLogLevel> logLevels, IProgressMonitor monitor) {
     	
     	lock.lock();
     	
@@ -206,9 +208,11 @@ public class RunTestsView extends BaseViewPart {
     	
     	try {
     		prepareForRunningTests();
+    		this.shouldCreateTraceFlag = shouldCreateTraceFlag;
     		
-    		// Set user TraceFlag if launch config enabled logging
-        	if (shouldEnableLogging) {
+    		// Set user TraceFlag if launch config enabled logging and there isn't
+    		// an existing TraceFlag
+        	if (this.shouldCreateTraceFlag && !hasExistingTraceFlag) {
         		String userName = forceProject.getUserName();
             	String userId = tfUtil.getUserId(userName);
             	debugLevelId = tfUtil.insertDebugLevel(RunTestsConstants.DEBUG_LEVEL_NAME + System.currentTimeMillis(), logLevels);
@@ -251,8 +255,8 @@ public class RunTestsView extends BaseViewPart {
             	}
         	}
     	} finally {
-    		// Clean up TraceFlag if launch config enabled logging
-    		if (shouldEnableLogging) {
+    		// Clean up TraceFlag if it was created
+    		if (this.shouldCreateTraceFlag && !hasExistingTraceFlag) {
     			tfUtil.removeTraceFlagJobs();
     			tfUtil.deleteTraceflagAndDebugLevel(traceFlagId, debugLevelId);
     		}
@@ -768,6 +772,9 @@ public class RunTestsView extends BaseViewPart {
 					ccResults.add(new CodeCovResult(className, percent, linesCovered, total));
 				}
 				
+				// The code coverage in the response from /runTestsSynchronous is not in alphabetical order
+				// so we have to sort it
+				Collections.sort(ccResults, CodeCovComparators.CLASSNAME_ASC);
 				runTestComposite.setCodeCoverage(ccResults);
 				
 				for (RunTestsSyncCodeCoverageWarning warning : testResults.getCodeCoverageWarnings()) {
@@ -798,10 +805,10 @@ public class RunTestsView extends BaseViewPart {
 		newClassNode.setText(className);
 		
 		// Save the associated file in the tree item
-		IFile testFile = (IFile) testResource;
-		if (Utils.isNotEmpty(testFile)) {
-			// For test classes, always point to the first line of the file
-			ApexCodeLocation location = new ApexCodeLocation(testFile, 1, 1);
+		if (Utils.isNotEmpty(testResource)) {
+			// For test classes, point to the class declaratio. Fallback to the first
+			// line & column
+			ApexCodeLocation location = findTestClass(testResource);
 			newClassNode.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, location);
 			Map<String, ApexCodeLocation> testMethodLocs = findTestMethods(testResource);
 			if (testMethodLocs != null && testMethodLocs.size() > 0) {
@@ -851,6 +858,10 @@ public class RunTestsView extends BaseViewPart {
     	if (worseThanPass || worseThanWarning) {
     		setColorAndIconForNode(node, outcome);
     	}
+    }
+    
+    private ApexCodeLocation findTestClass(IResource resource) {
+    	return ApexTestsUtils.INSTANCE.findTestClassLocInFile(resource);
     }
     
     private Map<String, ApexCodeLocation> findTestMethods(IResource resource) {
@@ -1029,15 +1040,15 @@ public class RunTestsView extends BaseViewPart {
     	String apexLogId = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_APEX_LOG_ID);
     	String errorMessage = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_RESULT_MESSAGE);
     	String stackTrace = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_RESULT_STACKTRACE);
-    	
+    	    	
     	// Check which tab is in focus so we can update lazily
     	if (selectedTab.equals(Messages.RunTestView_StackTrace)) {
     		// Stack trace only exists in a test failure
     		showStackTrace(errorMessage, stackTrace);
-    	} else if (selectedTab.equals(Messages.RunTestView_SystemLog)) {
+    	} else if (this.shouldCreateTraceFlag && selectedTab.equals(Messages.RunTestView_SystemLog)) {
     		String apexLog = tryToGetApexLog(selectedTreeItem, apexLogId);
     		showSystemLog(apexLog);
-    	} else if (selectedTab.equals(Messages.RunTestView_UserLog)) {
+    	} else if (this.shouldCreateTraceFlag && selectedTab.equals(Messages.RunTestView_UserLog)) {
     		String apexLog = tryToGetApexLog(selectedTreeItem, apexLogId);
     		showUserLog(selectedTreeItem, apexLog);
     	}

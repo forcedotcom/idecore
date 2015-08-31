@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,26 +108,11 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		boolean expectedEnableLogging = true;
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		when(configuration.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false)).thenReturn(expectedEnableLogging);
-		when(mockedDelegate.shouldEnableLogging(configuration)).thenCallRealMethod();
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenCallRealMethod();
 		
-		boolean actualEnableLogging = mockedDelegate.shouldEnableLogging(configuration);
+		boolean actualEnableLogging = mockedDelegate.shouldCreateTraceFlag(configuration);
 		
 		assertEquals(expectedEnableLogging, actualEnableLogging);
-	}
-	
-	@Test
-	public void testDisableLogging() throws Exception {
-		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
-		ILaunchConfigurationWorkingCopy workingCopy = mock(ILaunchConfigurationWorkingCopy.class);
-		doNothing().when(workingCopy).setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
-		when(workingCopy.doSave()).thenReturn(configuration);
-		when(configuration.getWorkingCopy()).thenReturn(workingCopy);
-		doCallRealMethod().when(mockedDelegate).disableLogging(configuration);
-		
-		mockedDelegate.disableLogging(configuration);
-		
-		verify(workingCopy, times(1)).setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
-		verify(workingCopy, times(1)).doSave();
 	}
 	
 	@Test
@@ -314,6 +298,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(true);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(true);
 		when(mockedDelegate.confirmAsyncTestRunWhileDebugging()).thenReturn(true);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(false);
+		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(false);
+		doNothing().when(mockedDelegate).setExistingTraceFlag(configuration, false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
 		boolean prelaunchResult = mockedDelegate.preLaunchCheck(configuration, mode, monitor);
@@ -326,6 +313,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).confirmAsyncTestRunWhileDebugging();
 		verify(mockedDelegate, never()).reopenLaunchConfig(configuration, mode);
 		verify(mockedDelegate, never()).getDisplay();
+		verify(mockedDelegate, never()).confirmExistingTraceFlag();
 		assertTrue(prelaunchResult);
 	}
 	
@@ -375,6 +363,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(true);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(false);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(false);
+		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(false);
+		doNothing().when(mockedDelegate).setExistingTraceFlag(configuration, false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
 		boolean prelaunchResult = mockedDelegate.preLaunchCheck(configuration, mode, monitor);
@@ -405,6 +396,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(false);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(true);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(false);
+		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(false);
+		doNothing().when(mockedDelegate).setExistingTraceFlag(configuration, false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
 		boolean prelaunchResult = mockedDelegate.preLaunchCheck(configuration, mode, monitor);
@@ -435,6 +429,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(false);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(false);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(false);
+		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(false);
+		doNothing().when(mockedDelegate).setExistingTraceFlag(configuration, false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
 		boolean prelaunchResult = mockedDelegate.preLaunchCheck(configuration, mode, monitor);
@@ -465,7 +462,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(false);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(false);
-		when(mockedDelegate.shouldEnableLogging(configuration)).thenReturn(false);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(false);
+		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(false);
+		doNothing().when(mockedDelegate).setExistingTraceFlag(configuration, false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
 		boolean prelaunchResult = mockedDelegate.preLaunchCheck(configuration, mode, monitor);
@@ -475,13 +474,12 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).materializeForceProject(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).isProjectDebugging(project);
-		verify(mockedDelegate, times(1)).shouldEnableLogging(configuration);
+		verify(mockedDelegate, times(1)).shouldCreateTraceFlag(configuration);
+		verify(runTestsView, times(1)).hasExistingTraceFlag(project);
 		verify(mockedDelegate, never()).confirmAsyncTestRunWhileDebugging();
 		verify(mockedDelegate, never()).reopenLaunchConfig(configuration, mode);
 		verify(mockedDelegate, never()).getDisplay();
 		verify(mockedDelegate, never()).confirmExistingTraceFlag();
-		verify(mockedDelegate, never()).disableLogging(configuration);
-		verify(runTestsView, never()).hasExistingTraceFlag(project);
 		assertTrue(prelaunchResult);
 	}
 	
@@ -500,7 +498,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(false);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(false);
-		when(mockedDelegate.shouldEnableLogging(configuration)).thenReturn(true);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(true);
 		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
@@ -511,13 +509,12 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).materializeForceProject(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).isProjectDebugging(project);
-		verify(mockedDelegate, times(1)).shouldEnableLogging(configuration);
+		verify(mockedDelegate, times(1)).shouldCreateTraceFlag(configuration);
 		verify(runTestsView, times(1)).hasExistingTraceFlag(project);
 		verify(mockedDelegate, never()).confirmAsyncTestRunWhileDebugging();
 		verify(mockedDelegate, never()).reopenLaunchConfig(configuration, mode);
 		verify(mockedDelegate, never()).getDisplay();
 		verify(mockedDelegate, never()).confirmExistingTraceFlag();
-		verify(mockedDelegate, never()).disableLogging(configuration);
 		assertTrue(prelaunchResult);
 	}
 	
@@ -536,10 +533,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(false);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(false);
-		when(mockedDelegate.shouldEnableLogging(configuration)).thenReturn(true);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(true);
 		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(true);
 		when(mockedDelegate.confirmExistingTraceFlag()).thenReturn(true);
-		doNothing().when(mockedDelegate).disableLogging(configuration);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
 		
 		boolean prelaunchResult = mockedDelegate.preLaunchCheck(configuration, mode, monitor);
@@ -549,10 +545,9 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).materializeForceProject(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).isProjectDebugging(project);
-		verify(mockedDelegate, times(1)).shouldEnableLogging(configuration);
+		verify(mockedDelegate, times(1)).shouldCreateTraceFlag(configuration);
 		verify(runTestsView, times(1)).hasExistingTraceFlag(project);
 		verify(mockedDelegate, times(1)).confirmExistingTraceFlag();
-		verify(mockedDelegate, times(1)).disableLogging(configuration);
 		verify(mockedDelegate, never()).confirmAsyncTestRunWhileDebugging();
 		verify(mockedDelegate, never()).reopenLaunchConfig(configuration, mode);
 		verify(mockedDelegate, never()).getDisplay();
@@ -574,7 +569,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(false);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(false);
-		when(mockedDelegate.shouldEnableLogging(configuration)).thenReturn(true);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(true);
 		when(runTestsView.hasExistingTraceFlag(project)).thenReturn(true);
 		when(mockedDelegate.confirmExistingTraceFlag()).thenReturn(false);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
@@ -586,11 +581,10 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).materializeForceProject(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).isProjectDebugging(project);
-		verify(mockedDelegate, times(1)).shouldEnableLogging(configuration);
+		verify(mockedDelegate, times(1)).shouldCreateTraceFlag(configuration);
 		verify(runTestsView, times(1)).hasExistingTraceFlag(project);
 		verify(mockedDelegate, times(1)).confirmExistingTraceFlag();
 		verify(mockedDelegate, times(1)).reopenLaunchConfig(configuration, mode);
-		verify(mockedDelegate, never()).disableLogging(configuration);
 		verify(mockedDelegate, never()).confirmAsyncTestRunWhileDebugging();
 		assertFalse(prelaunchResult);
 	}
@@ -608,6 +602,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		int totalTests = 0;
 		boolean isAsync = false;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = false;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		
@@ -626,11 +621,11 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, never()).getTotalTests(configuration);
 		verify(mockedDelegate, never()).getTestMode(configuration);
 		verify(mockedDelegate, never()).isProjectDebugging(project);
-		verify(mockedDelegate, never()).shouldEnableLogging(configuration);
+		verify(mockedDelegate, never()).shouldCreateTraceFlag(configuration);
 		verify(mockedDelegate, never()).getLogLevels(configuration);
 		verify(mockedDelegate, never()).findTestClasses(project);
 		verify(runTestsView, never()).runTests(project, testResources, tests, totalTests, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		assertNotNull(launches);
@@ -650,6 +645,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		int totalTests = 0;
 		boolean isAsync = false;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = true;
 		Map<LogCategory, ApexLogLevel> logLevels = new LinkedHashMap<LogCategory, ApexLogLevel>();
 		
@@ -662,12 +658,12 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		when(mockedDelegate.getTotalTests(configuration)).thenReturn(totalTests);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(isAsync);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(isDebugging);
-		when(mockedDelegate.shouldEnableLogging(configuration)).thenReturn(enableLogging);
+		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(enableLogging);
 		when(mockedDelegate.getLogLevels(configuration)).thenReturn(logLevels);
 		when(mockedDelegate.findTestClasses(project)).thenReturn(testResources);
 		doCallRealMethod().when(mockedDelegate).removeLaunch(launch);
 		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		mockedDelegate.launch(configuration, mode, launch, monitor);
 		
@@ -677,12 +673,12 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).getTotalTests(configuration);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).isProjectDebugging(project);
-		verify(mockedDelegate, times(1)).shouldEnableLogging(configuration);
+		verify(mockedDelegate, times(1)).shouldCreateTraceFlag(configuration);
 		verify(mockedDelegate, times(1)).getLogLevels(configuration);
 		verify(mockedDelegate, times(1)).findTestClasses(project);
 		verify(mockedDelegate, times(1)).removeLaunch(launch);
 		verify(runTestsView, times(1)).runTests(project, testResources, tests, totalTests, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		assertNotNull(launches);

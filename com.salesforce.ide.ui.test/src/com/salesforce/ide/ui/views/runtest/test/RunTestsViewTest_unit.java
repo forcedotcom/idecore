@@ -105,16 +105,17 @@ public class RunTestsViewTest_unit extends TestCase {
 		int totalTestMethods = 0;
 		boolean isAsync = true;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = false;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(enableLogging), eq(logLevels), eq(monitor));
+				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		when(mockedView.materializeForceProject(project)).thenReturn(null);
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, never()).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, never()).prepareForRunningTests();
@@ -136,12 +137,13 @@ public class RunTestsViewTest_unit extends TestCase {
 		int totalTestMethods = 0;
 		boolean isAsync = true;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = false;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(enableLogging), eq(logLevels), eq(monitor));
+				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		doNothing().when(mockedView).prepareForRunningTests();
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
@@ -153,7 +155,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(monitor.isCanceled()).thenReturn(true);
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests();
@@ -175,12 +177,13 @@ public class RunTestsViewTest_unit extends TestCase {
 		int totalTestMethods = 0;
 		boolean isAsync = true;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = false;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(enableLogging), eq(logLevels), eq(monitor));
+				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		doNothing().when(mockedView).prepareForRunningTests();
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
@@ -194,7 +197,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("");
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests();
@@ -216,12 +219,13 @@ public class RunTestsViewTest_unit extends TestCase {
 		int totalTestMethods = 0;
 		boolean isAsync = true;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = false;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(enableLogging), eq(logLevels), eq(monitor));
+				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		doNothing().when(mockedView).prepareForRunningTests();
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
@@ -239,7 +243,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		doNothing().when(mockedView).displayAsyncCodeCoverage();
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests();
@@ -261,12 +265,13 @@ public class RunTestsViewTest_unit extends TestCase {
 		int totalTestMethods = 0;
 		boolean isAsync = false;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = false;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(enableLogging), eq(logLevels), eq(monitor));
+				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		doNothing().when(mockedView).prepareForRunningTests();
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
@@ -284,7 +289,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		doNothing().when(mockedView).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests();
@@ -306,12 +311,13 @@ public class RunTestsViewTest_unit extends TestCase {
 		int totalTestMethods = 0;
 		boolean isAsync = true;
 		boolean isDebugging = false;
+		boolean hasExistingTraceFlag = false;
 		boolean enableLogging = true;
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(enableLogging), eq(logLevels), eq(monitor));
+				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		doNothing().when(mockedView).prepareForRunningTests();
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
@@ -335,7 +341,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		doNothing().when(mockedView).displayAsyncCodeCoverage();
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
-				enableLogging, logLevels, monitor);
+				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests();

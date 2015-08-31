@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -187,6 +188,38 @@ public class ApexTestsUtils {
         }
     	
     	return testMethods;
+    }
+    
+    /**
+     * Find location of the class declaration.
+     * Default to the first line and first column of the file.
+     * 
+     * @param resource
+     * @return Location of class decl
+     */
+    public ApexCodeLocation findTestClassLocInFile(IResource resource) {
+    	final IFile file = (IFile) resource;
+    	final AtomicInteger line = new AtomicInteger(1);
+    	final AtomicInteger col = new AtomicInteger(1);
+    	
+    	try {
+    		CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
+        	compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
+        		@Override
+                public void _case(ClassDeclUnit classDeclUnit) {
+        			RealLoc realLoc = (RealLoc) classDeclUnit.body.name.loc;
+        			line.set(realLoc.line);
+        			col.set(realLoc.column);
+        		}
+
+        		@Override
+                protected void _default(CompilationUnit x) {}
+        	});
+    	} catch (Exception e) {
+            logger.error("Encountered an issue trying to find location of class declaration " + resource.getName(), e);
+        }
+    	
+    	return new ApexCodeLocation(file, line.get(), col.get());
     }
     
     /**

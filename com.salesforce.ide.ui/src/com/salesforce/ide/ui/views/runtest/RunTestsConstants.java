@@ -34,6 +34,7 @@ public class RunTestsConstants {
 	public static final String ATTR_TEST_CLASS = "forceComTestClass";
 	public static final String ATTR_TEST_METHOD = "forceComTestMethod";
 	public static final String ATTR_ENABLE_LOGGING = "enableLogging";
+	public static final String ATTR_EXISTING_TF = "existingTf";
 	public static final String ATTR_LOG_LEVELS = "logLevels";
 	
     // Keys used to store data in Eclipse widgets

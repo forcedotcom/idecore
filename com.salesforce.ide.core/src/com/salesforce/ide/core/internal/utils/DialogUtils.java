@@ -140,6 +140,13 @@ public class DialogUtils {
                     IDialogConstants.ABORT_LABEL, CONTINUE_LABEL }, 1);
         return dialog.open();
     }
+    
+    public int cancelContinueMessage(String title, String message, int severity) {
+        MessageDialog dialog =
+                new MessageDialog(getShell(), title, null, message, severity, new String[] {
+                    IDialogConstants.CANCEL_LABEL, CONTINUE_LABEL }, 1);
+        return dialog.open();
+    }
 
     public int abortMessage(String title, String message) {
         // ok is the default
