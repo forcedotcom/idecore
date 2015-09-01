@@ -70,6 +70,8 @@ public class Messages extends NLS {
     public static String RunTestsView_ErrorStartingTestsSolution;
     public static String RunTestsView_ErrorGetAsyncTestResultsTitle;
     public static String RunTestsView_ErrorGetAsyncTestResultsSolution;
+    public static String RunTestsView_ErrorOpenSourceTitle;
+    public static String RunTestsView_ErrorOpenSourceSolution;
 
     static {
         // initialize resource bundle

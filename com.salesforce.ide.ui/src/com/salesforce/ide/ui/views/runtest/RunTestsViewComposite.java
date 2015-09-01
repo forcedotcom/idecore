@@ -148,11 +148,13 @@ public class RunTestsViewComposite extends Composite {
             		TabItem selectedTabItem = tabFolder.getSelection()[0];
             		selectedTabName = selectedTabItem.getText();
             	}
-            	// Let the view do the work
-            	runView.updateView(selectedTreeItem, selectedTabName);
+            	// Open the source because an item in the tree was selected so
+            	// we want to take user to the class/method
+            	runView.updateView(selectedTreeItem, selectedTabName, true);
             }
         });
         
+        // Create one column in the tree
         TreeColumn col = new TreeColumn(resultsTree, SWT.LEFT);
         col.setWidth(SWT.MAX);
     }
@@ -199,7 +201,8 @@ public class RunTestsViewComposite extends Composite {
             		selectedTabName = ((TabFolder) event.getSource()).getSelection()[0].getText();
             	}
             	
-            	runView.updateView(selectedTreeItem, selectedTabName);
+            	// No need to open the source because a tab was selected
+            	runView.updateView(selectedTreeItem, selectedTabName, false);
     		}
     	});
     	

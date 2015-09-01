@@ -12,7 +12,6 @@
 package com.salesforce.ide.ui.views.runtest;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1002,7 +1001,7 @@ public class RunTestsView extends BaseViewPart {
     @VisibleForTesting
     public void highlightLine(ApexCodeLocation location) {
         if (Utils.isEmpty(location) || location.getFile() == null || !location.getFile().exists()) {
-            Utils.openWarn("Highlight Failed", "Unable to highlight test file - file is unknown.");
+        	throwErrorMsg(Messages.RunTestsView_ErrorOpenSourceTitle, Messages.RunTestsView_ErrorOpenSourceSolution);
             return;
         }
 
@@ -1013,8 +1012,8 @@ public class RunTestsView extends BaseViewPart {
             marker.setAttributes(map);
             IDE.openEditor(getSite().getWorkbenchWindow().getActivePage(), marker);
         } catch (Exception e) {
-            logger.error("Unable to highlight line.", e);
-            Utils.openError(new InvocationTargetException(e), true, "Unable to highlight line.");
+        	logger.error("Unable to highlight line", e);
+            throwErrorMsg(Messages.RunTestsView_ErrorOpenSourceTitle, Messages.RunTestsView_ErrorOpenSourceSolution);
         }
     }
     
@@ -1022,8 +1021,9 @@ public class RunTestsView extends BaseViewPart {
      * Update the test results tabs.
      * @param selectedTreeItem
      * @param selectedTab
+     * @param openSource
      */
-    public void updateView(TreeItem selectedTreeItem, String selectedTab) {
+    public void updateView(TreeItem selectedTreeItem, String selectedTab, boolean openSource) {
     	if (Utils.isEmpty(selectedTreeItem) || Utils.isEmpty(selectedTab) || Utils.isEmpty(runTestComposite)) {
     		return;
     	}
@@ -1032,9 +1032,13 @@ public class RunTestsView extends BaseViewPart {
     	// or a tab. We do not want to clear the tree (on the left side).
     	runTestComposite.clearTabs();
 
-    	// Get the code location and open the file
-    	ApexCodeLocation location = (ApexCodeLocation) selectedTreeItem.getData(RunTestsConstants.TREEDATA_CODE_LOCATION);
-    	highlightLine(location);
+    	// Selecting a tab gives user more details on the test result, but for that to happen, 
+    	// they must select the test from the results tree first, which is when we will get 
+    	// the code location and open the source.
+    	if (openSource) {
+    		ApexCodeLocation location = (ApexCodeLocation) selectedTreeItem.getData(RunTestsConstants.TREEDATA_CODE_LOCATION);
+        	highlightLine(location);
+    	}
     	
     	// Get the test result
     	String apexLogId = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_APEX_LOG_ID);
