@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -122,7 +123,7 @@ public class RunTestsViewComposite extends Composite {
         gridData1.verticalAlignment = SWT.FILL;
         gridData1.horizontalSpan = 4;
         gridData1.grabExcessVerticalSpace = true;
-        resultsTree = new Tree(leftHandComposite, SWT.NONE);
+        resultsTree = new Tree(leftHandComposite, SWT.BORDER);
         resultsTree.setLinesVisible(true);
         resultsTree.setLayoutData(gridData1);
         resultsTree.addMouseListener(new MouseListener() {
@@ -151,6 +152,9 @@ public class RunTestsViewComposite extends Composite {
             	runView.updateView(selectedTreeItem, selectedTabName);
             }
         });
+        
+        TreeColumn col = new TreeColumn(resultsTree, SWT.LEFT);
+        col.setWidth(SWT.MAX);
     }
     
     /**
