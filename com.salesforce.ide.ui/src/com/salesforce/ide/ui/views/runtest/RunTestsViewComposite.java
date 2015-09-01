@@ -122,7 +122,7 @@ public class RunTestsViewComposite extends Composite {
         gridData1.verticalAlignment = SWT.FILL;
         gridData1.horizontalSpan = 4;
         gridData1.grabExcessVerticalSpace = true;
-        resultsTree = new Tree(leftHandComposite, SWT.BORDER);
+        resultsTree = new Tree(leftHandComposite, SWT.NONE);
         resultsTree.setLinesVisible(true);
         resultsTree.setLayoutData(gridData1);
         resultsTree.addMouseListener(new MouseListener() {
