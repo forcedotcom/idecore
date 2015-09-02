@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,6 +34,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -67,6 +70,10 @@ public class RunTestsViewComposite extends Composite {
     private String progressText = "%d out of %d tests finished";
     protected RunTestsView runView = null;
     protected IProject project = null;
+    
+    private static String[] codeCovColumnNames = new String[] { Messages.RunTestView_CodeCoverageClass, 
+		Messages.RunTestView_CodeCoveragePercent, 
+		Messages.RunTestView_CodeCoverageLines};
 
     public RunTestsViewComposite(Composite parent, int style, RunTestsView view) {
         super(parent, style);
@@ -224,8 +231,8 @@ public class RunTestsViewComposite extends Composite {
     
     /**
      * Create a default text area for a tab item.
-     * @param parent
-     * @param tab
+     * @param parent TabFolder
+     * @param tab TabItem
      * @return Text widget
      */
     private Text createTextAreaForTabItem(Composite parent, TabItem tab) {
@@ -241,12 +248,12 @@ public class RunTestsViewComposite extends Composite {
     }
     
     /**
-     * Create a default table
-     * @param parent
-     * @param tab
+     * Create a default code coverage table
+     * @param parent TabFolder
+     * @param tab TabItem
      * @return Table widget
      */
-    private Table createTableForTabItem(Composite parent, TabItem tab) {
+    private Table createTableForTabItem(final Composite parent, TabItem tab) {
     	final Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
     	table.setLinesVisible(true);
     	table.setHeaderVisible(true);
@@ -255,11 +262,94 @@ public class RunTestsViewComposite extends Composite {
     	table.setLayoutData(gridData);
     	tab.setControl(table);
     	
-    	// Default one column in the table
-    	TableColumn column = new TableColumn(table, SWT.NONE);
-    	column.setWidth(SWT.MAX);
+    	Listener sortListener = getCodeCovSortListener();
+    	
+    	for (String columnName : codeCovColumnNames) {
+    		TableColumn column = new TableColumn(table, SWT.NONE);
+    		column.setText(columnName);
+    		column.addListener(SWT.Selection, sortListener);
+    		column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    	}
+    	
+    	parent.addControlListener(new ControlAdapter() {
+    		@Override
+    		public void controlResized(ControlEvent e) {
+    			Rectangle area = parent.getClientArea();
+    			Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+    			ScrollBar vBar = table.getVerticalBar();
+    			int width = area.width - table.computeTrim(0,0,0,0).width - vBar.getSize().x;
+    			if (size.y > area.height + table.getHeaderHeight()) {
+    				// Subtract the scrollbar width from the total column width
+    				// if a vertical scrollbar will be required
+    				Point vBarSize = vBar.getSize();
+    				width -= vBarSize.x;
+    			}
+    			Point oldSize = table.getSize();
+    			if (oldSize.x > area.width) {
+    				// Table is getting smaller so make the columns 
+    				// smaller first and then resize the table to
+    				// match the client area width
+    				for (TableColumn col : table.getColumns()) {
+    					col.setWidth(width/3);
+    				}
+    				table.setSize(area.width, area.height);
+    			} else {
+    				// Table is getting bigger so make the table 
+    				// bigger first and then make the columns wider
+    				// to match the client area width
+    				table.setSize(area.width, area.height);
+    				for (TableColumn col : table.getColumns()) {
+    					col.setWidth(width/3);
+    				}
+    			}
+    		}
+    	});
     	
     	return table;
+    }
+    
+    /**
+     * Sort listener for code coverage columns
+     * @return Listener widget
+     */
+    private Listener getCodeCovSortListener() {
+    	return new Listener() {
+    		public void handleEvent(Event e) {
+    			@SuppressWarnings("unchecked")
+				List<CodeCovResult> testResults = (List<CodeCovResult>) codeCovArea.getData(RunTestsConstants.TABLE_CODE_COV_RESULT);
+    			TableColumn column = (TableColumn) e.widget;
+    			
+    			if (testResults == null || testResults.isEmpty()) return;
+    			
+    			if (column.getText().equals(Messages.RunTestView_CodeCoveragePercent)) {
+    				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
+    					Collections.sort(testResults, CodeCovComparators.PERCENT_ASC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    				} else {
+    					Collections.sort(testResults, CodeCovComparators.PERCENT_DESC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
+    				}
+    			} else if (column.getText().equals(Messages.RunTestView_CodeCoverageLines)) {
+    				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
+    					Collections.sort(testResults, CodeCovComparators.LINES_ASC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    				} else {
+    					Collections.sort(testResults, CodeCovComparators.LINES_DESC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
+    				}
+    			} else {
+    				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
+    					Collections.sort(testResults, CodeCovComparators.CLASSNAME_ASC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    				} else {
+    					Collections.sort(testResults, CodeCovComparators.CLASSNAME_DESC);
+    					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
+    				}
+    			}
+    			
+    			setCodeCoverage(testResults);
+    		}
+    	};
     }
 
     public Tree getTree() {
@@ -318,15 +408,10 @@ public class RunTestsViewComposite extends Composite {
     /**
      * Update code coverage table with optional columns reset
      * @param ccResults
-     * @param resetColumns
      */
-    public void setCodeCoverage(List<CodeCovResult> ccResults, boolean resetColumns) {
+    public void setCodeCoverage(List<CodeCovResult> ccResults) {
     	if (codeCovArea != null && ccResults != null && !ccResults.isEmpty()) {
     		clearCodeCov();
-    		
-    		if (resetColumns) {
-    			resetCodeCov();
-    		}
     		
     		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, ccResults);
     		
@@ -344,15 +429,24 @@ public class RunTestsViewComposite extends Composite {
     			classItem.setText(new String[] {res.getClassName(), res.getPercent() + "%", lines});
     		}
     		
-    		for (TableColumn col : codeCovArea.getColumns()) {
-    			col.pack();
-    		}
-    		
-    		Rectangle r = codeCovArea.getClientArea();
-    		codeCovArea.getColumn(0).setWidth(r.width * 50 / 100);
-    		codeCovArea.getColumn(1).setWidth(r.width * 25 / 100);
-    		codeCovArea.getColumn(2).setWidth(r.width * 25 / 100);
+    		packCodeCovArea();
     	}
+    }
+    
+    /**
+     * Resize code coverage columns
+     */
+    private void packCodeCovArea() {
+    	if (codeCovArea == null) return;
+    	
+    	for (TableColumn col : codeCovArea.getColumns()) {
+			col.pack();
+		}
+		
+		Rectangle r = codeCovArea.getClientArea();
+		codeCovArea.getColumn(0).setWidth(r.width * 50 / 100);
+		codeCovArea.getColumn(1).setWidth(r.width * 25 / 100);
+		codeCovArea.getColumn(2).setWidth(r.width * 25 / 100);
     }
 
     public void enableComposite() {
@@ -403,67 +497,6 @@ public class RunTestsViewComposite extends Composite {
     		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, null);
     		codeCovArea.removeAll();
     		codeCovArea.clearAll();
-    	}
-    }
-    
-    /**
-     * Dispose existing columns in code coverage table
-     * and create the default three columns (class, percent, lines)
-     */
-    public void resetCodeCov() {
-    	if (codeCovArea != null) {
-    		for (TableColumn col : codeCovArea.getColumns()) {
-    			col.dispose();
-    		}
-    		
-    		Listener sortListener = new Listener() {
-        		public void handleEvent(Event e) {
-        			@SuppressWarnings("unchecked")
-    				List<CodeCovResult> testResults = (List<CodeCovResult>) codeCovArea.getData(RunTestsConstants.TABLE_CODE_COV_RESULT);
-        			TableColumn column = (TableColumn) e.widget;
-        			
-        			if (testResults == null || testResults.isEmpty()) return;
-        			
-        			if (column.getText().equals(Messages.RunTestView_CodeCoveragePercent)) {
-        				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
-        					Collections.sort(testResults, CodeCovComparators.PERCENT_ASC);
-        					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
-        				} else {
-        					Collections.sort(testResults, CodeCovComparators.PERCENT_DESC);
-        					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
-        				}
-        			} else if (column.getText().equals(Messages.RunTestView_CodeCoverageLines)) {
-        				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
-        					Collections.sort(testResults, CodeCovComparators.LINES_ASC);
-        					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
-        				} else {
-        					Collections.sort(testResults, CodeCovComparators.LINES_DESC);
-        					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
-        				}
-        			} else {
-        				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
-        					Collections.sort(testResults, CodeCovComparators.CLASSNAME_ASC);
-        					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
-        				} else {
-        					Collections.sort(testResults, CodeCovComparators.CLASSNAME_DESC);
-        					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
-        				}
-        			}
-        			
-        			setCodeCoverage(testResults, false);
-        		}
-        	};
-    		
-    		String[] columns = new String[] { Messages.RunTestView_CodeCoverageClass, 
-        			Messages.RunTestView_CodeCoveragePercent, 
-        			Messages.RunTestView_CodeCoverageLines};
-        	
-        	for (String columnName : columns) {
-        		TableColumn column = new TableColumn(codeCovArea, SWT.NONE);
-        		column.setText(columnName);
-        		column.addListener(SWT.Selection, sortListener);
-        		column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
-        	}
     	}
     }
 }
