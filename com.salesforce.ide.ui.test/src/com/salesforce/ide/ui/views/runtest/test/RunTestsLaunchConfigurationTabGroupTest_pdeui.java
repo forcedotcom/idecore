@@ -12,17 +12,18 @@
 package com.salesforce.ide.ui.views.runtest.test;
 
 import static org.mockito.Mockito.mock;
-import junit.framework.TestCase;
-
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.junit.Test;
 
+import com.salesforce.ide.test.common.IdeSetupTest;
+import com.salesforce.ide.test.common.IdeTestCase;
 import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTab;
 import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTabGroup;
 
-public class RunTestsLaunchConfigurationTabGroupTest_unit extends TestCase {
+@IdeSetupTest(needOrg = false, needProject = false)
+public class RunTestsLaunchConfigurationTabGroupTest_pdeui extends IdeTestCase {
 
 	@Test
 	public void testCreateTabs() {
