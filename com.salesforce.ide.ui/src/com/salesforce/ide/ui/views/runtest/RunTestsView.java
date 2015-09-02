@@ -736,7 +736,7 @@ public class RunTestsView extends BaseViewPart {
 		    		ccResults.add(new CodeCovResult(className, percent, linesCovered, total));
 		    	}
 		    	// Update UI with code coverage
-				runTestComposite.setCodeCoverage(ccResults);
+				runTestComposite.setCodeCoverage(ccResults, true);
 			}
     	});
     }
@@ -774,7 +774,7 @@ public class RunTestsView extends BaseViewPart {
 				// The code coverage in the response from /runTestsSynchronous is not in alphabetical order
 				// so we have to sort it
 				Collections.sort(ccResults, CodeCovComparators.CLASSNAME_ASC);
-				runTestComposite.setCodeCoverage(ccResults);
+				runTestComposite.setCodeCoverage(ccResults, true);
 				
 				for (RunTestsSyncCodeCoverageWarning warning : testResults.getCodeCoverageWarnings()) {
 					logger.warn(String.format("Apex Class or Trigger: %s | Problem: %s", warning.getName(), warning.getMessage()));
