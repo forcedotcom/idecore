@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -109,7 +108,7 @@ public class RunTestsViewComposite extends Composite {
     private void createLeftHandComposite() {
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 4;
-        Composite leftHandComposite = new Composite(sashForm, SWT.NONE);
+        final Composite leftHandComposite = new Composite(sashForm, SWT.NONE);
         leftHandComposite.setLayout(gridLayout);
         
         // Clear button
@@ -162,8 +161,16 @@ public class RunTestsViewComposite extends Composite {
         });
         
         // Default one column in the tree
-        TreeColumn col = new TreeColumn(resultsTree, SWT.LEFT);
-        col.setWidth(SWT.MAX);
+        new TreeColumn(resultsTree, SWT.LEFT);
+        leftHandComposite.addControlListener(new ControlAdapter() {
+        	@Override
+    		public void controlResized(ControlEvent e) {
+        		TreeColumn col = resultsTree.getColumn(0);
+        		if (col != null) {
+        			col.setWidth(leftHandComposite.getClientArea().width);
+        		}
+        	}
+        });
     }
     
     /**
@@ -258,7 +265,6 @@ public class RunTestsViewComposite extends Composite {
     	table.setLinesVisible(true);
     	table.setHeaderVisible(true);
     	GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-    	gridData.heightHint = 200;
     	table.setLayoutData(gridData);
     	tab.setControl(table);
     	
@@ -274,34 +280,7 @@ public class RunTestsViewComposite extends Composite {
     	parent.addControlListener(new ControlAdapter() {
     		@Override
     		public void controlResized(ControlEvent e) {
-    			Rectangle area = parent.getClientArea();
-    			Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-    			ScrollBar vBar = table.getVerticalBar();
-    			int width = area.width - table.computeTrim(0,0,0,0).width - vBar.getSize().x;
-    			if (size.y > area.height + table.getHeaderHeight()) {
-    				// Subtract the scrollbar width from the total column width
-    				// if a vertical scrollbar will be required
-    				Point vBarSize = vBar.getSize();
-    				width -= vBarSize.x;
-    			}
-    			Point oldSize = table.getSize();
-    			if (oldSize.x > area.width) {
-    				// Table is getting smaller so make the columns 
-    				// smaller first and then resize the table to
-    				// match the client area width
-    				for (TableColumn col : table.getColumns()) {
-    					col.setWidth(width/3);
-    				}
-    				table.setSize(area.width, area.height);
-    			} else {
-    				// Table is getting bigger so make the table 
-    				// bigger first and then make the columns wider
-    				// to match the client area width
-    				table.setSize(area.width, area.height);
-    				for (TableColumn col : table.getColumns()) {
-    					col.setWidth(width/3);
-    				}
-    			}
+    			packCodeCovArea(table);
     		}
     	});
     	
@@ -429,24 +408,24 @@ public class RunTestsViewComposite extends Composite {
     			classItem.setText(new String[] {res.getClassName(), res.getPercent() + "%", lines});
     		}
     		
-    		packCodeCovArea();
+    		packCodeCovArea(codeCovArea);
     	}
     }
     
     /**
      * Resize code coverage columns
      */
-    private void packCodeCovArea() {
-    	if (codeCovArea == null) return;
+    private void packCodeCovArea(Table table) {
+    	if (table == null) return;
     	
-    	for (TableColumn col : codeCovArea.getColumns()) {
+    	for (TableColumn col : table.getColumns()) {
 			col.pack();
 		}
 		
-		Rectangle r = codeCovArea.getClientArea();
-		codeCovArea.getColumn(0).setWidth(r.width * 50 / 100);
-		codeCovArea.getColumn(1).setWidth(r.width * 25 / 100);
-		codeCovArea.getColumn(2).setWidth(r.width * 25 / 100);
+		Rectangle r = table.getClientArea();
+		table.getColumn(0).setWidth(r.width * 70 / 100);
+		table.getColumn(1).setWidth(r.width * 15 / 100);
+		table.getColumn(2).setWidth(r.width * 15 / 100);
     }
 
     public void enableComposite() {
