@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -67,6 +69,10 @@ public class RunTestsViewComposite extends Composite {
     private String progressText = "%d out of %d tests finished";
     protected RunTestsView runView = null;
     protected IProject project = null;
+    
+    private static String[] codeCovColumnNames = new String[] { Messages.RunTestView_CodeCoverageClass, 
+		Messages.RunTestView_CodeCoveragePercent, 
+		Messages.RunTestView_CodeCoverageLines};
 
     public RunTestsViewComposite(Composite parent, int style, RunTestsView view) {
         super(parent, style);
@@ -97,12 +103,12 @@ public class RunTestsViewComposite extends Composite {
     
     /**
      * Create the left side which consists of a Clear button,
-     * the logging controls, and the test results tree.
+     * and the test results tree.
      */
     private void createLeftHandComposite() {
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 4;
-        Composite leftHandComposite = new Composite(sashForm, SWT.NONE);
+        final Composite leftHandComposite = new Composite(sashForm, SWT.NONE);
         leftHandComposite.setLayout(gridLayout);
         
         // Clear button
@@ -154,14 +160,22 @@ public class RunTestsViewComposite extends Composite {
             }
         });
         
-        // Create one column in the tree
-        TreeColumn col = new TreeColumn(resultsTree, SWT.LEFT);
-        col.setWidth(SWT.MAX);
+        // Default one column in the tree
+        new TreeColumn(resultsTree, SWT.LEFT);
+        leftHandComposite.addControlListener(new ControlAdapter() {
+        	@Override
+    		public void controlResized(ControlEvent e) {
+        		TreeColumn col = resultsTree.getColumn(0);
+        		if (col != null) {
+        			col.setWidth(leftHandComposite.getClientArea().width);
+        		}
+        	}
+        });
     }
     
     /**
-     * Create the right side which consists of a progress bar and three tabs for
-     * Stack Trace, System Debug Log, and User Debug Log.
+     * Create the right side which consists of a progress bar and four tabs for
+     * Code Coverage, Stack Trace, System Debug Log, and User Debug Log.
      */
     private void createRightHandComposite() {
     	GridLayout gridLayout = new GridLayout();
@@ -224,8 +238,8 @@ public class RunTestsViewComposite extends Composite {
     
     /**
      * Create a default text area for a tab item.
-     * @param parent
-     * @param tab
+     * @param parent TabFolder
+     * @param tab TabItem
      * @return Text widget
      */
     private Text createTextAreaForTabItem(Composite parent, TabItem tab) {
@@ -241,23 +255,47 @@ public class RunTestsViewComposite extends Composite {
     }
     
     /**
-     * Create a default three column table for code coverage
-     * @param parent
-     * @param tab
+     * Create a default code coverage table
+     * @param parent TabFolder
+     * @param tab TabItem
      * @return Table widget
      */
-    private Table createTableForTabItem(Composite parent, TabItem tab) {
+    private Table createTableForTabItem(final Composite parent, TabItem tab) {
     	final Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
     	table.setLinesVisible(true);
     	table.setHeaderVisible(true);
     	GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-    	gridData.heightHint = 200;
     	table.setLayoutData(gridData);
+    	tab.setControl(table);
     	
-    	Listener sortListener = new Listener() {
+    	Listener sortListener = getCodeCovSortListener();
+    	
+    	for (String columnName : codeCovColumnNames) {
+    		TableColumn column = new TableColumn(table, SWT.NONE);
+    		column.setText(columnName);
+    		column.addListener(SWT.Selection, sortListener);
+    		column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
+    	}
+    	
+    	parent.addControlListener(new ControlAdapter() {
+    		@Override
+    		public void controlResized(ControlEvent e) {
+    			packCodeCovArea(table);
+    		}
+    	});
+    	
+    	return table;
+    }
+    
+    /**
+     * Sort listener for code coverage columns
+     * @return Listener widget
+     */
+    private Listener getCodeCovSortListener() {
+    	return new Listener() {
     		public void handleEvent(Event e) {
     			@SuppressWarnings("unchecked")
-				List<CodeCovResult> testResults = (List<CodeCovResult>) table.getData(RunTestsConstants.TABLE_CODE_COV_RESULT);
+				List<CodeCovResult> testResults = (List<CodeCovResult>) codeCovArea.getData(RunTestsConstants.TABLE_CODE_COV_RESULT);
     			TableColumn column = (TableColumn) e.widget;
     			
     			if (testResults == null || testResults.isEmpty()) return;
@@ -291,21 +329,6 @@ public class RunTestsViewComposite extends Composite {
     			setCodeCoverage(testResults);
     		}
     	};
-    	
-    	String[] columns = new String[] { Messages.RunTestView_CodeCoverageClass, 
-    			Messages.RunTestView_CodeCoveragePercent, 
-    			Messages.RunTestView_CodeCoverageLines};
-    	
-    	for (String columnName : columns) {
-    		TableColumn column = new TableColumn(table, SWT.NONE);
-    		column.setText(columnName);
-    		column.addListener(SWT.Selection, sortListener);
-    		column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
-    	}
-    	
-    	tab.setControl(table);
-    	
-    	return table;
     }
 
     public Tree getTree() {
@@ -342,6 +365,12 @@ public class RunTestsViewComposite extends Composite {
     	}
     }
     
+    /**
+     * Update progress bar
+     * @param min
+     * @param max
+     * @param cur
+     */
     public void setProgress(int min, int max, int cur) {
     	if (progressBar != null && !progressBar.isDisposed()) {
     		if (!progressBar.isVisible()) {
@@ -355,6 +384,10 @@ public class RunTestsViewComposite extends Composite {
     	}
     }
     
+    /**
+     * Update code coverage table with optional columns reset
+     * @param ccResults
+     */
     public void setCodeCoverage(List<CodeCovResult> ccResults) {
     	if (codeCovArea != null && ccResults != null && !ccResults.isEmpty()) {
     		clearCodeCov();
@@ -375,15 +408,24 @@ public class RunTestsViewComposite extends Composite {
     			classItem.setText(new String[] {res.getClassName(), res.getPercent() + "%", lines});
     		}
     		
-    		for (TableColumn col : codeCovArea.getColumns()) {
-    			col.pack();
-    		}
-    		
-    		Rectangle r = codeCovArea.getClientArea();
-    		codeCovArea.getColumn(0).setWidth(r.width * 50 / 100);
-    		codeCovArea.getColumn(1).setWidth(r.width * 25 / 100);
-    		codeCovArea.getColumn(2).setWidth(r.width * 25 / 100);
+    		packCodeCovArea(codeCovArea);
     	}
+    }
+    
+    /**
+     * Resize code coverage columns
+     */
+    private void packCodeCovArea(Table table) {
+    	if (table == null) return;
+    	
+    	for (TableColumn col : table.getColumns()) {
+			col.pack();
+		}
+		
+		Rectangle r = table.getClientArea();
+		table.getColumn(0).setWidth(r.width * 70 / 100);
+		table.getColumn(1).setWidth(r.width * 15 / 100);
+		table.getColumn(2).setWidth(r.width * 15 / 100);
     }
 
     public void enableComposite() {
@@ -402,13 +444,13 @@ public class RunTestsViewComposite extends Composite {
     	clearResultsTree();
     	clearTabs();
     	clearProgress();
+    	clearCodeCov();
     }
     
     public void clearResultsTree() {
     	if (resultsTree != null) {
     		resultsTree.removeAll();
     	}
-    	clearCodeCov();
     }
     
     public void clearTabs() {

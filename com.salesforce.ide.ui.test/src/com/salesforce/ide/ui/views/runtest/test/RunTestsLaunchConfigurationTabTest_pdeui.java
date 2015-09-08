@@ -39,14 +39,15 @@ import org.eclipse.swt.widgets.*;
 
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.remote.tooling.RunTests;
+import com.salesforce.ide.test.common.IdeSetupTest;
+import com.salesforce.ide.test.common.IdeTestCase;
 import com.salesforce.ide.ui.views.runtest.Messages;
 import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
 import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTab;
 import com.sforce.soap.tooling.ApexLogLevel;
 
-import junit.framework.TestCase;
-
-public class RunTestsLaunchConfigurationTabTest_unit extends TestCase {
+@IdeSetupTest(needOrg = false, needProject = false)
+public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	
 	private RunTestsLaunchConfigurationTab mockedTab;
 	

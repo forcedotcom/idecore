@@ -63,7 +63,7 @@ public class LoggingComposite extends Composite {
             Group group = new Group(this, SWT.NONE);
             String groupingTitle =
                     SupportedFeatureEnum.ExecuteAnonymous == supportedFeatureEnum ? "Execute Anonymous Logging Setting"
-                            : "Run Test Logging Setting";
+                            : "Deploy Logging Setting";
             group.setText(groupingTitle);
             group.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
             group.setLayout(new GridLayout(1, true));
