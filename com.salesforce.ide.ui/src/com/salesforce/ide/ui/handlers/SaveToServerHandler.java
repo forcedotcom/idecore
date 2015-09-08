@@ -11,20 +11,14 @@
 package com.salesforce.ide.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdapterManager;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,9 +30,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.google.common.collect.Lists;
-import com.salesforce.ide.core.internal.utils.DialogUtils;
-import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
-import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.internal.utils.*;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.ui.actions.SaveToServerActionController;
@@ -63,9 +55,10 @@ public final class SaveToServerHandler extends BaseHandler {
             throws IllegalArgumentException {
         if (null != actionController) {
             actionController.setWorkbenchWindow(workbench.getActiveWorkbenchWindow());
-            actionController.preRun();
-            fetchRemoteComponents(workbench, actionController);
-            actionController.postRun();
+            if (actionController.preRun()) {
+                fetchRemoteComponents(workbench, actionController);
+                actionController.postRun();
+            }
         }
     }
 
