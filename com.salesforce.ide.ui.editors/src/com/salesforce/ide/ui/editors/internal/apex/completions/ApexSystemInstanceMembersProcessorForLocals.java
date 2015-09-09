@@ -143,7 +143,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
                     String memberPrefix = completionPrefix.segments.get(1);
 
                     AbstractCompletionProposalDisplayable found =
-                            Iterables.find(locals, new VariableNamePredicate(variableName));
+                            Iterables.find(locals, new VariableNamePredicate(variableName), null);
 
                     if (found != null) {
                         LocalInfoWrapper wrapper = (LocalInfoWrapper) found;
