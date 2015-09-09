@@ -57,26 +57,15 @@ public class ApexSystemConstructorProcessor extends ApexCompletionProcessor impl
         try {
             if (getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
                 Completions completions = getCompletions();
-                prefix = getUtil().getPrefix(viewer, offset);
-                completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 
-                if (completionPrefix.shouldSuggestTopLevelConstructor()) {
-                    String typeName = completionPrefix.segments.get(0);
+                if (completions != null) {
+                    prefix = getUtil().getPrefix(viewer, offset);
+                    completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 
-                    Namespace namespace = completions.getSystemNamespace();
-                    Collection<AbstractCompletionProposalDisplayable> possibleTypes =
-                            namespace.typeTrie.prefixMap(typeName).values();
-                    for (AbstractCompletionProposalDisplayable possibleType : possibleTypes) {
-                        Type type = (Type) possibleType;
-                        suggestions = concat(suggestions, concat(type.constructorTrie.prefixMap(typeName).values()));
-                    }
-                    return getUtil().createProposal(suggestions, typeName, offset, getImage());
-                } else if (completionPrefix.shouldSuggestNamespacedConstructor()) {
-                    String namespaceName = completionPrefix.segments.get(0);
-                    String typeName = completionPrefix.segments.get(1);
+                    if (completionPrefix.shouldSuggestTopLevelConstructor()) {
+                        String typeName = completionPrefix.segments.get(0);
 
-                    Namespace namespace = (Namespace) completions.namespaceTrie.get(namespaceName);
-                    if (namespace != null) {
+                        Namespace namespace = completions.getSystemNamespace();
                         Collection<AbstractCompletionProposalDisplayable> possibleTypes =
                                 namespace.typeTrie.prefixMap(typeName).values();
                         for (AbstractCompletionProposalDisplayable possibleType : possibleTypes) {
@@ -85,8 +74,23 @@ public class ApexSystemConstructorProcessor extends ApexCompletionProcessor impl
                                     concat(suggestions, concat(type.constructorTrie.prefixMap(typeName).values()));
                         }
                         return getUtil().createProposal(suggestions, typeName, offset, getImage());
-                    }
+                    } else if (completionPrefix.shouldSuggestNamespacedConstructor()) {
+                        String namespaceName = completionPrefix.segments.get(0);
+                        String typeName = completionPrefix.segments.get(1);
 
+                        Namespace namespace = (Namespace) completions.namespaceTrie.get(namespaceName);
+                        if (namespace != null) {
+                            Collection<AbstractCompletionProposalDisplayable> possibleTypes =
+                                    namespace.typeTrie.prefixMap(typeName).values();
+                            for (AbstractCompletionProposalDisplayable possibleType : possibleTypes) {
+                                Type type = (Type) possibleType;
+                                suggestions =
+                                        concat(suggestions, concat(type.constructorTrie.prefixMap(typeName).values()));
+                            }
+                            return getUtil().createProposal(suggestions, typeName, offset, getImage());
+                        }
+
+                    }
                 }
             }
         } catch (Exception e) {

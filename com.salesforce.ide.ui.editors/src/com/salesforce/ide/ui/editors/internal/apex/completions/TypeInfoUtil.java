@@ -75,7 +75,7 @@ public class TypeInfoUtil {
             Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
 
             CompletionPrefix completionPrefix = new CompletionPrefix(apexName);
-            if (completionPrefix.shouldSuggestTopLevelType()) {
+            if (completions != null && completionPrefix.shouldSuggestTopLevelType()) {
                 String typeName = completionPrefix.segments.get(0);
                 Namespace systemNS = completions.getSystemNamespace();
 

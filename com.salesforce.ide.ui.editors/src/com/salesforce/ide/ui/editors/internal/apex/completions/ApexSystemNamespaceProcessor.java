@@ -47,13 +47,16 @@ public class ApexSystemNamespaceProcessor extends ApexCompletionProcessor implem
 
         try {
             Completions completions = getCompletions();
-            prefix = getUtil().getPrefix(viewer, offset);
-            completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
+            
+            if (completions != null) {
+                prefix = getUtil().getPrefix(viewer, offset);
+                completionPrefix = getUtil().determineFullyQualifiedNameFromPrefix(prefix);
 
-            if (completionPrefix.shouldSuggestNamespace()) {
-                String namespacePrefix = completionPrefix.segments.get(0);
-                suggestions = completions.namespaceTrie.prefixMap(namespacePrefix).values();
-                return getUtil().createProposal(suggestions, namespacePrefix, offset, getImage());
+                if (completionPrefix.shouldSuggestNamespace()) {
+                    String namespacePrefix = completionPrefix.segments.get(0);
+                    suggestions = completions.namespaceTrie.prefixMap(namespacePrefix).values();
+                    return getUtil().createProposal(suggestions, namespacePrefix, offset, getImage());
+                }
             }
         } catch (Exception e) {
             logger.warn("Error trying to generate auto-completion for namespace type", e);
