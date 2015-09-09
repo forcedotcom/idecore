@@ -528,8 +528,8 @@ public class Connection {
      */
     private void setCallOptions(PartnerConnection instance, String client, boolean debugExceptions, String platform,
             String remoteApplication) throws ForceConnectionException {
-        Class<?>[] argsTypes = { String.class, String.class, String.class, boolean.class, String.class, String.class };
-        Object[] args = { client, null, null, debugExceptions, platform, remoteApplication };
+        Class<?>[] argsTypes = { String.class, String.class, String.class, boolean.class, String.class, String.class, String.class };
+        Object[] args = { client, null, null, debugExceptions, platform, remoteApplication, null };
         Method method = getMethodForArgs(instance.getClass(), argsTypes);
 
         if (method == null) {
@@ -541,8 +541,8 @@ public class Connection {
     }
 
     public void setCallOptions(SoapConnection apexConnection, String clientId) throws ForceConnectionException {
-        Class<?>[] argsTypes = { String.class };
-        Object[] args = { clientId };
+        Class<?>[] argsTypes = { String.class, String.class };
+        Object[] args = { clientId, null };
         Method method = getMethodForArgs(apexConnection.getClass(), argsTypes);
 
         if (method == null) {
