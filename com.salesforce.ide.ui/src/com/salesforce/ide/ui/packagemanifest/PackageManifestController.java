@@ -198,6 +198,10 @@ public class PackageManifestController extends Controller {
 
         }
     }
+    
+    public Document getCache() {
+    	return this.cache;
+    }
 
     Map<String, Throwable> erroneousComponentTypes = new HashMap<>();
     boolean exceptionOccurred = false;
