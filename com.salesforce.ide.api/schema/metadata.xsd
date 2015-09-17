@@ -2329,6 +2329,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+	<xsd:element name="CustomObject" type="tns:CustomObject"/>
 	<xsd:complexType name="ActionOverride">
 		<xsd:sequence>
 			<xsd:element name="actionName" minOccurs="0" type="xsd:string" />
