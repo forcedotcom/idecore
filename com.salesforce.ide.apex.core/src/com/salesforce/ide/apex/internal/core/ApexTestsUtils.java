@@ -198,28 +198,47 @@ public class ApexTestsUtils {
      * @return Location of class decl
      */
     public ApexCodeLocation findTestClassLocInFile(IResource resource) {
+    	final class Pair {
+    		private final int line;
+    		private final int col;
+    		
+    		public Pair(int line, int col) {
+    			this.line = line;
+    			this.col = col;
+    		}
+    		
+    		public int getLine() {
+    			return this.line;
+    		}
+    		
+    		public int getCol() {
+    			return this.col;
+    		}
+    	}
+    	
     	final IFile file = (IFile) resource;
-    	final AtomicInteger line = new AtomicInteger(1);
-    	final AtomicInteger col = new AtomicInteger(1);
     	
     	try {
     		CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
-        	compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
+        	Pair match = compilationUnit.match(new CompilationUnit.MatchBlockWithDefault<Pair>() {
         		@Override
-                public void _case(ClassDeclUnit classDeclUnit) {
+                public Pair _case(ClassDeclUnit classDeclUnit) {
         			RealLoc realLoc = (RealLoc) classDeclUnit.body.name.loc;
-        			line.set(realLoc.line);
-        			col.set(realLoc.column);
+					return new Pair(realLoc.line, realLoc.column);
         		}
 
         		@Override
-                protected void _default(CompilationUnit x) {}
+                protected Pair _default(CompilationUnit x) {
+        			return new Pair(1, 1);
+        		}
         	});
+        	
+        	return new ApexCodeLocation(file, match.getLine(), match.getCol());
     	} catch (Exception e) {
             logger.error("Encountered an issue trying to find location of class declaration " + resource.getName(), e);
         }
     	
-    	return new ApexCodeLocation(file, line.get(), col.get());
+    	return null;
     }
     
     /**
