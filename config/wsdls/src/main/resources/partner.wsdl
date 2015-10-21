@@ -53,6 +53,7 @@ All Rights Reserved
                             <element name="city" type="xsd:string"  nillable="true" />
                             <element name="country" type="xsd:string"  nillable="true" />
                             <element name="countryCode" type="xsd:string"  nillable="true" />
+                            <element name="geocodeAccuracy" type="xsd:string"  nillable="true" />
                             <element name="postalCode" type="xsd:string"  nillable="true" />
                             <element name="state" type="xsd:string"  nillable="true" />
                             <element name="stateCode" type="xsd:string"  nillable="true" />
@@ -167,9 +168,7 @@ All Rights Reserved
                 <sequence>
                     <element name="apiName" type="xsd:string"/>
                     <element name="label" type="xsd:string"/>
-
                     <element name="sortable" type="xsd:boolean"/>
-
                 </sequence>
            </complexType>
 
@@ -396,7 +395,9 @@ All Rights Reserved
                     <enumeration value="EMAIL_NOT_PROCESSED_DUE_TO_PRIOR_ERROR"/>
                     <enumeration value="EMAIL_OPTED_OUT"/>
                     <enumeration value="EMAIL_TEMPLATE_FORMULA_ERROR"/>
+                    <enumeration value="EMAIL_TEMPLATE_MERGEFIELD_ACCESS_ERROR"/>
                     <enumeration value="EMAIL_TEMPLATE_MERGEFIELD_ERROR"/>
+                    <enumeration value="EMAIL_TEMPLATE_MERGEFIELD_VALUE_ERROR"/>
                     <enumeration value="EMAIL_TEMPLATE_PROCESSING_ERROR"/>
                     <enumeration value="EMPTY_SCONTROL_FILE_NAME"/>
                     <enumeration value="ENTITY_FAILED_IFLASTMODIFIED_ON_UPDATE"/>
@@ -458,6 +459,7 @@ All Rights Reserved
                     <enumeration value="INVALID_INET_ADDRESS"/>
                     <enumeration value="INVALID_INPUT"/>
                     <enumeration value="INVALID_LINEITEM_CLONE_STATE"/>
+                    <enumeration value="INVALID_MARKUP"/>
                     <enumeration value="INVALID_MASTER_OR_TRANSLATED_SOLUTION"/>
                     <enumeration value="INVALID_MESSAGE_ID_REFERENCE"/>
                     <enumeration value="INVALID_OAUTH_URL"/>
@@ -533,6 +535,7 @@ All Rights Reserved
                     <enumeration value="NO_ATTACHMENT_PERMISSION"/>
                     <enumeration value="NO_INACTIVE_DIVISION_MEMBERS"/>
                     <enumeration value="NO_MASS_MAIL_PERMISSION"/>
+                    <enumeration value="NO_PARTNER_PERMISSION"/>
                     <enumeration value="NO_SUCH_USER_EXISTS"/>
                     <enumeration value="NUMBER_OUTSIDE_VALID_RANGE"/>
                     <enumeration value="NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED"/>
@@ -564,8 +567,9 @@ All Rights Reserved
                     <enumeration value="REQUEST_RUNNING_TOO_LONG"/>
                     <enumeration value="REQUIRED_FEATURE_MISSING"/>
                     <enumeration value="REQUIRED_FIELD_MISSING"/>
-                    <enumeration value="RETRIEVE_ATTACHMENT_FAILED"/>
-                    <enumeration value="RETRIEVE_EMAIL_FAILED"/>
+                    <enumeration value="RETRIEVE_EXCHANGE_ATTACHMENT_FAILED"/>
+                    <enumeration value="RETRIEVE_EXCHANGE_EMAIL_FAILED"/>
+                    <enumeration value="RETRIEVE_EXCHANGE_EVENT_FAILED"/>
                     <enumeration value="SELF_REFERENCE_FROM_FLOW"/>
                     <enumeration value="SELF_REFERENCE_FROM_TRIGGER"/>
                     <enumeration value="SHARE_NEEDED_FOR_CHILD_OWNER"/>
@@ -626,8 +630,9 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-            <complexType name="RenderAsEmailTemplateError">
+            <complexType name="RenderEmailTemplateError">
                 <sequence>
+                    <element name="fieldName"  type="xsd:string"/>
                     <element name="message"    type="xsd:string"/>
                     <element name="offset"     type="xsd:int"/>
                     <element name="statusCode" type="tns:StatusCode"/>
@@ -887,9 +892,9 @@ All Rights Reserved
                     <element name="customSetting"       type="xsd:boolean"/>
                     <element name="deletable"           type="xsd:boolean"/>
                     <element name="deprecatedAndHidden" type="xsd:boolean"/>
-                    <element name="externalEntity"      type="xsd:boolean"/>
                     <element name="feedEnabled"         type="xsd:boolean"/>
                     <element name="fields"              type="tns:Field" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="idEnabled"           type="xsd:boolean"/>
                     <element name="keyPrefix"           type="xsd:string" nillable="true"/>
                     <element name="label"               type="xsd:string"/>
                     <element name="labelPlural"         type="xsd:string"/>
@@ -925,8 +930,8 @@ All Rights Reserved
                     <element name="customSetting"       type="xsd:boolean"/>
                     <element name="deletable"           type="xsd:boolean"/>
                     <element name="deprecatedAndHidden" type="xsd:boolean"/>
-                    <element name="externalEntity"      type="xsd:boolean"/>
                     <element name="feedEnabled"         type="xsd:boolean"/>
+                    <element name="idEnabled"           type="xsd:boolean"/>
                     <element name="keyPrefix"           type="xsd:string" nillable="true"/>
                     <element name="label"               type="xsd:string"/>
                     <element name="labelPlural"         type="xsd:string"/>
@@ -982,6 +987,13 @@ All Rights Reserved
             </complexType>
 
 
+            <complexType name="DurableIdList">
+                <sequence>
+                    <element name="ids" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+
+
         <simpleType name="fieldType">
                 <restriction base="xsd:string">
                     <enumeration value="string"/>
@@ -1032,6 +1044,8 @@ All Rights Reserved
                     <enumeration value="xsd:anyType"/> <!-- can be id, booolean, double, int, string, date, dateTime -->
 
                     <enumeration value="urn:RelationshipReferenceTo" />
+
+
                     <enumeration value="urn:SearchLayoutFieldsDisplayed" />
                     <enumeration value="urn:SearchLayoutField" />
                     <enumeration value="urn:SearchLayoutButtonsDisplayed" />
@@ -1039,6 +1053,13 @@ All Rights Reserved
 
 
                     <enumeration value="urn:RecordTypesSupported" />
+
+
+                    <enumeration value="tns:FieldCriteria" />
+                    <enumeration value="tns:FieldCriterion" />
+
+
+                    <enumeration value="tns:DurableIdList" />
 
                 </restriction>
             </simpleType>
@@ -1739,6 +1760,7 @@ All Rights Reserved
                 <restriction base="xsd:string">
                     <enumeration value="AllUpdates"/>
                     <enumeration value="FeedItemType"/>
+                    <enumeration value="Custom"/>
                 </restriction>
             </simpleType>
 
@@ -1996,8 +2018,8 @@ All Rights Reserved
             <complexType name="FieldCriterion">
                 <sequence>
                     <element name="columnName" type="xsd:string"/>
-                    <element name="operator" type="xsd:string"/>
                     <element name="operands" type="xsd:string"/>
+                    <element name="operator" type="xsd:string"/>
                 </sequence>
             </complexType>
 
@@ -2202,9 +2224,9 @@ All Rights Reserved
                             <element name="charset"             type="xsd:string" nillable="true"/>
                             <element name="documentAttachments" minOccurs="0" maxOccurs="unbounded" type="tns:ID" />
                             <element name="entityAttachments"   minOccurs="0" maxOccurs="unbounded" type="tns:ID" />
+                            <element name="fileAttachments"     minOccurs="0" maxOccurs="unbounded" type="tns:EmailFileAttachment"/>
                             <element name="htmlBody"            type="xsd:string" nillable="true"/>
                             <element name="inReplyTo"           minOccurs="0" type="xsd:string" nillable="true"/>
-                            <element name="fileAttachments"     minOccurs="0" maxOccurs="unbounded" type="tns:EmailFileAttachment"/>
                             <element name="optOutPolicy"        type="tns:SendEmailOptOutPolicy" nillable="true"/>
                             <element name="orgWideEmailAddressId" minOccurs="0" maxOccurs="1" type="tns:ID" nillable="true"/>
                             <element name="plainTextBody"       type="xsd:string" nillable="true"/>
@@ -2213,6 +2235,7 @@ All Rights Reserved
                             <element name="templateId"          type="tns:ID" nillable="true"/>
                             <element name="toAddresses"         minOccurs="0" maxOccurs="100" type="xsd:string" nillable="true"/>
                             <element name="treatBodiesAsTemplate" type="xsd:boolean" nillable="true" />
+                            <element name="treatTargetObjectAsRecipient" type="xsd:boolean" nillable="true" />
                             <element name="whatId"              type="tns:ID" nillable="true"/>
                         </sequence>
                     </extension>
@@ -3470,7 +3493,7 @@ All Rights Reserved
 
 
             <!-- Template Merge -->
-            <complexType name="RenderAsEmailTemplateRequest">
+            <complexType name="RenderEmailTemplateRequest">
                     <sequence>
                         <element name="templateBodies" type="xsd:string" minOccurs="1" maxOccurs="10" nillable="false" />
                         <element name="whatId"         type="tns:ID" minOccurs="0" maxOccurs="1" />
@@ -3478,33 +3501,33 @@ All Rights Reserved
                     </sequence>
             </complexType>
             
-            <complexType name="RenderAsEmailTemplateBodyResult">
+            <complexType name="RenderEmailTemplateBodyResult">
                 <sequence>
-                    <element name="errors"              type="tns:RenderAsEmailTemplateError" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="errors"              type="tns:RenderEmailTemplateError" minOccurs="0" maxOccurs="unbounded"/>
                 	<element name="mergedBody"          type="xsd:string" nillable="true" />
                     <element name="success"             type="xsd:boolean" />
                 </sequence>
             </complexType>
             
-            <complexType name="RenderAsEmailTemplateResult">
+            <complexType name="RenderEmailTemplateResult">
                 <sequence>
-                	<element name="bodyResults"         type="tns:RenderAsEmailTemplateBodyResult" minOccurs="0" maxOccurs="10"/>
+                	<element name="bodyResults"         type="tns:RenderEmailTemplateBodyResult" minOccurs="0" maxOccurs="10"/>
                     <element name="errors"    			type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="success"             type="xsd:boolean" />
                 </sequence>
             </complexType>
             
-            <element name="renderAsEmailTemplate">
+            <element name="renderEmailTemplate">
                 <complexType>
                     <sequence>
-                        <element name="renderRequests" type="tns:RenderAsEmailTemplateRequest" minOccurs="0" maxOccurs="10"/>
+                        <element name="renderRequests" type="tns:RenderEmailTemplateRequest" minOccurs="0" maxOccurs="10"/>
                     </sequence>
                 </complexType>
             </element>
-            <element name="renderAsEmailTemplateResponse">
+            <element name="renderEmailTemplateResponse">
                 <complexType>
                     <sequence>
-                        <element name="result" minOccurs="0" maxOccurs="10" type="tns:RenderAsEmailTemplateResult"/>
+                        <element name="result" minOccurs="0" maxOccurs="10" type="tns:RenderEmailTemplateResult"/>
                     </sequence>
                 </complexType>
             </element>
@@ -4082,6 +4105,9 @@ All Rights Reserved
                         <element name="platform"          type="xsd:string"/>
                         <element name="remoteApplication" type="xsd:string"/>
 
+                        <element name="uiRequestId"       type="xsd:string"/>
+
+
                     </sequence>
                 </complexType>
             </element>
@@ -4354,9 +4380,7 @@ All Rights Reserved
               	   <sequence>
 
               	       <element name="options" type="tns:OwnerChangeOption" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-                
-                       <element name="transferAttachments" type="xsd:boolean"  minOccurs="0"  />
-                       <element name="transferOpenActivities" type="xsd:boolean"  minOccurs="0"  />
+                       
                    </sequence>
                 </complexType>
             </element>
@@ -4388,6 +4412,7 @@ All Rights Reserved
                     <enumeration value="CONTENT_HUB_INVALID_OBJECT_TYPE_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_INVALID_PAGE_NUMBER_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_INVALID_PAYLOAD"/>
+                    <enumeration value="CONTENT_HUB_ITEM_TYPE_NOT_FOUND_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_OPERATION_NOT_SUPPORTED_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_SECURITY_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_TIMEOUT_EXCEPTION"/>
@@ -4440,7 +4465,6 @@ All Rights Reserved
                     <enumeration value="INVALID_LOCALE_LANGUAGE"/>
                     <enumeration value="INVALID_LOCATOR"/>
                     <enumeration value="INVALID_LOGIN"/>
-                    <enumeration value="INVALID_MARKUP"/>
                     <enumeration value="INVALID_MULTIPART_REQUEST"/>
                     <enumeration value="INVALID_NEW_PASSWORD"/>
                     <enumeration value="INVALID_OPERATION"/>
@@ -4543,6 +4567,7 @@ All Rights Reserved
                     <enumeration value="fns:CONTENT_HUB_INVALID_OBJECT_TYPE_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_INVALID_PAGE_NUMBER_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_INVALID_PAYLOAD"/>
+                    <enumeration value="fns:CONTENT_HUB_ITEM_TYPE_NOT_FOUND_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_OPERATION_NOT_SUPPORTED_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_SECURITY_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_TIMEOUT_EXCEPTION"/>
@@ -4595,7 +4620,6 @@ All Rights Reserved
                     <enumeration value="fns:INVALID_LOCALE_LANGUAGE"/>
                     <enumeration value="fns:INVALID_LOCATOR"/>
                     <enumeration value="fns:INVALID_LOGIN"/>
-                    <enumeration value="fns:INVALID_MARKUP"/>
                     <enumeration value="fns:INVALID_MULTIPART_REQUEST"/>
                     <enumeration value="fns:INVALID_NEW_PASSWORD"/>
                     <enumeration value="fns:INVALID_OPERATION"/>
@@ -5258,11 +5282,11 @@ All Rights Reserved
         <part element="tns:sendEmailResponse" name="parameters"/>
     </message>
 
-    <message name="renderAsEmailTemplateRequest">
-        <part element="tns:renderAsEmailTemplate" name="parameters"/>
+    <message name="renderEmailTemplateRequest">
+        <part element="tns:renderEmailTemplate" name="parameters"/>
     </message>
-    <message name="renderAsEmailTemplateResponse">
-        <part element="tns:renderAsEmailTemplateResponse" name="parameters"/>
+    <message name="renderEmailTemplateResponse">
+        <part element="tns:renderEmailTemplateResponse" name="parameters"/>
     </message>
 
     <message name="emailMergeRequest">
@@ -5864,10 +5888,10 @@ All Rights Reserved
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
-        <operation name="renderAsEmailTemplate">
+        <operation name="renderEmailTemplate">
             <documentation>Perform a template merge on one or more blocks of text.  Optionally, just validate the template text.</documentation>
-            <input  message="tns:renderAsEmailTemplateRequest"/>
-            <output message="tns:renderAsEmailTemplateResponse"/>
+            <input  message="tns:renderEmailTemplateRequest"/>
+            <output message="tns:renderEmailTemplateResponse"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
@@ -7197,7 +7221,7 @@ All Rights Reserved
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
             </fault>
         </operation>
-        <operation name="renderAsEmailTemplate">
+        <operation name="renderEmailTemplate">
             <soap:operation soapAction=""/>
             <input>
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
