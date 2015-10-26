@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 35.0
+Salesforce.com Apex API version 36.0
 
 Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
 -->
@@ -168,7 +168,6 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
     <xsd:complexType>
      <xsd:sequence>
       <xsd:element name="client" type="xsd:string"/>
-      <xsd:element name="uiRequestId" type="xsd:string"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
@@ -512,7 +511,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/35.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/36.0"/>
   </port>
  </service>
 </definitions>

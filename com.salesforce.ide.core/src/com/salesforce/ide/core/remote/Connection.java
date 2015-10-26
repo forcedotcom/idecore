@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.core.remote;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -404,7 +403,7 @@ public class Connection {
     }
 
     public void setClientCallOptions() throws ForceConnectionException {
-        setCallOptions(getPartnerConnection(), getClientId(), debugExceptions, getPlatform(), getApplication());
+        getPartnerConnection().setCallOptions(getClientId(), null, true, null, debugExceptions, getPlatform(), getApplication(), null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set IDE call options");
         }
@@ -416,7 +415,7 @@ public class Connection {
      * @throws ForceConnectionException
      */
     public void setNonCallOptions() throws ForceConnectionException {
-        setCallOptions(partnerConnection, "", debugExceptions, getPlatform(), getApplication());
+        partnerConnection.setCallOptions("", null, true, null, debugExceptions, getPlatform(), getApplication(), null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set non-IDE call options");
         }
@@ -516,73 +515,8 @@ public class Connection {
         }
     }
 
-    /**
-     * This method uses reflection to invoke the right setCallOption method
-     * 
-     * @param instance
-     * @param client
-     * @param debugExceptions
-     * @param platform
-     * @param remoteApplication
-     * @throws ForceConnectionException
-     */
-    private void setCallOptions(PartnerConnection instance, String client, boolean debugExceptions, String platform,
-            String remoteApplication) throws ForceConnectionException {
-        Class<?>[] argsTypes = { String.class, String.class, String.class, boolean.class, String.class, String.class, String.class };
-        Object[] args = { client, null, null, debugExceptions, platform, remoteApplication, null };
-        Method method = getMethodForArgs(instance.getClass(), argsTypes);
-
-        if (method == null) {
-            logger.error("Unable to find operations on partner connection for given arguments");
-            throw new ForceConnectionException("Unable to find operations on partner connection for given arguments");
-        }
-
-        invokeMethod(instance, method, args);
-    }
-
     public void setCallOptions(SoapConnection apexConnection, String clientId) throws ForceConnectionException {
-        Class<?>[] argsTypes = { String.class, String.class };
-        Object[] args = { clientId, null };
-        Method method = getMethodForArgs(apexConnection.getClass(), argsTypes);
-
-        if (method == null) {
-            logger.error("Unable to find operations on soap connection for given arguments");
-            throw new ForceConnectionException("Unable to find operations on soap connection for given arguments");
-        }
-
-        invokeMethod(apexConnection, method, args);
-
-    }
-
-    private Method getMethodForArgs(Class<? extends Object> instanceClazz, Class<? extends Object>[] argsTypes)
-            throws ForceConnectionException {
-        Method method = null;
-        String methodName = "setCallOptions";
-        try {
-            method = instanceClazz.getDeclaredMethod(methodName, argsTypes);
-        } catch (SecurityException ex) {
-            logger.error("Unable to connect to Force.com", ex);
-            throw new ForceConnectionException("Unable to connect to Force.com", this, ex);
-        } catch (NoSuchMethodException ex) {
-            logger.error("Unable to connect to Force.com", ex);
-        }
-        return method;
-    }
-
-    private void invokeMethod(Object instance, Method method, Object[] args) throws ForceConnectionException {
-        try {
-            method.setAccessible(true);
-        } catch (SecurityException e) {
-            logger.warn("Unable to invoke method '" + method.getName() + "' on parner connection: " + e.getMessage());
-        }
-
-        try {
-            method.invoke(instance, args);
-        } catch (Exception ex) {
-            logger.error("Unable to invoke method '" + method.getName() + "' on parner connection", ex);
-            throw new ForceConnectionException("Unable to invoke method '" + method.getName()
-                    + "' on parner connection", this, ex);
-        }
+        apexConnection.setCallOptions(clientId);
     }
 
     public void setTimeoutMillis(int timeoutMillis) {
