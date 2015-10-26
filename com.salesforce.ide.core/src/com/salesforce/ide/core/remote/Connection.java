@@ -403,7 +403,7 @@ public class Connection {
     }
 
     public void setClientCallOptions() throws ForceConnectionException {
-        getPartnerConnection().setCallOptions(getClientId(), null, true, null, debugExceptions, getPlatform(), getApplication(), null);
+        getPartnerConnection().setCallOptions(getClientId(), null, false, null, debugExceptions, getPlatform(), getApplication(), null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set IDE call options");
         }

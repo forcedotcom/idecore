@@ -3908,6 +3908,25 @@ All Rights Reserved
                     </sequence>
                 </complexType>
             </element>
+            
+            <!-- RetrieveDefaultValues Message Types -->
+            <element name="retrieveDefaultValues">
+                <complexType>
+                    <sequence>
+                        <element name="sObjectType"  type="xsd:string"/>
+                        <element name="recordTypeId" type="tns:ID" nillable="true" />
+                        <element name="fieldList"    type="xsd:string" nillable="true"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <element name="retrieveDefaultValuesResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="ens:sObject" nillable="true"/>
+                    </sequence>
+                </complexType>
+            </element>
 
             <!-- Convert Lead Message Types -->
             <element name="convertLead">
@@ -5344,6 +5363,13 @@ All Rights Reserved
         <part element="tns:retrieveResponse" name="parameters"/>
     </message>
 
+    <message name="retrieveDefaultValuesRequest">
+        <part element="tns:retrieveDefaultValues" name="parameters"/>
+    </message>
+    <message name="retrieveDefaultValuesResponse">
+        <part element="tns:retrieveDefaultValuesResponse" name="parameters"/>
+    </message>
+
     <message name="processRequest">
         <part element="tns:process" name="parameters"/>
     </message>
@@ -5951,6 +5977,15 @@ All Rights Reserved
             <fault  message="tns:MalformedQueryFault" name="MalformedQueryFault"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
             <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
+        </operation>
+
+        <operation name="retrieveDefaultValues">
+            <documentation>Get the defaults for a given sobject type</documentation>
+            <input  message="tns:retrieveDefaultValuesRequest"/>
+            <output message="tns:retrieveDefaultValuesResponse"/>
+            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
+            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
         <operation name="process">
@@ -7055,6 +7090,27 @@ All Rights Reserved
             </fault>
             <fault name="InvalidIdFault">
                 <soap:fault name="InvalidIdFault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="retrieveDefaultValues">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="InvalidSObjectFault">
+                <soap:fault name="InvalidSObjectFault" use="literal"/>
+            </fault>
+            <fault name="InvalidIdFault">
+                <soap:fault name="InvalidIdFault" use="literal"/>
+            </fault>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
             </fault>
         </operation>
         <operation name="process">

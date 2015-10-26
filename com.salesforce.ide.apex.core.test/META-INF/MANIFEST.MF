@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apex Core Tests
 Bundle-SymbolicName: com.salesforce.ide.apex.core.test
-Bundle-Version: 35.0.0.qualifier
+Bundle-Version: 36.0.0.qualifier
 Bundle-Vendor: salesforce.com
-Fragment-Host: com.salesforce.ide.apex.core;bundle-version="35.0.0"
+Fragment-Host: com.salesforce.ide.apex.core;bundle-version="36.0.0"
 Require-Bundle: org.junit,
  com.salesforce.ide.test.commonlibs
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

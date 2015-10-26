@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-SymbolicName: com.salesforce.ide.test.commonlibs;singleton:=true
-Bundle-Version: 35.0.0.qualifier
+Bundle-Version: 36.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Activator: com.salesforce.ide.test.commonlibs.CommonLibsActivator

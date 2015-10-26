@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Force.com IDE" id="com.salesforce.ide.product" application="org.eclipse.ui.ide.workbench" version="35.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Force.com IDE" id="com.salesforce.ide.product" application="org.eclipse.ui.ide.workbench" version="36.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/com.salesforce.ide/images/about.png"/>
       <text>
          End User License Agreement
-Force.com IDE version 35.0
+Force.com IDE version 36.0
 Except as described below, com.salesforce.ide,
 com.salesforce.ide.api,
 com.salesforce.ide.branding,
@@ -160,7 +160,6 @@ of the Apache License, Version 2.0, available at http://www.apache.org/licenses/
 
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>
