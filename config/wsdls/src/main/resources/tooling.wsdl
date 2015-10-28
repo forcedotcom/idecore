@@ -4525,6 +4525,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="actionName" minOccurs="0" type="xsd:string"/>
      <xsd:element name="comment" minOccurs="0" type="xsd:string"/>
      <xsd:element name="content" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formFactor" minOccurs="0" type="tns:FormFactor"/>
      <xsd:element name="skipRecordTypeSelect" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="type" minOccurs="0" type="tns:ActionOverrideType"/>
     </xsd:sequence>
@@ -5141,6 +5142,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="INVALID_ENTITY_FOR_MATCH_ENGINE_ERROR"/>
      <xsd:enumeration value="INVALID_ENTITY_FOR_MATCH_OPERATION_ERROR"/>
      <xsd:enumeration value="INVALID_ENVIRONMENT_HUB_MEMBER"/>
+     <xsd:enumeration value="INVALID_EVENT_DELIVERY"/>
      <xsd:enumeration value="INVALID_EVENT_PUBLICATION"/>
      <xsd:enumeration value="INVALID_FIELD"/>
      <xsd:enumeration value="INVALID_FIELD_FOR_INSERT_UPDATE"/>
@@ -5699,6 +5701,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
    </xsd:complexType>
    <xsd:complexType name="ActionOverride">
     <xsd:sequence>
+     <xsd:element name="formFactor" type="xsd:string"/>
      <xsd:element name="isAvailableInTouch" type="xsd:boolean"/>
      <xsd:element name="name" type="xsd:string"/>
      <xsd:element name="pageId" type="tns:ID"/>
@@ -5892,7 +5895,6 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="orgDefaultCurrencyIsoCode" type="xsd:string"/>
      <xsd:element name="orgDisallowHtmlAttachments" type="xsd:boolean"/>
      <xsd:element name="orgHasPersonAccounts" type="xsd:boolean"/>
-     <xsd:element name="orgSignupCountryId" type="xsd:string"/>
      <xsd:element name="organizationId" type="xsd:string"/>
      <xsd:element name="organizationMultiCurrency" type="xsd:boolean"/>
      <xsd:element name="organizationName" type="xsd:string"/>
@@ -6323,6 +6325,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="INVALID_ENTITY_FOR_MATCH_ENGINE_ERROR"/>
      <xsd:enumeration value="INVALID_ENTITY_FOR_MATCH_OPERATION_ERROR"/>
      <xsd:enumeration value="INVALID_ENVIRONMENT_HUB_MEMBER"/>
+     <xsd:enumeration value="INVALID_EVENT_DELIVERY"/>
      <xsd:enumeration value="INVALID_EVENT_PUBLICATION"/>
      <xsd:enumeration value="INVALID_FIELD"/>
      <xsd:enumeration value="INVALID_FIELD_FOR_INSERT_UPDATE"/>
@@ -9238,6 +9241,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="Name" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="NamespacePrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="SystemModstamp" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+       <xsd:element name="VersionName" minOccurs="0" type="xsd:string" nillable="true"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -10673,6 +10677,16 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="InstalledSubscriberPackage">
+    <xsd:complexContent>
+     <xsd:extension base="tns:sObject">
+      <xsd:sequence>
+       <xsd:element name="SubscriberPackageId" minOccurs="0" type="tns:ID" nillable="true"/>
+       <xsd:element name="SubscriberPackageVersionId" minOccurs="0" type="tns:ID" nillable="true"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
    <xsd:complexType name="Flow">
     <xsd:complexContent>
      <xsd:extension base="tns:sObject">
@@ -10724,6 +10738,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+       <xsd:element name="Description" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="DeveloperName" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="FullName" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="IsDeleted" minOccurs="0" type="xsd:boolean" nillable="true"/>
@@ -12276,6 +12291,18 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="RelatedEntity">
+    <xsd:complexContent>
+     <xsd:extension base="tns:sObject">
+      <xsd:sequence>
+       <xsd:element name="DurableId" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="RelatedId" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="RelationshipType" minOccurs="0" type="tns:RelationshipType" nillable="true"/>
+       <xsd:element name="RootId" minOccurs="0" type="xsd:string" nillable="true"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
    <xsd:complexType name="RelationshipDomain">
     <xsd:complexContent>
      <xsd:extension base="tns:sObject">
@@ -12944,6 +12971,46 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="MetadataContainer" minOccurs="0" type="tns:sObject" nillable="true"/>
        <xsd:element name="MetadataContainerId" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="SystemModstamp" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackage">
+    <xsd:complexContent>
+     <xsd:extension base="tns:sObject">
+      <xsd:sequence>
+       <xsd:element name="Description" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="IsPackageValid" minOccurs="0" type="xsd:boolean" nillable="true"/>
+       <xsd:element name="Name" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="SubscriberPackageVersions" minOccurs="0" type="tns:QueryResult" nillable="true"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackageVersion">
+    <xsd:complexContent>
+     <xsd:extension base="tns:sObject">
+      <xsd:sequence>
+       <xsd:element name="AppExchangeDescription" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="AppExchangeLogoUrl" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="AppExchangePackageName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="AppExchangePublisherName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="BuildNumber" minOccurs="0" type="xsd:int" nillable="true"/>
+       <xsd:element name="Description" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="IsDeprecated" minOccurs="0" type="xsd:boolean" nillable="true"/>
+       <xsd:element name="IsManaged" minOccurs="0" type="xsd:boolean" nillable="true"/>
+       <xsd:element name="IsPasswordProtected" minOccurs="0" type="xsd:boolean" nillable="true"/>
+       <xsd:element name="MajorVersion" minOccurs="0" type="xsd:int" nillable="true"/>
+       <xsd:element name="MinorVersion" minOccurs="0" type="xsd:int" nillable="true"/>
+       <xsd:element name="Name" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="PatchVersion" minOccurs="0" type="xsd:int" nillable="true"/>
+       <xsd:element name="PostInstallUrl" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="Profiles" minOccurs="0" type="tns:SubscriberPackageProfiles" nillable="true"/>
+       <xsd:element name="PublisherName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ReleaseNotesUrl" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ReleaseState" minOccurs="0" type="tns:PackageReleaseState" nillable="true"/>
+       <xsd:element name="RemoteSiteSettings" minOccurs="0" type="tns:SubscriberPackageRemoteSiteSettings" nillable="true"/>
+       <xsd:element name="SubscriberPackageId" minOccurs="0" type="tns:ID" nillable="true"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -14508,6 +14575,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Standard"/>
      <xsd:enumeration value="Scontrol"/>
      <xsd:enumeration value="Visualforce"/>
+     <xsd:enumeration value="Flexipage"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:simpleType name="ActionTaskAssignedToTypes">
@@ -15479,6 +15547,13 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="BestCase"/>
      <xsd:enumeration value="Forecast"/>
      <xsd:enumeration value="Closed"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="FormFactor">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Small"/>
+     <xsd:enumeration value="Medium"/>
+     <xsd:enumeration value="Large"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:simpleType name="Frequency">
@@ -17055,11 +17130,10 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Aloha"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:simpleType name="FormFactor">
+   <xsd:simpleType name="RelationshipType">
     <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="Small"/>
-     <xsd:enumeration value="Medium"/>
-     <xsd:enumeration value="Large"/>
+     <xsd:enumeration value="REQUIRES"/>
+     <xsd:enumeration value="REQUIRED_BY"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:simpleType name="ResetAsyncRequestState">
@@ -17157,6 +17231,45 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="PersonalSettings"/>
     </xsd:restriction>
    </xsd:simpleType>
+   <xsd:complexType name="SubscriberPackageProfiles">
+    <xsd:sequence>
+     <xsd:element name="destinationProfiles" minOccurs="0" maxOccurs="unbounded" type="tns:SubscriberPackageDestinationProfile"/>
+     <xsd:element name="sourceProfiles" minOccurs="0" maxOccurs="unbounded" type="tns:SubscriberPackageSourceProfile"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackageDestinationProfile">
+    <xsd:sequence>
+     <xsd:element name="description" type="xsd:string"/>
+     <xsd:element name="displayName" type="xsd:string"/>
+     <xsd:element name="name" type="xsd:string"/>
+     <xsd:element name="noAccess" type="xsd:boolean"/>
+     <xsd:element name="profileId" type="xsd:string"/>
+     <xsd:element name="type" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackageSourceProfile">
+    <xsd:sequence>
+     <xsd:element name="label" type="xsd:string"/>
+     <xsd:element name="value" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="PackageReleaseState">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Beta"/>
+     <xsd:enumeration value="Released"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="SubscriberPackageRemoteSiteSettings">
+    <xsd:sequence>
+     <xsd:element name="settings" minOccurs="0" maxOccurs="unbounded" type="tns:SubscriberPackageRemoteSiteSetting"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackageRemoteSiteSetting">
+    <xsd:sequence>
+     <xsd:element name="secure" type="xsd:boolean"/>
+     <xsd:element name="url" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
    <xsd:simpleType name="TraceFlagType">
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="USER_DEBUG"/>

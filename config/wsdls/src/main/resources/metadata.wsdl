@@ -1953,6 +1953,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="actionName" minOccurs="0" type="xsd:string"/>
      <xsd:element name="comment" minOccurs="0" type="xsd:string"/>
      <xsd:element name="content" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formFactor" minOccurs="0" type="tns:FormFactor"/>
      <xsd:element name="skipRecordTypeSelect" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="type" minOccurs="0" type="tns:ActionOverrideType"/>
     </xsd:sequence>
@@ -1963,6 +1964,14 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Standard"/>
      <xsd:enumeration value="Scontrol"/>
      <xsd:enumeration value="Visualforce"/>
+     <xsd:enumeration value="Flexipage"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="FormFactor">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Small"/>
+     <xsd:enumeration value="Medium"/>
+     <xsd:enumeration value="Large"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="ArticleTypeChannelDisplay">
@@ -3213,6 +3222,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="OData4"/>
      <xsd:enumeration value="SfdcOrg"/>
      <xsd:enumeration value="Salesforce"/>
+     <xsd:enumeration value="ScActivity"/>
      <xsd:enumeration value="Sharepoint"/>
      <xsd:enumeration value="SharepointOnline"/>
      <xsd:enumeration value="SimpleURL"/>
@@ -5521,6 +5531,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="types" minOccurs="0" maxOccurs="unbounded" type="tns:PackageTypeMembers"/>
        <xsd:element name="uninstallClass" minOccurs="0" type="xsd:string"/>
        <xsd:element name="version" type="xsd:string"/>
+       <xsd:element name="versionName" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -6960,6 +6971,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="lockSessionsToDomain" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="lockSessionsToIp" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="logoutURL" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="securityCentralKillSession" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="sessionTimeout" minOccurs="0" type="tns:SessionTimeout"/>
     </xsd:sequence>
    </xsd:complexType>
@@ -7414,6 +7426,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
        <xsd:element name="assetIcon" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="assetVersion" minOccurs="0" type="xsd:double"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="label" type="xsd:string"/>
        <xsd:element name="templateType" type="xsd:string"/>
@@ -8178,6 +8191,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="INVALID_ENTITY_FOR_MATCH_ENGINE_ERROR"/>
      <xsd:enumeration value="INVALID_ENTITY_FOR_MATCH_OPERATION_ERROR"/>
      <xsd:enumeration value="INVALID_ENVIRONMENT_HUB_MEMBER"/>
+     <xsd:enumeration value="INVALID_EVENT_DELIVERY"/>
      <xsd:enumeration value="INVALID_EVENT_PUBLICATION"/>
      <xsd:enumeration value="INVALID_FIELD"/>
      <xsd:enumeration value="INVALID_FIELD_FOR_INSERT_UPDATE"/>

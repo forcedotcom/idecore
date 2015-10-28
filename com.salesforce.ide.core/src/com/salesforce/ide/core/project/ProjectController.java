@@ -675,7 +675,7 @@ public class ProjectController extends Controller {
             throw new InvocationTargetException(e);
         }
 
-        fetchManagedInstalledPackages(monitor);
+//        fetchManagedInstalledPackages(monitor);
     }
 
     private String[] getEnabledComponentTypes() {

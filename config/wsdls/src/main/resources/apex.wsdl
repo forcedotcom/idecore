@@ -43,8 +43,16 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="line" type="xsd:int"/>
      <xsd:element name="name" minOccurs="0" type="xsd:string"/>
      <xsd:element name="problem" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="problems" minOccurs="0" maxOccurs="unbounded" type="tns:CompileIssue" nillable="true"/>
      <xsd:element name="success" type="xsd:boolean"/>
-     <xsd:element name="warnings" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="warnings" minOccurs="0" maxOccurs="unbounded" type="tns:CompileIssue" nillable="true"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="CompileIssue">
+    <xsd:sequence>
+     <xsd:element name="column" minOccurs="0" type="xsd:int"/>
+     <xsd:element name="line" minOccurs="0" type="xsd:int"/>
+     <xsd:element name="message" minOccurs="0" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="DeleteApexResult">
@@ -124,7 +132,9 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="line" type="xsd:int"/>
      <xsd:element name="name" minOccurs="0" type="xsd:string"/>
      <xsd:element name="problem" type="xsd:string" nillable="true"/>
+     <xsd:element name="problems" minOccurs="0" maxOccurs="unbounded" type="tns:CompileIssue" nillable="true"/>
      <xsd:element name="success" type="xsd:boolean"/>
+     <xsd:element name="warnings" minOccurs="0" maxOccurs="unbounded" type="tns:CompileIssue" nillable="true"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="ExecuteAnonymousResult">
