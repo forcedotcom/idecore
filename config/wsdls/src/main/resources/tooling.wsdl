@@ -7006,11 +7006,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:ApexClass" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -7264,6 +7264,7 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="Name" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="Port" minOccurs="0" type="xsd:int" nillable="true"/>
        <xsd:element name="RequestIdentifier" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="RequestType" minOccurs="0" type="tns:ApexRequestType" nillable="true"/>
        <xsd:element name="Server" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="Session" minOccurs="0" type="tns:ApexDebuggerSession" nillable="true"/>
        <xsd:element name="SessionId" minOccurs="0" type="tns:ID" nillable="true"/>
@@ -7514,11 +7515,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:ApexPage" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -7719,11 +7720,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:ApexTrigger" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -7970,11 +7971,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:AuraDefinitionBundle" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -8450,11 +8451,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:CompactLayout" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -8616,11 +8617,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:CustomApplication" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -8824,11 +8825,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:CustomField" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -8946,11 +8947,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WebLink" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -9054,11 +9055,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:CustomTab" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -9398,11 +9399,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:EmailTemplate" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -9699,11 +9700,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:EventDelivery" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -9804,11 +9805,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:EventSubscription" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -9885,11 +9886,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:EventType" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -10201,11 +10202,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:FlexiPage" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -10310,11 +10311,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:FlowDefinition" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -10341,11 +10342,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:Flow" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -10790,11 +10791,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:KeywordList" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -10870,11 +10871,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:Layout" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -11203,11 +11204,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="Content" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:sObject" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="Version" minOccurs="0" type="xsd:int" nillable="true"/>
        <xsd:element name="VersionIdentity" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="VersionedContentEntity" minOccurs="0" type="tns:VersionedContentEntity" nillable="true"/>
@@ -11226,11 +11227,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:sObject" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -11259,11 +11260,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="Content" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:sObject" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="Version" minOccurs="0" type="xsd:int" nillable="true"/>
        <xsd:element name="VersionIdentity" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="VersionedContentEntity" minOccurs="0" type="tns:VersionedContentEntity" nillable="true"/>
@@ -11503,6 +11504,30 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="PackageInstallRequest">
+    <xsd:complexContent>
+     <xsd:extension base="tns:sObject">
+      <xsd:sequence>
+       <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
+       <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
+       <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+       <xsd:element name="Errors" minOccurs="0" type="tns:SubscriberPackageInstallErrors" nillable="true"/>
+       <xsd:element name="IsDeleted" minOccurs="0" type="xsd:boolean" nillable="true"/>
+       <xsd:element name="LastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
+       <xsd:element name="LastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
+       <xsd:element name="LastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+       <xsd:element name="NameConflictResolution" minOccurs="0" type="tns:PackageNameConflictResolution" nillable="true"/>
+       <xsd:element name="PackageInstallSource" minOccurs="0" type="tns:PackageInstallSource" nillable="true"/>
+       <xsd:element name="Password" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ProfileMappings" minOccurs="0" type="tns:SubscriberPackageProfileMappings" nillable="true"/>
+       <xsd:element name="SecurityType" minOccurs="0" type="tns:PackageInstallSecurityType" nillable="true"/>
+       <xsd:element name="Status" minOccurs="0" type="tns:PackageInstallRequestStatus" nillable="true"/>
+       <xsd:element name="SubscriberPackageVersionKey" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="SystemModstamp" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
    <xsd:complexType name="PackageMember">
     <xsd:complexContent>
      <xsd:extension base="tns:sObject">
@@ -11646,11 +11671,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:sObject" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -11987,11 +12012,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:Profile" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -12269,11 +12294,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:RecordType" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -13180,6 +13205,8 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
       <xsd:sequence>
        <xsd:element name="ApexClass" minOccurs="0" type="tns:ApexClass" nillable="true"/>
        <xsd:element name="ApexClassId" minOccurs="0" type="tns:ID" nillable="true"/>
+       <xsd:element name="ApexTestSuite" minOccurs="0" type="tns:ApexTestSuite" nillable="true"/>
+       <xsd:element name="ApexTestSuiteId" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -13188,8 +13215,6 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="LastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="LastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="SystemModstamp" minOccurs="0" type="xsd:dateTime" nillable="true"/>
-       <xsd:element name="TestSuiteName" minOccurs="0" type="tns:ApexTestSuite" nillable="true"/>
-       <xsd:element name="TestSuiteNameId" minOccurs="0" type="tns:ID" nillable="true"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -13623,11 +13648,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:ValidationRule" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -13758,11 +13783,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WebLink" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -13854,11 +13879,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WorkflowAlert" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -14007,11 +14032,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WorkflowFieldUpdate" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -14135,11 +14160,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WorkflowOutboundMessage" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -14259,11 +14284,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WorkflowRule" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -14363,11 +14388,11 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="ChangeType" minOccurs="0" type="tns:ChangeType" nillable="true"/>
        <xsd:element name="ContentEntity" minOccurs="0" type="tns:WorkflowTask" nillable="true"/>
        <xsd:element name="ContentEntityId" minOccurs="0" type="tns:ID" nillable="true"/>
-       <xsd:element name="ContentEntityKeyPrefix" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="ContentEntityLastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="ContentEntityName" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="ContentEntityType" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="CreatedBy" minOccurs="0" type="tns:User" nillable="true"/>
        <xsd:element name="CreatedById" minOccurs="0" type="tns:ID" nillable="true"/>
        <xsd:element name="CreatedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
@@ -16695,6 +16720,27 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="lmoEvnHub"/>
     </xsd:restriction>
    </xsd:simpleType>
+   <xsd:simpleType name="ApexRequestType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="BATCH_APEX"/>
+     <xsd:enumeration value="FUTURE"/>
+     <xsd:enumeration value="SCHEDULED"/>
+     <xsd:enumeration value="SYNCHRONOUS"/>
+     <xsd:enumeration value="RUN_TESTS_ASYNCHRONOUS"/>
+     <xsd:enumeration value="RUN_TESTS_SYNCHRONOUS"/>
+     <xsd:enumeration value="VISUALFORCE"/>
+     <xsd:enumeration value="QUEUEABLE"/>
+     <xsd:enumeration value="REMOTE_ACTION"/>
+     <xsd:enumeration value="LIGHTNING"/>
+     <xsd:enumeration value="QUICK_ACTION"/>
+     <xsd:enumeration value="SOAP"/>
+     <xsd:enumeration value="REST"/>
+     <xsd:enumeration value="INVOCABLE_ACTION"/>
+     <xsd:enumeration value="EXECUTE_ANONYMOUS"/>
+     <xsd:enumeration value="INBOUND_EMAIL_SERVICE"/>
+     <xsd:enumeration value="APEX_WEBSERVICE"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:simpleType name="ApexDebuggerStatus">
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="Pending"/>
@@ -17114,6 +17160,59 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="AppSwitcher"/>
      <xsd:enumeration value="Salesforce1"/>
      <xsd:enumeration value="NetworkTabs"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="SubscriberPackageInstallErrors">
+    <xsd:sequence>
+     <xsd:element name="errors" minOccurs="0" maxOccurs="unbounded" type="tns:SubscriberPackageInstallError"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackageInstallError">
+    <xsd:sequence>
+     <xsd:element name="message" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="PackageNameConflictResolution">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="RenameAllForTest"/>
+     <xsd:enumeration value="RenameMetadata"/>
+     <xsd:enumeration value="Block"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="PackageInstallSource">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="U"/>
+     <xsd:enumeration value="R"/>
+     <xsd:enumeration value="D"/>
+     <xsd:enumeration value="S"/>
+     <xsd:enumeration value="A"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="SubscriberPackageProfileMappings">
+    <xsd:sequence>
+     <xsd:element name="profileMappings" minOccurs="0" maxOccurs="unbounded" type="tns:SubscriberPackageProfileMapping"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="SubscriberPackageProfileMapping">
+    <xsd:sequence>
+     <xsd:element name="source" type="xsd:string"/>
+     <xsd:element name="target" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="PackageInstallSecurityType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Full"/>
+     <xsd:enumeration value="None"/>
+     <xsd:enumeration value="Custom"/>
+     <xsd:enumeration value="Push"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="PackageInstallRequestStatus">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="InProgress"/>
+     <xsd:enumeration value="Success"/>
+     <xsd:enumeration value="Error"/>
+     <xsd:enumeration value="Unknown"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:simpleType name="PathAssistantStepItemType">
