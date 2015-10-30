@@ -403,7 +403,7 @@ public class Connection {
     }
 
     public void setClientCallOptions() throws ForceConnectionException {
-        getPartnerConnection().setCallOptions(getClientId(), null, null, debugExceptions, getPlatform(), getApplication());
+        getPartnerConnection().setCallOptions(getClientId(), null, false, null, debugExceptions, getPlatform(), getApplication(), null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set IDE call options");
         }
@@ -415,7 +415,7 @@ public class Connection {
      * @throws ForceConnectionException
      */
     public void setNonCallOptions() throws ForceConnectionException {
-        partnerConnection.setCallOptions("", null, null, debugExceptions, getPlatform(), getApplication());
+        partnerConnection.setCallOptions("", null, true, null, debugExceptions, getPlatform(), getApplication(), null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set non-IDE call options");
         }

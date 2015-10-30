@@ -9241,8 +9241,8 @@ Copyright 2006-2015 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="LastModifiedDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
        <xsd:element name="Name" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="NamespacePrefix" minOccurs="0" type="xsd:string" nillable="true"/>
+       <xsd:element name="PackageVersion" minOccurs="0" type="xsd:string" nillable="true"/>
        <xsd:element name="SystemModstamp" minOccurs="0" type="xsd:dateTime" nillable="true"/>
-       <xsd:element name="VersionName" minOccurs="0" type="xsd:string" nillable="true"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>

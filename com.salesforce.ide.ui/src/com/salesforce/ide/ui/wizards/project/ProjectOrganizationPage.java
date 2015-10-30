@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -339,7 +340,7 @@ public class ProjectOrganizationPage extends BaseProjectCreatePage {
 
                     // get package names
                     monitor.subTask("Fetching packages...");
-//                    getProjectController().loadRemotePackageNames(new SubProgressMonitor(monitor, 3));
+                    getProjectController().loadRemotePackageNames(new SubProgressMonitor(monitor, 3));
                     monitor.worked(1);
 
                     monitor.subTask("Preparing to fetch component metadata...");
