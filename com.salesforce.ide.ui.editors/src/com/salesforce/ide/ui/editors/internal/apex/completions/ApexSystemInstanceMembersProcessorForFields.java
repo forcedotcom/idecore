@@ -34,7 +34,9 @@ import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.ast.visitor.SymbolScope;
 import apex.jorje.semantic.compiler.ApexCompiler;
 import apex.jorje.semantic.compiler.CompilationInput;
+import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
+import apex.jorje.semantic.exception.Errors;
 import apex.jorje.semantic.symbol.member.variable.FieldInfo;
 import apex.jorje.semantic.symbol.resolver.SymbolResolverImpl;
 import apex.jorje.semantic.symbol.type.TypeInfo;
@@ -165,14 +167,14 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
     protected void visitVariables(String documentInput, Compilation compilation) {
         SourceFile virtualSourceFile =
                 SourceFile.builder().setBody(documentInput)
-                        .setNamespace(apex.jorje.semantic.compiler.Namespace.EMPTY).build();
+                        .setNamespace(Namespaces.EMPTY).build();
         ApexCompiler compiler =
                 ApexCompiler
                         .builder()
                         .setInput(
                             new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
                                     null, null, null)).build();
-        SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler));
+        SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler), new Errors());
         visitor = new VariablesVisitor();
         compilation.traverse(visitor, scope);
     }

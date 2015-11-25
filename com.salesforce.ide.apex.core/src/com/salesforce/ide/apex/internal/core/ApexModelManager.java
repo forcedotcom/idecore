@@ -23,8 +23,9 @@ import apex.jorje.data.ast.CompilationUnit;
 import apex.jorje.parser.impl.ApexParserImpl;
 import apex.jorje.semantic.ast.AstNodeFactory;
 import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.semantic.compiler.Namespace;
+import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
+import apex.jorje.semantic.exception.Errors;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -81,8 +82,8 @@ public class ApexModelManager {
                         } catch (CoreException | IOException e) {}
 
                         SourceFile virtualSourceFile =
-                                SourceFile.builder().setBody(body).setNamespace(Namespace.EMPTY).build();
-                        return AstNodeFactory.create(virtualSourceFile, null, compilationUnit);
+                                SourceFile.builder().setBody(body).setNamespace(Namespaces.EMPTY).build();
+                        return AstNodeFactory.create(new Errors(), virtualSourceFile, null, compilationUnit);
                     } catch (ExecutionException e) {
                         throw new InvalidCompilationASTException(e);
                     }

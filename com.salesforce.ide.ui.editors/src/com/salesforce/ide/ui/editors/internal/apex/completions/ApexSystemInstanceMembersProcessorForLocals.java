@@ -47,7 +47,9 @@ import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.ast.visitor.SymbolScope;
 import apex.jorje.semantic.compiler.ApexCompiler;
 import apex.jorje.semantic.compiler.CompilationInput;
+import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
+import apex.jorje.semantic.exception.Errors;
 import apex.jorje.semantic.symbol.member.variable.LocalInfo;
 import apex.jorje.semantic.symbol.resolver.SymbolResolverImpl;
 import apex.jorje.semantic.symbol.type.TypeInfo;
@@ -205,7 +207,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
         SourceFile virtualSourceFile =
                 SourceFile.builder().setBody(viewer.getDocument().get())
-                        .setNamespace(apex.jorje.semantic.compiler.Namespace.EMPTY).build();
+                        .setNamespace(Namespaces.EMPTY).build();
         Compilation compilation = getCompilationUnit(resource);
         ApexCompiler compiler =
                 ApexCompiler
@@ -213,7 +215,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
                         .setInput(
                             new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
                                     null, null, null)).build();
-        SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler));
+        SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler), new Errors());
         visitor = new LocalVariablesVisitor();
         compilation.traverse(visitor, scope);
     }

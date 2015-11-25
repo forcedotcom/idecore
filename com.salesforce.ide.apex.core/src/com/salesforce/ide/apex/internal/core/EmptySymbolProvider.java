@@ -16,43 +16,39 @@ import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
 import apex.jorje.semantic.symbol.resolver.SymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
+
 /**
  * Taken from apex-jorje as a way to not do any type resolution.
  * 
- * @author nchen
+ * @author jspagnola
  * 
  */
 public class EmptySymbolProvider implements SymbolProvider {
+
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 
-    private EmptySymbolProvider() {
-    }
+    private EmptySymbolProvider() {}
 
     public static EmptySymbolProvider get() {
         return INSTANCE;
     }
 
     @Override
-    public void reportParsed(final CodeUnit codeUnit) {
-    }
+    public void reportParsed(final CodeUnit codeUnit) {}
 
     @Override
-    public TypeInfo find(final SymbolResolver resolver, final String lowerCaseFullName) {
+    public TypeInfo find(final SymbolResolver symbols, final TypeInfo referencingType, final String lowerCaseFullName) {
         return null;
     }
 
     @Override
-    public TypeInfo fetch(final SymbolResolver resolver, final String fullName) {
+    public TypeInfo fetch(final SymbolResolver symbols, final TypeInfo referencingType, final String fullName) {
         return null;
     }
 
     @Override
-    public TypeInfo getVfComponentType(final SymbolResolver resolver, final Namespace namespace, final String name) {
-        return null;
-    }
-
-    @Override
-    public TypeInfo getAuraComponentType(final SymbolResolver resolver, final Namespace namespace, final String name) {
+    public TypeInfo getVfComponentType(final SymbolResolver symbols, final TypeInfo referencingType,
+            final Namespace namespace, final String name) {
         return null;
     }
 
@@ -62,12 +58,12 @@ public class EmptySymbolProvider implements SymbolProvider {
     }
 
     @Override
-    public TypeInfo getSObjectType(final SymbolResolver symbols, final String name) {
+    public TypeInfo getSObjectType(final TypeInfo referencingType, final String name) {
         return null;
     }
 
     @Override
-    public String getPageReference(final String name) {
+    public String getPageReference(final TypeInfo referencingType, final String name) {
         return null;
     }
 

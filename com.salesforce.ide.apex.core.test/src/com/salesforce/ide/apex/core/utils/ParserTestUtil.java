@@ -20,8 +20,9 @@ import apex.jorje.data.ast.CompilationUnit;
 import apex.jorje.parser.impl.ApexParserImpl;
 import apex.jorje.semantic.ast.AstNodeFactory;
 import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.semantic.compiler.Namespace;
+import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
+import apex.jorje.semantic.exception.Errors;
 
 import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.test.common.utils.IdeTestUtil;
@@ -41,7 +42,7 @@ public class ParserTestUtil {
     }
 
     // We still want to support Java 6 so we cannot use the new java.nio.file.* in Java 7
-    private static String readFromFile(String path) throws IOException {
+    public static String readFromFile(String path) throws IOException {
         StringBuilder sb = new StringBuilder();
         String NL = System.getProperty("line.separator");
         Scanner scanner = new Scanner(IdeTestUtil.getFullUrlEntry(path).openStream(), "UTF-8");
@@ -76,8 +77,8 @@ public class ParserTestUtil {
     public static Compilation parseCompilationFromFile(String path) throws IOException, URISyntaxException,
             RecognitionException {
         CompilationUnit compilationUnit = parseCompilationUnitFromFile(path);
-        SourceFile virtualSourceFile = SourceFile.builder().setBody("").setNamespace(Namespace.EMPTY).build();
-        return AstNodeFactory.create(virtualSourceFile, null, compilationUnit);
+        SourceFile virtualSourceFile = SourceFile.builder().setBody("").setNamespace(Namespaces.EMPTY).build();
+        return AstNodeFactory.create(new Errors(), virtualSourceFile, null, compilationUnit);
     }
 
     /*
@@ -95,7 +96,7 @@ public class ParserTestUtil {
     public static Compilation parseCompilationFromString(String contents) throws IOException, URISyntaxException,
             RecognitionException {
         CompilationUnit compilationUnit = parseCompilationUnitFromString(contents);
-        SourceFile virtualSourceFile = SourceFile.builder().setBody("").setNamespace(Namespace.EMPTY).build();
-        return AstNodeFactory.create(virtualSourceFile, null, compilationUnit);
+        SourceFile virtualSourceFile = SourceFile.builder().setBody("").setNamespace(Namespaces.EMPTY).build();
+        return AstNodeFactory.create(new Errors(), virtualSourceFile, null, compilationUnit);
     }
 }
