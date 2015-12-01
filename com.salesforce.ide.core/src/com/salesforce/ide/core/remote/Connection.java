@@ -415,7 +415,7 @@ public class Connection {
      * @throws ForceConnectionException
      */
     public void setNonCallOptions() throws ForceConnectionException {
-        partnerConnection.setCallOptions("", null, true, null, debugExceptions, getPlatform(), getApplication(), null);
+        partnerConnection.setCallOptions("", null, false, null, debugExceptions, getPlatform(), getApplication(), null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set non-IDE call options");
         }
