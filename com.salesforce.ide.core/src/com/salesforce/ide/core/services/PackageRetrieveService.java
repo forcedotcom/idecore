@@ -14,6 +14,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -24,6 +26,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.salesforce.ide.api.metadata.types.Package;
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -33,6 +38,7 @@ import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.OperationStats;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
+import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.remote.Connection;
 import com.salesforce.ide.core.remote.ForceConnectionException;
@@ -601,8 +607,40 @@ public class PackageRetrieveService extends BasePackageService {
         if (projectPackageList.hasPackage(Constants.DEFAULT_PACKAGED_NAME)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Include retrieval of default package manifest");
+            }	
+            if (selective) {
+            	defaultPackageManifest = getPackageManifestFactory().createGenericDefaultPackageManifest();
+            	Map<String, List<String>> packageManifestMap = Maps.newHashMap();
+            	
+            	ComponentList components = projectPackageList.getAllComponents(false);
+            	List<String> types = components.getComponentTypes();
+            	for (String type : types) {
+            		List<String> members = packageManifestMap.get(type);
+            		if (members == null) {
+            			ComponentList componentListByType = components.getComponentListForComponentType(type);
+            			// Using set since some types have two components with the same fullName  
+            			Set<String> typeMembers = Sets.newHashSet();
+            			
+            			for (Component component : componentListByType) {
+            				typeMembers.add(component.getFullName());
+            			}
+            			members = Lists.newArrayList(typeMembers);
+            		} else {
+            			continue;
+            		}
+            		packageManifestMap.put(type, members);
+            	}
+            	
+                IProject project = projectPackageList.getProject();
+				try {
+					Package packageManifest =
+					        getPackageManifestFactory().getPackageManifest(project, Constants.DEFAULT_PACKAGED_NAME);
+					defaultPackageManifest.setVersion(packageManifest.getVersion());
+				} catch (FactoryException e) {
+	            	// Do nothing. Let it default to original endpoint version (latest by default)
+				}
+            	getPackageManifestFactory().addFileNamesToManifest(defaultPackageManifest, packageManifestMap);
             }
-            defaultPackageManifest = getPackageManifestFactory().getDefaultPackageManifest(projectPackageList);
             retrieveRequest.setUnpackaged(getPackageManifestFactory().convert(defaultPackageManifest));
         }
 
