@@ -23,7 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,8 +36,9 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+import com.google.common.collect.Maps;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.remote.tooling.RunTests;
+import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder;
 import com.salesforce.ide.test.common.IdeSetupTest;
 import com.salesforce.ide.test.common.IdeTestCase;
 import com.salesforce.ide.ui.views.runtest.Messages;
@@ -138,7 +138,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	@Test
 	public void testGetLogLevelsEmptyLogSettings() {
 		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = new LinkedHashMap<String, Combo>();
+		mockedTab.logSettings = Maps.newLinkedHashMap();
 		
 		Map<String, String> logLevels = mockedTab.getLogLevels();
 		
@@ -149,7 +149,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	@Test
 	public void testGetLogLevelsNullComboBox() {
 		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = new LinkedHashMap<String, Combo>();
+		mockedTab.logSettings = Maps.newLinkedHashMap();
 		mockedTab.logSettings.put(RunTestsLaunchConfigurationTab.logCategories[0], null);
 		
 		Map<String, String> logLevels = mockedTab.getLogLevels();
@@ -161,7 +161,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	@Test
 	public void testGetLogLevels() {
 		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = new LinkedHashMap<String, Combo>();
+		mockedTab.logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class);
 		when(combo.getText()).thenReturn(ApexLogLevel.DEBUG.name());
 		mockedTab.logSettings.put(RunTestsLaunchConfigurationTab.logCategories[0], combo);
@@ -287,7 +287,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
 		mockedTab.logStatus = null;
 		
-		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
 		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
 		mockedTab.logSettings = logSettings;
@@ -316,7 +316,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		Button logStatus = mock(Button.class, RETURNS_DEFAULTS);
 		mockedTab.logStatus = logStatus;
 		
-		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
 		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
 		mockedTab.logSettings = logSettings;
@@ -332,7 +332,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	public void testSetLogLevelsNoneProvided() {
 		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
 		
-		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
 		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
 		mockedTab.logSettings = logSettings;
@@ -347,12 +347,12 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	public void testSetLogLevelsUnsupportedCategory() {
 		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
 		
-		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
 		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
 		mockedTab.logSettings = logSettings;
 		
-		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		Map<String, String> logLevels = Maps.newLinkedHashMap();
 		logLevels.put("nope", ApexLogLevel.DEBUG.name());
 		
 		mockedTab.setLogLevels(logLevels);
@@ -365,12 +365,12 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	public void testSetLogLevelsSupportedCategory() {
 		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
 		
-		LinkedHashMap<String, Combo> logSettings = new LinkedHashMap<String, Combo>();
+		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
 		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
 		mockedTab.logSettings = logSettings;
 		
-		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		Map<String, String> logLevels = Maps.newLinkedHashMap();
 		logLevels.put(RunTestsLaunchConfigurationTab.logCategories[7], ApexLogLevel.DEBUG.name());
 		
 		mockedTab.setLogLevels(logLevels);
@@ -387,7 +387,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		
 		when(mockedTab.chooseProject()).thenReturn(null);
 		
-		Map<IProject, RunTests> allTests = Collections.<IProject, RunTests> emptyMap();
+		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
 		mockedTab.allTests = allTests;
 		
 		mockedTab.handleProjectButtonSelected();
@@ -412,7 +412,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		when(project.getName()).thenReturn(null);
 		when(mockedTab.chooseProject()).thenReturn(project);
 		
-		Map<IProject, RunTests> allTests = Collections.<IProject, RunTests> emptyMap();
+		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
 		mockedTab.allTests = allTests;
 		
 		mockedTab.handleProjectButtonSelected();
@@ -437,7 +437,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		when(project.getName()).thenReturn("MyProject");
 		when(mockedTab.chooseProject()).thenReturn(project);
 		
-		Map<IProject, RunTests> allTests = Collections.<IProject, RunTests> emptyMap();
+		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
 		mockedTab.allTests = allTests;
 		
 		mockedTab.handleProjectButtonSelected();
@@ -472,9 +472,9 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		when(mockedTab.setTextProperties(projectText, newProject, normalBlack)).thenReturn(projectText);
 		mockedTab.projectText = projectText;
 		
-		RunTests rt = mock(RunTests.class);
+		TestsHolder rt = mock(TestsHolder.class);
 		
-		Map<IProject, RunTests> allTests = new HashMap<IProject, RunTests>();
+		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
 		mockedTab.allTests = allTests;
 		
 		doNothing().when(mockedTab).resetSelectedTestClass();
@@ -512,9 +512,9 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		when(mockedTab.setTextProperties(projectText, newProject, normalBlack)).thenReturn(projectText);
 		mockedTab.projectText = projectText;
 		
-		RunTests rt = mock(RunTests.class);
+		TestsHolder rt = mock(TestsHolder.class);
 		
-		Map<IProject, RunTests> allTests = new HashMap<IProject, RunTests>();
+		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
 		allTests.put(project, rt);
 		mockedTab.allTests = allTests;
 		
@@ -551,7 +551,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		when(mockedTab.setTextProperties(projectText, projectName, normalBlack)).thenReturn(projectText);
 		mockedTab.projectText = projectText;
 		
-		Map<IProject, RunTests> allTests = Collections.<IProject, RunTests> emptyMap();
+		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
 		mockedTab.allTests = allTests;
 		
 		mockedTab.handleProjectButtonSelected();
@@ -906,12 +906,12 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		when(mockedTab.getTestMethodName()).thenReturn("MyMethod");
 		IProject project = mock(IProject.class);
 		when(mockedTab.getProjectFromName()).thenReturn(project);
-		when(mockedTab.buildTestsForConfig(project)).thenReturn(mock(RunTests.class));
-		when(mockedTab.convertTestsToJson(any(RunTests.class))).thenReturn("testsGalore");
-		when(mockedTab.countTotalTests(any(RunTests.class))).thenReturn(5);
+		when(mockedTab.buildTestsForConfig(project)).thenReturn(mock(TestsHolder.class));
+		when(mockedTab.convertTestsToJson(any(TestsHolder.class))).thenReturn("testsGalore");
+		when(mockedTab.countTotalTests(any(TestsHolder.class))).thenReturn(5);
 		when(mockedTab.isTestModeAsync()).thenReturn(true);
 		when(mockedTab.isLoggingEnabled()).thenReturn(true);
-		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		Map<String, String> logLevels = Maps.newLinkedHashMap();
 		when(mockedTab.getLogLevels()).thenReturn(logLevels);
 		
 		mockedTab.performApply(config);
@@ -1010,8 +1010,8 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		
 		IProject project = mock(IProject.class);
 		when(mockedTab.getProjectFromName()).thenReturn(project);
-		Map<IProject, RunTests> allTests = new HashMap<IProject, RunTests>();
-		allTests.put(project, mock(RunTests.class));
+		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
+		allTests.put(project, mock(TestsHolder.class));
 		mockedTab.allTests = allTests;
 		
 		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
@@ -1042,7 +1042,7 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		String methodName = "MyMethod";
 		boolean isAsync = false;
 		boolean isLoggingEnabled = true;
-		Map<String, String> logLevels = new LinkedHashMap<String, String>();
+		Map<String, String> logLevels = Maps.newLinkedHashMap();
 		
 		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
 		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
@@ -1070,9 +1070,9 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		
 		IProject project = mock(IProject.class);
 		when(mockedTab.getProjectFromName()).thenReturn(project);
-		Map<IProject, RunTests> allTests = new HashMap<IProject, RunTests>();
+		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
 		mockedTab.allTests = allTests;
-		RunTests rt = mock(RunTests.class);
+		TestsHolder rt = mock(TestsHolder.class);
 		when(mockedTab.buildTestsForProject(project)).thenReturn(rt);
 		
 		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);

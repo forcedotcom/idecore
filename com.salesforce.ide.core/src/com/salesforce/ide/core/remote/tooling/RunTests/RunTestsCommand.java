@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote.tooling.RunTests;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -17,31 +17,33 @@ import com.salesforce.ide.core.remote.IHTTPTransport;
 import com.salesforce.ide.core.remote.PromiseableJob;
 
 /**
- * A Job to retrieve the body of Tooling API's ApexLog
+ * A Job to enqueue tests through Tooling API's runTestsAsynchronous
  * 
  * @author jwidjaja
  *
  */
-public class ApexLogCommand extends PromiseableJob<String> {
-	
-	private static final String GET_APEX_LOG = "Getting Apex Log";
+public class RunTestsCommand extends PromiseableJob<String> {
+
+	private static final String SCHEDULE_TESTS = "Scheduling Apex Tests";
 	
 	private final IHTTPTransport<String> transport;
+	private final String tests;
 
-	public ApexLogCommand(IHTTPTransport<String> transport) {
-		super(GET_APEX_LOG);
+	public RunTestsCommand(IHTTPTransport<String> transport, String tests) {
+		super(SCHEDULE_TESTS);
 		this.transport = transport;
+		this.tests = tests;
 	}
-
+	
 	/**
-	 * Execute the HTTP request and return the ApexLog body.
+	 * Execute the HTTP request and return test run ID if the request was okay.
 	 */
 	@Override
 	protected String execute(IProgressMonitor monitor) throws Throwable {
 		try {
-            monitor.beginTask(GET_APEX_LOG, 2);
+            monitor.beginTask(SCHEDULE_TESTS, 2);
 
-            transport.send("");
+            transport.send(tests);
             monitor.worked(1);
 
             String response = transport.receive();

@@ -37,10 +37,10 @@ import org.junit.Test;
 import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.remote.PromiseableJob;
 import com.salesforce.ide.core.remote.ToolingStubExt;
-import com.salesforce.ide.core.remote.tooling.Limit;
-import com.salesforce.ide.core.remote.tooling.LimitsCommand;
-import com.salesforce.ide.core.remote.tooling.RunTestsSyncResponse;
 import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
+import com.salesforce.ide.core.remote.tooling.Limits.Limit;
+import com.salesforce.ide.core.remote.tooling.Limits.LimitsCommand;
+import com.salesforce.ide.core.remote.tooling.RunTests.RunTestsSyncResponse;
 import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
 import com.salesforce.ide.ui.views.runtest.RunTestsView;
 import com.sforce.soap.tooling.AggregateResult;
@@ -117,15 +117,15 @@ public class RunTestsViewTest_unit extends TestCase {
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
-		verify(mockedView, never()).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, never()).prepareForRunningTests();
+		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
+		verify(mockedView, times(1)).materializeForceProject(any(IProject.class));
+		verify(mockedView, never()).prepareForRunningTests(project);
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		verify(mockedView, never()).displayAsyncCodeCoverage();
+		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
-		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		verify(mockedView, never()).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
+		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(com.salesforce.ide.core.remote.tooling.RunTests.RunTestsSyncResponse.class));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -144,7 +144,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
 				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests();
+		doNothing().when(mockedView).prepareForRunningTests(project);
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -158,14 +158,13 @@ public class RunTestsViewTest_unit extends TestCase {
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, times(1)).prepareForRunningTests();
+		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		verify(mockedView, never()).displayAsyncCodeCoverage();
+		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		verify(mockedView, never()).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -184,7 +183,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
 				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests();
+		doNothing().when(mockedView).prepareForRunningTests(project);
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -200,14 +199,13 @@ public class RunTestsViewTest_unit extends TestCase {
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, times(1)).prepareForRunningTests();
+		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		verify(mockedView, never()).displayAsyncCodeCoverage();
+		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		verify(mockedView, never()).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -226,7 +224,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
 				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests();
+		doNothing().when(mockedView).prepareForRunningTests(project);
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -240,20 +238,19 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(mockedView.getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class))).thenReturn(null);
 		doNothing().when(mockedView).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		doNothing().when(mockedView).displayAsyncCodeCoverage();
+		doNothing().when(mockedView).displayCodeCoverage();
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, times(1)).prepareForRunningTests();
+		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
 		verify(mockedView, times(1)).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		verify(mockedView, times(1)).displayAsyncCodeCoverage();
+		verify(mockedView, times(1)).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		verify(mockedView, never()).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -272,7 +269,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
 				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests();
+		doNothing().when(mockedView).prepareForRunningTests(project);
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -286,20 +283,19 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		doNothing().when(mockedView).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		doNothing().when(mockedView).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		doNothing().when(mockedView).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
+		doNothing().when(mockedView).displayCodeCoverage();
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, times(1)).prepareForRunningTests();
+		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		verify(mockedView, never()).displayAsyncCodeCoverage();
 		verify(mockedView, times(1)).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, times(1)).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		verify(mockedView, times(1)).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
+		verify(mockedView, times(1)).displayCodeCoverage();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -318,7 +314,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
 				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests();
+		doNothing().when(mockedView).prepareForRunningTests(project);
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -330,7 +326,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		doNothing().when(tfUtil).automateTraceFlagExtension(any(String.class), any(Integer.class), any(Integer.class));
 		doNothing().when(tfUtil).removeTraceFlagJobs();
 		doNothing().when(tfUtil).deleteTraceflagAndDebugLevel(any(String.class), any(String.class));
-		when(mockedView.getTraceFlagUtil(fp)).thenReturn(tfUtil);
+		when(mockedView.getTraceFlagUtil(any(ForceProject.class))).thenReturn(tfUtil);
 		
 		when(monitor.isCanceled()).thenReturn(false);
 		
@@ -338,20 +334,19 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(mockedView.getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class))).thenReturn(null);
 		doNothing().when(mockedView).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		doNothing().when(mockedView).displayAsyncCodeCoverage();
+		doNothing().when(mockedView).displayCodeCoverage();
 		
 		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, times(1)).prepareForRunningTests();
+		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
 		verify(mockedView, times(1)).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
-		verify(mockedView, times(1)).displayAsyncCodeCoverage();
+		verify(mockedView, times(1)).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
-		verify(mockedView, never()).displaySyncCodeCoverage(any(RunTestsSyncResponse.class));
 		verify(tfUtil, times(1)).getUserId(any(String.class));
 		verify(tfUtil, times(1)).insertDebugLevel(any(String.class), any(Map.class));
 		verify(tfUtil, times(1)).insertTraceFlag(any(String.class), any(Integer.class), any(String.class));

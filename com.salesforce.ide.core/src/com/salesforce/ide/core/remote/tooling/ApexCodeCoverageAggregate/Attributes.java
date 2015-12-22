@@ -9,41 +9,19 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote.tooling.ApexCodeCoverageAggregate;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "line" })
-public class RunTestsSyncCodeLocation {
+@JsonPropertyOrder({ "type", "url" })
+public class Attributes {
 
-	@JsonProperty("line")
-	private int line;
+	@JsonProperty("type")
+	public String type;
+	@JsonProperty("url")
+	public String url;
 
-	@JsonCreator
-	public RunTestsSyncCodeLocation(@JsonProperty("line") int line) {
-		this.line = line;
-	}
-
-	/**
-	 * 
-	 * @return The line
-	 */
-	@JsonProperty("line")
-	public int getLine() {
-		return line;
-	}
-	
-	/**
-	 * 
-	 * @param line
-	 *            The line
-	 */
-	@JsonProperty("line")
-	public void setLine(int line) {
-		this.line = line;
-	}
 }

@@ -332,8 +332,7 @@ public class MarkerUtils {
         applyCodeCoverageWarningMarker(resource, 1, 1, 2, msg);
     }
 
-    public void applyCodeCoverageWarningMarker(IResource resource, int line, int charStart, int charEnd,
-            String msg) {
+    public void applyCodeCoverageWarningMarker(IResource resource, int line, int charStart, int charEnd, String msg) {
         if (resource == null) {
             logger.warn("Unable to apply code coverage warning marker to resource - resource is null");
             return;
@@ -342,8 +341,8 @@ public class MarkerUtils {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, msg);
         attributes.put(IMarker.LINE_NUMBER, line);
-        attributes.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-        attributes.put(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+        attributes.put(IMarker.CHAR_START, charStart);
+        attributes.put(IMarker.CHAR_END, charEnd);
 
         if (logger.isInfoEnabled()) {
             logger.info("Code coverage warning marker on resource '"
@@ -586,7 +585,7 @@ public class MarkerUtils {
     }
 
     public void clearCodeCoverageWarningMarkers(IResource resource) {
-        clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING);
+        clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING, IResource.DEPTH_INFINITE);
     }
 
 }

@@ -711,8 +711,8 @@
          id="codeCoverageWarning"
          name="Force.com code coverage warning"
          point="org.eclipse.core.resources.markers">
-        <super type="com.salesforce.ide.core.problem"/>
-        <persistent value="true"/>
+        <super type="org.eclipse.core.resources.textmarker"/>
+        <persistent value="false"/>
     </extension>
     
     <extension

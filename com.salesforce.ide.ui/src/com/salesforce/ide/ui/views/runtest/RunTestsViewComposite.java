@@ -45,8 +45,8 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovComparators;
-import com.salesforce.ide.ui.views.runtest.RunTestsView.CodeCovResult;
+import com.salesforce.ide.core.model.ApexCodeLocation;
+import com.salesforce.ide.core.project.MarkerUtils;
 
 /**
  * The UI manager for Apex Test Results view. All this does is generate and
@@ -133,21 +133,19 @@ public class RunTestsViewComposite extends Composite {
         resultsTree.setLinesVisible(true);
         resultsTree.setLayoutData(gridData1);
         resultsTree.addMouseListener(new MouseListener() {
+        	// Double click to open the test class. Each test class has
+        	// an expand button to show the test method names, so we don't
+        	// want to use single click to open the test class because that
+        	// will also expand the row (which users found annoying).
             @Override
-            public void mouseDoubleClick(MouseEvent arg0) {}
-
-            @Override
-            public void mouseDown(MouseEvent arg0) {}
-
-            @Override
-            public void mouseUp(MouseEvent arg0) {
+            public void mouseDoubleClick(MouseEvent e) {
             	TreeItem selectedTreeItem = null;
             	String selectedTabName = null;
             	
             	// Get the selected tree item
-            	if (arg0.getSource() != null && arg0.getSource() instanceof Tree
-                        && Utils.isNotEmpty(((Tree) arg0.getSource()).getSelection())) {
-            		selectedTreeItem = ((Tree) arg0.getSource()).getSelection()[0];
+            	if (e.getSource() != null && e.getSource() instanceof Tree
+                        && Utils.isNotEmpty(((Tree) e.getSource()).getSelection())) {
+            		selectedTreeItem = ((Tree) e.getSource()).getSelection()[0];
                 }
             	// Get the selected tab name
             	if (tabFolder != null && tabFolder.getSelection() != null && tabFolder.getSelection().length > 0) {
@@ -158,6 +156,12 @@ public class RunTestsViewComposite extends Composite {
             	// we want to take user to the class/method
             	runView.updateView(selectedTreeItem, selectedTabName, true);
             }
+
+            @Override
+            public void mouseDown(MouseEvent arg0) {}
+
+            @Override
+            public void mouseUp(MouseEvent arg0) {}
         });
         
         // Default one column in the tree
@@ -385,12 +389,30 @@ public class RunTestsViewComposite extends Composite {
     }
     
     /**
-     * Update code coverage table with optional columns reset
+     * Update code coverage table
      * @param ccResults
      */
     public void setCodeCoverage(List<CodeCovResult> ccResults) {
     	if (codeCovArea != null && ccResults != null && !ccResults.isEmpty()) {
-    		clearCodeCov();
+    		// Double click opens the Apex class/trigger
+    		codeCovArea.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseDoubleClick(MouseEvent e) {
+					Point pt = new Point(e.x, e.y);
+					TableItem item = codeCovArea.getItem(pt);
+					if (item != null) {
+						ApexCodeLocation location = (ApexCodeLocation) item.getData(RunTestsConstants.TREEDATA_CODE_LOCATION);
+						runView.highlightLine(location);
+					}
+				}
+
+				@Override
+				public void mouseDown(MouseEvent e) {}
+
+				@Override
+				public void mouseUp(MouseEvent e) {}
+    			
+    		});
     		
     		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, ccResults);
     		
@@ -398,14 +420,16 @@ public class RunTestsViewComposite extends Composite {
 	        Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
 	        
     		for (CodeCovResult res : ccResults) {
-    			TableItem classItem = new TableItem(codeCovArea, SWT.NONE);
+    			TableItem ccItem = new TableItem(codeCovArea, SWT.NONE);
     			String lines = String.format("%d/%d", res.getLinesCovered(), res.getLinesTotal());
-    			if (res.getClassName().equals(Messages.RunTestView_CodeCoverageOverall)) {
-    				classItem.setFont(boldFont);
+    			// Overall code coverage row
+    			if (res.getClassOrTriggerName().equals(Messages.RunTestView_CodeCoverageOverall)) {
+    				ccItem.setFont(boldFont);
     				lines = "";
     			}
-    			
-    			classItem.setText(new String[] {res.getClassName(), res.getPercent() + "%", lines});
+    			// Apply code coverage info and save the apex code location
+    			ccItem.setText(new String[] {res.getClassOrTriggerName(), res.getPercent() + "%", lines});
+    			ccItem.setData(RunTestsConstants.TREEDATA_CODE_LOCATION, res.getLoc());
     		}
     		
     		packCodeCovArea(codeCovArea);
@@ -430,10 +454,6 @@ public class RunTestsViewComposite extends Composite {
 
     public void enableComposite() {
         btnClear.setEnabled(true);
-    }
-
-    public IProject getProject() {
-        return project;
     }
 
     public void setProject(IProject project) {
@@ -476,6 +496,8 @@ public class RunTestsViewComposite extends Composite {
     		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, null);
     		codeCovArea.removeAll();
     		codeCovArea.clearAll();
+    		
+    		MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     	}
     }
 }

@@ -66,6 +66,7 @@ public class Messages extends NLS {
     public static String RunTestView_CodeCoverageClass;
     public static String RunTestView_CodeCoveragePercent;
     public static String RunTestView_CodeCoverageLines;
+    public static String RunTestsView_LineNotCovered;
     public static String RunTestsView_ErrorStartingTestsTitle;
     public static String RunTestsView_ErrorStartingTestsSolution;
     public static String RunTestsView_ErrorGetAsyncTestResultsTitle;

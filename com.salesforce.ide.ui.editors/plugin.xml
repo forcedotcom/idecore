@@ -100,6 +100,37 @@
              inputTypes="org.eclipse.ui.IFileEditorInput">
        </provider>
     </extension>
+    
+    <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+         <type
+             name="highlightNotCovered"
+             super="org.eclipse.ui.workbench.texteditor.info"
+             markerType="com.salesforce.ide.core.codeCoverageWarning">
+         </type>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="highlightNotCovered"
+            colorPreferenceKey="highlightNotCovered.color"
+            colorPreferenceValue="255,0,0"
+            contributesToHeader="false"
+            highlightPreferenceKey="highlightNotCovered.background"
+            highlightPreferenceValue="true"
+            includeOnPreferencePage="true"
+            label="Apex Code Coverage"
+            overviewRulerPreferenceKey="highlightNotCovered.ruler.overview"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="0"
+            textPreferenceKey="hightlightNotCovered.text"
+            textPreferenceValue="true"
+            textStylePreferenceValue="BOX"
+            verticalRulerPreferenceKey="hightlightNotCovered.ruler.vertical"
+            verticalRulerPreferenceValue="true">
+      </specification>
+   </extension>
 
     <!--   P R E F E N C E S  -->
     <extension point="org.eclipse.core.runtime.preferences">

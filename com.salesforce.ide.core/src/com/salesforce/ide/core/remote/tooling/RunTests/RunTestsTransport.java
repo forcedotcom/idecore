@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote.tooling.RunTests;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;

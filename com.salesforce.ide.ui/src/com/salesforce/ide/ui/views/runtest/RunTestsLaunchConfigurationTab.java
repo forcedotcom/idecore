@@ -55,8 +55,8 @@ import com.salesforce.ide.core.internal.utils.QualifiedNames;
 import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.DefaultNature;
-import com.salesforce.ide.core.remote.tooling.RunTests;
-import com.salesforce.ide.core.remote.tooling.RunTests.Test;
+import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder;
+import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder.Test;
 import com.sforce.soap.tooling.ApexLogLevel;
 
 /**
@@ -93,9 +93,9 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
 	}
 	
 	@VisibleForTesting
-	public Map<IProject, RunTests> allTests;
+	public Map<IProject, TestsHolder> allTests;
 	@VisibleForTesting
-	public RunTests currentSelectedTests;
+	public TestsHolder currentSelectedTests;
 	
 	// Widgets for labels, input fields, buttons
 	private Label projectLabel;
@@ -132,7 +132,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
 
     public RunTestsLaunchConfigurationTab() {
     	super();
-    	allTests = new HashMap<IProject, RunTests>();
+    	allTests = new HashMap<IProject, TestsHolder>();
     }
     
     @Override
@@ -646,8 +646,8 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return RunTests POJO
      */
     @VisibleForTesting
-	public RunTests buildTestsForProject(IProject project) {
-    	RunTests rt = new RunTests();
+	public TestsHolder buildTestsForProject(IProject project) {
+    	TestsHolder rt = new TestsHolder();
     	List<Test> testClasses = new ArrayList<Test>();
     	
     	Map<IResource, List<String>> allTests = sourceLookup.findTestClassesInProject(project);
@@ -693,13 +693,13 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return RunTests
      */
     @VisibleForTesting
-	public RunTests buildTestsForConfig(IProject selectedProject) {
+	public TestsHolder buildTestsForConfig(IProject selectedProject) {
     	/*
     	 * Clone the original RunTests because the following logic
     	 * will filter out unwanted test classes/methods. We need to maintain the
     	 * original so we don't to re-build when user changes test class/method.
     	 */
-    	RunTests rt = allTests.containsKey(selectedProject) ? allTests.get(selectedProject).clone() : null;
+    	TestsHolder rt = allTests.containsKey(selectedProject) ? allTests.get(selectedProject).clone() : null;
     	if (Utils.isEmpty(rt)) return null;
     	
     	boolean oneTestClass = (classText != null && classText.getText() != null && !classText.getText().equals(Messages.GenericTab_AllClasses));
@@ -738,11 +738,11 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
     
     /**
      * Convert RunTests to JSON string
-     * @param RunTests
+     * @param TestsHolder
      * @return JSON string
      */
     @VisibleForTesting
-	public String convertTestsToJson(RunTests rt) {
+	public String convertTestsToJson(TestsHolder rt) {
     	String result = "";
     	ObjectMapper mapper = new ObjectMapper();
     	try {
@@ -758,7 +758,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
      * @return Total test methods
      */
     @VisibleForTesting
-	public int countTotalTests(RunTests rt) {
+	public int countTotalTests(TestsHolder rt) {
     	int total = 0;
     	
     	if (rt != null) {
@@ -817,7 +817,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
     	dialog.setTitle(Messages.GenericTab_ClassDialogTitle);
         dialog.setMessage(Messages.RunTestsTab_ClassDialogInstruction);
         IProject selectedProject = getProjectFromName();
-        RunTests rt = allTests.get(selectedProject);
+        TestsHolder rt = allTests.get(selectedProject);
         // We already got the test classes earlier so just display them
         if (rt != null && rt.getTests() != null && !rt.getTests().isEmpty()) {
         	dialog.setElements(rt.getTests().toArray());
@@ -857,7 +857,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
     	// for previously specified test class
     	List<String> testMethodNames = new ArrayList<String>();
     	IProject selectedProject = getProjectFromName();
-        RunTests rt = allTests.get(selectedProject);
+        TestsHolder rt = allTests.get(selectedProject);
     	for (Test test : rt.getTests()) {
     		if (test.getClassName().equals(classText.getText())) {
     			testMethodNames = test.getTestMethods();
@@ -1036,7 +1036,7 @@ public class RunTestsLaunchConfigurationTab extends AbstractLaunchConfigurationT
             // Build the POJO for that project
             IProject selectedProject = getProjectFromName();
             if (Utils.isNotEmpty(selectedProject) && !allTests.containsKey(selectedProject)) {
-            	RunTests selectedTests = buildTestsForProject(selectedProject);
+            	TestsHolder selectedTests = buildTestsForProject(selectedProject);
             	allTests.put(selectedProject, selectedTests);
             	currentSelectedTests = selectedTests;
             }

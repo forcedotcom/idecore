@@ -57,9 +57,10 @@ public class RunTestsConstants {
     public static final String QUERY_APEX_LOG = "SELECT Id, Application, DurationMilliseconds, Location, LogLength, LogUserId, Operation, Request, StartTime, Status FROM ApexLog WHERE Id = '%s'";
     public static final String QUERY_APEX_TEST_QUEUE_ITEM = "SELECT Id, Status FROM ApexTestQueueItem WHERE ParentJobId = '%s'";
     public static final String QUERY_APEX_CODE_COVERAGE_AGG = "SELECT ApexClassOrTriggerId, ApexClassOrTrigger.Name, "
-			+ "NumLinesCovered, NumLinesUncovered FROM ApexCodeCoverageAggregate "
+			+ "NumLinesCovered, NumLinesUncovered, Coverage FROM ApexCodeCoverageAggregate "
 			+ "WHERE ApexClassOrTriggerId != NULL AND ApexClassOrTrigger.Name != NULL "
 			+ "AND NumLinesCovered != NULL AND NumLinesUncovered != NULL "
+			+ "AND (NumLinesCovered > 0 OR NumLinesUncovered > 0) "
 			+ "ORDER BY ApexClassOrTrigger.Name";
     public static final String QUERY_APEX_ORG_WIDE_COVERAGE = "SELECT PercentCovered FROM ApexOrgWideCoverage";
     

@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -197,7 +195,7 @@ public class ApexTestsUtils {
      * @param resource
      * @return Location of class decl
      */
-    public ApexCodeLocation findTestClassLocInFile(IResource resource) {
+    public ApexCodeLocation findClassLocInFile(IResource resource) {
     	final class Pair {
     		private final int line;
     		private final int col;
@@ -282,6 +280,31 @@ public class ApexTestsUtils {
      */
     public List<IResource> filterSourcesByTrigger(List<IResource> projectResources) {
         return filterSourcesByType(projectResources, "ApexTrigger");
+    }
+    
+    /**
+     * Filter a list of IResource for Apex classes and triggers
+     * 
+     * @param projectResources
+     * @return List of IResource that are only Apex classes and triggers
+     */
+    public List<IResource> filterSourcesByClassOrTrigger(List<IResource> projectResources) {
+    	if (projectResources == null || projectResources.isEmpty())
+            return projectResources;
+
+        ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
+        Component classComponent = componentFactory.getComponentByComponentType("ApexClass");
+        String classExt = classComponent == null ? ".cls" : classComponent.getFileExtension();
+        Component trgComponent = componentFactory.getComponentByComponentType("ApexTrigger");
+        String trgExt = trgComponent == null ? ".trigger" : trgComponent.getFileExtension();
+        for (Iterator<IResource> iterator = projectResources.iterator(); iterator.hasNext();) {
+            IResource res = iterator.next();
+            if (!res.getFileExtension().equals(classExt) && !res.getFileExtension().equals(trgExt)) {
+                iterator.remove();
+            }
+        }
+
+        return projectResources;
     }
 
     /**

@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote.tooling.Limits;
 
 import java.util.Iterator;
 import java.util.Map;

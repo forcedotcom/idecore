@@ -9,7 +9,7 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote.tooling.ApexLog;
 
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -18,26 +18,27 @@ import com.salesforce.ide.core.remote.AbstractHTTPTransport;
 import com.salesforce.ide.core.remote.HTTPConnection;
 
 /**
- * HTTP transport for Limits
+ * HTTP transport for Tooling API's ApexLog
  * 
  * @author jwidjaja
  *
  */
-public class LimitsTransport extends AbstractHTTPTransport {
-	
-	public static final String LIMITS_ENDPOINT = "limits/";
+public class ApexLogTransport extends AbstractHTTPTransport {
 
-	public LimitsTransport(HTTPConnection connection) {
+	public String APEXLOGBODY_ENDPOINT = "tooling/sobjects/ApexLog/%s/Body";
+	
+	public ApexLogTransport(HTTPConnection connection, String logId) {
 		super(connection);
+		APEXLOGBODY_ENDPOINT = String.format(APEXLOGBODY_ENDPOINT, logId);
 	}
 
 	@Override
 	public WebTarget getSessionEndpoint() {
-		return connection.getEndpoint().path(LIMITS_ENDPOINT);
+		return connection.getEndpoint().path(APEXLOGBODY_ENDPOINT);
 	}
-
+	
 	@Override
     protected String getMediaType() {
-        return MediaType.APPLICATION_JSON;
+        return MediaType.TEXT_PLAIN;
     }
 }

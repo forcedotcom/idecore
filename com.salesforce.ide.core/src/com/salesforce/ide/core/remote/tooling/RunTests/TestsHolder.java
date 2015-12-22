@@ -9,21 +9,22 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote.tooling.RunTests;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.common.collect.Lists;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "tests" })
-public class RunTests {
+public class TestsHolder {
 
 	@JsonProperty("tests")
-	private List<Test> tests = new ArrayList<Test>();
+	private List<Test> tests = Lists.newArrayList();
 
 	/**
 	 * 
@@ -47,9 +48,9 @@ public class RunTests {
 	/**
 	 * Clone the RunTests object
 	 */
-	public RunTests clone() {
-		RunTests rt = new RunTests();
-		List<Test> clonedTests = new ArrayList<Test>();
+	public TestsHolder clone() {
+		TestsHolder rt = new TestsHolder();
+		List<Test> clonedTests = Lists.newArrayList();
 		
 		for (Test oldTest : tests) {
 			clonedTests.add(oldTest.clone());
@@ -68,7 +69,7 @@ public class RunTests {
 		@JsonIgnore
 		private String className;
 		@JsonProperty("testMethods")
-		private List<String> testMethods = new ArrayList<String>();
+		private List<String> testMethods = Lists.newArrayList();
 
 		/**
 		 * 
@@ -133,7 +134,7 @@ public class RunTests {
 			newTest.setClassId(getClassId());
 			newTest.setClassName(getClassName());
 			
-			List<String> clonedTestMethods = new ArrayList<String>();
+			List<String> clonedTestMethods = Lists.newArrayList();
 			for (String testMethod : testMethods) {
 				clonedTestMethods.add(testMethod);
 			}
