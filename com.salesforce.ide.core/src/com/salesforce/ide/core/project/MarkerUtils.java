@@ -588,4 +588,7 @@ public class MarkerUtils {
         clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING, IResource.DEPTH_INFINITE);
     }
 
+    public void clearCodeCoverageWarningMarkersFor(IResource resource) {
+    	clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING, IResource.DEPTH_ZERO);
+    }
 }
