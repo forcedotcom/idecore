@@ -73,7 +73,6 @@
                 <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.class" />
                 <contentTypeBinding contentTypeId="com.salesforce.ide.core.contentType.trigger" />
         </editor>
-        
     </extension>
 
     <extension point="org.eclipse.ui.editors.documentProviders">
@@ -130,6 +129,19 @@
             verticalRulerPreferenceKey="hightlightNotCovered.ruler.vertical"
             verticalRulerPreferenceValue="true">
       </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="com.salesforce.ide.ui.editors.rulerContribution"
+            targetID="#ApexDebuggerRulerContext">
+         <action
+               label="Add Bookmark"
+               class="org.eclipse.ui.texteditor.BookmarkRulerAction"
+               menubarPath="add"
+               id="org.eclipse.ui.texteditor.BookmarkRulerAction">
+         </action>
+      </viewerContribution>
    </extension>
 
     <!--   P R E F E N C E S  -->
