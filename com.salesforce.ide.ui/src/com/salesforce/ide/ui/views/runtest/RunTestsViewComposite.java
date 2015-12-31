@@ -394,6 +394,8 @@ public class RunTestsViewComposite extends Composite {
      */
     public void setCodeCoverage(List<CodeCovResult> ccResults) {
     	if (codeCovArea != null && ccResults != null && !ccResults.isEmpty()) {
+    		clearCodeCov();
+    		
     		// Double click opens the Apex class/trigger
     		codeCovArea.addMouseListener(new MouseListener() {
 				@Override
@@ -465,6 +467,7 @@ public class RunTestsViewComposite extends Composite {
     	clearTabs();
     	clearProgress();
     	clearCodeCov();
+    	MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     }
     
     public void clearResultsTree() {
@@ -496,8 +499,6 @@ public class RunTestsViewComposite extends Composite {
     		codeCovArea.setData(RunTestsConstants.TABLE_CODE_COV_RESULT, null);
     		codeCovArea.removeAll();
     		codeCovArea.clearAll();
-    		
-    		MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     	}
     }
 }
