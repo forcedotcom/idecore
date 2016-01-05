@@ -53,6 +53,7 @@ import com.google.common.base.Preconditions;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.compatibility.auth.IAuthorizationService;
 import com.salesforce.ide.core.factories.FactoryException;
+import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DeployMessageExtractor;
 import com.salesforce.ide.core.internal.utils.Messages;
@@ -74,6 +75,7 @@ import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.ICodeCoverageWarningExt;
 import com.salesforce.ide.core.remote.IRunTestFailureExt;
+import com.salesforce.ide.core.remote.SalesforceEndpoints;
 import com.salesforce.ide.core.remote.metadata.DeployResultExt;
 import com.salesforce.ide.core.remote.metadata.RetrieveMessageExt;
 import com.salesforce.ide.core.remote.metadata.RetrieveResultExt;
@@ -1661,7 +1663,8 @@ public class ProjectService extends BaseService {
         }
 
         defaultApiVersionCheck(forceProject);
-
+        defaultServerEndpointCheckandFix(forceProject);
+        
         return forceProject;
     }
 
@@ -1683,6 +1686,37 @@ public class ProjectService extends BaseService {
         return null;
     }
 
+    
+    /*
+     * Accessor for SalesforceEndpoints
+     */
+    protected SalesforceEndpoints getSalesforceEndpoints() {
+        return ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getSalesforceEndpoints();
+    }
+    
+  
+    /*
+     * Set to Default Server authentication server endpoint endpoint if current setting is [Label] Default server endpoint.
+     * This is to support deprication of www.salesforce.com as authentication endpoint and only login.Salesforce.com being supported as of 200+
+     */
+    private void defaultServerEndpointCheckandFix(ForceProject forceProject){
+    	
+        // Upgrade endpoint if the default (Production/Developer endpoint label is already selected 
+        String lastEnvironmentSelected = ForceIdeCorePlugin.getPreferenceString(Constants.LAST_ENV_SELECTED);
+        String sProdServer = getSalesforceEndpoints().getEndpointServerForLabel(lastEnvironmentSelected);
+        if (Utils.isNotEmpty(sProdServer)&& lastEnvironmentSelected.equals(getSalesforceEndpoints().getDefaultEndpointLabel()))
+        	forceProject.setEndpointServer(getSalesforceEndpoints().getEndpointServerForLabel(getSalesforceEndpoints().getDefaultEndpointLabel()));
+    	
+        saveForceProject(forceProject);
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Remove all cached connections and objects related to unsupported API version");
+        }
+    }
+  
+    
+    
+    
     private void defaultApiVersionCheck(ForceProject forceProject) {
         String endpointApiVesion = forceProject.getEndpointApiVersion();
         String lastSupportEndpointVersion = getLastSupportedEndpointVersion();
@@ -1706,7 +1740,8 @@ public class ProjectService extends BaseService {
             logger.info("Remove all cached connections and objects related to unsupported API version");
         }
     }
-
+    
+ 
     public void saveForceProject(ForceProject forceProject) {
         saveForceProject(forceProject.getProject(), forceProject);
     }
@@ -2394,13 +2429,9 @@ public class ProjectService extends BaseService {
     public void clearAllWarningMarkers(IProject project) {
         MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     }
-    
-    public void clearAllWarningMarkersFor(IResource resource) {
-    	MarkerUtils.getInstance().clearCodeCoverageWarningMarkersFor(resource);
-    }
 
     private void applyCodeCoverageWarningMarker(IResource resource, String message) {
-    	clearAllWarningMarkersFor(resource);
+        clearAllWarningMarkers(resource.getProject());
         MarkerUtils.getInstance().applyCodeCoverageWarningMarker(resource, message);
     }
 

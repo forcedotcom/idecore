@@ -384,7 +384,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <property name="targetMapClass" value="java.util.LinkedHashMap"/>
         <property name="sourceMap">
             <map>
-                <entry key="Production/Developer Edition" value="www.salesforce.com" />
+                <entry key="Production/Developer Edition" value="login.salesforce.com" />
                 <entry key="Sandbox" value="test.salesforce.com" />
                 <entry key="Pre-Release" value="prerellogin.pre.salesforce.com" />
             </map>
