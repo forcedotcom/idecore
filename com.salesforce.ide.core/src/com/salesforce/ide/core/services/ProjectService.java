@@ -1689,7 +1689,6 @@ public class ProjectService extends BaseService {
     
     /*
      * Accessor for SalesforceEndpoints
-     * @auth Ross
      */
     protected SalesforceEndpoints getSalesforceEndpoints() {
         return ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getSalesforceEndpoints();
@@ -1699,7 +1698,6 @@ public class ProjectService extends BaseService {
     /*
      * Set to Default Server authentication server endpoint endpoint if current setting is [Label] Default server endpoint.
      * This is to support deprication of www.salesforce.com as authentication endpoint and only login.Salesforce.com being supported as of 200+
-     * @auth Ross
      */
     private void defaultServerEndpointCheckandFix(ForceProject forceProject){
     	
