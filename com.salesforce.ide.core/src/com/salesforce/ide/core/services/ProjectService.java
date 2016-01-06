@@ -1697,18 +1697,18 @@ public class ProjectService extends BaseService {
   
     /*
      * Set to Default Server authentication server endpoint endpoint if current setting is [Label] Default server endpoint.
-     * This is to support deprication of www.salesforce.com as authentication endpoint and only login.Salesforce.com being supported as of 200+
+     * This is to support deprecation of www.salesforce.com as authentication endpoint and only login.Salesforce.com being supported as of 200+
      */
     private void defaultServerEndpointCheckandFix(ForceProject forceProject){
     	
         // Upgrade endpoint if the default (Production/Developer endpoint label is already selected 
         String lastEnvironmentSelected = ForceIdeCorePlugin.getPreferenceString(Constants.LAST_ENV_SELECTED);
         String sProdServer = getSalesforceEndpoints().getEndpointServerForLabel(lastEnvironmentSelected);
-        if (Utils.isNotEmpty(sProdServer)&& lastEnvironmentSelected.equals(getSalesforceEndpoints().getDefaultEndpointLabel()))
+        if (Utils.isNotEmpty(sProdServer)&& lastEnvironmentSelected.equals(getSalesforceEndpoints().getDefaultEndpointLabel())){
         	forceProject.setEndpointServer(getSalesforceEndpoints().getEndpointServerForLabel(getSalesforceEndpoints().getDefaultEndpointLabel()));
-    	
-        saveForceProject(forceProject);
-
+        	saveForceProject(forceProject);
+        }
+        
         if (logger.isInfoEnabled()) {
             logger.info("Remove all cached connections and objects related to unsupported API version");
         }
