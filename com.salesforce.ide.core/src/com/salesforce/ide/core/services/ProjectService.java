@@ -2429,9 +2429,13 @@ public class ProjectService extends BaseService {
     public void clearAllWarningMarkers(IProject project) {
         MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     }
+    
+    public void clearAllWarningMarkersFor(IResource resource) {
+    	MarkerUtils.getInstance().clearCodeCoverageWarningMarkersFor(resource);
+    }
 
     private void applyCodeCoverageWarningMarker(IResource resource, String message) {
-        clearAllWarningMarkers(resource.getProject());
+    	clearAllWarningMarkersFor(resource);
         MarkerUtils.getInstance().applyCodeCoverageWarningMarker(resource, message);
     }
 
