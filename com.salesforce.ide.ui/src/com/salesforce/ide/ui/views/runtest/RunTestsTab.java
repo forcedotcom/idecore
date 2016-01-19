@@ -102,7 +102,7 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
 	public Table makeDefaultMultiCheckTable(Composite parent, String... columnNames) {
     	Table table = new Table(parent, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
     	table.setHeaderVisible(true);
-    	table.setLinesVisible(false);
+    	table.setLinesVisible(true);
     	GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
     	gridData.heightHint = 10 * table.getItemHeight();
     	gridData.widthHint = 3 * gridData.heightHint; 

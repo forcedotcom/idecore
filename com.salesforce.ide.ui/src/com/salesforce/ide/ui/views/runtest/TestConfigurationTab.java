@@ -337,6 +337,7 @@ public class TestConfigurationTab extends RunTestsTab {
     	
     	for (TableColumn col : suiteTable.getColumns()) {
 			col.pack();
+			col.setWidth(suiteTable.getBorderWidth());
 		}
 	}
 	
