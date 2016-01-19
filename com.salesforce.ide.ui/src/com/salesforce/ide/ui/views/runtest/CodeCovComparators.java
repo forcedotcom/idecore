@@ -14,24 +14,24 @@ package com.salesforce.ide.ui.views.runtest;
 import java.util.Comparator;
 
 public class CodeCovComparators {
-	public static Comparator<CodeCovResult> CLASSNAME_ASC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageClass, -1);
-	public static Comparator<CodeCovResult> PERCENT_ASC = sortByTypeWithDirection(Messages.RunTestView_CodeCoveragePercent, -1);
-	public static Comparator<CodeCovResult> LINES_ASC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageLines, -1);
-	public static Comparator<CodeCovResult> CLASSNAME_DESC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageClass, 1);
-	public static Comparator<CodeCovResult> PERCENT_DESC = sortByTypeWithDirection(Messages.RunTestView_CodeCoveragePercent, 1);
-	public static Comparator<CodeCovResult> LINES_DESC = sortByTypeWithDirection(Messages.RunTestView_CodeCoverageLines, 1);
+	public static Comparator<CodeCovResult> CLASSNAME_ASC = sortByTypeWithDirection(Messages.View_CodeCoverageClass, -1);
+	public static Comparator<CodeCovResult> PERCENT_ASC = sortByTypeWithDirection(Messages.View_CodeCoveragePercent, -1);
+	public static Comparator<CodeCovResult> LINES_ASC = sortByTypeWithDirection(Messages.View_CodeCoverageLines, -1);
+	public static Comparator<CodeCovResult> CLASSNAME_DESC = sortByTypeWithDirection(Messages.View_CodeCoverageClass, 1);
+	public static Comparator<CodeCovResult> PERCENT_DESC = sortByTypeWithDirection(Messages.View_CodeCoveragePercent, 1);
+	public static Comparator<CodeCovResult> LINES_DESC = sortByTypeWithDirection(Messages.View_CodeCoverageLines, 1);
 	
 	private static Comparator<CodeCovResult> sortByTypeWithDirection(final String type, final int direction) {
 		return new Comparator<CodeCovResult>() {
 			@Override
 			public int compare(CodeCovResult o1, CodeCovResult o2) {
-				if (o1.getClassOrTriggerName().equals(Messages.RunTestView_CodeCoverageOverall)) return -1;
-				if (o2.getClassOrTriggerName().equals(Messages.RunTestView_CodeCoverageOverall)) return 1;
+				if (o1.getClassOrTriggerName().equals(Messages.View_CodeCoverageOverall)) return -1;
+				if (o2.getClassOrTriggerName().equals(Messages.View_CodeCoverageOverall)) return 1;
 				
 				int compareDir = -1;
-				if (type.equals(Messages.RunTestView_CodeCoveragePercent)) {
+				if (type.equals(Messages.View_CodeCoveragePercent)) {
 					compareDir = o1.getPercent().compareTo(o2.getPercent());
-				} else if (type.equals(Messages.RunTestView_CodeCoverageLines)) {
+				} else if (type.equals(Messages.View_CodeCoverageLines)) {
 					compareDir = o1.getLinesTotal().compareTo(o2.getLinesTotal());
 				} else {
 					compareDir = o1.getClassOrTriggerName().compareTo(o2.getClassOrTriggerName());

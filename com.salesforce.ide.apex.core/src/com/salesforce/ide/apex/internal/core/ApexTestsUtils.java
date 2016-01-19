@@ -75,7 +75,7 @@ public class ApexTestsUtils {
      * Find test classes in a given project. Test classes are annotated with @IsTest.
      * 
      * @param project
-     * @return Map of test resources whose key is the resource ID
+     * @return Map of test resources whose key is the resource ID and values are test method names
      */
     public Map<IResource, List<String>> findTestClassesInProject(IProject project) {
         final Map<IResource, List<String>> allTests = Maps.newHashMap();

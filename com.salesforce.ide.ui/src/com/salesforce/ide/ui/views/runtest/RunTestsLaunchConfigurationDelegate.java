@@ -13,12 +13,10 @@ package com.salesforce.ide.ui.views.runtest;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,7 +36,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -65,7 +62,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		if (runTestsView != null) {
 			// Only allow one run at a time
 			if (!runTestsView.canRun()) {
-				throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig);
+				throwErrorMsg(Messages.LaunchDelegate_CannotLaunchAnotherConfig);
 			} else {
 				IProject project = materializeForceProject(configuration);
 				// Check if user has an Apex Debugging session and wants to run tests asynchronously
@@ -112,13 +109,9 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			RunTestsView runTestsView = getRunTestView();
 			
 			if (runTestsView != null) {
-				// The tests array and number of total tests were calculated in
-				// RunTestsTab.java and saved as string & int respectively in
-				// the launch config so we can grab them from this launch config
-				// delegate.
 				IProject project = materializeForceProject(configuration);
-				String tests = getTestsArray(configuration);
-				int totalTests = getTotalTests(configuration);
+				boolean shouldUseSuites = shouldUseSuites(configuration);
+				String tests = getTests(configuration, shouldUseSuites);
 				boolean isAsync = getTestMode(configuration);
 				boolean isDebugging = isProjectDebugging(project);
 				boolean shouldCreateTraceFlag = shouldCreateTraceFlag(configuration);
@@ -127,12 +120,9 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 				Map<LogCategory, ApexLogLevel> logLevels = (Map<LogCategory, ApexLogLevel>) (shouldCreateTraceFlag ? getLogLevels(configuration)
 						: Collections.emptyMap());
 
-				// Get the test files in the selected project
-				Map<IResource, List<String>> testResources = findTestClasses(project);
-
 				// Run the tests and update UI
-				runTestsView.runTests(project, testResources, tests,
-						totalTests, isAsync, isDebugging, hasExistingTraceFlag, shouldCreateTraceFlag,
+				runTestsView.runTests(project, tests, shouldUseSuites, isAsync, isDebugging,
+						hasExistingTraceFlag, shouldCreateTraceFlag,
 						logLevels, monitor);
 			}
 		} finally {
@@ -156,7 +146,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	@VisibleForTesting
 	public void checkMode(String mode) throws CoreException {
 		if (!mode.equals(ILaunchManager.RUN_MODE)) {
-			throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage);
+			throwErrorMsg(Messages.LaunchDelegate_CannotLaunchDebugModeErrorMessage);
 		}
 	}
 	
@@ -166,7 +156,7 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		IProject project = getProjectFromName(forceProjectName);
 
         if (Utils.isEmpty(project)) {
-        	throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchInvalidForceProject);
+        	throwErrorMsg(Messages.LaunchDelegate_CannotLaunchInvalidForceProject);
         }
         
         return project;
@@ -183,13 +173,19 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
     }
 	
 	@VisibleForTesting
-	public String getTestsArray(ILaunchConfiguration configuration) throws CoreException {
-		return configuration.getAttribute(RunTestsConstants.ATTR_TESTS_ARRAY, "");
+	public boolean shouldUseSuites(ILaunchConfiguration configuration) throws CoreException {
+		return configuration.getAttribute(RunTestsConstants.ATTR_USE_SUITES, false);
 	}
 	
 	@VisibleForTesting
-	public int getTotalTests(ILaunchConfiguration configuration) throws CoreException {
-		return configuration.getAttribute(RunTestsConstants.ATTR_TESTS_TOTAL, 0);
+	public String getTests(ILaunchConfiguration configuration, boolean shouldUseSuites) throws CoreException {
+		if (shouldUseSuites) {
+			// If user wants to use suites, get the suites JSON
+			return configuration.getAttribute(RunTestsConstants.ATTR_SUITES, "");
+		} else {
+			// Otherwise, get the tests json
+			return configuration.getAttribute(RunTestsConstants.ATTR_TESTS_ARRAY, "");
+		}
 	}
 	
 	@VisibleForTesting
@@ -228,21 +224,21 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 		for (String categoryName : savedLogLevels.keySet()) {
 			ApexLogLevel logLevel = ApexLogLevel.valueOf(savedLogLevels.get(categoryName));
 			
-			if (categoryName.equals(Messages.RunTestsTab_LogCategoryDatabase)) {
+			if (categoryName.equals(Messages.Tab_LogCategoryDatabase)) {
 				finalLogLevels.put(LogCategory.Db, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategoryWorkflow)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategoryWorkflow)) {
 				finalLogLevels.put(LogCategory.Workflow, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategoryValidation)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategoryValidation)) {
 				finalLogLevels.put(LogCategory.Validation, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategoryCallout)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategoryCallout)) {
 				finalLogLevels.put(LogCategory.Callout, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategoryApexCode)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategoryApexCode)) {
 				finalLogLevels.put(LogCategory.Apex_code, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategoryApexProfiling)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategoryApexProfiling)) {
 				finalLogLevels.put(LogCategory.Apex_profiling, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategoryVisualforce)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategoryVisualforce)) {
 				finalLogLevels.put(LogCategory.Visualforce, logLevel);
-			} else if (categoryName.equals(Messages.RunTestsTab_LogCategorySystem)) {
+			} else if (categoryName.equals(Messages.Tab_LogCategorySystem)) {
 				finalLogLevels.put(LogCategory.System, logLevel);
 			}
 		}
@@ -258,11 +254,6 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 	@VisibleForTesting
 	public Display getDisplay() {
 		return PlatformUI.getWorkbench().getDisplay();
-	}
-	
-	@VisibleForTesting
-	public Map<IResource, List<String>> findTestClasses(IProject project) {
-		return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
 	}
 	
 	@VisibleForTesting
@@ -283,8 +274,8 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			@Override
 			public void run() {
 				choice.set(DialogUtils.getInstance().cancelContinueMessage(
-						Messages.RunTestsLaunchConfigurationDelegate_ConfirmDialogTitle, 
-						Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging, 
+						Messages.LaunchDelegate_ConfirmDialogTitle, 
+						Messages.LaunchDelegate_CannotLaunchAsyncWhileDebugging, 
 						MessageDialog.WARNING));
 			}
     	});
@@ -305,8 +296,8 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			@Override
 			public void run() {
 				choice.set(DialogUtils.getInstance().cancelContinueMessage(
-						Messages.RunTestsLaunchConfigurationDelegate_ConfirmDialogTitle, 
-						Messages.RunTestsLaunchConfigurationDelegate_ExistingTraceFlag, 
+						Messages.LaunchDelegate_ConfirmDialogTitle, 
+						Messages.LaunchDelegate_ExistingTraceFlag, 
 						MessageDialog.INFORMATION));
 			}
     	});

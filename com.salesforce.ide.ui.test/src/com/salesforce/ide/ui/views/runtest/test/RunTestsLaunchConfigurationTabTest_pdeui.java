@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,104 +33,220 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 import com.google.common.collect.Maps;
 import com.salesforce.ide.core.project.DefaultNature;
+import com.salesforce.ide.core.remote.tooling.RunTests.SuiteManager;
 import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder;
-import com.salesforce.ide.test.common.IdeSetupTest;
-import com.salesforce.ide.test.common.IdeTestCase;
 import com.salesforce.ide.ui.views.runtest.Messages;
+import com.salesforce.ide.ui.views.runtest.ProjectConfigurationTab;
 import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
-import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTab;
+import com.salesforce.ide.ui.views.runtest.TestConfigurationTab;
 import com.sforce.soap.tooling.ApexLogLevel;
+import com.salesforce.ide.test.common.IdeTestCase;
+import com.salesforce.ide.test.common.IdeSetupTest;
 
+@SuppressWarnings("unchecked")
 @IdeSetupTest(needOrg = false, needProject = false)
 public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
-	
-	private RunTestsLaunchConfigurationTab mockedTab;
+		
+	private ProjectConfigurationTab projectTab;
+	private TestConfigurationTab testTab;
 	
 	@Before
     @Override
     public void setUp() throws Exception {
-		mockedTab = mock(RunTestsLaunchConfigurationTab.class);
+		projectTab = mock(ProjectConfigurationTab.class);
+		testTab = mock(TestConfigurationTab.class);
+		
+		doCallRealMethod().when(projectTab).saveSiblingTab(any(TestConfigurationTab.class));
+		projectTab.saveSiblingTab(testTab);
+		
+		doCallRealMethod().when(testTab).saveSiblingTab(any(ProjectConfigurationTab.class));
+		testTab.saveSiblingTab(projectTab);
 	}
 	
 	@Test
-	public void testGetTabName() {
-		doCallRealMethod().when(mockedTab).getName();
+	public void testTestTabInitialize() {
+		TestConfigurationTab realTestTab = new TestConfigurationTab();
 		
-		assertEquals(Messages.RunTestsTab_TabTitle, mockedTab.getName());
+		assertTrue(realTestTab.getTestHolder().isEmpty());
+		assertTrue(realTestTab.getSuiteManagers().isEmpty());
+	}
+	
+	@Test
+	public void testGetProjectTabName() {
+		doCallRealMethod().when(projectTab).getName();
+		
+		assertEquals(Messages.Tab_ProjectTabTitle, projectTab.getName());
+	}
+	
+	@Test
+	public void testGetTestTabName() {
+		doCallRealMethod().when(testTab).getName();
+		
+		assertEquals(Messages.Tab_TestsTabTitle, testTab.getName());
 	}
 
 	@Test
 	public void testGetNullProjectTextWidget() {
-		doCallRealMethod().when(mockedTab).getProjectName();
+		doCallRealMethod().when(projectTab).getProjectName();
 		
-		assertEquals("", mockedTab.getProjectName());
+		assertEquals("", projectTab.getProjectName());
 	}
 	
 	@Test
 	public void testGetNullClassTextWidget() {
-		doCallRealMethod().when(mockedTab).getTestClassName();
+		doCallRealMethod().when(testTab).getTestClassName();
 		
-		assertEquals("", mockedTab.getTestClassName());
+		assertEquals("", testTab.getTestClassName());
+	}
+	
+	@Test
+	public void testProjectTabCreateControl() {
+		Composite parent = mock(Composite.class);
+		doCallRealMethod().when(projectTab).createControl(parent);
+		
+		Composite comp = mock(Composite.class);
+		Display display = mock(Display.class);
+		Color gray = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+		Color black = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
+		when(display.getSystemColor(SWT.COLOR_GRAY)).thenReturn(gray);
+		when(display.getSystemColor(SWT.COLOR_BLACK)).thenReturn(black);
+		when(comp.getDisplay()).thenReturn(display);
+		doNothing().when(comp).setLayout(any(GridLayout.class));
+		when(projectTab.createComposite(parent, SWT.NONE)).thenReturn(comp);
+		
+		doNothing().when(projectTab).createProjectSelector(any(Composite.class));
+		doNothing().when(projectTab).createLogEditor(any(Composite.class));
+		
+		projectTab.createControl(parent);
+		
+		verify(projectTab, times(1)).createProjectSelector(eq(comp));
+		verify(projectTab, times(1)).createLogEditor(eq(comp));
+	}
+	
+	@Test
+	public void testCreateProjectSelector() {
+		Composite parent = mock(Composite.class);
+		doCallRealMethod().when(projectTab).createProjectSelector(parent);
+		
+		Group group = mock(Group.class);
+		doNothing().when(group).setText(Messages.Tab_ProjectGroupTitle);
+		doNothing().when(group).setLayout(any(GridLayout.class));
+		doNothing().when(group).setLayoutData(any(GridData.class));
+		when(projectTab.createGroup(parent, SWT.NONE)).thenReturn(group);
+		
+		Text projectText = mock(Text.class);
+		when(projectTab.makeDefaultText(eq(group), eq(""), any(Color.class))).thenReturn(projectText);
+		Button projectButton = mock(Button.class);
+		doNothing().when(projectButton).addSelectionListener(any(SelectionAdapter.class));
+		when(projectTab.makeDefaultButton(group, Messages.Tab_SearchButtonText, true)).thenReturn(projectButton);
+		
+		projectTab.createProjectSelector(parent);
+		
+		verify(projectTab, times(1)).makeDefaultText(group, "", projectTab.colorBlack);
+		verify(projectTab, times(1)).makeDefaultButton(group, Messages.Tab_SearchButtonText, true);
+		assertEquals(projectText, projectTab.projectText);
+		assertEquals(projectButton, projectTab.projectButton);
+	}
+	
+	@Test
+	public void testTestTabCreateControl() {
+		Composite parent = mock(Composite.class);
+		doCallRealMethod().when(testTab).createControl(parent);
+		
+		Composite comp = mock(Composite.class);
+		Display display = mock(Display.class);
+		Color gray = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+		Color black = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
+		when(display.getSystemColor(SWT.COLOR_GRAY)).thenReturn(gray);
+		when(display.getSystemColor(SWT.COLOR_BLACK)).thenReturn(black);
+		when(comp.getDisplay()).thenReturn(display);
+		doNothing().when(comp).setLayout(any(GridLayout.class));
+		when(testTab.createComposite(parent, SWT.NONE)).thenReturn(comp);
+		
+		doNothing().when(testTab).createSingleTestSelector(any(Composite.class));
+		doNothing().when(testTab).createSuiteSelector(any(Composite.class));
+		
+		testTab.createControl(parent);
+		
+		verify(testTab, times(1)).createSingleTestSelector(eq(comp));
+		verify(testTab, times(1)).createSuiteSelector(eq(comp));
+	}
+	
+	@Test
+	public void testCreateSingleTestSelector() {
+		Composite parent = mock(Composite.class);
+		doCallRealMethod().when(testTab).createSingleTestSelector(parent);
+		
+		Group group = mock(Group.class);
+		doNothing().when(group).setText(Messages.Tab_TestsGroupTitle);
+		doNothing().when(group).setLayout(any(GridLayout.class));
+		doNothing().when(group).setLayoutData(any(GridData.class));
+		when(testTab.createGroup(parent, SWT.NONE)).thenReturn(group);
+		
+		when(testTab.makeDefaultLabel(group, Messages.Tab_TestClassGroupTitle)).thenReturn(mock(Label.class));
+		Text classText = mock(Text.class);
+		when(testTab.makeDefaultText(group, Messages.Tab_AllClasses, testTab.colorGray)).thenReturn(classText);
+		Button defaultSearchButton = mock(Button.class);
+		doNothing().when(defaultSearchButton).addSelectionListener(any(SelectionAdapter.class));
+		when(testTab.makeDefaultButton(eq(group), eq(Messages.Tab_SearchButtonText), any(Boolean.class))).thenReturn(defaultSearchButton);
+		
+		when(testTab.makeDefaultLabel(group, Messages.Tab_TestMethodGroupTitle)).thenReturn(mock(Label.class));
+		Text testMethodText = mock(Text.class);
+		when(testTab.makeDefaultText(group, Messages.Tab_AllMethods, testTab.colorGray)).thenReturn(testMethodText);
+		
+		testTab.createSingleTestSelector(parent);
+		
+		assertEquals(classText, testTab.classText);
+		assertEquals(defaultSearchButton, testTab.classButton);
+		assertEquals(testMethodText, testTab.testMethodText);
+		assertEquals(defaultSearchButton, testTab.testMethodButton);
+	}
+	
+	@Test
+	public void testCreateSuiteSelector() {
+		Composite parent = mock(Composite.class);
+		doCallRealMethod().when(testTab).createSuiteSelector(parent);
+		
+		Group group = mock(Group.class);
+		doNothing().when(group).setText(Messages.Tab_SuiteGroupTitle);
+		doNothing().when(group).setLayout(any(GridLayout.class));
+		doNothing().when(group).setLayoutData(any(GridData.class));
+		when(testTab.createGroup(parent, SWT.NONE)).thenReturn(group);
+		
+		Button useSuites = mock(Button.class);
+		doNothing().when(useSuites).addSelectionListener(any(SelectionAdapter.class));
+		when(testTab.makeDefaultCheckbox(group, Messages.Tab_UseSuites, true, false)).thenReturn(useSuites);
+		
+		Table suiteTable = mock(Table.class);
+		doNothing().when(suiteTable).addSelectionListener(any(SelectionAdapter.class));
+		when(testTab.makeDefaultMultiCheckTable(group, new String[] { Messages.Tab_SuiteColumnName })).thenReturn(suiteTable);
+		
+		testTab.createSuiteSelector(parent);
+		
+		assertEquals(useSuites, testTab.suiteStatus);
+		assertEquals(suiteTable, testTab.suiteTable);
 	}
 	
 	@Test
 	public void testGetNullMethodTextWidget() {
-		doCallRealMethod().when(mockedTab).getTestMethodName();
+		doCallRealMethod().when(testTab).getTestMethodName();
 		
-		assertEquals("", mockedTab.getTestMethodName());
-	}
-	
-	@Test
-	public void testAsyncModeWithNullButtonWidget() {
-		doCallRealMethod().when(mockedTab).isTestModeAsync();
-		
-		assertFalse(mockedTab.isTestModeAsync());
-	}
-	
-	@Test
-	public void testAsyncModeWithDisabledButton() {
-		Button asyncButton = mock(Button.class);
-		when(asyncButton.isEnabled()).thenReturn(false);
-		mockedTab.testAsyncButton = asyncButton;
-		doCallRealMethod().when(mockedTab).isTestModeAsync();
-		
-		assertFalse(mockedTab.isTestModeAsync());
-	}
-	
-	@Test
-	public void testAsyncModeWithUnselectedButton() {
-		Button asyncButton = mock(Button.class);
-		when(asyncButton.isEnabled()).thenReturn(true);
-		when(asyncButton.getSelection()).thenReturn(false);
-		mockedTab.testAsyncButton = asyncButton;
-		doCallRealMethod().when(mockedTab).isTestModeAsync();
-		
-		assertFalse(mockedTab.isTestModeAsync());
-	}
-	
-	@Test
-	public void testAsyncModeWithSelectedButton() {
-		Button asyncButton = mock(Button.class);
-		when(asyncButton.isEnabled()).thenReturn(true);
-		when(asyncButton.getSelection()).thenReturn(true);
-		mockedTab.testAsyncButton = asyncButton;
-		doCallRealMethod().when(mockedTab).isTestModeAsync();
-		
-		assertTrue(mockedTab.isTestModeAsync());
+		assertEquals("", testTab.getTestMethodName());
 	}
 	
 	@Test
 	public void testGetLogLevelsNullLogSettings() {
-		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = null;
+		doCallRealMethod().when(projectTab).getLogLevels();
+		projectTab.logSettings = null;
 		
-		Map<String, String> logLevels = mockedTab.getLogLevels();
+		Map<String, String> logLevels = projectTab.getLogLevels();
 		
 		assertNotNull(logLevels);
 		assertTrue(logLevels.isEmpty());
@@ -137,10 +254,10 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	
 	@Test
 	public void testGetLogLevelsEmptyLogSettings() {
-		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = Maps.newLinkedHashMap();
+		doCallRealMethod().when(projectTab).getLogLevels();
+		projectTab.logSettings = Maps.newLinkedHashMap();
 		
-		Map<String, String> logLevels = mockedTab.getLogLevels();
+		Map<String, String> logLevels = projectTab.getLogLevels();
 		
 		assertNotNull(logLevels);
 		assertTrue(logLevels.isEmpty());
@@ -148,11 +265,11 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	
 	@Test
 	public void testGetLogLevelsNullComboBox() {
-		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = Maps.newLinkedHashMap();
-		mockedTab.logSettings.put(RunTestsLaunchConfigurationTab.logCategories[0], null);
+		doCallRealMethod().when(projectTab).getLogLevels();
+		projectTab.logSettings = Maps.newLinkedHashMap();
+		projectTab.logSettings.put(ProjectConfigurationTab.logCategories[0], null);
 		
-		Map<String, String> logLevels = mockedTab.getLogLevels();
+		Map<String, String> logLevels = projectTab.getLogLevels();
 		
 		assertNotNull(logLevels);
 		assertTrue(logLevels.isEmpty());
@@ -160,29 +277,28 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	
 	@Test
 	public void testGetLogLevels() {
-		doCallRealMethod().when(mockedTab).getLogLevels();
-		mockedTab.logSettings = Maps.newLinkedHashMap();
+		doCallRealMethod().when(projectTab).getLogLevels();
+		projectTab.logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class);
 		when(combo.getText()).thenReturn(ApexLogLevel.DEBUG.name());
-		mockedTab.logSettings.put(RunTestsLaunchConfigurationTab.logCategories[0], combo);
+		projectTab.logSettings.put(ProjectConfigurationTab.logCategories[0], combo);
 		
-		Map<String, String> logLevels = mockedTab.getLogLevels();
+		Map<String, String> logLevels = projectTab.getLogLevels();
 		
 		assertNotNull(logLevels);
 		assertEquals(1, logLevels.size());
-		assertEquals(ApexLogLevel.DEBUG.name(), logLevels.get(RunTestsLaunchConfigurationTab.logCategories[0]));
+		assertEquals(ApexLogLevel.DEBUG.name(), logLevels.get(ProjectConfigurationTab.logCategories[0]));
 	}
 	
 	@Test
 	public void testCreateControlWithNullParentComposite() {
-		doCallRealMethod().when(mockedTab).createControl(null);
+		doCallRealMethod().when(projectTab).createControl(null);
 		
-		mockedTab.createControl(null);
+		projectTab.createControl(null);
 		
-		verify(mockedTab, never()).createComposite(null, SWT.NONE);
-		verify(mockedTab, never()).createSingleTestEditor(null);
-		verify(mockedTab, never()).createLogEditor(null);
-		verify(mockedTab, never()).createTestModeEditor(null);
+		verify(projectTab, never()).createComposite(null, SWT.NONE);
+		verify(projectTab, never()).createProjectSelector(null);
+		verify(projectTab, never()).createLogEditor(null);
 	}
 	
 	@Test
@@ -197,12 +313,12 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	
 	@Test
 	public void testShouldEnableBasedOnAllClassesText() {
-		genericShouldEnableBasedOnText(Messages.GenericTab_AllClasses, false);
+		genericShouldEnableBasedOnText(Messages.Tab_AllClasses, false);
 	}
 	
 	@Test
 	public void testShouldEnableBasedOnAllMethodsText() {
-		genericShouldEnableBasedOnText(Messages.GenericTab_AllMethods, false);
+		genericShouldEnableBasedOnText(Messages.Tab_AllMethods, false);
 	}
 	
 	@Test
@@ -211,16 +327,16 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	}
 	
 	private void genericShouldEnableBasedOnText(String text, boolean enabled) {
-		doCallRealMethod().when(mockedTab).shouldEnableBasedOnText(any(String.class));
+		doCallRealMethod().when(testTab).shouldEnableBasedOnText(any(String.class));
 		
-		assertEquals(enabled, mockedTab.shouldEnableBasedOnText(text));
+		assertEquals(enabled, testTab.shouldEnableBasedOnText(text));
 	}
 	
 	@Test
 	public void testSetTextPropertiesWithNullText() {
-		doCallRealMethod().when(mockedTab).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		doCallRealMethod().when(testTab).setTextProperties(any(Text.class), any(String.class), any(Color.class));
 		
-		assertNull(mockedTab.setTextProperties(null, null, null));
+		assertNull(testTab.setTextProperties(null, null, null));
 	}
 	
 	@Test
@@ -231,9 +347,9 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 		doNothing().when(text).setEditable(false);
 		doNothing().when(text).setText("");
 		doNothing().when(text).setForeground(color);
-		doCallRealMethod().when(mockedTab).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		doCallRealMethod().when(testTab).setTextProperties(any(Text.class), any(String.class), any(Color.class));
 		
-		assertEquals(text, mockedTab.setTextProperties(text, "", color));
+		assertEquals(text, testTab.setTextProperties(text, "", color));
 		verify(text, times(1)).setLayoutData(any(GridData.class));
 		verify(text, times(1)).setEditable(false);
 		verify(text, times(1)).setText("");
@@ -241,860 +357,805 @@ public class RunTestsLaunchConfigurationTabTest_pdeui extends IdeTestCase {
 	}
 	
 	@Test
-	public void testResetSelectedTestClass() {
-		Color defaultGray = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
-		mockedTab.defaultGray = defaultGray;
-		
-		Text projectText = mock(Text.class);
-		mockedTab.projectText = projectText;
-		when(projectText.getText()).thenReturn("");
-		
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
-		
-		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
-		doCallRealMethod().when(mockedTab).resetSelectedTestClass();
-		
-		mockedTab.resetSelectedTestClass();
-		
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(Messages.GenericTab_AllClasses), eq(defaultGray));
-	}
-	
-	@Test
-	public void testResetSelectedTestMethod() {
-		Color defaultGray = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
-		mockedTab.defaultGray = defaultGray;
-		
-		Text classText = mock(Text.class);
-		mockedTab.classText = classText;
-		when(classText.getText()).thenReturn("");
-		
-		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.testMethodButton = testMethodButton;
-		
-		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
-		doCallRealMethod().when(mockedTab).resetSelectedTestMethod();
-		
-		mockedTab.resetSelectedTestMethod();
-		
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(Messages.GenericTab_AllMethods), eq(defaultGray));
-	}
-	
-	@Test
 	public void testShouldEnableLevelsNullLogStatus() {
-		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
-		mockedTab.logStatus = null;
+		doCallRealMethod().when(projectTab).shouldEnableLevels(any(Boolean.class));
+		projectTab.logStatus = null;
 		
 		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
-		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
-		mockedTab.logSettings = logSettings;
+		logSettings.put(ProjectConfigurationTab.logCategories[7], combo);
+		projectTab.logSettings = logSettings;
 		
-		mockedTab.shouldEnableLevels(true);
+		projectTab.shouldEnableLevels(true);
 		
 		verify(combo, never()).setEnabled(true);
 	}
 	
 	@Test
 	public void testShouldEnableLevelsNullLogSettings() {
-		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
+		doCallRealMethod().when(projectTab).shouldEnableLevels(any(Boolean.class));
 		Button logStatus = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.logStatus = logStatus;
+		projectTab.logStatus = logStatus;
 		
-		mockedTab.logSettings = null;
+		projectTab.logSettings = null;
 		
-		mockedTab.shouldEnableLevels(true);
+		projectTab.shouldEnableLevels(true);
 		
 		verify(logStatus, never()).setSelection(true);
 	}
 	
 	@Test
 	public void testShouldEnableLevels() {
-		doCallRealMethod().when(mockedTab).shouldEnableLevels(any(Boolean.class));
+		doCallRealMethod().when(projectTab).shouldEnableLevels(any(Boolean.class));
 		Button logStatus = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.logStatus = logStatus;
+		projectTab.logStatus = logStatus;
 		
 		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
-		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
-		mockedTab.logSettings = logSettings;
+		logSettings.put(ProjectConfigurationTab.logCategories[7], combo);
+		projectTab.logSettings = logSettings;
 		
-		mockedTab.shouldEnableLevels(true);
+		projectTab.shouldEnableLevels(true);
 		
 		verify(logStatus, times(1)).setSelection(true);
 		verify(combo, times(1)).setEnabled(true);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testSetLogLevelsNoneProvided() {
-		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
+		doCallRealMethod().when(projectTab).setLogLevels(any(Map.class));
 		
 		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
-		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
-		mockedTab.logSettings = logSettings;
+		logSettings.put(ProjectConfigurationTab.logCategories[7], combo);
+		projectTab.logSettings = logSettings;
 		
-		mockedTab.setLogLevels(null);
+		projectTab.setLogLevels(null);
 		
 		verify(combo, never()).setText(any(String.class));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testSetLogLevelsUnsupportedCategory() {
-		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
+		doCallRealMethod().when(projectTab).setLogLevels(any(Map.class));
 		
 		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
-		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
-		mockedTab.logSettings = logSettings;
+		logSettings.put(ProjectConfigurationTab.logCategories[7], combo);
+		projectTab.logSettings = logSettings;
 		
 		Map<String, String> logLevels = Maps.newLinkedHashMap();
 		logLevels.put("nope", ApexLogLevel.DEBUG.name());
 		
-		mockedTab.setLogLevels(logLevels);
+		projectTab.setLogLevels(logLevels);
 		
 		verify(combo, never()).setText(ApexLogLevel.DEBUG.name());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testSetLogLevelsSupportedCategory() {
-		doCallRealMethod().when(mockedTab).setLogLevels(any(Map.class));
+		doCallRealMethod().when(projectTab).setLogLevels(any(Map.class));
 		
 		LinkedHashMap<String, Combo> logSettings = Maps.newLinkedHashMap();
 		Combo combo = mock(Combo.class, RETURNS_DEFAULTS);
-		logSettings.put(RunTestsLaunchConfigurationTab.logCategories[7], combo);
-		mockedTab.logSettings = logSettings;
+		logSettings.put(ProjectConfigurationTab.logCategories[7], combo);
+		projectTab.logSettings = logSettings;
 		
 		Map<String, String> logLevels = Maps.newLinkedHashMap();
-		logLevels.put(RunTestsLaunchConfigurationTab.logCategories[7], ApexLogLevel.DEBUG.name());
+		logLevels.put(ProjectConfigurationTab.logCategories[7], ApexLogLevel.DEBUG.name());
 		
-		mockedTab.setLogLevels(logLevels);
+		projectTab.setLogLevels(logLevels);
 		
 		verify(combo, times(1)).setText(ApexLogLevel.DEBUG.name());
 	}
 	
 	@Test
 	public void testHandleProjectButtonNullProject() {
-		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
+		doCallRealMethod().when(projectTab).handleProjectButtonSelected();
 		
-		Button classButton = mock(Button.class);
-		mockedTab.classButton = classButton;
+		when(projectTab.chooseProject()).thenReturn(null);
 		
-		when(mockedTab.chooseProject()).thenReturn(null);
+		projectTab.handleProjectButtonSelected();
 		
-		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
-		mockedTab.allTests = allTests;
-		
-		mockedTab.handleProjectButtonSelected();
-		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, never()).buildTestsForProject(any(IProject.class));
-		assertTrue(allTests.isEmpty());
-		verify(classButton, never()).setEnabled(true);
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
-		assertNull(mockedTab.projectText);
-	}
-	
-	@Test
-	public void testHandleProjectButtonNullProjectName() {
-		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
-		
-		Button classButton = mock(Button.class);
-		mockedTab.classButton = classButton;
-		
-		IProject project = mock(IProject.class);
-		when(project.getName()).thenReturn(null);
-		when(mockedTab.chooseProject()).thenReturn(project);
-		
-		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
-		mockedTab.allTests = allTests;
-		
-		mockedTab.handleProjectButtonSelected();
-		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, never()).buildTestsForProject(project);
-		assertTrue(allTests.isEmpty());
-		verify(classButton, never()).setEnabled(true);
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
-		assertNull(mockedTab.projectText);
+		verify(projectTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		assertNull(projectTab.projectText);
 	}
 	
 	@Test
 	public void testHandleProjectButtonNullProjectTextWidget() {
-		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
-		
-		Button classButton = mock(Button.class);
-		mockedTab.classButton = classButton;
+		doCallRealMethod().when(projectTab).handleProjectButtonSelected();
 		
 		IProject project = mock(IProject.class);
 		when(project.getName()).thenReturn("MyProject");
-		when(mockedTab.chooseProject()).thenReturn(project);
+		when(projectTab.chooseProject()).thenReturn(project);
+				
+		projectTab.handleProjectButtonSelected();
 		
-		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
-		mockedTab.allTests = allTests;
-		
-		mockedTab.handleProjectButtonSelected();
-		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, never()).buildTestsForProject(project);
-		assertTrue(allTests.isEmpty());
-		verify(classButton, never()).setEnabled(true);
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
-		assertNull(mockedTab.projectText);
+		verify(projectTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		assertNull(projectTab.projectText);
 	}
 	
 	@Test
-	public void testHandleProjectButtonDifferentProjectSelectedForTheFirstTime() {
-		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
-		
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
-		
-		String newProject = "NewProject";
-		IProject project = mock(IProject.class);
-		when(project.getName()).thenReturn(newProject);
-		when(mockedTab.chooseProject()).thenReturn(project);
-		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
-		
-		String oldProject = "OldProject";
-		Text projectText = mock(Text.class);
-		when(projectText.getText()).thenReturn(oldProject);
-		when(mockedTab.setTextProperties(projectText, newProject, normalBlack)).thenReturn(projectText);
-		mockedTab.projectText = projectText;
-		
-		TestsHolder rt = mock(TestsHolder.class);
-		
-		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
-		mockedTab.allTests = allTests;
-		
-		doNothing().when(mockedTab).resetSelectedTestClass();
-		doNothing().when(mockedTab).resetSelectedTestMethod();
-		when(mockedTab.buildTestsForProject(project)).thenReturn(rt);
-		
-		mockedTab.handleProjectButtonSelected();
-		
-		verify(mockedTab, times(1)).resetSelectedTestClass();
-		verify(mockedTab, times(1)).resetSelectedTestMethod();
-		verify(mockedTab, times(1)).buildTestsForProject(project);
-		assertEquals(1, allTests.size());
-		verify(classButton, times(1)).setEnabled(true);
-		verify(mockedTab, times(1)).setTextProperties(projectText, newProject, normalBlack);
-	}
-	
-	@Test
-	public void testHandleProjectButtonDifferentProjectSelectedBefore() {
-		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
-		
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
-		
-		String newProject = "NewProject";
-		IProject project = mock(IProject.class);
-		when(project.getName()).thenReturn(newProject);
-		when(mockedTab.chooseProject()).thenReturn(project);
-		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
-		
-		String oldProject = "OldProject";
-		Text projectText = mock(Text.class);
-		when(projectText.getText()).thenReturn(oldProject);
-		when(mockedTab.setTextProperties(projectText, newProject, normalBlack)).thenReturn(projectText);
-		mockedTab.projectText = projectText;
-		
-		TestsHolder rt = mock(TestsHolder.class);
-		
-		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
-		allTests.put(project, rt);
-		mockedTab.allTests = allTests;
-		
-		doNothing().when(mockedTab).resetSelectedTestClass();
-		doNothing().when(mockedTab).resetSelectedTestMethod();
-		
-		mockedTab.handleProjectButtonSelected();
-		
-		verify(mockedTab, times(1)).resetSelectedTestClass();
-		verify(mockedTab, times(1)).resetSelectedTestMethod();
-		verify(mockedTab, never()).buildTestsForProject(project);
-		assertEquals(1, allTests.size());
-		verify(classButton, times(1)).setEnabled(true);
-		verify(mockedTab, times(1)).setTextProperties(projectText, newProject, normalBlack);
-	}
-	
-	@Test
-	public void testHandleProjectButtonSameProject() {
-		doCallRealMethod().when(mockedTab).handleProjectButtonSelected();
-		
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
+	public void testHandleProjectButtonDifferentProject() {
+		doCallRealMethod().when(projectTab).handleProjectButtonSelected();
 		
 		String projectName = "MyProject";
 		IProject project = mock(IProject.class);
 		when(project.getName()).thenReturn(projectName);
-		when(mockedTab.chooseProject()).thenReturn(project);
+		when(projectTab.chooseProject()).thenReturn(project);
+				
+		Text projectText = mock(Text.class);
+		when(projectText.getText()).thenReturn(projectName + "New");
+		when(projectTab.setTextProperties(eq(projectText), eq(projectName), any(Color.class))).thenReturn(projectText);
+		projectTab.projectText = projectText;
 		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
+		doNothing().when(testTab).resetTestSelection();
+		when(testTab.fetchSuites(any(IProject.class))).thenReturn(Collections.EMPTY_LIST);
 		
+		projectTab.handleProjectButtonSelected();
+		
+		verify(testTab, times(1)).resetTestSelection();
+		verify(testTab, times(1)).fetchSuites(project);
+		verify(projectTab, times(1)).setTextProperties(eq(projectText), eq(projectName), any(Color.class));
+	}
+	
+	@Test
+	public void testHandleProjectButtonSameProject() {
+		doCallRealMethod().when(projectTab).handleProjectButtonSelected();
+				
+		String projectName = "MyProject";
+		IProject project = mock(IProject.class);
+		when(project.getName()).thenReturn(projectName);
+		when(projectTab.chooseProject()).thenReturn(project);
+				
 		Text projectText = mock(Text.class);
 		when(projectText.getText()).thenReturn(projectName);
-		when(mockedTab.setTextProperties(projectText, projectName, normalBlack)).thenReturn(projectText);
-		mockedTab.projectText = projectText;
+		when(projectTab.setTextProperties(eq(projectText), eq(projectName), any(Color.class))).thenReturn(projectText);
+		projectTab.projectText = projectText;
+				
+		projectTab.handleProjectButtonSelected();
 		
-		Map<IProject, TestsHolder> allTests = Collections.<IProject, TestsHolder> emptyMap();
-		mockedTab.allTests = allTests;
-		
-		mockedTab.handleProjectButtonSelected();
-		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, never()).buildTestsForProject(project);
-		assertTrue(allTests.isEmpty());
-		verify(classButton, times(1)).setEnabled(true);
-		verify(mockedTab, times(1)).setTextProperties(projectText, projectName, normalBlack);
+		verify(testTab, never()).resetTestSelection();
+		verify(testTab, never()).fetchSuites(any(IProject.class));
+		verify(projectTab, times(1)).setTextProperties(eq(projectText), eq(projectName), any(Color.class));
 	}
 	
 	@Test
 	public void testHandleClassButtonNullClass() {
-		doCallRealMethod().when(mockedTab).handleClassButtonSelected();
+		doCallRealMethod().when(testTab).handleClassButtonSelected();
 		
-		when(mockedTab.chooseTestClass()).thenReturn(null);
+		when(testTab.chooseTestClass()).thenReturn(null);
 		
 		Button testMethodButton = mock(Button.class);
-		mockedTab.testMethodButton = testMethodButton;
+		testTab.testMethodButton = testMethodButton;
 		
-		mockedTab.handleClassButtonSelected();
+		testTab.handleClassButtonSelected();
 		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		verify(testTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
 		verify(testMethodButton, never()).setEnabled(any(Boolean.class));
 	}
 	
 	@Test
 	public void testHandleClassButtonNullClassTextWidget() {
-		doCallRealMethod().when(mockedTab).handleClassButtonSelected();
+		doCallRealMethod().when(testTab).handleClassButtonSelected();
 		
-		when(mockedTab.chooseTestClass()).thenReturn("MyClass");
+		when(testTab.chooseTestClass()).thenReturn("MyClass");
 		
 		Button testMethodButton = mock(Button.class);
-		mockedTab.testMethodButton = testMethodButton;
+		testTab.testMethodButton = testMethodButton;
 		
-		mockedTab.handleClassButtonSelected();
+		testTab.handleClassButtonSelected();
 		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		verify(testTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
 		verify(testMethodButton, never()).setEnabled(any(Boolean.class));
 	}
 	
 	@Test
 	public void testHandleClassButtonDifferentClass() {
-		doCallRealMethod().when(mockedTab).handleClassButtonSelected();
+		doCallRealMethod().when(testTab).handleClassButtonSelected();
 		
 		String newClass = "NewClass";
-		when(mockedTab.chooseTestClass()).thenReturn(newClass);
+		when(testTab.chooseTestClass()).thenReturn(newClass);
 		
 		String oldClass = "oldClass";
 		Text classText = mock(Text.class);
 		when(classText.getText()).thenReturn(oldClass);
-		mockedTab.classText = classText;
+		testTab.classText = classText;
+		doCallRealMethod().when(testTab).getTestClassName();
 		
-		doNothing().when(mockedTab).resetSelectedTestMethod();
-		
+		when(testTab.setTextProperties(eq(testTab.testMethodText), eq(Messages.Tab_AllMethods), any(Color.class))).thenReturn(testTab.testMethodText);
+		when(testTab.setTextProperties(eq(testTab.classText), eq(newClass), any(Color.class))).thenReturn(testTab.classText);
+				
 		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.testMethodButton = testMethodButton;
+		doNothing().when(testMethodButton).setEnabled(any(Boolean.class));
+		testTab.testMethodButton = testMethodButton;
 		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
+		testTab.handleClassButtonSelected();
 		
-		when(mockedTab.setTextProperties(classText, newClass, normalBlack)).thenReturn(classText);
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(true);
-		
-		mockedTab.handleClassButtonSelected();
-		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, times(1)).resetSelectedTestMethod();
-		verify(mockedTab, times(1)).setTextProperties(classText, newClass, normalBlack);
+		verify(testTab, times(1)).setTextProperties(eq(testTab.testMethodText), eq(Messages.Tab_AllMethods), any(Color.class));
+		verify(testTab, times(1)).setTextProperties(eq(testTab.classText), eq(newClass), any(Color.class));
 		verify(testMethodButton, times(1)).setEnabled(any(Boolean.class));
 	}
 	
 	@Test
 	public void testHandleClassButtonSameClass() {
-		doCallRealMethod().when(mockedTab).handleClassButtonSelected();
+		doCallRealMethod().when(testTab).handleClassButtonSelected();
 		
 		String newClass = "NewClass";
-		when(mockedTab.chooseTestClass()).thenReturn(newClass);
+		when(testTab.chooseTestClass()).thenReturn(newClass);
 		
-		String oldClass = "NewClass";
 		Text classText = mock(Text.class);
-		when(classText.getText()).thenReturn(oldClass);
-		mockedTab.classText = classText;
-		
-		doNothing().when(mockedTab).resetSelectedTestMethod();
-		
+		when(classText.getText()).thenReturn(newClass);
+		testTab.classText = classText;
+		doCallRealMethod().when(testTab).getTestClassName();
+				
+		when(testTab.setTextProperties(eq(testTab.testMethodText), eq(Messages.Tab_AllMethods), any(Color.class))).thenReturn(testTab.testMethodText);
+		when(testTab.setTextProperties(eq(testTab.classText), eq(newClass), any(Color.class))).thenReturn(testTab.classText);
+				
 		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.testMethodButton = testMethodButton;
+		doNothing().when(testMethodButton).setEnabled(any(Boolean.class));
+		testTab.testMethodButton = testMethodButton;
 		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
+		testTab.handleClassButtonSelected();
 		
-		when(mockedTab.setTextProperties(classText, newClass, normalBlack)).thenReturn(classText);
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(true);
-		
-		mockedTab.handleClassButtonSelected();
-		
-		verify(mockedTab, never()).resetSelectedTestClass();
-		verify(mockedTab, never()).resetSelectedTestMethod();
-		verify(mockedTab, times(1)).setTextProperties(classText, newClass, normalBlack);
+		verify(testTab, never()).setTextProperties(eq(testTab.testMethodText), eq(Messages.Tab_AllMethods), any(Color.class));
+		verify(testTab, times(1)).setTextProperties(eq(testTab.classText), eq(newClass), any(Color.class));
 		verify(testMethodButton, times(1)).setEnabled(any(Boolean.class));
 	}
 	
 	@Test
 	public void testHandleTestMethodButtonNullMethod() {
-		doCallRealMethod().when(mockedTab).handleTestMethodButtonSelected();
-		when(mockedTab.chooseTestMethod()).thenReturn(null);
+		doCallRealMethod().when(testTab).handleTestMethodButtonSelected();
+		when(testTab.chooseTestMethod()).thenReturn(null);
 		
-		mockedTab.handleTestMethodButtonSelected();
+		testTab.handleTestMethodButtonSelected();
 		
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		verify(testTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
 	}
 
 	@Test
 	public void testHandleTestMethodButtonNullMethodTextWidget() {
-		doCallRealMethod().when(mockedTab).handleTestMethodButtonSelected();
+		doCallRealMethod().when(testTab).handleTestMethodButtonSelected();
 		
 		String methodName = "MyMethod";
-		when(mockedTab.chooseTestMethod()).thenReturn(methodName);
+		when(testTab.chooseTestMethod()).thenReturn(methodName);
 		
-		mockedTab.handleTestMethodButtonSelected();
+		testTab.handleTestMethodButtonSelected();
 		
-		verify(mockedTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
+		verify(testTab, never()).setTextProperties(any(Text.class), any(String.class), any(Color.class));
 	}
 	
 	@Test
 	public void testHandleTestMethodButtonSelected() {
-		doCallRealMethod().when(mockedTab).handleTestMethodButtonSelected();
+		doCallRealMethod().when(testTab).handleTestMethodButtonSelected();
 		
 		String methodName = "MyMethod";
-		when(mockedTab.chooseTestMethod()).thenReturn(methodName);
+		when(testTab.chooseTestMethod()).thenReturn(methodName);
 		
 		Text testMethodText = mock(Text.class);
-		mockedTab.testMethodText = testMethodText;
+		testTab.testMethodText = testMethodText;
+				
+		when(testTab.setTextProperties(eq(testMethodText), eq(methodName), any(Color.class))).thenReturn(testMethodText);
 		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
+		testTab.handleTestMethodButtonSelected();
 		
-		when(mockedTab.setTextProperties(testMethodText, methodName, normalBlack)).thenReturn(testMethodText);
-		
-		mockedTab.handleTestMethodButtonSelected();
-		
-		verify(mockedTab, times(1)).setTextProperties(testMethodText, methodName, normalBlack);
+		verify(testTab, times(1)).setTextProperties(eq(testMethodText), eq(methodName), any(Color.class));
 	}
 	
 	@Test
-	public void testSelectAsyncNullAsyncButtonWidget() {
-		doCallRealMethod().when(mockedTab).selectAsync(any(Boolean.class));
+	public void testProjectTabIsValidWithNoErrors() {
+		doCallRealMethod().when(projectTab).isValid(any(ILaunchConfiguration.class));
+		when(projectTab.validatePage()).thenReturn(true);
+		when(projectTab.getErrorMessage()).thenReturn(null);
 		
-		Button testSyncButton = mock(Button.class);
-		mockedTab.testSyncButton = testSyncButton;
-		
-		mockedTab.selectAsync(true);
-		
-		verify(testSyncButton, never()).setEnabled(any(Boolean.class));
-		verify(testSyncButton, never()).setSelection(any(Boolean.class));
+		assertTrue(projectTab.isValid(mock(ILaunchConfiguration.class)));
 	}
 	
 	@Test
-	public void testSelectAsyncNullSyncButtonWidget() {
-		doCallRealMethod().when(mockedTab).selectAsync(any(Boolean.class));
+	public void testTestTabIsValidWithNoErrors() {
+		doCallRealMethod().when(testTab).isValid(any(ILaunchConfiguration.class));
+		when(testTab.validatePage()).thenReturn(true);
+		when(testTab.getErrorMessage()).thenReturn(null);
 		
-		Button testAsyncButton = mock(Button.class);
-		mockedTab.testAsyncButton = testAsyncButton;
-		
-		mockedTab.selectAsync(true);
-		
-		verify(testAsyncButton, never()).setEnabled(any(Boolean.class));
-		verify(testAsyncButton, never()).setSelection(any(Boolean.class));
+		assertTrue(testTab.isValid(mock(ILaunchConfiguration.class)));
 	}
 	
 	@Test
-	public void testSelectAsyncTrue() {
-		doCallRealMethod().when(mockedTab).selectAsync(any(Boolean.class));
+	public void testProjectTabIsValidWithEmptyErrorMessage() {
+		doCallRealMethod().when(projectTab).isValid(any(ILaunchConfiguration.class));
+		when(projectTab.validatePage()).thenReturn(false);
+		when(projectTab.getErrorMessage()).thenReturn("");
 		
-		Button testSyncButton = mock(Button.class);
-		mockedTab.testSyncButton = testSyncButton;
-		Button testAsyncButton = mock(Button.class);
-		mockedTab.testAsyncButton = testAsyncButton;
-		
-		boolean isAsync = true;
-		mockedTab.selectAsync(isAsync);
-		
-		verify(testAsyncButton, times(1)).setEnabled(true);
-		verify(testAsyncButton, times(1)).setSelection(isAsync);
-		verify(testSyncButton, times(1)).setEnabled(true);
-		verify(testSyncButton, times(1)).setSelection(!isAsync);
+		assertFalse(projectTab.isValid(mock(ILaunchConfiguration.class)));
 	}
 	
 	@Test
-	public void testSelectAsyncFalse() {
-		doCallRealMethod().when(mockedTab).selectAsync(any(Boolean.class));
+	public void testTestTabIsValidWithEmptyErrorMessage() {
+		doCallRealMethod().when(testTab).isValid(any(ILaunchConfiguration.class));
+		when(testTab.validatePage()).thenReturn(false);
+		when(testTab.getErrorMessage()).thenReturn("");
 		
-		Button testSyncButton = mock(Button.class);
-		mockedTab.testSyncButton = testSyncButton;
-		Button testAsyncButton = mock(Button.class);
-		mockedTab.testAsyncButton = testAsyncButton;
-		
-		boolean isAsync = false;
-		mockedTab.selectAsync(isAsync);
-		
-		verify(testAsyncButton, times(1)).setEnabled(true);
-		verify(testAsyncButton, times(1)).setSelection(isAsync);
-		verify(testSyncButton, times(1)).setEnabled(true);
-		verify(testSyncButton, times(1)).setSelection(!isAsync);
+		assertFalse(testTab.isValid(mock(ILaunchConfiguration.class)));
 	}
 	
 	@Test
-	public void testIsValidWithNoErrors() {
-		doCallRealMethod().when(mockedTab).isValid(any(ILaunchConfiguration.class));
-		when(mockedTab.validatePage()).thenReturn(false);
-		when(mockedTab.getErrorMessage()).thenReturn(null);
+	public void testProjectTabIsValidWithRealErrorMessage() {
+		doCallRealMethod().when(projectTab).isValid(any(ILaunchConfiguration.class));
+		when(projectTab.validatePage()).thenReturn(false);
+		when(projectTab.getErrorMessage()).thenReturn("OhNo");
 		
-		assertTrue(mockedTab.isValid(mock(ILaunchConfiguration.class)));
+		assertFalse(projectTab.isValid(mock(ILaunchConfiguration.class)));
 	}
 	
 	@Test
-	public void testIsValidWithEmptyErrorMessage() {
-		doCallRealMethod().when(mockedTab).isValid(any(ILaunchConfiguration.class));
-		when(mockedTab.validatePage()).thenReturn(false);
-		when(mockedTab.getErrorMessage()).thenReturn("");
+	public void testTestTabIsValidWithRealErrorMessage() {
+		doCallRealMethod().when(testTab).isValid(any(ILaunchConfiguration.class));
+		when(testTab.validatePage()).thenReturn(false);
+		when(testTab.getErrorMessage()).thenReturn("OhNo");
 		
-		assertFalse(mockedTab.isValid(mock(ILaunchConfiguration.class)));
+		assertFalse(testTab.isValid(mock(ILaunchConfiguration.class)));
 	}
 	
 	@Test
-	public void testIsValidWithRealErrorMessage() {
-		doCallRealMethod().when(mockedTab).isValid(any(ILaunchConfiguration.class));
-		when(mockedTab.validatePage()).thenReturn(false);
-		when(mockedTab.getErrorMessage()).thenReturn("OhNo");
+	public void testProjectTabValidatePageBadProject() {
+		doCallRealMethod().when(projectTab).validatePage();
 		
-		assertFalse(mockedTab.isValid(mock(ILaunchConfiguration.class)));
-	}
-	
-	@Test
-	public void testValidatePageProjectValidTestModeValid() {
-		genericValidatePageTest(true, true, true);
-	}
-	
-	@Test
-	public void testValidatePageProjectValidTestModeInvalid() {
-		genericValidatePageTest(true, false, false);
-	}
-	
-	@Test
-	public void testValidatePageProjectInvalidTestModeValid() {
-		genericValidatePageTest(false, true, false);
-	}
-	
-	@Test
-	public void testValidatePageProjectInvalidTestModeInvalid() {
-		genericValidatePageTest(false, false, false);
-	}
-	
-	private void genericValidatePageTest(boolean isProjectValid, boolean isTestModeValid, boolean validateResult) {
-		doCallRealMethod().when(mockedTab).validatePage();
-		doNothing().when(mockedTab).setErrorMessage(any(String.class));
-		when(mockedTab.validateProjectSelection()).thenReturn(isProjectValid);
-		when(mockedTab.validateTestModeSelection()).thenReturn(isTestModeValid);
+		when(projectTab.validateProjectSelection()).thenReturn(false);
+		when(testTab.validateSuiteSelection()).thenReturn(true);
 		
-		assertEquals(validateResult, mockedTab.validatePage());
+		assertFalse(projectTab.validatePage());
+	}
+	
+	@Test
+	public void testProjectTabValidatePageBadSuite() {
+		doCallRealMethod().when(projectTab).validatePage();
 		
-		verify(mockedTab, times(1)).setErrorMessage(null);
-		verify(mockedTab, times(1)).validateProjectSelection();
-		verify(mockedTab, isProjectValid ? times(1) : never()).validateTestModeSelection();
+		when(projectTab.validateProjectSelection()).thenReturn(true);
+		when(testTab.validateSuiteSelection()).thenReturn(false);
+		
+		assertFalse(projectTab.validatePage());
+	}
+	
+	@Test
+	public void testProjectTabValidatePage() {
+		doCallRealMethod().when(projectTab).validatePage();
+		
+		when(projectTab.validateProjectSelection()).thenReturn(true);
+		when(testTab.validateSuiteSelection()).thenReturn(true);
+		
+		assertTrue(projectTab.validatePage());
+	}
+	
+	@Test
+	public void testTestTabValidatePageBadProject() {
+		doCallRealMethod().when(testTab).validatePage();
+		
+		when(projectTab.validateProjectSelection()).thenReturn(false);
+		when(testTab.validateSuiteSelection()).thenReturn(true);
+		
+		assertFalse(testTab.validatePage());
+	}
+	
+	@Test
+	public void testTestTabValidatePageBadSuite() {
+		doCallRealMethod().when(testTab).validatePage();
+		
+		when(projectTab.validateProjectSelection()).thenReturn(true);
+		when(testTab.validateSuiteSelection()).thenReturn(false);
+		
+		assertFalse(testTab.validatePage());
+	}
+	
+	@Test
+	public void testTestTabValidatePage() {
+		doCallRealMethod().when(testTab).validatePage();
+		
+		when(projectTab.validateProjectSelection()).thenReturn(true);
+		when(testTab.validateSuiteSelection()).thenReturn(true);
+		
+		assertTrue(testTab.validatePage());
 	}
 	
 	@Test
 	public void testValidateProjectSelectionNullProjectName() {
-		doCallRealMethod().when(mockedTab).validateProjectSelection();
-		doNothing().when(mockedTab).setErrorMessage(any(String.class));
-		when(mockedTab.getProjectName()).thenReturn(null);
+		doCallRealMethod().when(projectTab).validateProjectSelection();
+		when(projectTab.getProjectName()).thenReturn(null);
 		
-		assertFalse(mockedTab.validateProjectSelection());
-		
-		verify(mockedTab, times(1)).setErrorMessage(Messages.GenericTab_EmptyProjectErrorMessage);
+		assertFalse(projectTab.validateProjectSelection());
 	}
 	
 	@Test
 	public void testValidateProjectSelectionEmptyProjectName() {
-		doCallRealMethod().when(mockedTab).validateProjectSelection();
-		doNothing().when(mockedTab).setErrorMessage(any(String.class));
-		when(mockedTab.getProjectName()).thenReturn("");
+		doCallRealMethod().when(projectTab).validateProjectSelection();
+		when(projectTab.getProjectName()).thenReturn("");
 		
-		assertFalse(mockedTab.validateProjectSelection());
-		
-		verify(mockedTab, times(1)).setErrorMessage(Messages.GenericTab_EmptyProjectErrorMessage);
+		assertFalse(projectTab.validateProjectSelection());
 	}
 	
 	@Test
 	public void testValidateProjectSelectionNullProject() {
-		doCallRealMethod().when(mockedTab).validateProjectSelection();
-		doNothing().when(mockedTab).setErrorMessage(any(String.class));
-		when(mockedTab.getProjectName()).thenReturn("MyProject");
-		when(mockedTab.getProjectFromName()).thenReturn(null);
+		doCallRealMethod().when(projectTab).validateProjectSelection();
+		when(projectTab.getProjectName()).thenReturn("MyProject");
+		when(projectTab.getProjectFromName()).thenReturn(null);
 		
-		assertFalse(mockedTab.validateProjectSelection());
-		
-		verify(mockedTab, times(1)).setErrorMessage(Messages.GenericTab_NonExistingProjectErrorMessage);
+		assertFalse(projectTab.validateProjectSelection());
 	}
 	
 	@Test
 	public void testValidateProjectSelectionProjectWithoutCorrectNatureId() throws Exception {
-		doCallRealMethod().when(mockedTab).validateProjectSelection();
-		doNothing().when(mockedTab).setErrorMessage(any(String.class));
-		when(mockedTab.getProjectName()).thenReturn("MyProject");
+		doCallRealMethod().when(projectTab).validateProjectSelection();
+		when(projectTab.getProjectName()).thenReturn("MyProject");
 		
 		IProject project = mock(IProject.class);
 		when(project.hasNature(DefaultNature.NATURE_ID)).thenReturn(false);
-		when(mockedTab.getProjectFromName()).thenReturn(project);
+		when(projectTab.getProjectFromName()).thenReturn(project);
 		
-		assertFalse(mockedTab.validateProjectSelection());
-		
-		verify(mockedTab, times(1)).setErrorMessage(Messages.GenericTab_InvalidForceProjectErrorMessage);
+		assertFalse(projectTab.validateProjectSelection());
 	}
 	
 	@Test
 	public void testValidateProjectSelection() throws Exception {
-		doCallRealMethod().when(mockedTab).validateProjectSelection();
-		doNothing().when(mockedTab).setErrorMessage(any(String.class));
-		when(mockedTab.getProjectName()).thenReturn("MyProject");
+		doCallRealMethod().when(projectTab).validateProjectSelection();
+		when(projectTab.getProjectName()).thenReturn("MyProject");
 		
 		IProject project = mock(IProject.class);
 		when(project.hasNature(DefaultNature.NATURE_ID)).thenReturn(true);
-		when(mockedTab.getProjectFromName()).thenReturn(project);
+		when(projectTab.getProjectFromName()).thenReturn(project);
 		
-		assertTrue(mockedTab.validateProjectSelection());
-		verify(mockedTab, never()).setErrorMessage(any(String.class));
+		assertTrue(projectTab.validateProjectSelection());
+	}
+	
+	@Test
+	public void testValidateSuiteSelectionDisabledSuites() {
+		doCallRealMethod().when(testTab).validateSuiteSelection();
+		
+		Button suiteStatus = mock(Button.class);
+		when(suiteStatus.isEnabled()).thenReturn(true);
+		when(suiteStatus.getSelection()).thenReturn(false);
+		testTab.suiteStatus = suiteStatus;
+		
+		assertTrue(testTab.validateSuiteSelection());
+	}
+	
+	@Test
+	public void testValidateSuiteSelectionNoSuitesSelected() {
+		doCallRealMethod().when(testTab).validateSuiteSelection();
+		
+		Button suiteStatus = mock(Button.class);
+		when(suiteStatus.isEnabled()).thenReturn(true);
+		when(suiteStatus.getSelection()).thenReturn(true);
+		testTab.suiteStatus = suiteStatus;
+		
+		Table suiteTable = mock(Table.class);
+		TableItem ti = mock(TableItem.class);
+		when(ti.getChecked()).thenReturn(false);
+		when(suiteTable.getItems()).thenReturn(new TableItem[] { ti });
+		testTab.suiteTable = suiteTable;
+		
+		assertFalse(testTab.validateSuiteSelection());
+	}
+	
+	@Test
+	public void testValidateSuiteSelection() {
+		doCallRealMethod().when(testTab).validateSuiteSelection();
+		
+		Button suiteStatus = mock(Button.class);
+		when(suiteStatus.isEnabled()).thenReturn(true);
+		when(suiteStatus.getSelection()).thenReturn(true);
+		testTab.suiteStatus = suiteStatus;
+		
+		Table suiteTable = mock(Table.class);
+		TableItem ti = mock(TableItem.class);
+		when(ti.getChecked()).thenReturn(true);
+		when(suiteTable.getItems()).thenReturn(new TableItem[] { ti });
+		testTab.suiteTable = suiteTable;
+		
+		assertTrue(testTab.validateSuiteSelection());
 	}
 	
 	@Test
 	public void testGetProjectFromNullName() {
-		doCallRealMethod().when(mockedTab).getProjectFromName();
-		when(mockedTab.getProjectName()).thenReturn(null);
+		doCallRealMethod().when(projectTab).getProjectFromName();
+		when(projectTab.getProjectName()).thenReturn(null);
 		
-		assertNull(mockedTab.getProjectFromName());
+		assertNull(projectTab.getProjectFromName());
 	}
 	
 	@Test
-	public void testPerformApply() {
-		doCallRealMethod().when(mockedTab).performApply(any(ILaunchConfigurationWorkingCopy.class));
+	public void testProjectTabPerformApply() {
+		doCallRealMethod().when(projectTab).performApply(any(ILaunchConfigurationWorkingCopy.class));
 		ILaunchConfigurationWorkingCopy config = mock(ILaunchConfigurationWorkingCopy.class);
 		doNothing().when(config).setAttribute(any(String.class), any(String.class));
+		doNothing().when(config).setAttribute(any(String.class), any(Boolean.class));
+		doNothing().when(config).setAttribute(any(String.class), any(Map.class));
 		
-		when(mockedTab.getProjectName()).thenReturn("MyProject");
-		when(mockedTab.getTestClassName()).thenReturn("MyClass");
-		when(mockedTab.getTestMethodName()).thenReturn("MyMethod");
-		IProject project = mock(IProject.class);
-		when(mockedTab.getProjectFromName()).thenReturn(project);
-		when(mockedTab.buildTestsForConfig(project)).thenReturn(mock(TestsHolder.class));
-		when(mockedTab.convertTestsToJson(any(TestsHolder.class))).thenReturn("testsGalore");
-		when(mockedTab.countTotalTests(any(TestsHolder.class))).thenReturn(5);
-		when(mockedTab.isTestModeAsync()).thenReturn(true);
-		when(mockedTab.isLoggingEnabled()).thenReturn(true);
+		String projectName = "MyProject";
+		when(projectTab.getProjectName()).thenReturn(projectName);
+		boolean isLoggingEnabled = true;
+		when(projectTab.isLoggingEnabled()).thenReturn(isLoggingEnabled);
 		Map<String, String> logLevels = Maps.newLinkedHashMap();
-		when(mockedTab.getLogLevels()).thenReturn(logLevels);
+		when(projectTab.getLogLevels()).thenReturn(logLevels);
 		
-		mockedTab.performApply(config);
+		projectTab.performApply(config);
 		
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "MyProject");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_CLASS, "MyClass");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_METHOD, "MyMethod");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TESTS_ARRAY, "testsGalore");
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TESTS_TOTAL, 5);
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
-		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, true);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_PROJECT_NAME, projectName);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, isLoggingEnabled);
 		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_LOG_LEVELS, logLevels);
 	}
 	
 	@Test
-	public void testInitializeFromNullProject() throws Exception {
-		doCallRealMethod().when(mockedTab).initializeFrom(any(ILaunchConfiguration.class));
+	public void testProjectTabInitializeFrom() throws Exception {
+		doCallRealMethod().when(projectTab).initializeFrom(any(ILaunchConfiguration.class));
 		ILaunchConfiguration config = mock(ILaunchConfiguration.class);
 		
 		String projectName = "MyProject";
-		String className = "MyClass";
-		String methodName = "MyMethod";
-		boolean isAsync = false;
-		
-		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "")).thenReturn(methodName);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(isAsync);
-		
-		Button projectButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.projectButton = projectButton;
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
-		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.testMethodButton = testMethodButton;
-		
-		Text projectText = mock(Text.class);
-		when(projectText.getText()).thenReturn("");
-		mockedTab.projectText = projectText;
-		Text classText = mock(Text.class);
-		when(classText.getText()).thenReturn("");
-		mockedTab.classText = classText;
-		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
-		
-		when(mockedTab.getProjectFromName()).thenReturn(null);
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
-		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
-		doNothing().when(mockedTab).selectAsync(isAsync);
-		
-		mockedTab.initializeFrom(config);
-		
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(projectName), eq(normalBlack));
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(className), eq(normalBlack));
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(methodName), eq(normalBlack));
-		verify(mockedTab, times(1)).selectAsync(isAsync);
-		verify(mockedTab, never()).buildTestsForProject(any(IProject.class));
-	}
-	
-	@Test
-	public void testInitializeFromExistingProject() throws Exception {
-		doCallRealMethod().when(mockedTab).initializeFrom(any(ILaunchConfiguration.class));
-		ILaunchConfiguration config = mock(ILaunchConfiguration.class);
-		
-		String projectName = "MyProject";
-		String className = "MyClass";
-		String methodName = "MyMethod";
-		boolean isAsync = false;
-		
-		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "")).thenReturn(methodName);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(isAsync);
-		
-		Button projectButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.projectButton = projectButton;
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
-		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.testMethodButton = testMethodButton;
-		
-		Text projectText = mock(Text.class);
-		when(projectText.getText()).thenReturn("");
-		mockedTab.projectText = projectText;
-		Text classText = mock(Text.class);
-		when(classText.getText()).thenReturn("");
-		mockedTab.classText = classText;
-		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
-		
-		IProject project = mock(IProject.class);
-		when(mockedTab.getProjectFromName()).thenReturn(project);
-		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
-		allTests.put(project, mock(TestsHolder.class));
-		mockedTab.allTests = allTests;
-		
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
-		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
-		doNothing().when(mockedTab).selectAsync(isAsync);
-		
-		mockedTab.initializeFrom(config);
-		
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(projectName), eq(normalBlack));
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(className), eq(normalBlack));
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(methodName), eq(normalBlack));
-		verify(mockedTab, times(1)).selectAsync(isAsync);
-		verify(mockedTab, never()).buildTestsForProject(any(IProject.class));
-		assertEquals(1, allTests.size());
-	}
-	
-	@Test
-	public void testInitializeFromNewProject() throws Exception {
-		doCallRealMethod().when(mockedTab).initializeFrom(any(ILaunchConfiguration.class));
-		ILaunchConfiguration config = mock(ILaunchConfiguration.class);
-		
-		String projectName = "MyProject";
-		String className = "MyClass";
-		String methodName = "MyMethod";
-		boolean isAsync = false;
 		boolean isLoggingEnabled = true;
 		Map<String, String> logLevels = Maps.newLinkedHashMap();
 		
 		when(config.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(projectName);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "")).thenReturn(className);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "")).thenReturn(methodName);
-		when(config.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(isAsync);
+		when(projectTab.setTextProperties(eq(projectTab.projectText), eq(projectName), any(Color.class))).thenReturn(projectTab.projectText);
+		
 		when(config.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false)).thenReturn(isLoggingEnabled);
-		when(config.getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap())).thenReturn(logLevels);
+		doNothing().when(projectTab).shouldEnableLevels(isLoggingEnabled);
 		
-		Button projectButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.projectButton = projectButton;
-		Button classButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.classButton = classButton;
-		Button testMethodButton = mock(Button.class, RETURNS_DEFAULTS);
-		mockedTab.testMethodButton = testMethodButton;
-		
-		Text projectText = mock(Text.class);
-		when(projectText.getText()).thenReturn("");
-		mockedTab.projectText = projectText;
-		Text classText = mock(Text.class);
-		when(classText.getText()).thenReturn("");
-		mockedTab.classText = classText;
-		
-		Color normalBlack = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-		mockedTab.normalBlack = normalBlack;
-		
-		IProject project = mock(IProject.class);
-		when(mockedTab.getProjectFromName()).thenReturn(project);
-		Map<IProject, TestsHolder> allTests = Maps.newHashMap();
-		mockedTab.allTests = allTests;
-		TestsHolder rt = mock(TestsHolder.class);
-		when(mockedTab.buildTestsForProject(project)).thenReturn(rt);
-		
-		when(mockedTab.shouldEnableBasedOnText(any(String.class))).thenReturn(false);
-		when(mockedTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(null);
-		doNothing().when(mockedTab).selectAsync(isAsync);
-		
-		mockedTab.initializeFrom(config);
+		when(config.getAttribute(eq(RunTestsConstants.ATTR_LOG_LEVELS), any(Map.class))).thenReturn(logLevels);
+		doNothing().when(projectTab).setLogLevels(logLevels);
+				
+		projectTab.initializeFrom(config);
 		
 		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, "");
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_MODE, true);
 		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
-		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap());
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(projectName), eq(normalBlack));
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(className), eq(normalBlack));
-		verify(mockedTab, times(1)).setTextProperties(any(Text.class), eq(methodName), eq(normalBlack));
-		verify(mockedTab, times(1)).buildTestsForProject(project);
-		verify(mockedTab, times(1)).selectAsync(isAsync);
-		verify(mockedTab, times(1)).shouldEnableLevels(isLoggingEnabled);
-		verify(mockedTab, times(1)).setLogLevels(logLevels);
-		assertEquals(1, allTests.size());
-		assertEquals(rt, mockedTab.currentSelectedTests);
+		verify(config, times(1)).getAttribute(eq(RunTestsConstants.ATTR_LOG_LEVELS), any(Map.class));
+		verify(projectTab, times(1)).setTextProperties(eq(projectTab.projectText), eq(projectName), any(Color.class));
+		verify(projectTab, times(1)).shouldEnableLevels(isLoggingEnabled);
+		verify(projectTab, times(1)).setLogLevels(logLevels);
+	}
+	
+	@Test
+	public void testTestTabPerformApplyWithResetTestSelection() {
+		doCallRealMethod().when(testTab).performApply(any(ILaunchConfigurationWorkingCopy.class));
+		doCallRealMethod().when(testTab).resetTestSelection();
+		
+		ILaunchConfigurationWorkingCopy config = mock(ILaunchConfigurationWorkingCopy.class);
+		doNothing().when(config).setAttribute(any(String.class), any(String.class));
+		doNothing().when(config).setAttribute(any(String.class), any(Boolean.class));
+		
+		boolean shouldUseSuites = true;
+		when(testTab.shouldUseSuites()).thenReturn(shouldUseSuites);
+		
+		String currentSelectedSuiteIds = "foo,bar";
+		IProject project = mock(IProject.class);
+		when(projectTab.getProjectFromName()).thenReturn(project);
+		when(testTab.getCommaSeparatedSuiteIds(project)).thenReturn(currentSelectedSuiteIds);
+		
+		doCallRealMethod().when(testTab).buildSuitesForConfig(currentSelectedSuiteIds);
+		doCallRealMethod().when(testTab).buildTestsForConfig(project);
+		
+		boolean isAsync = true;
+		when(testTab.isAsyncTestRun(any(TestsHolder.class), eq(shouldUseSuites))).thenReturn(isAsync);
+		
+		testTab.allTests = Collections.emptyMap();
+		
+		testTab.resetTestSelection();
+		testTab.performApply(config);
+		
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_CLASS, Messages.Tab_AllClasses);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_METHOD, Messages.Tab_AllMethods);
+		assertFalse(testTab.resetTestSelection);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_USE_SUITES, shouldUseSuites);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_SUITE_IDS, currentSelectedSuiteIds);
+		verify(config, times(1)).setAttribute(eq(RunTestsConstants.ATTR_SUITES), any(String.class));
+		verify(config, times(1)).setAttribute(eq(RunTestsConstants.ATTR_TESTS_ARRAY), any(String.class));
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_MODE, isAsync);
+		
+	}
+	
+	@Test
+	public void testTestTabPerformApplyWithoutResetTestSelection() {
+		doCallRealMethod().when(testTab).performApply(any(ILaunchConfigurationWorkingCopy.class));
+		
+		ILaunchConfigurationWorkingCopy config = mock(ILaunchConfigurationWorkingCopy.class);
+		doNothing().when(config).setAttribute(any(String.class), any(String.class));
+		doNothing().when(config).setAttribute(any(String.class), any(Boolean.class));
+		
+		String className = "className";
+		when(testTab.getTestClassName()).thenReturn(className);
+		String methodName = "methodName";
+		when(testTab.getTestMethodName()).thenReturn(methodName);
+		
+		boolean shouldUseSuites = true;
+		when(testTab.shouldUseSuites()).thenReturn(shouldUseSuites);
+		
+		String currentSelectedSuiteIds = "foo,bar";
+		IProject project = mock(IProject.class);
+		when(projectTab.getProjectFromName()).thenReturn(project);
+		when(testTab.getCommaSeparatedSuiteIds(project)).thenReturn(currentSelectedSuiteIds);
+		
+		doCallRealMethod().when(testTab).buildSuitesForConfig(currentSelectedSuiteIds);
+		doCallRealMethod().when(testTab).buildTestsForConfig(project);
+		
+		boolean isAsync = true;
+		when(testTab.isAsyncTestRun(any(TestsHolder.class), eq(shouldUseSuites))).thenReturn(isAsync);
+		
+		testTab.allTests = Collections.emptyMap();
+		
+		testTab.resetTestSelection();
+		testTab.performApply(config);
+		
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_CLASS, className);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_METHOD, methodName);
+		assertFalse(testTab.resetTestSelection);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_USE_SUITES, shouldUseSuites);
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_SUITE_IDS, currentSelectedSuiteIds);
+		verify(config, times(1)).setAttribute(eq(RunTestsConstants.ATTR_SUITES), any(String.class));
+		verify(config, times(1)).setAttribute(eq(RunTestsConstants.ATTR_TESTS_ARRAY), any(String.class));
+		verify(config, times(1)).setAttribute(RunTestsConstants.ATTR_TEST_MODE, isAsync);
+	}
+	
+	@Test
+	public void testTestTabInitializeFrom() throws Exception {
+		doCallRealMethod().when(testTab).initializeFrom(any(ILaunchConfiguration.class));
+		ILaunchConfiguration config = mock(ILaunchConfiguration.class);
+		
+		IProject project = mock(IProject.class);
+		when(projectTab.getProjectFromName()).thenReturn(project);
+		testTab.allTests = Maps.newHashMap();
+		when(testTab.buildTestsForProject(project)).thenReturn(mock(TestsHolder.class));
+		
+		when(testTab.setTextProperties(any(Text.class), any(String.class), any(Color.class))).thenReturn(mock(Text.class));
+		
+		String testClassName = "className";
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_CLASS, Messages.Tab_AllClasses)).thenReturn(testClassName);
+		String projectName = "projectName";
+		when(projectTab.getProjectName()).thenReturn(projectName);
+		when(testTab.shouldEnableBasedOnText(any(String.class))).thenReturn(true);
+		Button classButton = mock(Button.class);
+		doNothing().when(classButton).setEnabled(true);;
+		testTab.classButton = classButton;
+		
+		String testMethodName = "methodName";
+		when(config.getAttribute(RunTestsConstants.ATTR_TEST_METHOD, Messages.Tab_AllMethods)).thenReturn(testMethodName);
+		when(testTab.getTestClassName()).thenReturn(testClassName);
+		Button testMethodButton = mock(Button.class);
+		doNothing().when(testMethodButton).setEnabled(true);;
+		testTab.testMethodButton = testMethodButton;
+		
+		boolean shouldUseSuites = true;
+		when(config.getAttribute(RunTestsConstants.ATTR_USE_SUITES, false)).thenReturn(shouldUseSuites);
+		doNothing().when(testTab).enableSuiteTable(shouldUseSuites);
+		when(config.getAttribute(RunTestsConstants.ATTR_SUITE_IDS, "")).thenReturn("foo,bar");
+		doNothing().when(testTab).reconcileSuites(any(Set.class));
+		
+		testTab.initializeFrom(config);
+		
+		verify(testTab, times(1)).buildTestsForProject(project);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_CLASS, Messages.Tab_AllClasses);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_TEST_METHOD, Messages.Tab_AllMethods);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_USE_SUITES, false);
+		verify(config, times(1)).getAttribute(RunTestsConstants.ATTR_SUITE_IDS, "");
+	}
+	
+	@Test
+	public void testEnableSuiteTableTrue() {
+		genericEnableSuiteTest(true);
+	}
+	
+	@Test
+	public void testEnableSuiteTableFalse() {
+		genericEnableSuiteTest(false);
+	}
+	
+	private void genericEnableSuiteTest(boolean enable) {
+		doCallRealMethod().when(testTab).enableSuiteTable(enable);
+		
+		Button suiteStatus = mock(Button.class);
+		doNothing().when(suiteStatus).setSelection(any(Boolean.class));
+		testTab.suiteStatus = suiteStatus;
+		
+		Table suiteTable = mock(Table.class);
+		doNothing().when(suiteTable).setEnabled(any(Boolean.class));
+		TableItem ti = mock(TableItem.class);
+		doNothing().when(ti).setGrayed(any(Boolean.class));
+		when(suiteTable.getItems()).thenReturn(new TableItem[] { ti });
+		testTab.suiteTable = suiteTable;
+		
+		Text classText = mock(Text.class);
+		doNothing().when(classText).setEnabled(any(Boolean.class));
+		testTab.classText = classText;
+		
+		Text testMethodText = mock(Text.class);
+		doNothing().when(testMethodText).setEnabled(any(Boolean.class));
+		testTab.testMethodText = testMethodText;
+		
+		Button classButton = mock(Button.class);
+		doNothing().when(classButton).setEnabled(any(Boolean.class));
+		testTab.classButton = classButton;
+		
+		Button testMethodButton = mock(Button.class);
+		doNothing().when(testMethodButton).setEnabled(any(Boolean.class));
+		testTab.testMethodButton = testMethodButton;
+		
+		when(testTab.shouldEnableBasedOnText(any(String.class))).thenReturn(!enable);
+		
+		testTab.enableSuiteTable(enable);
+		
+		verify(suiteStatus, times(1)).setSelection(enable);
+		verify(suiteTable, times(1)).setEnabled(enable);
+		verify(ti, times(1)).setGrayed(enable);
+		verify(classText, times(1)).setEnabled(!enable);
+		verify(testMethodText, times(1)).setEnabled(!enable);
+		verify(classButton, times(1)).setEnabled(!enable);
+		verify(testMethodButton, times(1)).setEnabled(!enable);
+	}
+	
+	@Test
+	public void testFetchSuitesNullProject() {
+		doCallRealMethod().when(testTab).fetchSuites(any(IProject.class));
+		testTab.suiteManagers = Maps.newHashMap();
+		
+		assertTrue(testTab.fetchSuites(null).isEmpty());
+		assertTrue(testTab.suiteManagers.isEmpty());
+	}
+	
+	@Test
+	public void testFetchSuites() {
+		doCallRealMethod().when(testTab).fetchSuites(any(IProject.class));
+		testTab.suiteManagers = Maps.newHashMap();
+		
+		IProject project = mock(IProject.class);
+		SuiteManager mgr = mock(SuiteManager.class);
+		when(mgr.fetchSuites()).thenReturn(Collections.EMPTY_LIST);
+		when(testTab.createSuiteMgr(project)).thenReturn(mgr);
+		doNothing().when(testTab).generateSuiteTable(any(java.util.List.class));
+		
+		assertTrue(testTab.fetchSuites(project).isEmpty());
+		assertEquals(1, testTab.suiteManagers.size());
+		verify(testTab, times(1)).generateSuiteTable(any(java.util.List.class));
+	}
+	
+	@Test
+	public void testCreateSuiteMgrNullProject() {
+		doCallRealMethod().when(testTab).createSuiteMgr(any(IProject.class));
+		testTab.suiteManagers = Maps.newHashMap();
+		
+		assertNull(testTab.createSuiteMgr(null));
+		assertTrue(testTab.suiteManagers.isEmpty());
+	}
+	
+	@Test
+	public void testReconcileSuitesNullProject() {
+		doCallRealMethod().when(testTab).reconcileSuites(any(Set.class));
+		when(projectTab.getProjectFromName()).thenReturn(null);
+		
+		testTab.reconcileSuites(Collections.EMPTY_SET);
+		
+		verify(testTab, never()).fetchSuites(any(IProject.class));
+		verify(testTab, never()).generateSuiteTable(any(java.util.List.class));
+	}
+	
+	@Test
+	public void testGenerateSuiteTableNull() {
+		doCallRealMethod().when(testTab).generateSuiteTable(any(java.util.List.class));
+		
+		Table suiteTable = mock(Table.class);
+		testTab.suiteTable = suiteTable;
+		
+		testTab.generateSuiteTable(null);
+		
+		verify(suiteTable, never()).removeAll();
+		verify(suiteTable, never()).clearAll();
+	}
+	
+	@Test
+	public void testGenerateSuiteTableEmpty() {
+		doCallRealMethod().when(testTab).generateSuiteTable(any(java.util.List.class));
+		
+		Table suiteTable = mock(Table.class);
+		testTab.suiteTable = suiteTable;
+		
+		testTab.generateSuiteTable(Collections.EMPTY_LIST);
+		
+		verify(suiteTable, never()).removeAll();
+		verify(suiteTable, never()).clearAll();
 	}
 }

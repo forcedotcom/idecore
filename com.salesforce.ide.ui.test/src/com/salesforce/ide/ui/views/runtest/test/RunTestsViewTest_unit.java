@@ -34,16 +34,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.salesforce.ide.core.project.ForceProject;
-import com.salesforce.ide.core.remote.PromiseableJob;
 import com.salesforce.ide.core.remote.ToolingStubExt;
 import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
 import com.salesforce.ide.core.remote.tooling.Limits.Limit;
 import com.salesforce.ide.core.remote.tooling.Limits.LimitsCommand;
+import com.salesforce.ide.core.remote.tooling.RunTests.RunTestsCommand;
 import com.salesforce.ide.core.remote.tooling.RunTests.RunTestsSyncResponse;
 import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
 import com.salesforce.ide.ui.views.runtest.RunTestsView;
-import com.sforce.soap.tooling.AggregateResult;
 import com.sforce.soap.tooling.ApexLogLevel;
 import com.sforce.soap.tooling.ApexTestQueueItem;
 import com.sforce.soap.tooling.ApexTestResult;
@@ -51,9 +52,11 @@ import com.sforce.soap.tooling.AsyncApexJobStatus;
 import com.sforce.soap.tooling.LogCategory;
 import com.sforce.soap.tooling.SObject;
 import com.sforce.soap.tooling.QueryResult;
+import com.sforce.soap.tooling.TestSuiteMembership;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("unchecked")
 public class RunTestsViewTest_unit extends TestCase {
 
 	private RunTestsView mockedView;
@@ -96,13 +99,12 @@ public class RunTestsViewTest_unit extends TestCase {
 		assertTrue(mockedView.canRun());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testRunTestsNoForceProject() throws Exception {
 		IProject project = mock(IProject.class);
 		Map<IResource, List<String>> testResources = new HashMap<IResource, List<String>>();
 		String testsInJson = "";
-		int totalTestMethods = 0;
+		boolean shouldUseSuites = false;
 		boolean isAsync = true;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -110,31 +112,31 @@ public class RunTestsViewTest_unit extends TestCase {
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
+		doCallRealMethod().when(mockedView).runTests(eq(project),eq(testsInJson), eq(shouldUseSuites),
+				eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		when(mockedView.materializeForceProject(project)).thenReturn(null);
 		
-		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
+		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
-		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
-		verify(mockedView, times(1)).materializeForceProject(any(IProject.class));
-		verify(mockedView, never()).prepareForRunningTests(project);
+		verify(mockedView, times(1)).materializeForceProject(project);
+		verify(mockedView, never()).getTraceFlagUtil(any(ForceProject.class));
+		verify(mockedView, never()).prepareForRunningTests(any(IProject.class));
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
-		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(com.salesforce.ide.core.remote.tooling.RunTests.RunTestsSyncResponse.class));
+		verify(mockedView, never()).finishRunningTests();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testRunTestsAborted() throws Exception {
 		IProject project = mock(IProject.class);
-		Map<IResource, List<String>> testResources = new HashMap<IResource, List<String>>();
 		String testsInJson = "";
-		int totalTestMethods = 0;
+		boolean shouldUseSuites = false;
 		boolean isAsync = true;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -142,38 +144,41 @@ public class RunTestsViewTest_unit extends TestCase {
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests(project);
+		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testsInJson), eq(shouldUseSuites),
+				eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
 		
 		TraceFlagUtil tfUtil = mock(TraceFlagUtil.class);
 		when(mockedView.getTraceFlagUtil(fp)).thenReturn(tfUtil);
+		
+		doNothing().when(mockedView).prepareForRunningTests(project);
+		doNothing().when(mockedView).finishRunningTests();
 		
 		when(monitor.isCanceled()).thenReturn(true);
 		
-		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
+		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
+		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
-		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
-		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
+		verify(mockedView, never()).processSyncTestResults(any(IProject.class), any(Map.class), any(RunTestsSyncResponse.class));
+		verify(mockedView, times(1)).finishRunningTests();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testRunTestsEmptyResponseFromServer() throws Exception {
 		IProject project = mock(IProject.class);
-		Map<IResource, List<String>> testResources = new HashMap<IResource, List<String>>();
 		String testsInJson = "";
-		int totalTestMethods = 0;
+		boolean shouldUseSuites = false;
 		boolean isAsync = true;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -181,40 +186,49 @@ public class RunTestsViewTest_unit extends TestCase {
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests(project);
+		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testsInJson), eq(shouldUseSuites),
+				eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
+		
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
 		
 		TraceFlagUtil tfUtil = mock(TraceFlagUtil.class);
 		when(mockedView.getTraceFlagUtil(fp)).thenReturn(tfUtil);
+		
+		doNothing().when(mockedView).prepareForRunningTests(project);
+		doNothing().when(mockedView).finishRunningTests();
 		
 		when(monitor.isCanceled()).thenReturn(false);
 		
 		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("");
 		
-		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
+		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
+		
+		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
+		
+		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
+		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
-		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		verify(mockedView, times(1)).findTestClasses(project);
+		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
-		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
+		verify(mockedView, never()).processSyncTestResults(any(IProject.class), any(Map.class), any(RunTestsSyncResponse.class));
+		verify(mockedView, times(1)).finishRunningTests();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testRunTestsAsync() throws Exception {
 		IProject project = mock(IProject.class);
-		Map<IResource, List<String>> testResources = new HashMap<IResource, List<String>>();
 		String testsInJson = "";
-		int totalTestMethods = 0;
+		boolean shouldUseSuites = true;
 		boolean isAsync = true;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -222,9 +236,9 @@ public class RunTestsViewTest_unit extends TestCase {
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests(project);
+		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testsInJson), eq(shouldUseSuites),
+				eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
+		
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -232,34 +246,43 @@ public class RunTestsViewTest_unit extends TestCase {
 		TraceFlagUtil tfUtil = mock(TraceFlagUtil.class);
 		when(mockedView.getTraceFlagUtil(fp)).thenReturn(tfUtil);
 		
+		doNothing().when(mockedView).prepareForRunningTests(project);
+		doNothing().when(mockedView).finishRunningTests();
+		
 		when(monitor.isCanceled()).thenReturn(false);
 		
 		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("Amazing");
 		
-		when(mockedView.getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class))).thenReturn(null);
-		doNothing().when(mockedView).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
+		
+		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
+		
+		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
-		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
+		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
-		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
+		verify(mockedView, times(1)).materializeForceProject(project);
+		verify(mockedView, times(1)).getTraceFlagUtil(eq(fp));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
-		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, times(1)).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
-		verify(mockedView, times(1)).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		verify(mockedView, times(1)).enqueueTests(eq(testsInJson), eq(isAsync), eq(isDebugging));
+		verify(mockedView, times(1)).findTestClasses(project);
+		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
+		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
+		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
-		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
+		verify(mockedView, never()).processSyncTestResults(any(IProject.class), any(Map.class), any(RunTestsSyncResponse.class));
+		verify(mockedView, times(1)).finishRunningTests();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testRunTestsSync() throws Exception {
 		IProject project = mock(IProject.class);
 		Map<IResource, List<String>> testResources = new HashMap<IResource, List<String>>();
 		String testsInJson = "";
-		int totalTestMethods = 0;
+		boolean shouldUseSuites = true;
 		boolean isAsync = false;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -267,9 +290,9 @@ public class RunTestsViewTest_unit extends TestCase {
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests(project);
+		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testsInJson), eq(shouldUseSuites),
+				eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
+		
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -277,34 +300,44 @@ public class RunTestsViewTest_unit extends TestCase {
 		TraceFlagUtil tfUtil = mock(TraceFlagUtil.class);
 		when(mockedView.getTraceFlagUtil(fp)).thenReturn(tfUtil);
 		
+		doNothing().when(mockedView).prepareForRunningTests(project);
+		doNothing().when(mockedView).finishRunningTests();
+		
 		when(monitor.isCanceled()).thenReturn(false);
 		
 		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("{}");
+		
+		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
+		
+		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
 		
 		doNothing().when(mockedView).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		doNothing().when(mockedView).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
-		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
+		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
+		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, never()).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
-		verify(mockedView, never()).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		verify(mockedView, times(1)).findTestClasses(project);
+		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, times(1)).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, times(1)).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
+		verify(mockedView, times(1)).finishRunningTests();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testRunTestsWithLogging() throws Exception {
 		IProject project = mock(IProject.class);
 		Map<IResource, List<String>> testResources = new HashMap<IResource, List<String>>();
 		String testsInJson = "";
-		int totalTestMethods = 0;
+		boolean shouldUseSuites = false;
 		boolean isAsync = true;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -312,9 +345,9 @@ public class RunTestsViewTest_unit extends TestCase {
 		Map<LogCategory, ApexLogLevel> logLevels = Collections.emptyMap();
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testResources), eq(testsInJson), 
-				eq(totalTestMethods), eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
-		doNothing().when(mockedView).prepareForRunningTests(project);
+		doCallRealMethod().when(mockedView).runTests(eq(project), eq(testsInJson), eq(shouldUseSuites),
+				eq(isAsync), eq(isDebugging), eq(hasExistingTraceFlag), eq(enableLogging), eq(logLevels), eq(monitor));
+		
 		ForceProject fp = mock(ForceProject.class);
 		when(fp.getUserName()).thenReturn("");
 		when(mockedView.materializeForceProject(project)).thenReturn(fp);
@@ -328,25 +361,35 @@ public class RunTestsViewTest_unit extends TestCase {
 		doNothing().when(tfUtil).deleteTraceflagAndDebugLevel(any(String.class), any(String.class));
 		when(mockedView.getTraceFlagUtil(any(ForceProject.class))).thenReturn(tfUtil);
 		
+		doNothing().when(mockedView).prepareForRunningTests(project);
+		doNothing().when(mockedView).finishRunningTests();
+		
 		when(monitor.isCanceled()).thenReturn(false);
 		
 		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("Amazing");
 		
-		when(mockedView.getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class))).thenReturn(null);
-		doNothing().when(mockedView).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
+		
+		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
+		
+		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
-		mockedView.runTests(project, testResources, testsInJson, totalTestMethods, isAsync, isDebugging,
+		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
+		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, times(1)).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
-		verify(mockedView, times(1)).processAsyncTestResults(any(IProject.class), any(Map.class), any(List.class));
+		verify(mockedView, times(1)).findTestClasses(project);
+		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
+		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, never()).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
+		verify(mockedView, times(1)).finishRunningTests();
 		verify(tfUtil, times(1)).getUserId(any(String.class));
 		verify(tfUtil, times(1)).insertDebugLevel(any(String.class), any(Map.class));
 		verify(tfUtil, times(1)).insertTraceFlag(any(String.class), any(Integer.class), any(String.class));
@@ -388,9 +431,9 @@ public class RunTestsViewTest_unit extends TestCase {
 		boolean isAsync = false;
 		boolean isDebugging = true;
 		String response = "tests";
-		@SuppressWarnings("unchecked")
-		PromiseableJob<String> job = (PromiseableJob<String>) mock(PromiseableJob.class);
+		RunTestsCommand job = mock(RunTestsCommand.class);
 		when(job.getAnswer()).thenReturn(response);
+		when(job.wasError()).thenReturn(false);
 		when(mockedView.getRunTestsCommand(testsInJson, isAsync)).thenReturn(job);
 		
 		assertEquals(response, mockedView.enqueueTests(testsInJson, isAsync, isDebugging));
@@ -429,40 +472,31 @@ public class RunTestsViewTest_unit extends TestCase {
 	}
 	
 	@Test
-	public void testGetTestResultsNullTestRunId() throws Exception {
-		doCallRealMethod().when(mockedView).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
+	public void testGetAsyncTestResultsNullTestRunId() throws Exception {
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		
-		List<ApexTestResult> testResults = mockedView.getTestResults(null, 0, mock(IProgressMonitor.class));
-		
-		assertNotNull(testResults);
-		assertEquals(0, testResults.size());
+		mockedView.getAsyncTestResults(null, 0, mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
-	public void testGetTestResultsEmptyTestRunId() throws Exception {
-		doCallRealMethod().when(mockedView).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
+	public void testGetAsyncTestResultsEmptyTestRunId() throws Exception {
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		
-		List<ApexTestResult> testResults = mockedView.getTestResults("", 0, mock(IProgressMonitor.class));
-		
-		assertNotNull(testResults);
-		assertEquals(0, testResults.size());
+		mockedView.getAsyncTestResults("", 0, mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
-	public void testGetTestResultsNullApiLimit() throws Exception {
-		doCallRealMethod().when(mockedView).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
+	public void testGetAsyncTestResultsNullApiLimit() throws Exception {
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		when(mockedView.getApiLimit(any(ForceProject.class), eq(LimitsCommand.Type.DailyApiRequests))).thenReturn(null);
 		
-		List<ApexTestResult> testResults = mockedView.getTestResults("123", 0, mock(IProgressMonitor.class));
-		
-		assertNotNull(testResults);
-		assertEquals(0, testResults.size());
+		mockedView.getAsyncTestResults("123", 0, mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
-	public void testGetTestResultsNotEnoughApiRequestsRemaining() throws Exception {
-		doCallRealMethod().when(mockedView).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
+	public void testGetAsyncTestResultsNotEnoughApiRequestsRemaining() throws Exception {
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		
 		Limit dailyRemaining = mock(Limit.class);
@@ -470,15 +504,12 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(dailyRemaining.getMax()).thenReturn(10);
 		when(mockedView.getApiLimit(any(ForceProject.class), eq(LimitsCommand.Type.DailyApiRequests))).thenReturn(dailyRemaining);
 		
-		List<ApexTestResult> testResults = mockedView.getTestResults("123", 0, mock(IProgressMonitor.class));
-		
-		assertNotNull(testResults);
-		assertEquals(0, testResults.size());
+		mockedView.getAsyncTestResults("123", 0, mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
-	public void testGetTestResultsAborted() throws Exception {
-		doCallRealMethod().when(mockedView).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
+	public void testGetAsyncTestResultsAborted() throws Exception {
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		
 		Limit dailyRemaining = mock(Limit.class);
@@ -492,20 +523,17 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(monitor.isCanceled()).thenReturn(true);
 		when(mockedView.abortTestRun(testRunId)).thenReturn(true);
 		
-		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT_COUNT, testRunId))).thenReturn(null);
 		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId))).thenReturn(null);
 		
-		List<ApexTestResult> testResults = mockedView.getTestResults(testRunId, totalTestMethods, monitor);
+		mockedView.getAsyncTestResults(testRunId, totalTestMethods, mock(Map.class), monitor);
 		
-		assertNotNull(testResults);
-		assertEquals(0, testResults.size());
 		verify(mockedView, times(1)).abortTestRun(testRunId);
 		verify(mockedView, never()).getPollInterval(any(Integer.class), any(Float.class));
 	}
 	
 	@Test
-	public void testGetTestResults() throws Exception {
-		doCallRealMethod().when(mockedView).getTestResults(any(String.class), any(Integer.class), any(IProgressMonitor.class));
+	public void testGetAsyncTestResults() throws Exception {
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		
 		Limit dailyRemaining = mock(Limit.class);
@@ -514,33 +542,23 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.getApiLimit(any(ForceProject.class), eq(LimitsCommand.Type.DailyApiRequests))).thenReturn(dailyRemaining);
 		
 		String testRunId = "123";
-		int totalTestMethods = 5;
+		int totalTestMethods = 1;
 		int totalTestDone = totalTestMethods;
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		when(monitor.isCanceled()).thenReturn(false);
 		
-		AggregateResult ar = mock(AggregateResult.class);
-		when(ar.getField("expr0")).thenReturn(totalTestDone);
-		QueryResult qr1 = mock(QueryResult.class);
-		when(qr1.getSize()).thenReturn(1);
-		when(qr1.getRecords()).thenReturn(new SObject[] { ar });
-		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT_COUNT, testRunId))).thenReturn(qr1);
+		ApexTestResult tr = mock(ApexTestResult.class);
+		QueryResult qr = mock(QueryResult.class);
+		when(qr.getSize()).thenReturn(1);
+		when(qr.getRecords()).thenReturn(new SObject[] { tr });
+		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId))).thenReturn(qr);
 		
 		doNothing().when(mockedView).updateProgress(eq(0), eq(totalTestMethods), eq(totalTestDone));
 		
 		when(mockedView.getPollInterval(any(Integer.class), any(Float.class))).thenReturn(0);
+				
+		mockedView.getAsyncTestResults(testRunId, totalTestMethods, mock(Map.class), monitor);
 		
-		ApexTestResult tr = mock(ApexTestResult.class);
-		QueryResult qr2 = mock(QueryResult.class);
-		when(qr2.getSize()).thenReturn(1);
-		when(qr2.getRecords()).thenReturn(new SObject[] { tr });
-		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId))).thenReturn(qr2);
-		
-		List<ApexTestResult> testResults = mockedView.getTestResults(testRunId, totalTestMethods, monitor);
-		
-		assertNotNull(testResults);
-		assertEquals(1, testResults.size());
-		assertEquals(tr, testResults.get(0));
 		verify(mockedView, never()).abortTestRun(testRunId);
 		verify(mockedView, times(1)).getPollInterval(any(Integer.class), any(Float.class));
 	}
@@ -605,5 +623,139 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.toolingStubExt.update(any(SObject[].class))).thenReturn(null);
 		
 		assertTrue(mockedView.abortTestRun(testRunId));
+	}
+	
+	@Test
+	public void testCountTotalTestsNull() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		assertEquals(0, mockedView.countTotalTests(null, true, Collections.EMPTY_MAP));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithoutSuitesNoTests() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		String testsInJson = "{\"tests\": []}";
+		boolean useSuites = false;
+		Map<IResource, List<String>> testResources = null;
+		
+		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithoutSuitesNullJson() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		String testsInJson = null;
+		boolean useSuites = false;
+		Map<IResource, List<String>> testResources = null;
+		
+		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithoutSuites() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		String testsInJson = "{\"tests\":["
+				+ "{\"classId\":\"class1\",\"testMethods\":[\"one\",\"two\",\"three\",\"four\"]},"
+				+ "{\"classId\":\"class2\",\"testMethods\":[\"one\",\"two\"]},"
+				+ "{\"classId\":\"class3\",\"testMethods\":[\"one\"]}]}";
+		boolean useSuites = false;
+		Map<IResource, List<String>> testResources = null;
+		
+		assertEquals(7, mockedView.countTotalTests(testsInJson, useSuites, testResources));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithSuitesNoIds() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		String testsInJson = "{\"suiteids\": null}";
+		boolean useSuites = true;
+		Map<IResource, List<String>> testResources = null;
+		
+		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithSuitesNullJson() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		String testsInJson = null;
+		boolean useSuites = true;
+		Map<IResource, List<String>> testResources = null;
+		
+		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithSuitesEmptyQueryResult() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		String testsInJson = "{\"suiteids\": \"suite1,suite2\"}";
+		boolean useSuites = true;
+		Map<IResource, List<String>> testResources = null;
+		
+		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
+		
+		ToolingStubExt toolingStub = mock(ToolingStubExt.class);
+		QueryResult qr = mock(QueryResult.class);
+		when(qr.getSize()).thenReturn(0);
+		when(toolingStub.query(RunTestsConstants.QUERY_TEST_SUITE_MEMBERSHIP)).thenReturn(qr);
+		mockedView.toolingStubExt = toolingStub;
+		
+		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
+	}
+	
+	@Test
+	public void testCountTotalTestsWithSuite() throws Exception {
+		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
+		
+		boolean useSuites = true;
+		// suite1 will contain class1
+		String suite1 = "suite1";
+		// suite2 will contain class1 and class2
+		String suite2 = "suite2";
+		String testsInJson = "{\"suiteids\": \"" + suite1 + "," + suite2 + "\"}";
+		Map<IResource, List<String>> testResources = Maps.newHashMap();
+		// class1 has two test methods
+		IResource class1Res = mock(IResource.class);
+		String class1Id = "class1";
+		testResources.put(class1Res, Lists.newArrayList("method1", "method2"));
+		// class2 has one test method
+		IResource class2Res = mock(IResource.class);
+		String class2Id = "class2";
+		testResources.put(class2Res, Lists.newArrayList("method1"));
+		
+		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
+		
+		ToolingStubExt toolingStub = mock(ToolingStubExt.class);
+		// Each suite has class1 to verify we check for duplicates
+		TestSuiteMembership tsm1 = mock(TestSuiteMembership.class);
+		when(tsm1.getApexTestSuiteId()).thenReturn(suite1);
+		when(tsm1.getApexClassId()).thenReturn(class1Id);
+		
+		TestSuiteMembership tsm2 = mock(TestSuiteMembership.class);
+		when(tsm2.getApexTestSuiteId()).thenReturn(suite2);
+		when(tsm2.getApexClassId()).thenReturn(class1Id);
+		
+		TestSuiteMembership tsm3 = mock(TestSuiteMembership.class);
+		when(tsm3.getApexTestSuiteId()).thenReturn(suite2);
+		when(tsm3.getApexClassId()).thenReturn(class2Id);
+		
+		QueryResult qr = mock(QueryResult.class);
+		when(qr.getSize()).thenReturn(3);
+		when(qr.getRecords()).thenReturn(new SObject[] { tsm1, tsm2, tsm3 });
+		when(toolingStub.query(RunTestsConstants.QUERY_TEST_SUITE_MEMBERSHIP)).thenReturn(qr);
+		mockedView.toolingStubExt = toolingStub;
+		
+		when(mockedView.getResourceFromId(testResources, class1Id)).thenReturn(class1Res);
+		when(mockedView.getResourceFromId(testResources, class2Id)).thenReturn(class2Res);
+		
+		// class1: method1, method2
+		// class2: method1
+		assertEquals(3, mockedView.countTotalTests(testsInJson, useSuites, testResources));
 	}
 }

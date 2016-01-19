@@ -12,6 +12,7 @@
 package com.salesforce.ide.ui.views.runtest.test;
 
 import static org.mockito.Mockito.mock;
+
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
@@ -19,8 +20,9 @@ import org.junit.Test;
 
 import com.salesforce.ide.test.common.IdeSetupTest;
 import com.salesforce.ide.test.common.IdeTestCase;
-import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTab;
+import com.salesforce.ide.ui.views.runtest.ProjectConfigurationTab;
 import com.salesforce.ide.ui.views.runtest.RunTestsLaunchConfigurationTabGroup;
+import com.salesforce.ide.ui.views.runtest.TestConfigurationTab;
 
 @IdeSetupTest(needOrg = false, needProject = false)
 public class RunTestsLaunchConfigurationTabGroupTest_pdeui extends IdeTestCase {
@@ -35,8 +37,15 @@ public class RunTestsLaunchConfigurationTabGroupTest_pdeui extends IdeTestCase {
 		
 		ILaunchConfigurationTab[] tabs = tabGroup.getTabs();
 		assertNotNull(tabs);
-		assertEquals(2, tabs.length);
-		assertTrue(tabs[0] instanceof RunTestsLaunchConfigurationTab);
-		assertTrue(tabs[1] instanceof CommonTab);
+		assertEquals(3, tabs.length);
+		assertTrue(tabs[0] instanceof ProjectConfigurationTab);
+		assertTrue(tabs[1] instanceof TestConfigurationTab);
+		assertTrue(tabs[2] instanceof CommonTab);
+		
+		ProjectConfigurationTab projectTab = (ProjectConfigurationTab) tabs[0];
+		assertNotNull(projectTab.getSiblingTab());
+		
+		TestConfigurationTab testTab = (TestConfigurationTab) tabs[1];
+		assertNotNull(testTab.getSiblingTab());
 	}
 }

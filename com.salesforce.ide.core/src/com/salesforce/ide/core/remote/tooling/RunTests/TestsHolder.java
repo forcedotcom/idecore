@@ -11,13 +11,17 @@
 
 package com.salesforce.ide.core.remote.tooling.RunTests;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.salesforce.ide.core.internal.utils.Utils;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "tests" })
@@ -60,9 +64,40 @@ public class TestsHolder {
 		return rt;
 	}
 	
+	/**
+     * Convert TestsHolder to JSON string
+     * @param TestsHolder
+     * @return JSON string
+     */
+    public static String serialize(TestsHolder th) {
+    	String result = "";
+    	if (Utils.isNotEmpty(th)) {
+    		ObjectMapper mapper = new ObjectMapper();
+        	try {
+    			result = mapper.writeValueAsString(th);
+    		} catch (JsonProcessingException e) {}
+    	}
+    	
+    	return result;
+    }
+    
+    /**
+     * Convert JSON string to TestsHolder
+     * @param JSON string
+     * @return TestsHolder
+     */
+    public static TestsHolder deserialize(String json) {
+    	ObjectMapper mapper = new ObjectMapper();
+    	try {
+			return mapper.readValue(json, TestsHolder.class);
+		} catch (IOException e) {}
+    	
+    	return null;
+    }
+	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "classId", "testMethods" })
-	public class Test {
+	public static class Test {
 
 		@JsonProperty("classId")
 		private String classId;

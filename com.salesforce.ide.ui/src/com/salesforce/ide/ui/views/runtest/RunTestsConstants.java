@@ -29,13 +29,15 @@ public class RunTestsConstants {
 	// Launch config attributes
 	public static final String ATTR_PROJECT_NAME = "forceComProjectName";
 	public static final String ATTR_TESTS_ARRAY = "testsArray";
-	public static final String ATTR_TESTS_TOTAL = "testsTotal";
 	public static final String ATTR_TEST_MODE = "isAsync";
 	public static final String ATTR_TEST_CLASS = "forceComTestClass";
 	public static final String ATTR_TEST_METHOD = "forceComTestMethod";
 	public static final String ATTR_ENABLE_LOGGING = "enableLogging";
 	public static final String ATTR_EXISTING_TF = "existingTf";
 	public static final String ATTR_LOG_LEVELS = "logLevels";
+	public static final String ATTR_USE_SUITES = "useLogging";
+	public static final String ATTR_SUITES = "suiteJson";
+	public static final String ATTR_SUITE_IDS = "suiteIds";
 	
     // Keys used to store data in Eclipse widgets
     public static final String TREEDATA_CODE_LOCATION = "ApexCodeLocation";
@@ -50,8 +52,7 @@ public class RunTestsConstants {
     public static final String TABLE_CODE_COV_COL_DIR = "OneColumnDirection";
     
     // Tooling API queries
-    public static final String QUERY_TESTRESULT_COUNT = "SELECT COUNT(Id) FROM ApexTestResult WHERE AsyncApexJobId = '%s'";
-    public static final String QUERY_TESTRESULT = "SELECT ApexClassId, ApexClass.Name, ApexLogId, AsyncApexJobId, Message, "
+    public static final String QUERY_TESTRESULT = "SELECT Id, ApexClassId, ApexClass.Name, ApexLogId, AsyncApexJobId, Message, "
 			+ "MethodName, Outcome, QueueItemId, StackTrace, TestTimestamp "
 			+ "FROM ApexTestResult WHERE AsyncApexJobId = '%s' ORDER BY ApexClass.Name, MethodName ASC";
     public static final String QUERY_APEX_LOG = "SELECT Id, Application, DurationMilliseconds, Location, LogLength, LogUserId, Operation, Request, StartTime, Status FROM ApexLog WHERE Id = '%s'";
@@ -63,6 +64,7 @@ public class RunTestsConstants {
 			+ "AND (NumLinesCovered > 0 OR NumLinesUncovered > 0) "
 			+ "ORDER BY ApexClassOrTrigger.Name";
     public static final String QUERY_APEX_ORG_WIDE_COVERAGE = "SELECT PercentCovered FROM ApexOrgWideCoverage";
+    public static final String QUERY_TEST_SUITE_MEMBERSHIP = "SELECT ApexClassId, ApexTestSuiteId FROM TestSuiteMembership";
     
     // Poll intervals
     public static final int POLL_FAST = 5000;

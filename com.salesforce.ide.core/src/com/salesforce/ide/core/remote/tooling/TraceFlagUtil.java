@@ -54,7 +54,7 @@ public class TraceFlagUtil {
 	
 	private static final String QUERY_USER_ID = "SELECT Id, Username FROM User WHERE Username = '%s'";
 	private static final String QUERY_TRACEFLAG_BY_ID = "SELECT Id, ExpirationDate FROM TraceFlag WHERE Id = '%s'";
-	private static final String QUERY_TRACEFLAG_BY_TYPE = "SELECT Id, LogType, ExpirationDate FROM TraceFlag "
+	private static final String QUERY_TRACEFLAG_BY_TYPE = "SELECT Id, LogType, StartDate, ExpirationDate FROM TraceFlag "
 			+ "WHERE LogType = 'DEVELOPER_LOG' AND (StartDate = NULL OR StartDate <= %s) AND ExpirationDate >= %s LIMIT 1";
 	
 	private final ForceProject forceProject;
@@ -270,14 +270,14 @@ public class TraceFlagUtil {
 			dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 			String now = dateFormatGmt.format(new Date());
 			QueryResult qr = toolingStubExt.query(String.format(QUERY_TRACEFLAG_BY_TYPE, now, now));
-			if (qr != null && qr.getTotalSize() == 0) {
-				return false;
+			if (qr != null && qr.getSize() > 0) {
+				return true;
 			}
 		} catch (ForceConnectionException | ForceRemoteException e) {
 			logger.error("Failed to connect to Tooling API", e);
 		}
 		
-		return true;
+		return false;
 	}
 	
 	/**

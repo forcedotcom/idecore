@@ -15,12 +15,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.ws.rs.core.Response;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.salesforce.ide.core.remote.IHTTPTransport;
-import com.salesforce.ide.core.remote.PromiseableJob;
+import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.HTTPAdapter;
+import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
 
 /**
  * A Job to fetch limits (remaining and max).
@@ -28,7 +31,7 @@ import com.salesforce.ide.core.remote.PromiseableJob;
  * @author jwidjaja
  *
  */
-public class LimitsCommand extends PromiseableJob<Map<String, Limit>> {
+public class LimitsCommand extends BaseCommandWithErrorHandling<Map<String, Limit>> {
 
 	public enum Type {
 		ConcurrentAsyncGetReportInstances,
@@ -54,9 +57,9 @@ public class LimitsCommand extends PromiseableJob<Map<String, Limit>> {
 	
 	private static final String GETTING_LIMITS = "Acquiring limits";
 	
-	private final IHTTPTransport<String> transport;
+	private final HTTPAdapter<String> transport;
 	
-	public LimitsCommand(IHTTPTransport<String> transport) {
+	public LimitsCommand(HTTPAdapter<String> transport) {
 		super(GETTING_LIMITS);
 		this.transport = transport;
 	}
@@ -95,5 +98,16 @@ public class LimitsCommand extends PromiseableJob<Map<String, Limit>> {
 		
 		monitor.worked(1);
 		return limits;
+	}
+
+	@Override
+	public boolean wasError() {
+		return Utils.isNotEmpty(transport.getResponse()) && 
+				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
+	}
+
+	@Override
+	public String getErrorMsg() {
+		return transport.getRawBodyWhenError();
 	}
 }

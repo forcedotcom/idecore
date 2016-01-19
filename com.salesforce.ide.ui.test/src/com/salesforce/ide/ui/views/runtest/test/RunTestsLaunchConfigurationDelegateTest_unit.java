@@ -22,13 +22,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
@@ -60,7 +58,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		String expectedProjectName = "Test";
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		when(configuration.getAttribute(RunTestsConstants.ATTR_PROJECT_NAME, "")).thenReturn(expectedProjectName);
-		when(mockedDelegate.getProjectName(configuration)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).getProjectName(configuration);
 		
 		String actualProjectName = mockedDelegate.getProjectName(configuration);
 		
@@ -72,23 +70,35 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		String expectedTestsArray = "Test";
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		when(configuration.getAttribute(RunTestsConstants.ATTR_TESTS_ARRAY, "")).thenReturn(expectedTestsArray);
-		when(mockedDelegate.getTestsArray(configuration)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).getTests(configuration, false);
 		
-		String actualTestsArray = mockedDelegate.getTestsArray(configuration);
+		String actualTestsArray = mockedDelegate.getTests(configuration, false);
 		
 		assertEquals(expectedTestsArray, actualTestsArray);
 	}
 	
 	@Test
-	public void testAttributeTotalTests() throws Exception {
-		int expectedTotalTests = 5;
+	public void testAttributeShouldUseSuites() throws Exception {
+		boolean expectedShouldUseSuites = true;
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
-		when(configuration.getAttribute(RunTestsConstants.ATTR_TESTS_TOTAL, 0)).thenReturn(expectedTotalTests);
-		when(mockedDelegate.getTotalTests(configuration)).thenCallRealMethod();
+		when(configuration.getAttribute(RunTestsConstants.ATTR_USE_SUITES, false)).thenReturn(expectedShouldUseSuites);
+		doCallRealMethod().when(mockedDelegate).shouldUseSuites(configuration);
 		
-		int actualTotalTests = mockedDelegate.getTotalTests(configuration);
+		boolean actualShouldUseSuites = mockedDelegate.shouldUseSuites(configuration);
 		
-		assertEquals(expectedTotalTests, actualTotalTests);
+		assertEquals(expectedShouldUseSuites, actualShouldUseSuites);
+	}
+	
+	@Test
+	public void testAttributeTestSuites() throws Exception {
+		String expectedTestSuites = "Suites";
+		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
+		when(configuration.getAttribute(RunTestsConstants.ATTR_SUITES, "")).thenReturn(expectedTestSuites);
+		doCallRealMethod().when(mockedDelegate).getTests(configuration, true);
+		
+		String actualTestSuites = mockedDelegate.getTests(configuration, true);
+		
+		assertEquals(expectedTestSuites, actualTestSuites);
 	}
 	
 	@Test
@@ -96,7 +106,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		boolean expectedTestMode = false;
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		when(configuration.getAttribute(RunTestsConstants.ATTR_TEST_MODE, true)).thenReturn(expectedTestMode);
-		when(mockedDelegate.getTestMode(configuration)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).getTestMode(configuration);
 		
 		boolean actualTestMode = mockedDelegate.getTestMode(configuration);
 		
@@ -108,7 +118,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		boolean expectedEnableLogging = true;
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		when(configuration.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false)).thenReturn(expectedEnableLogging);
-		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).shouldCreateTraceFlag(configuration);
 		
 		boolean actualEnableLogging = mockedDelegate.shouldCreateTraceFlag(configuration);
 		
@@ -128,14 +138,14 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 	@Test
 	public void testGetLogLevels() throws Exception {
 		Map<String, String> savedLogLevels = new LinkedHashMap<String, String>();
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryDatabase, ApexLogLevel.INFO.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryWorkflow, ApexLogLevel.INFO.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryValidation, ApexLogLevel.INFO.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryCallout, ApexLogLevel.INFO.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryApexCode, ApexLogLevel.DEBUG.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryApexProfiling, ApexLogLevel.INFO.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategoryVisualforce, ApexLogLevel.INFO.name());
-		savedLogLevels.put(Messages.RunTestsTab_LogCategorySystem, ApexLogLevel.DEBUG.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryDatabase, ApexLogLevel.INFO.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryWorkflow, ApexLogLevel.INFO.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryValidation, ApexLogLevel.INFO.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryCallout, ApexLogLevel.INFO.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryApexCode, ApexLogLevel.DEBUG.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryApexProfiling, ApexLogLevel.INFO.name());
+		savedLogLevels.put(Messages.Tab_LogCategoryVisualforce, ApexLogLevel.INFO.name());
+		savedLogLevels.put(Messages.Tab_LogCategorySystem, ApexLogLevel.DEBUG.name());
 		
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		when(configuration.getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap())).thenReturn(savedLogLevels);
@@ -160,7 +170,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 	public void testMaterializeForceProjectUsesResourcesPlugin() throws Exception {
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
 		IProject expectedProject = mock(IProject.class);
-		when(mockedDelegate.materializeForceProject(configuration)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).materializeForceProject(configuration);
 		when(mockedDelegate.getProjectName(configuration)).thenReturn("AnyClass");
 		when(mockedDelegate.getProjectFromName(any(String.class))).thenReturn(expectedProject);
 		
@@ -172,14 +182,14 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 	@Test
 	public void testMaterializeForceProjectHandlesNull() throws Exception {
 		ILaunchConfiguration configuration = mock(ILaunchConfiguration.class);
-		when(mockedDelegate.materializeForceProject(configuration)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).materializeForceProject(configuration);
 		when(mockedDelegate.getProjectName(configuration)).thenReturn("AnyClass");
 		when(mockedDelegate.getProjectFromName(any(String.class))).thenReturn(null);
 		doNothing().when(mockedDelegate).throwErrorMsg(any(String.class));
 		
 		IProject actualProject = mockedDelegate.materializeForceProject(configuration);
 		
-		verify(mockedDelegate, times(1)).throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchInvalidForceProject);
+		verify(mockedDelegate, times(1)).throwErrorMsg(Messages.LaunchDelegate_CannotLaunchInvalidForceProject);
 		assertNull(actualProject);
 	}
 	
@@ -201,7 +211,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		
 		mockedDelegate.checkMode(mode);
 		
-		verify(mockedDelegate, times(1)).throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage);
+		verify(mockedDelegate, times(1)).throwErrorMsg(Messages.LaunchDelegate_CannotLaunchDebugModeErrorMessage);
 	}
 	
 	@Test
@@ -232,7 +242,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		String mode = ILaunchManager.RUN_MODE;
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(null);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(false);
@@ -249,7 +259,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		String mode = ILaunchManager.RUN_MODE;
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(null);
 		when(mockedDelegate.secondPhasePreLaunchCheck(configuration, mode, monitor)).thenReturn(true);
@@ -267,7 +277,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(false);
@@ -278,7 +288,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		
 		verify(mockedDelegate, times(1)).checkMode(mode);
 		verify(mockedDelegate, times(1)).getRunTestView();
-		verify(mockedDelegate, times(1)).throwErrorMsg(Messages.RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig);
+		verify(mockedDelegate, times(1)).throwErrorMsg(Messages.LaunchDelegate_CannotLaunchAnotherConfig);
 		assertTrue(prelaunchResult);
 	}
 	
@@ -290,7 +300,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -325,7 +335,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -356,7 +366,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -389,7 +399,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -422,7 +432,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -455,7 +465,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -491,7 +501,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -526,7 +536,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -562,7 +572,7 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
 		
-		when(mockedDelegate.preLaunchCheck(configuration, mode, monitor)).thenCallRealMethod();
+		doCallRealMethod().when(mockedDelegate).preLaunchCheck(configuration, mode, monitor);
 		doNothing().when(mockedDelegate).checkMode(mode);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(runTestsView.canRun()).thenReturn(true);
@@ -597,9 +607,8 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
-		Map<IResource, List<String>> testResources = Collections.<IResource, List<String>> emptyMap();
 		String tests = "";
-		int totalTests = 0;
+		boolean shouldUseSuites = false;
 		boolean isAsync = false;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -617,14 +626,12 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		verify(mockedDelegate, times(1)).getRunTestView();
 		verify(mockedDelegate, times(1)).removeLaunch(launch);
 		verify(mockedDelegate, never()).materializeForceProject(configuration);
-		verify(mockedDelegate, never()).getTestsArray(configuration);
-		verify(mockedDelegate, never()).getTotalTests(configuration);
+		verify(mockedDelegate, never()).getTests(configuration, shouldUseSuites);
 		verify(mockedDelegate, never()).getTestMode(configuration);
 		verify(mockedDelegate, never()).isProjectDebugging(project);
 		verify(mockedDelegate, never()).shouldCreateTraceFlag(configuration);
 		verify(mockedDelegate, never()).getLogLevels(configuration);
-		verify(mockedDelegate, never()).findTestClasses(project);
-		verify(runTestsView, never()).runTests(project, testResources, tests, totalTests, isAsync, isDebugging,
+		verify(runTestsView, never()).runTests(project, tests, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
@@ -640,9 +647,8 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		RunTestsView runTestsView = mock(RunTestsView.class);
 		IProject project = mock(IProject.class);
-		Map<IResource, List<String>> testResources = Collections.<IResource, List<String>> emptyMap();
 		String tests = "";
-		int totalTests = 0;
+		boolean shouldUseSuites = true;
 		boolean isAsync = false;
 		boolean isDebugging = false;
 		boolean hasExistingTraceFlag = false;
@@ -654,30 +660,28 @@ public class RunTestsLaunchConfigurationDelegateTest_unit extends TestCase {
 		doCallRealMethod().when(mockedDelegate).launch(configuration, mode, launch, monitor);
 		when(mockedDelegate.getRunTestView()).thenReturn(runTestsView);
 		when(mockedDelegate.materializeForceProject(configuration)).thenReturn(project);
-		when(mockedDelegate.getTestsArray(configuration)).thenReturn(tests);
-		when(mockedDelegate.getTotalTests(configuration)).thenReturn(totalTests);
+		when(mockedDelegate.shouldUseSuites(configuration)).thenReturn(shouldUseSuites);
+		when(mockedDelegate.getTests(configuration, shouldUseSuites)).thenReturn(tests);
 		when(mockedDelegate.getTestMode(configuration)).thenReturn(isAsync);
 		when(mockedDelegate.isProjectDebugging(project)).thenReturn(isDebugging);
 		when(mockedDelegate.shouldCreateTraceFlag(configuration)).thenReturn(enableLogging);
 		when(mockedDelegate.getLogLevels(configuration)).thenReturn(logLevels);
-		when(mockedDelegate.findTestClasses(project)).thenReturn(testResources);
 		doCallRealMethod().when(mockedDelegate).removeLaunch(launch);
-		doNothing().when(runTestsView).runTests(project, testResources, tests, totalTests, isAsync, isDebugging,
+		doNothing().when(runTestsView).runTests(project, tests, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		mockedDelegate.launch(configuration, mode, launch, monitor);
 		
 		verify(mockedDelegate, times(1)).getRunTestView();
 		verify(mockedDelegate, times(1)).materializeForceProject(configuration);
-		verify(mockedDelegate, times(1)).getTestsArray(configuration);
-		verify(mockedDelegate, times(1)).getTotalTests(configuration);
+		verify(mockedDelegate, times(1)).shouldUseSuites(configuration);
+		verify(mockedDelegate, times(1)).getTests(configuration, shouldUseSuites);
 		verify(mockedDelegate, times(1)).getTestMode(configuration);
 		verify(mockedDelegate, times(1)).isProjectDebugging(project);
 		verify(mockedDelegate, times(1)).shouldCreateTraceFlag(configuration);
 		verify(mockedDelegate, times(1)).getLogLevels(configuration);
-		verify(mockedDelegate, times(1)).findTestClasses(project);
 		verify(mockedDelegate, times(1)).removeLaunch(launch);
-		verify(runTestsView, times(1)).runTests(project, testResources, tests, totalTests, isAsync, isDebugging,
+		verify(runTestsView, times(1)).runTests(project, tests, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();

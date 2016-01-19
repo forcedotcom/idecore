@@ -11,10 +11,13 @@
 
 package com.salesforce.ide.core.remote.tooling.ApexLog;
 
+import javax.ws.rs.core.Response;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.salesforce.ide.core.remote.IHTTPTransport;
-import com.salesforce.ide.core.remote.PromiseableJob;
+import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.HTTPAdapter;
+import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
 
 /**
  * A Job to retrieve the body of Tooling API's ApexLog
@@ -22,13 +25,13 @@ import com.salesforce.ide.core.remote.PromiseableJob;
  * @author jwidjaja
  *
  */
-public class ApexLogCommand extends PromiseableJob<String> {
+public class ApexLogCommand extends BaseCommandWithErrorHandling<String> {
 	
 	private static final String GET_APEX_LOG = "Getting Apex Log";
 	
-	private final IHTTPTransport<String> transport;
+	private final HTTPAdapter<String> transport;
 
-	public ApexLogCommand(IHTTPTransport<String> transport) {
+	public ApexLogCommand(HTTPAdapter<String> transport) {
 		super(GET_APEX_LOG);
 		this.transport = transport;
 	}
@@ -51,5 +54,16 @@ public class ApexLogCommand extends PromiseableJob<String> {
         } finally {
             monitor.done();
         }
+	}
+	
+	@Override
+	public boolean wasError() {
+		return Utils.isNotEmpty(transport.getResponse()) && 
+				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
+	}
+	
+	@Override
+	public String getErrorMsg() {
+		return transport.getRawBodyWhenError();
 	}
 }

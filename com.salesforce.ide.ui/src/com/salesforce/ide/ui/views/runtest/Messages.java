@@ -16,63 +16,78 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "com.salesforce.ide.ui.views.runtest.messages"; //$NON-NLS-1$
 
-    public static String GenericTab_ProjectDialogTitle;
-    public static String GenericTab_ClassDialogTitle;
-    public static String GenericTab_MethodDialogTitle;
-    public static String GenericTab_EmptyProjectErrorMessage;
-    public static String GenericTab_InvalidForceProjectErrorMessage;
-    public static String GenericTab_NonExistingProjectErrorMessage;
-    public static String GenericTab_SearchButtonText;
-    public static String GenericTab_ProjectGroupTitle;
-    public static String GenericTab_AllClasses;
-    public static String GenericTab_AllMethods;
-
-    public static String RunTestsTab_TabTitle;
-    public static String RunTestsTab_TabGroupTitle;
-    public static String RunTestsTab_ModeGroupTitle;
-    public static String RunTestsTab_ProjectDialogInstruction;
-    public static String RunTestsTab_TestClassGroupTitle;
-    public static String RunTestsTab_ClassDialogInstruction;
-    public static String RunTestsTab_TestMethodGroupTitle;
-    public static String RunTestsTab_MethodDialogInstruction;
-    public static String RunTestsTab_RunAsync;
-    public static String RunTestsTab_RunSync;
-    public static String RunTestsTab_TooManyTestClassesForSyncErrorMessage;
-    public static String RunTestsTab_LogGroupTitle;
-    public static String RunTestsTab_LogEnableLogging;
-    public static String RunTestsTab_LogCategoryDatabase;
-    public static String RunTestsTab_LogCategoryWorkflow;
-    public static String RunTestsTab_LogCategoryValidation;
-    public static String RunTestsTab_LogCategoryCallout;
-    public static String RunTestsTab_LogCategoryApexCode;
-    public static String RunTestsTab_LogCategoryApexProfiling;
-    public static String RunTestsTab_LogCategoryVisualforce;
-    public static String RunTestsTab_LogCategorySystem;
+    // Config dialogs
+    public static String Tab_ProjectDialogTitle;
+    public static String Tab_ProjectDialogInstruction;
+    public static String Tab_ClassDialogTitle;
+    public static String Tab_ClassDialogInstruction;
+    public static String Tab_MethodDialogTitle;
+    public static String Tab_MethodDialogInstruction;
     
-    public static String RunTestsLaunchConfigurationDelegate_ConfirmDialogTitle;
-    public static String RunTestsLaunchConfigurationDelegate_CannotLaunchDebugModeErrorMessage;
-    public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAnotherConfig;
-    public static String RunTestsLaunchConfigurationDelegate_CannotLaunchAsyncWhileDebugging;
-    public static String RunTestsLaunchConfigurationDelegate_ExistingTraceFlag;
-    public static String RunTestsLaunchConfigurationDelegate_CannotLaunchInvalidForceProject;
+    // Project config
+    public static String Tab_ProjectTabTitle;
+    public static String Tab_ProjectGroupTitle;
     
-    public static String RunTestView_Name;
-    public static String RunTestView_Clear;
-    public static String RunTestView_StackTrace;
-    public static String RunTestView_SystemLog;
-    public static String RunTestView_UserLog;
-    public static String RunTestView_CodeCoverage;
-    public static String RunTestView_CodeCoverageOverall;
-    public static String RunTestView_CodeCoverageClass;
-    public static String RunTestView_CodeCoveragePercent;
-    public static String RunTestView_CodeCoverageLines;
-    public static String RunTestsView_LineNotCovered;
-    public static String RunTestsView_ErrorStartingTestsTitle;
-    public static String RunTestsView_ErrorStartingTestsSolution;
-    public static String RunTestsView_ErrorGetAsyncTestResultsTitle;
-    public static String RunTestsView_ErrorGetAsyncTestResultsSolution;
-    public static String RunTestsView_ErrorOpenSourceTitle;
-    public static String RunTestsView_ErrorOpenSourceSolution;
+    // Log config
+    public static String Tab_LogGroupTitle;
+    public static String Tab_LogEnableLogging;
+    public static String Tab_LogCategoryDatabase;
+    public static String Tab_LogCategoryWorkflow;
+    public static String Tab_LogCategoryValidation;
+    public static String Tab_LogCategoryCallout;
+    public static String Tab_LogCategoryApexCode;
+    public static String Tab_LogCategoryApexProfiling;
+    public static String Tab_LogCategoryVisualforce;
+    public static String Tab_LogCategorySystem;
+    
+    // Test config
+    public static String Tab_TestsTabTitle;
+    public static String Tab_TestsGroupTitle;
+    public static String Tab_TestClassGroupTitle;
+    public static String Tab_TestMethodGroupTitle;
+    public static String Tab_AllClasses;
+    public static String Tab_AllMethods;
+    
+    // Suite config
+    public static String Tab_SuiteGroupTitle;
+    public static String Tab_UseSuites;
+    public static String Tab_SuiteColumnName;
+    
+    // Config error messages
+    public static String Tab_EmptyProjectErrorMessage;
+    public static String Tab_InvalidForceProjectErrorMessage;
+    public static String Tab_NonExistingProjectErrorMessage;
+    public static String Tab_ChooseAtLeastOneSuiteErrorMessage;
+    
+    // Config general
+    public static String Tab_SearchButtonText;
+    
+    // Launch delegate
+    public static String LaunchDelegate_ConfirmDialogTitle;
+    public static String LaunchDelegate_CannotLaunchDebugModeErrorMessage;
+    public static String LaunchDelegate_CannotLaunchAnotherConfig;
+    public static String LaunchDelegate_CannotLaunchAsyncWhileDebugging;
+    public static String LaunchDelegate_ExistingTraceFlag;
+    public static String LaunchDelegate_CannotLaunchInvalidForceProject;
+    
+    // RunTestsView
+    public static String View_Name;
+    public static String View_Clear;
+    public static String View_StackTrace;
+    public static String View_SystemLog;
+    public static String View_UserLog;
+    public static String View_CodeCoverage;
+    public static String View_CodeCoverageOverall;
+    public static String View_CodeCoverageClass;
+    public static String View_CodeCoveragePercent;
+    public static String View_CodeCoverageLines;
+    public static String View_LineNotCovered;
+    public static String View_ErrorStartingTestsTitle;
+    public static String View_ErrorStartingTestsSolution;
+    public static String View_ErrorGetAsyncTestResultsTitle;
+    public static String View_ErrorGetAsyncTestResultsSolution;
+    public static String View_ErrorOpenSourceTitle;
+    public static String View_ErrorOpenSourceSolution;
 
     static {
         // initialize resource bundle

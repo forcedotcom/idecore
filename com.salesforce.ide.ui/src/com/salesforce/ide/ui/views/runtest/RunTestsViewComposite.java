@@ -70,9 +70,9 @@ public class RunTestsViewComposite extends Composite {
     protected RunTestsView runView = null;
     protected IProject project = null;
     
-    private static String[] codeCovColumnNames = new String[] { Messages.RunTestView_CodeCoverageClass, 
-		Messages.RunTestView_CodeCoveragePercent, 
-		Messages.RunTestView_CodeCoverageLines};
+    private static String[] codeCovColumnNames = new String[] { Messages.View_CodeCoverageClass, 
+		Messages.View_CodeCoveragePercent, 
+		Messages.View_CodeCoverageLines};
 
     public RunTestsViewComposite(Composite parent, int style, RunTestsView view) {
         super(parent, style);
@@ -113,7 +113,7 @@ public class RunTestsViewComposite extends Composite {
         
         // Clear button
         btnClear = new Button(leftHandComposite, SWT.NONE);
-        btnClear.setText(Messages.RunTestView_Clear);
+        btnClear.setText(Messages.View_Clear);
         btnClear.setEnabled(true);
         btnClear.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
             @Override
@@ -191,19 +191,19 @@ public class RunTestsViewComposite extends Composite {
     	
     	// Code coverage
     	TabItem tab1 = new TabItem(tabFolder, SWT.NONE);
-    	tab1.setText(Messages.RunTestView_CodeCoverage);
+    	tab1.setText(Messages.View_CodeCoverage);
     	codeCovArea = createTableForTabItem(tabFolder, tab1);
     	// Stack trace
     	TabItem tab2 = new TabItem(tabFolder, SWT.NONE);
-    	tab2.setText(Messages.RunTestView_StackTrace);
+    	tab2.setText(Messages.View_StackTrace);
     	stackTraceArea = createTextAreaForTabItem(tabFolder, tab2);
     	// System debug log
     	TabItem tab3 = new TabItem(tabFolder, SWT.NONE);
-    	tab3.setText(Messages.RunTestView_SystemLog);
+    	tab3.setText(Messages.View_SystemLog);
     	systemLogsTextArea = createTextAreaForTabItem(tabFolder, tab3);
     	// User debug log
     	TabItem tab4 = new TabItem(tabFolder, SWT.NONE);
-    	tab4.setText(Messages.RunTestView_UserLog);
+    	tab4.setText(Messages.View_UserLog);
     	userLogsTextArea = createTextAreaForTabItem(tabFolder, tab4);
     	
     	tabFolder.addSelectionListener(new SelectionAdapter() {
@@ -304,7 +304,7 @@ public class RunTestsViewComposite extends Composite {
     			
     			if (testResults == null || testResults.isEmpty()) return;
     			
-    			if (column.getText().equals(Messages.RunTestView_CodeCoveragePercent)) {
+    			if (column.getText().equals(Messages.View_CodeCoveragePercent)) {
     				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
     					Collections.sort(testResults, CodeCovComparators.PERCENT_ASC);
     					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
@@ -312,7 +312,7 @@ public class RunTestsViewComposite extends Composite {
     					Collections.sort(testResults, CodeCovComparators.PERCENT_DESC);
     					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.DOWN);
     				}
-    			} else if (column.getText().equals(Messages.RunTestView_CodeCoverageLines)) {
+    			} else if (column.getText().equals(Messages.View_CodeCoverageLines)) {
     				if ((int)column.getData(RunTestsConstants.TABLE_CODE_COV_COL_DIR) == SWT.DOWN) {
     					Collections.sort(testResults, CodeCovComparators.LINES_ASC);
     					column.setData(RunTestsConstants.TABLE_CODE_COV_COL_DIR, SWT.UP);
@@ -425,7 +425,7 @@ public class RunTestsViewComposite extends Composite {
     			TableItem ccItem = new TableItem(codeCovArea, SWT.NONE);
     			String lines = String.format("%d/%d", res.getLinesCovered(), res.getLinesTotal());
     			// Overall code coverage row
-    			if (res.getClassOrTriggerName().equals(Messages.RunTestView_CodeCoverageOverall)) {
+    			if (res.getClassOrTriggerName().equals(Messages.View_CodeCoverageOverall)) {
     				ccItem.setFont(boldFont);
     				lines = "";
     			}
@@ -454,8 +454,8 @@ public class RunTestsViewComposite extends Composite {
 		table.getColumn(2).setWidth(r.width * 15 / 100);
     }
 
-    public void enableComposite() {
-        btnClear.setEnabled(true);
+    public void setClearButton(boolean enabled) {
+        btnClear.setEnabled(enabled);
     }
 
     public void setProject(IProject project) {
@@ -466,6 +466,13 @@ public class RunTestsViewComposite extends Composite {
     	clearResultsTree();
     	clearTabs();
     	clearProgress();
+    	clearCodeCov();
+    	MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
+    }
+    
+    public void clearAllExceptProgress() {
+    	clearResultsTree();
+    	clearTabs();
     	clearCodeCov();
     	MarkerUtils.getInstance().clearCodeCoverageWarningMarkers(project);
     }

@@ -26,7 +26,17 @@ public class RunTestsLaunchConfigurationTabGroup extends AbstractLaunchConfigura
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new RunTestsLaunchConfigurationTab(), new CommonTab() };
+		ProjectConfigurationTab projectTab = new ProjectConfigurationTab();
+		TestConfigurationTab testTab = new TestConfigurationTab();
+		
+		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { 
+				projectTab,
+				testTab,
+				new CommonTab() };
+		
         setTabs(tabs);
+        
+        projectTab.saveSiblingTab(testTab);
+        testTab.saveSiblingTab(projectTab);
 	}
 }

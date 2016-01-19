@@ -12,9 +12,12 @@
 package com.salesforce.ide.ui.views.runtest;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
@@ -51,6 +54,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
@@ -65,19 +70,18 @@ import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.HTTPAdapter;
 import com.salesforce.ide.core.remote.HTTPAdapter.HTTPMethod;
 import com.salesforce.ide.core.remote.HTTPConnection;
-import com.salesforce.ide.core.remote.PromiseableJob;
 import com.salesforce.ide.core.remote.ToolingStubExt;
 import com.salesforce.ide.core.remote.tooling.ApexCodeCoverageAggregate.*;
 import com.salesforce.ide.core.remote.tooling.ApexLog.*;
 import com.salesforce.ide.core.remote.tooling.Limits.*;
 import com.salesforce.ide.core.remote.tooling.RunTests.*;
+import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder.Test;
 import com.salesforce.ide.core.remote.tooling.ToolingQueryCommand;
 import com.salesforce.ide.core.remote.tooling.ToolingQueryTransport;
 import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.views.BaseViewPart;
-import com.sforce.soap.tooling.AggregateResult;
 import com.sforce.soap.tooling.ApexLog;
 import com.sforce.soap.tooling.ApexLogLevel;
 import com.sforce.soap.tooling.ApexOrgWideCoverage;
@@ -88,6 +92,7 @@ import com.sforce.soap.tooling.AsyncApexJobStatus;
 import com.sforce.soap.tooling.LogCategory;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.TestSuiteMembership;
 
 /**
  * Responsible for running tests, getting results, and updating the UI with the test results.
@@ -163,6 +168,7 @@ public class RunTestsView extends BaseViewPart {
     
     /**
      * Show error message to user.
+     * TODO: Just throw the exception? Double check all logger.error
      */
     private void throwErrorMsg(final String title, final String solution) {
 		if (Utils.isNotEmpty(title) && Utils.isNotEmpty(solution)) {
@@ -180,9 +186,16 @@ public class RunTestsView extends BaseViewPart {
     /**
      * Run the tests, get the results, and update the UI.
      */
-    public void runTests(final IProject project, Map<IResource, List<String>> testResources, 
-    		String testsInJson, int totalTestMethods, boolean isAsync, boolean isDebugging, boolean hasExistingTraceFlag,
-    		boolean shouldCreateTraceFlag, Map<LogCategory, ApexLogLevel> logLevels, IProgressMonitor monitor) {
+    @VisibleForTesting
+    public void runTests(final IProject project, String testsInJson, boolean shouldUseSuites, boolean isAsync, 
+    		boolean isDebugging, boolean hasExistingTraceFlag, boolean shouldCreateTraceFlag, 
+    		Map<LogCategory, ApexLogLevel> logLevels, IProgressMonitor monitor) {
+    	
+    	forceProject = materializeForceProject(project);
+    	if (Utils.isEmpty(forceProject)) {
+    		logger.error("Unable to find Force.com project");
+    		return;
+    	}
     	
     	lock.lock();
     	
@@ -190,13 +203,6 @@ public class RunTestsView extends BaseViewPart {
     	String debugLevelId = null, traceFlagId = null;
     	
     	try {
-    		forceProject = materializeForceProject(project);
-        	if (Utils.isEmpty(forceProject)) {
-        		logger.error("Unable to find Force.com project");
-        		lock.unlock();
-        		return;
-        	}
-        	
     		prepareForRunningTests(project);
     		this.shouldCreateTraceFlag = shouldCreateTraceFlag;
     		
@@ -215,11 +221,12 @@ public class RunTestsView extends BaseViewPart {
             	// Submit the tests for execution
             	String enqueueResult = enqueueTests(testsInJson, isAsync, isDebugging);
             	
+            	Map<IResource, List<String>> testResources = findTestClasses(project);
+            	int totalTestMethods = countTotalTests(testsInJson, shouldUseSuites, testResources);
+            	
             	if (Utils.isNotEmpty(enqueueResult) && isAsync) {
             		// If it's an async run, the enqueue result is an async test run ID, so we poll for test results
-            		List<ApexTestResult> testResults = getTestResults(enqueueResult, totalTestMethods, monitor);
-            		// Whether or not user aborted, we want to show whatever test results we got back
-                	processAsyncTestResults(project, testResources, testResults);
+            		getAsyncTestResults(enqueueResult, totalTestMethods, testResources, monitor);
                 	// Display code coverage from ApexCodeCoverageAggregate & ApexOrgWideCoverage
                 	displayCodeCoverage();
             	} else if (Utils.isNotEmpty(enqueueResult) && !isAsync) {
@@ -248,6 +255,8 @@ public class RunTestsView extends BaseViewPart {
     	} catch (Exception e) {
     		logger.error("Unexpected error", e);
     	} finally {
+    		finishRunningTests();
+    		
     		if (lock.isLocked()) {
     			lock.unlock();
     		}
@@ -261,7 +270,7 @@ public class RunTestsView extends BaseViewPart {
     }
     
     /**
-     * Do some UI prep work
+     * Clear the test results view and disable Clear button.
      */
     @VisibleForTesting
 	public void prepareForRunningTests(final IProject project) {
@@ -271,6 +280,20 @@ public class RunTestsView extends BaseViewPart {
 			public void run() {
 				setProject(project);
 				runTestComposite.clearAll();
+				runTestComposite.setClearButton(false);
+			}
+    	});
+    }
+    
+    /**
+     * Enable Clear button.
+     */
+    public void finishRunningTests() {
+    	Display display = PlatformUI.getWorkbench().getDisplay();
+    	display.syncExec(new Runnable() {
+			@Override
+			public void run() {
+				runTestComposite.setClearButton(true);
 			}
     	});
     }
@@ -297,7 +320,7 @@ public class RunTestsView extends BaseViewPart {
     }
 	
 	/**
-	 * Enqueue a tests array to Tooling's runTestsAsynchronous.
+	 * Enqueue a tests array to Tooling's runTestsAsynchronous/runTestsSynchronous.
 	 * @return The test run ID if valid async run. 
 	 * The test results if valid sync run. Null otherwise.
 	 */
@@ -313,24 +336,108 @@ public class RunTestsView extends BaseViewPart {
 			int timeoutVal = getConnTimeoutVal(isAsync, isDebugging);
 			initializeConnection(forceProject, timeoutVal);
 			
-			PromiseableJob<String> job = getRunTestsCommand(testsInJson, isAsync);
+			RunTestsCommand job = getRunTestsCommand(testsInJson, isAsync);
 			job.schedule();
 			
 			job.join();
 			response = job.getAnswer();
-			if (Utils.isEmpty(response)) {
+			if (job.wasError()) {
 				logger.error(String.format("Failed to enqueue tests. Tests array: %s", testsInJson));
-				throwErrorMsg(Messages.RunTestsView_ErrorStartingTestsTitle, 
-						Messages.RunTestsView_ErrorStartingTestsSolution);
+				throwErrorMsg(Messages.View_ErrorStartingTestsTitle, job.getErrorMsg());
 			}
 		} catch (Exception e) {
 			logger.error(String.format("Tests array: %s. Error message: %s", testsInJson, e.getMessage()));
-			throwErrorMsg(Messages.RunTestsView_ErrorStartingTestsTitle, 
-					Messages.RunTestsView_ErrorStartingTestsSolution);
+			throwErrorMsg(Messages.View_ErrorStartingTestsTitle, e.getMessage());
 		}
 		
 		return response;
 	}
+    
+    /**
+     * Count number of test methods from tests array or test suites.
+     * @param tests
+     * @param useSuites
+     * @param testResources
+     * @return Total number of test methods
+     */
+    @VisibleForTesting
+    public int countTotalTests(String tests, boolean useSuites, Map<IResource, List<String>> testResources) {
+    	int total = 0;
+    	if (Utils.isEmpty(tests)) return total;
+    	
+    	if (useSuites) {
+    		SuitesHolder sh = SuitesHolder.deserialize(tests);
+    		if (Utils.isEmpty(sh.getSuiteids())) {
+    			logger.error("No suite IDs. Suites: " + tests);
+    			return total;
+    		}
+    		
+    		String[] suiteIds = sh.getSuiteids().split(",");
+    		if (Utils.isEmpty(suiteIds)) {
+    			logger.error("No suite IDs. Suites: " + tests);
+    			return total;
+    		}
+    		
+    		// Key: Test suite ID, Value: Set of Apex class IDs
+    		Map<String, Set<String>> tsMembers = Maps.newHashMap();
+    		try {
+				initializeConnection(forceProject);
+				// Get TestSuiteMembership objects
+				QueryResult qr = toolingStubExt.query(RunTestsConstants.QUERY_TEST_SUITE_MEMBERSHIP);
+				if (Utils.isNotEmpty(qr) && qr.getSize() > 0) {
+					for (SObject sObj : qr.getRecords()) {
+						TestSuiteMembership tsMember = (TestSuiteMembership) sObj;
+						// Initialize set of classes for the suite
+						if (!tsMembers.containsKey(tsMember.getApexTestSuiteId())) {
+							tsMembers.put(tsMember.getApexTestSuiteId(), new HashSet<String>());
+						}
+						// Append the class ID to the suite
+						Set<String> classIds = tsMembers.get(tsMember.getApexTestSuiteId());
+						classIds.add(tsMember.getApexClassId());
+					}
+				}
+			} catch (ForceConnectionException | ForceRemoteException e) {
+				logger.error("Failed to get TestSuiteMembership", e);
+				return total;
+			}
+    		
+    		// Unique collection of Apex class IDs that are in test suites
+    		Set<String> uniqueTsMembers = Sets.newHashSet();
+    		// For each suite user wanted to run
+    		for (String suiteId : suiteIds) {
+    			// Get set of class IDs that belong to that suite
+    			Set<String> classIds = tsMembers.get(suiteId);
+    			if (Utils.isEmpty(classIds)) {
+    				logger.error("Unable to find Apex class IDs for suite ID " + suiteId);
+    				continue;
+    			}
+    			
+    			uniqueTsMembers.addAll(classIds);
+    		}
+    		
+    		for (String classId : uniqueTsMembers) {
+    			IResource theClass = getResourceFromId(testResources, classId);
+				if (Utils.isNotEmpty(theClass)) {
+					total += testResources.get(theClass).size();
+				}
+    		}
+    	} else {
+    		TestsHolder th = TestsHolder.deserialize(tests);
+    		if (Utils.isEmpty(th)) {
+    			logger.error("Failed deserializing test array. Test array: " + tests);
+    			return total;
+    		}
+    		
+    		for (Test test : th.getTests()) {
+    			List<String> testMethods = test.getTestMethods();
+    			if (testMethods != null && !testMethods.isEmpty()) {
+    				total += testMethods.size();
+    			}
+    		}
+    	}
+    	
+    	return total;
+    }
 	
 	/**
 	 * Get connection timeout value depending on
@@ -349,7 +456,7 @@ public class RunTestsView extends BaseViewPart {
 	 * @return Promiseable job
 	 */
     @VisibleForTesting
-	public PromiseableJob<String> getRunTestsCommand(String testsInJson, boolean isAsync) {
+	public RunTestsCommand getRunTestsCommand(String testsInJson, boolean isAsync) {
 		return new RunTestsCommand(new HTTPAdapter<>(
 				String.class, new RunTestsTransport(toolingRESTConnection, isAsync), HTTPMethod.POST), testsInJson);
 	}
@@ -359,9 +466,9 @@ public class RunTestsView extends BaseViewPart {
 	 * @return List of ApexTestResult
 	 */
     @VisibleForTesting
-	public List<ApexTestResult> getTestResults(String testRunId, final int totalTestMethods, IProgressMonitor monitor) {
-		List<ApexTestResult> testResults = Lists.newArrayList();
-		if (Utils.isEmpty(forceProject) || Utils.isEmpty(testRunId)) return testResults;
+	public void getAsyncTestResults(String testRunId, final int totalTestMethods, 
+			final Map<IResource, List<String>> testResources, IProgressMonitor monitor) {
+		if (Utils.isEmpty(forceProject) || Utils.isEmpty(testRunId)) return;
 		testRunId = testRunId.replace("\"", "");
 		
 		try {
@@ -370,32 +477,52 @@ public class RunTestsView extends BaseViewPart {
 			// Get remaining daily API requests
 			Limit dailyApiRequests = getApiLimit(forceProject, LimitsCommand.Type.DailyApiRequests);
 			if (dailyApiRequests == null) {
-				return testResults;
+				logger.error("Failed to get DailyApiRequests limit");
+				return;
 			}
 			
 			float apiRequestsRemaining = (dailyApiRequests.getRemaining() * 100.0f) / dailyApiRequests.getMax();
 			if (apiRequestsRemaining <= 0) {
-				return testResults;
+				logger.error("Not enough DailyApiRequests");
+				return;
 			}
 			
 			// Poll for remaining test cases to be executed
-			int totalTestDone = 0;
-			QueryResult qr = null;
 			// No timeout here because we don't know how long a test run can be.
 			// If user wants to exit, then they can cancel the launch config.
+			List<ApexTestResult> testResults = Lists.newLinkedList();
+			int totalTestDone = 0;
 			while (totalTestDone < totalTestMethods) {
-				// Query for number of finished tests in specified test run
-				qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT_COUNT, testRunId));
-				
-				// Update finished test counter
-				if (Utils.isNotEmpty(qr) && qr.getSize() == 1) {
-					SObject sObj = qr.getRecords()[0];
-					if (sObj instanceof AggregateResult) {
-						AggregateResult aggRes = (AggregateResult) sObj;
-						Object expr0 = aggRes.getField("expr0");
-						totalTestDone = (int) expr0;
-						updateProgress(0, totalTestMethods, totalTestDone);
+				// Query for test results (one ApexTestResult object per test method)
+				QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId));
+				if (qr != null && qr.getSize() > 0) {
+					// Even though the query specifies the sort order, getRecords() messages up the order.
+					// Need to sort before displaying the results
+					for (SObject sObj : qr.getRecords()) {
+						ApexTestResult testResult = (ApexTestResult) sObj;
+						testResults.add(testResult);
 					}
+				}
+				
+				// Update progress bar and results view if new results came in
+				if (totalTestDone != testResults.size()) {
+					totalTestDone = testResults.size();
+					updateProgress(0, totalTestMethods, totalTestDone);
+					
+					Collections.sort(testResults, new Comparator<ApexTestResult>() {
+						@Override
+						public int compare(ApexTestResult tr1, ApexTestResult tr2) {
+							int compareDir = tr1.getApexClass().getName().compareTo(tr2.getApexClass().getName());
+							if (compareDir == 0) {
+								return tr1.getMethodName().compareTo(tr2.getMethodName());
+							}
+							
+							return compareDir;
+						}
+						
+					});
+			    	processAsyncTestResults(testResources, testResults,
+			    			totalTestMethods == totalTestDone);
 				}
 				
 				// User wants to abort so we'll tell the server to abort the test run
@@ -410,23 +537,11 @@ public class RunTestsView extends BaseViewPart {
 				int wait = getPollInterval(totalTestMethods - totalTestDone, apiRequestsRemaining);
 				Thread.sleep(wait);
 			}
-			
-			// Get all test results in the specified test run
-			qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId));
-			if (qr != null && qr.getSize() > 0) {
-				updateProgress(0, totalTestMethods, qr.getSize());
-				for (SObject sObj : qr.getRecords()) {
-					ApexTestResult testResult = (ApexTestResult) sObj;
-					testResults.add(testResult);
-				}
-			}
 		} catch (Exception e) {
 			logger.error("Failed to get test results", e);
-			throwErrorMsg(Messages.RunTestsView_ErrorGetAsyncTestResultsTitle, 
-					Messages.RunTestsView_ErrorGetAsyncTestResultsSolution);
+			throwErrorMsg(Messages.View_ErrorGetAsyncTestResultsTitle, 
+					Messages.View_ErrorGetAsyncTestResultsSolution);
 		}
-		
-		return testResults;
 	}
 	
 	/**
@@ -438,18 +553,23 @@ public class RunTestsView extends BaseViewPart {
 		try {
 			initializeConnection(forceProject);
 			
-			PromiseableJob<Map<String, Limit>> job = new LimitsCommand(new HTTPAdapter<>(
+			LimitsCommand job = new LimitsCommand(new HTTPAdapter<>(
 					String.class, new LimitsTransport(toolingRESTConnection), HTTPMethod.GET));
 			job.schedule();
 			
 			try {
 				job.join();
 				Map<String, Limit> limits = job.getAnswer();
+				
+				if (job.wasError()) {
+					logger.error(String.format("Failed to get API limits. Error message: %s", job.getErrorMsg()));
+				}
+				
 				if (limits != null && limits.size() > 0) {
 					return limits.get(type.toString());
 				}
 			} catch (InterruptedException e) {
-				logger.error("Failed to enqueue test run", e);
+				logger.error("Failed to get API limits", e);
 			}
 		} catch (ForceConnectionException | ForceRemoteException e) {
 			logger.error("Failed to connect to Tooling API", e);
@@ -539,7 +659,7 @@ public class RunTestsView extends BaseViewPart {
 				return true;
 			}
 		} catch (ForceConnectionException | ForceRemoteException e) {
-			logger.error("Failed to connect to Tooling API", e);
+			logger.error("Failed to abort test run", e);
 		}
 		
 		return false;
@@ -549,9 +669,9 @@ public class RunTestsView extends BaseViewPart {
      * Update the UI with the test results for an asynchronous test run.
      */
     @VisibleForTesting
-	public void processAsyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, 
-    		final List<ApexTestResult> testResults) {
-    	if (Utils.isEmpty(project) || Utils.isEmpty(testResources) || Utils.isEmpty(testResults)) {
+	public void processAsyncTestResults(final Map<IResource, List<String>> testResources, 
+    		final List<ApexTestResult> testResults, final boolean expandFailedResults) {
+    	if (Utils.isEmpty(testResources) || Utils.isEmpty(testResults)) {
 			return;
 		}
     	
@@ -560,14 +680,13 @@ public class RunTestsView extends BaseViewPart {
 			@Override
 			public void run() {
 				// Map of tree items whose key is apex class id and the value is the tree item
-		    	Map<String, TreeItem> testClassNodes = new HashMap<String, TreeItem>();
+		    	Map<String, TreeItem> testClassNodes = Maps.newLinkedHashMap();
 		    	
 		    	FontRegistry registry = new FontRegistry();
 		        Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
 		    	
-		        // Reset tree
+		        runTestComposite.clearAllExceptProgress();
 		    	Tree resultsTree = runTestComposite.getTree();
-		    	resultsTree.removeAll();
 		    	
 		    	// Add each test result to the tree
 		    	for (ApexTestResult testResult: testResults) {
@@ -592,8 +711,10 @@ public class RunTestsView extends BaseViewPart {
 	    			setColorAndIconForTheWorse(classNode, testResult.getOutcome());
 		    	}
 		    	
-		    	// Expand the test classes that did not pass
-		    	expandProblematicTestClasses(resultsTree);
+		    	if (expandFailedResults) {
+		    		// Expand the test classes that did not pass
+			    	expandProblematicTestClasses(resultsTree);
+		    	}
 			}
     	});
     }
@@ -602,7 +723,8 @@ public class RunTestsView extends BaseViewPart {
      * Update the UI with the test results for an synchronous test run.
      */
     @VisibleForTesting
-	public void processSyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, final RunTestsSyncResponse testResults) {
+	public void processSyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, 
+			final RunTestsSyncResponse testResults) {
     	if (Utils.isEmpty(project) || Utils.isEmpty(testResources) || Utils.isEmpty(testResults)) {
 			return;
 		}
@@ -612,7 +734,7 @@ public class RunTestsView extends BaseViewPart {
 			@Override
 			public void run() {
 		    	// Map of tree items whose key is apex class id and the value is the tree item
-				Map<String, TreeItem> testClassNodes = new HashMap<String, TreeItem>();
+				Map<String, TreeItem> testClassNodes = Maps.newLinkedHashMap();
 				
 				FontRegistry registry = new FontRegistry();
 				Font boldFont = registry.getBold(Display.getCurrent().getSystemFont().getFontData()[0].getName());
@@ -687,7 +809,7 @@ public class RunTestsView extends BaseViewPart {
 		
 		// Save overall code coverage
     	Integer orgWidePercent = Utils.isNotEmpty(orgWide) ? orgWide.getPercentCovered() : 0 ;
-    	CodeCovResult ccResult = new CodeCovResult(Messages.RunTestView_CodeCoverageOverall, null, orgWidePercent, null, null);
+    	CodeCovResult ccResult = new CodeCovResult(Messages.View_CodeCoverageOverall, null, orgWidePercent, null, null);
     	ccResults.add(ccResult);
     	
     	for (Record codeCov : codeCovs.records) {
@@ -752,7 +874,7 @@ public class RunTestsView extends BaseViewPart {
 			int start = iDoc.getLineOffset(uncoveredLine - 1);
 			int end = iDoc.getLineLength(uncoveredLine - 1);
 			
-			MarkerUtils.getInstance().applyCodeCoverageWarningMarker(resource, uncoveredLine, start, start + end, Messages.RunTestsView_LineNotCovered);
+			MarkerUtils.getInstance().applyCodeCoverageWarningMarker(resource, uncoveredLine, start, start + end, Messages.View_LineNotCovered);
 		}
     }
     
@@ -826,6 +948,11 @@ public class RunTestsView extends BaseViewPart {
     
     private ApexCodeLocation findClass(IResource resource) {
     	return ApexTestsUtils.INSTANCE.findClassLocInFile(resource);
+    }
+    
+    @VisibleForTesting
+    public Map<IResource, List<String>> findTestClasses(IProject project) {
+    	return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
     }
     
     private Map<String, ApexCodeLocation> findTestMethods(IResource resource) {
@@ -915,7 +1042,8 @@ public class RunTestsView extends BaseViewPart {
      * Find a resource and convert to a file.
      * @return A source file
      */
-    private IResource getResourceFromId(Map<IResource, List<String>> testResources, String classID) {
+    @VisibleForTesting
+    public IResource getResourceFromId(Map<IResource, List<String>> testResources, String classID) {
     	if (Utils.isNotEmpty(classID) && Utils.isNotEmpty(testResources)) {
     		for (IResource testResource : testResources.keySet()) {
     			String resourceId = ResourceProperties.getProperty(testResource, QualifiedNames.QN_ID);
@@ -947,11 +1075,11 @@ public class RunTestsView extends BaseViewPart {
     @VisibleForTesting
     public void highlightLine(ApexCodeLocation location) {
         if (Utils.isEmpty(location) || location.getFile() == null || !location.getFile().exists()) {
-        	throwErrorMsg(Messages.RunTestsView_ErrorOpenSourceTitle, Messages.RunTestsView_ErrorOpenSourceSolution);
+        	throwErrorMsg(Messages.View_ErrorOpenSourceTitle, Messages.View_ErrorOpenSourceSolution);
             return;
         }
 
-        HashMap<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = Maps.newHashMap();
         map.put(IMarker.LINE_NUMBER, location.getLine());
         try {
             IMarker marker = location.getFile().createMarker(IMarker.TEXT);
@@ -959,7 +1087,7 @@ public class RunTestsView extends BaseViewPart {
             IDE.openEditor(getSite().getWorkbenchWindow().getActivePage(), marker);
         } catch (Exception e) {
         	logger.error("Unable to highlight line", e);
-            throwErrorMsg(Messages.RunTestsView_ErrorOpenSourceTitle, Messages.RunTestsView_ErrorOpenSourceSolution);
+            throwErrorMsg(Messages.View_ErrorOpenSourceTitle, Messages.View_ErrorOpenSourceSolution);
         }
     }
     
@@ -989,13 +1117,13 @@ public class RunTestsView extends BaseViewPart {
     	String stackTrace = (String) selectedTreeItem.getData(RunTestsConstants.TREEDATA_RESULT_STACKTRACE);
     	    	
     	// Check which tab is in focus so we can update lazily
-    	if (selectedTab.equals(Messages.RunTestView_StackTrace)) {
+    	if (selectedTab.equals(Messages.View_StackTrace)) {
     		// Stack trace only exists in a test failure
     		showStackTrace(errorMessage, stackTrace);
-    	} else if (this.shouldCreateTraceFlag && selectedTab.equals(Messages.RunTestView_SystemLog)) {
+    	} else if (this.shouldCreateTraceFlag && selectedTab.equals(Messages.View_SystemLog)) {
     		String apexLog = tryToGetApexLog(selectedTreeItem, apexLogId);
     		showSystemLog(apexLog);
-    	} else if (this.shouldCreateTraceFlag && selectedTab.equals(Messages.RunTestView_UserLog)) {
+    	} else if (this.shouldCreateTraceFlag && selectedTab.equals(Messages.View_UserLog)) {
     		String apexLog = tryToGetApexLog(selectedTreeItem, apexLogId);
     		showUserLog(selectedTreeItem, apexLog);
     	}
@@ -1031,13 +1159,17 @@ public class RunTestsView extends BaseViewPart {
 		try {
 			initializeConnection(forceProject);
 			
-			PromiseableJob<String> job = new ApexLogCommand(new HTTPAdapter<>(
+			ApexLogCommand job = new ApexLogCommand(new HTTPAdapter<>(
 					String.class, new ApexLogTransport(toolingRESTConnection, logId), HTTPMethod.GET));
 			job.schedule();
 			
 			try {
 				job.join();
 				rawLog = job.getAnswer();
+				
+				if (job.wasError()) {
+					logger.error(String.format("Failed to get Apex Log. Error message: %s", job.getErrorMsg()));
+				}
 			} catch (InterruptedException e) {
 				logger.error("Failed to get Apex Log", e);
 			}
@@ -1159,11 +1291,15 @@ public class RunTestsView extends BaseViewPart {
 		try {
 			initializeConnection(forceProject);
 			
-			PromiseableJob<String> job = getQueryJob(RunTestsConstants.QUERY_APEX_CODE_COVERAGE_AGG);
+			ToolingQueryCommand job = getQueryJob(RunTestsConstants.QUERY_APEX_CODE_COVERAGE_AGG);
 			job.schedule();
 			
 			job.join();
 			response = job.getAnswer();
+			
+			if (job.wasError()) {
+				logger.error(String.format("Failed to run query: %s. Error message: %s", RunTestsConstants.QUERY_APEX_CODE_COVERAGE_AGG, job.getErrorMsg()));
+			}
 			
 			ObjectMapper mapper = new ObjectMapper();
     		results = mapper.readValue(response, ApexCodeCoverageAggregateResponse.class);
@@ -1178,7 +1314,7 @@ public class RunTestsView extends BaseViewPart {
      * Query Tooling API.
      * @return Promiseable job
      */
-    private PromiseableJob<String> getQueryJob(String query) {
+    private ToolingQueryCommand getQueryJob(String query) {
 		return new ToolingQueryCommand(new HTTPAdapter<>(
 				String.class, new ToolingQueryTransport(toolingRESTConnection, query), HTTPMethod.GET));
 	}
@@ -1226,7 +1362,6 @@ public class RunTestsView extends BaseViewPart {
 	private void setProject(IProject project) {
     	this.project = project;
     	this.runTestComposite.setProject(this.project);
-    	this.runTestComposite.enableComposite();
     }
 
 	@VisibleForTesting
@@ -1243,7 +1378,7 @@ public class RunTestsView extends BaseViewPart {
     @Override
     public void createPartControl(Composite parent) {
         runTestComposite = new RunTestsViewComposite(parent, SWT.NONE, this);
-        setPartName(Messages.RunTestView_Name);
+        setPartName(Messages.View_Name);
         setTitleImage(getImage());
 
         UIUtils.setHelpContext(runTestComposite, this.getClass().getSimpleName());
