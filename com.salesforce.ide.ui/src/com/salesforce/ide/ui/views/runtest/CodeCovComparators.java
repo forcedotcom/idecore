@@ -14,14 +14,14 @@ package com.salesforce.ide.ui.views.runtest;
 import java.util.Comparator;
 
 public class CodeCovComparators {
-	public static Comparator<CodeCovResult> CLASSNAME_ASC = sortByTypeWithDirection(Messages.View_CodeCoverageClass, -1);
-	public static Comparator<CodeCovResult> PERCENT_ASC = sortByTypeWithDirection(Messages.View_CodeCoveragePercent, -1);
-	public static Comparator<CodeCovResult> LINES_ASC = sortByTypeWithDirection(Messages.View_CodeCoverageLines, -1);
-	public static Comparator<CodeCovResult> CLASSNAME_DESC = sortByTypeWithDirection(Messages.View_CodeCoverageClass, 1);
-	public static Comparator<CodeCovResult> PERCENT_DESC = sortByTypeWithDirection(Messages.View_CodeCoveragePercent, 1);
-	public static Comparator<CodeCovResult> LINES_DESC = sortByTypeWithDirection(Messages.View_CodeCoverageLines, 1);
+	public static Comparator<CodeCovResult> CLASSNAME_ASC = createSorterWithDirection(Messages.View_CodeCoverageClass, -1);
+	public static Comparator<CodeCovResult> PERCENT_ASC = createSorterWithDirection(Messages.View_CodeCoveragePercent, -1);
+	public static Comparator<CodeCovResult> LINES_ASC = createSorterWithDirection(Messages.View_CodeCoverageLines, -1);
+	public static Comparator<CodeCovResult> CLASSNAME_DESC = createSorterWithDirection(Messages.View_CodeCoverageClass, 1);
+	public static Comparator<CodeCovResult> PERCENT_DESC = createSorterWithDirection(Messages.View_CodeCoveragePercent, 1);
+	public static Comparator<CodeCovResult> LINES_DESC = createSorterWithDirection(Messages.View_CodeCoverageLines, 1);
 	
-	private static Comparator<CodeCovResult> sortByTypeWithDirection(final String type, final int direction) {
+	private static Comparator<CodeCovResult> createSorterWithDirection(final String type, final int direction) {
 		return new Comparator<CodeCovResult>() {
 			@Override
 			public int compare(CodeCovResult o1, CodeCovResult o2) {

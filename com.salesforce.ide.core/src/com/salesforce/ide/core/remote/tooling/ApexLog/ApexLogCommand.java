@@ -11,13 +11,10 @@
 
 package com.salesforce.ide.core.remote.tooling.ApexLog;
 
-import javax.ws.rs.core.Response;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.BaseCommand;
 import com.salesforce.ide.core.remote.HTTPAdapter;
-import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
 
 /**
  * A Job to retrieve the body of Tooling API's ApexLog
@@ -25,11 +22,9 @@ import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
  * @author jwidjaja
  *
  */
-public class ApexLogCommand extends BaseCommandWithErrorHandling<String> {
+public class ApexLogCommand extends BaseCommand<String> {
 	
 	private static final String GET_APEX_LOG = "Getting Apex Log";
-	
-	private final HTTPAdapter<String> transport;
 
 	public ApexLogCommand(HTTPAdapter<String> transport) {
 		super(GET_APEX_LOG);
@@ -54,16 +49,5 @@ public class ApexLogCommand extends BaseCommandWithErrorHandling<String> {
         } finally {
             monitor.done();
         }
-	}
-	
-	@Override
-	public boolean wasError() {
-		return Utils.isNotEmpty(transport.getResponse()) && 
-				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
-	}
-	
-	@Override
-	public String getErrorMsg() {
-		return transport.getRawBodyWhenError();
 	}
 }

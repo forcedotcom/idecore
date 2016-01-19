@@ -88,8 +88,6 @@ public class ProjectConfigurationTab extends RunTestsTab {
 	 * Need to be able to get some stuff from TestConfigurationTab,
 	 * so this is probably better than doing
 	 * getLaunchConfigurationDialog().getTabs() and instanceof.
-	 * 
-	 * @param testTab
 	 */
 	@VisibleForTesting
 	public void saveSiblingTab(RunTestsTab testTab) {
@@ -108,7 +106,6 @@ public class ProjectConfigurationTab extends RunTestsTab {
 	
 	/**
      * Get the project from the name in project text field.
-     * @return IProject
      */
 	@VisibleForTesting
     public IProject getProjectFromName() {
@@ -215,7 +212,6 @@ public class ProjectConfigurationTab extends RunTestsTab {
 	
 	/**
      * Enable or disable the log categories
-     * @param shouldEnable
      */
 	@VisibleForTesting
 	public void shouldEnableLevels(boolean shouldEnable) {
@@ -232,7 +228,6 @@ public class ProjectConfigurationTab extends RunTestsTab {
 	
 	/**
      * Set the log level combo boxes
-     * @param logLevels
      */
 	@VisibleForTesting
 	public void setLogLevels(Map<String, String> logLevels) {
@@ -274,7 +269,6 @@ public class ProjectConfigurationTab extends RunTestsTab {
 	
 	/**
      * Display a list of projects in the workspace and return the selected one.
-     * @return IProject
      */
 	@VisibleForTesting
 	public IProject chooseProject() {

@@ -11,11 +11,9 @@
 
 package com.salesforce.ide.core.remote.tooling;
 
-import javax.ws.rs.core.Response;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.BaseCommand;
 import com.salesforce.ide.core.remote.HTTPAdapter;
 
 /**
@@ -26,11 +24,9 @@ import com.salesforce.ide.core.remote.HTTPAdapter;
  * @author jwidjaja
  *
  */
-public class ToolingQueryCommand extends BaseCommandWithErrorHandling<String> {
+public class ToolingQueryCommand extends BaseCommand<String> {
 
 	private static final String QUERYING = "Querying";
-	
-	private final HTTPAdapter<String> transport;
 	
 	public ToolingQueryCommand(HTTPAdapter<String> transport) {
 		super(QUERYING);
@@ -55,16 +51,5 @@ public class ToolingQueryCommand extends BaseCommandWithErrorHandling<String> {
         } finally {
             monitor.done();
         }
-	}
-
-	@Override
-	public boolean wasError() {
-		return Utils.isNotEmpty(transport.getResponse()) && 
-				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
-	}
-
-	@Override
-	public String getErrorMsg() {
-		return transport.getRawBodyWhenError();
 	}
 }

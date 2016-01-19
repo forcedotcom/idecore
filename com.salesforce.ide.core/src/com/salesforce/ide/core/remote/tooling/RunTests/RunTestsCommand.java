@@ -11,13 +11,10 @@
 
 package com.salesforce.ide.core.remote.tooling.RunTests;
 
-import javax.ws.rs.core.Response;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.BaseCommand;
 import com.salesforce.ide.core.remote.HTTPAdapter;
-import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
 
 /**
  * A Job to enqueue tests through Tooling API's runTestsAsynchronous
@@ -25,11 +22,10 @@ import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
  * @author jwidjaja
  *
  */
-public class RunTestsCommand extends BaseCommandWithErrorHandling<String> {
+public class RunTestsCommand extends BaseCommand<String> {
 
 	private static final String SCHEDULE_TESTS = "Scheduling Apex Tests";
 	
-	private final HTTPAdapter<String> transport;
 	private final String tests;
 
 	public RunTestsCommand(HTTPAdapter<String> transport, String tests) {
@@ -56,16 +52,5 @@ public class RunTestsCommand extends BaseCommandWithErrorHandling<String> {
         } finally {
             monitor.done();
         }
-	}
-	
-	@Override
-	public boolean wasError() {
-		return Utils.isNotEmpty(transport.getResponse()) && 
-				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
-	}
-	
-	@Override
-	public String getErrorMsg() {
-		return transport.getRawBodyWhenError();
 	}
 }

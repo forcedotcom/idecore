@@ -9,26 +9,37 @@
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
 
-package com.salesforce.ide.core.remote.tooling;
+package com.salesforce.ide.core.remote;
+
+import javax.ws.rs.core.Response;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.salesforce.ide.core.remote.PromiseableJob;
+import com.salesforce.ide.core.internal.utils.Utils;
 
 /**
- * Base command class to enforce error handling
+ * Base command class with error handling
  * 
  * @author jwidjaja
  *
  * @param <T>
  */
-public abstract class BaseCommandWithErrorHandling<T> extends PromiseableJob<T> {
+public abstract class BaseCommand<T> extends PromiseableJob<T> {
 
-	public BaseCommandWithErrorHandling(String name) {
+	protected HTTPAdapter<T> transport;
+	
+	public BaseCommand(String name) {
 		super(name);
 	}
 
 	protected abstract T execute(IProgressMonitor monitor) throws Throwable;
-	public abstract boolean wasError();
-	public abstract String getErrorMsg();
+	
+	public boolean wasError() {
+		return Utils.isNotEmpty(transport) && Utils.isNotEmpty(transport.getResponse()) && 
+				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
+	}
+	
+	public String getErrorMsg() {
+		return Utils.isNotEmpty(transport) ? transport.getRawBodyWhenError() : null;
+	}
 }

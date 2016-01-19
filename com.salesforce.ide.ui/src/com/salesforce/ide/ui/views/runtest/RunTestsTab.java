@@ -52,7 +52,6 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
 	
 	/**
      * Enable or disable a button based the text.
-     * @param text
      * @return True if text is not null/empty and does not equal
      *   to default strings (all classes) (all methods). False otherwise.
      */
@@ -64,10 +63,6 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
     
     /**
      * Create a button with specified text and enabled value
-     * @param parent
-     * @param defaultText
-     * @param enabled
-     * @return Button widget
      */
 	@VisibleForTesting
 	public Button makeDefaultButton(Group parent, String defaultText, boolean enabled) {
@@ -80,9 +75,6 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
     
     /**
      * Create a label with specified text.
-     * @param parent
-     * @param defaultText
-     * @return Label widget
      */
 	@VisibleForTesting
 	public Label makeDefaultLabel(Group parent, String defaultText) {
@@ -93,11 +85,6 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
 	
 	/**
      * Create a checkbox with specified text and enabled value
-     * @param parent
-     * @param defaultText
-     * @param enabled
-     * @param selected
-     * @return Button widget
      */
 	@VisibleForTesting
 	public Button makeDefaultCheckbox(Composite parent, String defaultText, boolean enabled, boolean selected) {
@@ -110,15 +97,12 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
     
 	/**
 	 * Create a multi check table
-	 * @param parent
-	 * @param columnNames
-	 * @return Table widget
 	 */
 	@VisibleForTesting
 	public Table makeDefaultMultiCheckTable(Composite parent, String... columnNames) {
     	Table table = new Table(parent, SWT.MULTI | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
     	table.setHeaderVisible(true);
-    	table.setLinesVisible(true);
+    	table.setLinesVisible(false);
     	GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false);
     	gridData.heightHint = 10 * table.getItemHeight();
     	gridData.widthHint = 3 * gridData.heightHint; 
@@ -134,10 +118,6 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
     
     /**
      * Create a text field with specified text and foreground color
-     * @param parent
-     * @param defaultText
-     * @param defaultColor
-     * @return Text widget
      */
     @VisibleForTesting
 	public Text makeDefaultText(Group parent, String defaultText, Color defaultColor) {
@@ -147,10 +127,6 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
     
     /**
      * Set defaults for a Text widget. The text field is not editable.
-     * @param text
-     * @param defaultText
-     * @param defaultColor
-     * @return Text widget
      */
     @VisibleForTesting
 	public Text setTextProperties(Text text, String defaultText, Color defaultColor) {

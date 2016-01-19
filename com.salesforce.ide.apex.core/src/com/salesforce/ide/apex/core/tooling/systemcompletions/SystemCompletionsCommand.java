@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.salesforce.ide.apex.core.Messages;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
-import com.salesforce.ide.core.remote.IHTTPTransport;
-import com.salesforce.ide.core.remote.PromiseableJob;
+import com.salesforce.ide.core.remote.BaseCommand;
+import com.salesforce.ide.core.remote.HTTPAdapter;
 
 /**
  * Fetches the apex completions from the server.
@@ -24,11 +24,10 @@ import com.salesforce.ide.core.remote.PromiseableJob;
  * @author nchen
  * 
  */
-public class SystemCompletionsCommand extends PromiseableJob<Completions> {
+public class SystemCompletionsCommand extends BaseCommand<Completions> {
     private static final String FETCHING_SYSTEM_COMPLETIONS = Messages.SystemCompletionsCommand_Status;
-    private final IHTTPTransport<Completions> transport;
-
-    public SystemCompletionsCommand(IHTTPTransport<Completions> transport) {
+    
+    public SystemCompletionsCommand(HTTPAdapter<Completions> transport) {
         super(FETCHING_SYSTEM_COMPLETIONS);
         this.transport = transport;
     }

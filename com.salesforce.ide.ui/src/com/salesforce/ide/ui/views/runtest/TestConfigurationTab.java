@@ -195,7 +195,6 @@ public class TestConfigurationTab extends RunTestsTab {
 	
 	/**
 	 * Create group for test suites
-	 * @param parent
 	 */
 	@VisibleForTesting
 	public void createSuiteSelector(Composite parent) {
@@ -240,7 +239,6 @@ public class TestConfigurationTab extends RunTestsTab {
 	/**
 	 * Enable/disable the suite table, which
 	 * will disable/enable the single class/method selectors
-	 * @param enable
 	 */
 	@VisibleForTesting
 	public void enableSuiteTable(boolean enable) {
@@ -295,7 +293,6 @@ public class TestConfigurationTab extends RunTestsTab {
 	 * List of suites in the config are previously selected suites
 	 * and the source of truth. Reconcile that list with known 
 	 * suites from server, and build the suite table.
-	 * @param suitesInConfig
 	 */
 	@VisibleForTesting
 	public void reconcileSuites(Set<String> suitesInConfig) {
@@ -321,7 +318,6 @@ public class TestConfigurationTab extends RunTestsTab {
 	
 	/**
 	 * Generate table of suites
-	 * @param suites
 	 */
 	@VisibleForTesting
 	public void generateSuiteTable(List<MySuite> suites) {
@@ -507,7 +503,6 @@ public class TestConfigurationTab extends RunTestsTab {
      * Retrieve test classes and methods for a specific project. This
      * should only be called when opening the config for the first time
      * or when user changes the project.
-     * @param project
      * @return RunTests POJO
      */
 	@VisibleForTesting
@@ -555,9 +550,6 @@ public class TestConfigurationTab extends RunTestsTab {
 	
 	/**
 	 * Create the JSON object of tests to run.
-	 * 
-	 * @param selectedProject
-	 * @return TestsHolder
 	 */
 	@VisibleForTesting
 	public TestsHolder buildTestsForConfig(IProject selectedProject) {
@@ -606,7 +598,6 @@ public class TestConfigurationTab extends RunTestsTab {
     
     /**
      * Get comma separated list of suite IDs
-     * @param selectedProject
      * @return Suite IDs
      */
     @VisibleForTesting
@@ -622,8 +613,6 @@ public class TestConfigurationTab extends RunTestsTab {
     
     /**
      * Create the JSON object of suites to run
-     * @param selectedProject
-     * @return SuitesHolder
      */
     @VisibleForTesting
 	public SuitesHolder buildSuitesForConfig(String suiteIds) {
@@ -643,8 +632,6 @@ public class TestConfigurationTab extends RunTestsTab {
      *   [*] If user has a debugging session, SFDC only supports that in synchronous run
      * Therefore, we can always make the best decision for user.
      * 
-     * @param th
-     * @param shouldUseSuites
      * @return True if async. False if sync.
      */
     @VisibleForTesting

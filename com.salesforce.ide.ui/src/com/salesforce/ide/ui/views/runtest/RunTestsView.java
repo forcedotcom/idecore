@@ -490,9 +490,9 @@ public class RunTestsView extends BaseViewPart {
 			// Poll for remaining test cases to be executed
 			// No timeout here because we don't know how long a test run can be.
 			// If user wants to exit, then they can cancel the launch config.
-			List<ApexTestResult> testResults = Lists.newLinkedList();
 			int totalTestDone = 0;
 			while (totalTestDone < totalTestMethods) {
+				List<ApexTestResult> testResults = Lists.newLinkedList();
 				// Query for test results (one ApexTestResult object per test method)
 				QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId));
 				if (qr != null && qr.getSize() > 0) {
@@ -559,12 +559,13 @@ public class RunTestsView extends BaseViewPart {
 			
 			try {
 				job.join();
-				Map<String, Limit> limits = job.getAnswer();
+				String limitsResponse = job.getAnswer();
 				
 				if (job.wasError()) {
 					logger.error(String.format("Failed to get API limits. Error message: %s", job.getErrorMsg()));
 				}
 				
+				Map<String, Limit> limits = job.parseLimits(limitsResponse);
 				if (limits != null && limits.size() > 0) {
 					return limits.get(type.toString());
 				}

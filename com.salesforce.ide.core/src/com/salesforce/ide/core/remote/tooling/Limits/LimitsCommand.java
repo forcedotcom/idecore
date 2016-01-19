@@ -11,19 +11,17 @@
 
 package com.salesforce.ide.core.remote.tooling.Limits;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.ws.rs.core.Response;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.salesforce.ide.core.internal.utils.Utils;
+import com.salesforce.ide.core.remote.BaseCommand;
 import com.salesforce.ide.core.remote.HTTPAdapter;
-import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
 
 /**
  * A Job to fetch limits (remaining and max).
@@ -31,7 +29,7 @@ import com.salesforce.ide.core.remote.tooling.BaseCommandWithErrorHandling;
  * @author jwidjaja
  *
  */
-public class LimitsCommand extends BaseCommandWithErrorHandling<Map<String, Limit>> {
+public class LimitsCommand extends BaseCommand<String> {
 
 	public enum Type {
 		ConcurrentAsyncGetReportInstances,
@@ -56,9 +54,7 @@ public class LimitsCommand extends BaseCommandWithErrorHandling<Map<String, Limi
 	}
 	
 	private static final String GETTING_LIMITS = "Acquiring limits";
-	
-	private final HTTPAdapter<String> transport;
-	
+		
 	public LimitsCommand(HTTPAdapter<String> transport) {
 		super(GETTING_LIMITS);
 		this.transport = transport;
@@ -68,8 +64,8 @@ public class LimitsCommand extends BaseCommandWithErrorHandling<Map<String, Limi
 	 * Execute the HTTP request and return a map of limit names and their limits (remaining, max).
 	 */
 	@Override
-	protected Map<String, Limit> execute(IProgressMonitor monitor) throws Throwable {
-		monitor.beginTask(GETTING_LIMITS, 3);
+	protected String execute(IProgressMonitor monitor) throws Throwable {
+		monitor.beginTask(GETTING_LIMITS, 2);
 		
 		transport.send("");
 		monitor.worked(1);
@@ -77,37 +73,33 @@ public class LimitsCommand extends BaseCommandWithErrorHandling<Map<String, Limi
 		String response = transport.receive();
 		monitor.worked(1);
 		
-		// The response is in JSON so we need to parse and convert using Limit.java POJO
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode limitsJson = mapper.readTree(response);
-		Iterator<String> limitsNames = limitsJson.fieldNames();
+		return response;
+	}
+	
+	public Map<String, Limit> parseLimits(String json) {
 		// Return a tree of Limit objects whose key is the Limit's name
 		TreeMap<String, Limit> limits = new TreeMap<String, Limit>();
-		while (limitsNames.hasNext()) {
-			String limitName = limitsNames.next();
-			JsonNode aLimit = limitsJson.get(limitName);
-			int remaining = aLimit.findValue("Remaining").asInt();
-			int max = aLimit.findValue("Max").asInt();
-			
-			Limit limit = new Limit();
-			limit.setName(limitName);
-			limit.setRemaining(remaining);
-			limit.setMax(max);
-			limits.put(limitName, limit);
-		}
 		
-		monitor.worked(1);
+		// The response is in JSON so we need to parse and convert using Limit.java POJO
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode limitsJson = mapper.readTree(json);
+			Iterator<String> limitsNames = limitsJson.fieldNames();
+
+			while (limitsNames.hasNext()) {
+				String limitName = limitsNames.next();
+				JsonNode aLimit = limitsJson.get(limitName);
+				int remaining = aLimit.findValue("Remaining").asInt();
+				int max = aLimit.findValue("Max").asInt();
+				
+				Limit limit = new Limit();
+				limit.setName(limitName);
+				limit.setRemaining(remaining);
+				limit.setMax(max);
+				limits.put(limitName, limit);
+			}
+		} catch (IOException e) {}
+		
 		return limits;
-	}
-
-	@Override
-	public boolean wasError() {
-		return Utils.isNotEmpty(transport.getResponse()) && 
-				transport.getResponse().getStatus() != Response.Status.OK.getStatusCode();
-	}
-
-	@Override
-	public String getErrorMsg() {
-		return transport.getRawBodyWhenError();
 	}
 }
