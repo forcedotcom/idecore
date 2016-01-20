@@ -88,6 +88,7 @@ public class Messages extends NLS {
     public static String View_ErrorGetAsyncTestResultsSolution;
     public static String View_ErrorOpenSourceTitle;
     public static String View_ErrorOpenSourceSolution;
+    public static String View_ErrorInvalidSuites;
 
     static {
         // initialize resource bundle

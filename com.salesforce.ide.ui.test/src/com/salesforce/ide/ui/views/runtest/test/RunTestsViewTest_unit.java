@@ -122,7 +122,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, never()).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, never()).prepareForRunningTests(any(IProject.class));
-		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
@@ -164,7 +164,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
-		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
@@ -201,7 +201,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(monitor.isCanceled()).thenReturn(false);
 		
-		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("");
+		when(mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging)).thenReturn("");
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
 		
@@ -213,7 +213,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
-		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
@@ -251,7 +251,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(monitor.isCanceled()).thenReturn(false);
 		
-		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("Amazing");
+		when(mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging)).thenReturn("Amazing");
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
 		
@@ -266,7 +266,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(eq(fp));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
-		verify(mockedView, times(1)).enqueueTests(eq(testsInJson), eq(isAsync), eq(isDebugging));
+		verify(mockedView, times(1)).enqueueTests(eq(testsInJson), eq(shouldUseSuites), eq(isAsync), eq(isDebugging));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
@@ -305,7 +305,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(monitor.isCanceled()).thenReturn(false);
 		
-		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("{}");
+		when(mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging)).thenReturn("{}");
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
 		
@@ -321,7 +321,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
-		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
@@ -366,7 +366,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(monitor.isCanceled()).thenReturn(false);
 		
-		when(mockedView.enqueueTests(testsInJson, isAsync, isDebugging)).thenReturn("Amazing");
+		when(mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging)).thenReturn("Amazing");
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
 		
@@ -381,7 +381,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).materializeForceProject(project);
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
-		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
@@ -415,19 +415,20 @@ public class RunTestsViewTest_unit extends TestCase {
 	
 	@Test
 	public void testEnqueueTestsWithNullProject() throws Exception {
-		doCallRealMethod().when(mockedView).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		doCallRealMethod().when(mockedView).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		mockedView.forceProject = null;
 		
-		assertNull(mockedView.enqueueTests("", true, false));
+		assertNull(mockedView.enqueueTests("", true, true, false));
 	}
 	
 	@Test
 	public void testEnqueueTests() throws Exception {
-		doCallRealMethod().when(mockedView).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class));
+		doCallRealMethod().when(mockedView).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		doCallRealMethod().when(mockedView).getConnTimeoutVal(any(Boolean.class), any(Boolean.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class), any(Integer.class));
 		
 		String testsInJson = "{}";
+		boolean shouldUseSuites = true;
 		boolean isAsync = false;
 		boolean isDebugging = true;
 		String response = "tests";
@@ -436,7 +437,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(job.wasError()).thenReturn(false);
 		when(mockedView.getRunTestsCommand(testsInJson, isAsync)).thenReturn(job);
 		
-		assertEquals(response, mockedView.enqueueTests(testsInJson, isAsync, isDebugging));
+		assertEquals(response, mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging));
 		
 		verify(mockedView, times(1)).getConnTimeoutVal(isAsync, isDebugging);
 		verify(mockedView, times(1)).initializeConnection(mockedView.forceProject, RunTestsConstants.SYNC_WITH_DEBUG_TIMEOUT);

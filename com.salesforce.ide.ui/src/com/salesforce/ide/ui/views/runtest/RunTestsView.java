@@ -219,7 +219,7 @@ public class RunTestsView extends BaseViewPart {
         	
         	if (!monitor.isCanceled()) {
             	// Submit the tests for execution
-            	String enqueueResult = enqueueTests(testsInJson, isAsync, isDebugging);
+            	String enqueueResult = enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging);
             	
             	Map<IResource, List<String>> testResources = findTestClasses(project);
             	int totalTestMethods = countTotalTests(testsInJson, shouldUseSuites, testResources);
@@ -325,7 +325,7 @@ public class RunTestsView extends BaseViewPart {
 	 * The test results if valid sync run. Null otherwise.
 	 */
     @VisibleForTesting
-	public String enqueueTests(String testsInJson, boolean isAsync, boolean isDebugging) {
+	public String enqueueTests(String testsInJson, boolean shouldUseSuites, boolean isAsync, boolean isDebugging) {
 		String response = null;
 		
 		if (Utils.isEmpty(forceProject)) {
@@ -342,8 +342,13 @@ public class RunTestsView extends BaseViewPart {
 			job.join();
 			response = job.getAnswer();
 			if (job.wasError()) {
+				String enqueueErr = job.getErrorMsg();
+				if (shouldUseSuites && Utils.isNotEmpty(enqueueErr) && enqueueErr.contains("Please enter valid suiteids")) {
+					enqueueErr = Messages.View_ErrorInvalidSuites;
+				}
+				
 				logger.error(String.format("Failed to enqueue tests. Tests array: %s", testsInJson));
-				throwErrorMsg(Messages.View_ErrorStartingTestsTitle, job.getErrorMsg());
+				throwErrorMsg(Messages.View_ErrorStartingTestsTitle, enqueueErr);
 			}
 		} catch (Exception e) {
 			logger.error(String.format("Tests array: %s. Error message: %s", testsInJson, e.getMessage()));
