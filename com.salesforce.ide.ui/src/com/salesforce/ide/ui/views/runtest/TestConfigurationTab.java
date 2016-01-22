@@ -337,8 +337,14 @@ public class TestConfigurationTab extends RunTestsTab {
     	
     	for (TableColumn col : suiteTable.getColumns()) {
 			col.pack();
-			col.setWidth(suiteTable.getBorderWidth());
 		}
+    	
+    	GridData gridData = (GridData) suiteTable.getLayoutData();
+    	TableColumn col = suiteTable.getColumn(0);
+    	if (Utils.isNotEmpty(gridData) && Utils.isNotEmpty(col)) {
+    		gridData.widthHint = col.getWidth();
+        	suiteTable.setLayoutData(gridData);
+    	}
 	}
 	
 	/**
