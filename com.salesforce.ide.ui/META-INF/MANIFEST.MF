@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.ui; singleton:=true
 Bundle-Version: 36.0.0.qualifier
@@ -68,4 +67,4 @@ Export-Package: com.salesforce.ide.ui,
  com.salesforce.ide.ui.wizards.project;x-friends:="com.salesforce.ide.test.common"
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: com.salesforce.ide.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

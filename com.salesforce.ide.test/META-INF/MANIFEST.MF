@@ -18,6 +18,6 @@ Require-Bundle: org.junit,
  com.salesforce.ide.upgrade,
  org.eclipse.core.resources,
  com.salesforce.ide.apex.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy

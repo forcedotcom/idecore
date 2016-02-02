@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.api;singleton:=true
 Bundle-Version: 36.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.api.ForceIdeAPIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
- org.eclipse.core.runtime;bundle-version="3.8.0"
+Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
+ org.eclipse.core.runtime;bundle-version="3.11.1"
 Import-Package: org.apache.log4j
 Bundle-ClassPath: .,
  lib/force-ide-metadata.jar,
@@ -44,4 +43,4 @@ Export-Package: com.salesforce.ide.api,
  com.sforce.ws.parser,
  com.sforce.ws.transport;uses:="com.sforce.ws,com.sforce.ws.bind,javax.xml.namespace"
 Eclipse-BuddyPolicy: registered
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

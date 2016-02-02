@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/aopalliance.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/aspectjrt.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/aspectjweaver.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-aop.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-beans.jar" sourcepath="/media/sda7/downloads/spring/spring-framework-2.5.2/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-context.jar" sourcepath="/media/sda7/downloads/spring/spring-framework-2.5.2/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/spring-core.jar" sourcepath="/media/sda7/downloads/spring/spring-framework-2.5.2/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/cglib-nodep-2.1_3.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-all-5.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-collections4-4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-18.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aopalliance-repackaged-2.3.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-api-2.3.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-locator-2.3.0-b05.jar"/>
@@ -29,21 +44,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/osgi-resource-locator-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/persistence-api-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/validation-api-1.1.0.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/guava-18.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-all-5.0.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wsdl2Apex-1.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/aopalliance.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/aspectjrt.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/aspectjweaver.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-aop.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-beans.jar" sourcepath="/media/sda7/downloads/spring/spring-framework-2.5.2/src"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-context.jar" sourcepath="/media/sda7/downloads/spring/spring-framework-2.5.2/src"/>
-	<classpathentry exported="true" kind="lib" path="lib/spring-core.jar" sourcepath="/media/sda7/downloads/spring/spring-framework-2.5.2/src"/>
-	<classpathentry exported="true" kind="lib" path="lib/cglib-nodep-2.1_3.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar" sourcepath="com.salesforce.ide.coresrc.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

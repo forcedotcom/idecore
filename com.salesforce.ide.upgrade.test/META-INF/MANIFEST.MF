@@ -8,5 +8,5 @@ Bundle-Vendor: %providerName
 Require-Bundle: org.junit,
  com.salesforce.ide.test.commonlibs
 Export-Package: com.salesforce.ide.upgrade.test
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin

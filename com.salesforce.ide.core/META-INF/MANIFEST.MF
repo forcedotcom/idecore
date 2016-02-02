@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.core;singleton:=true
 Bundle-Version: 36.0.0.qualifier
@@ -8,13 +7,13 @@ Bundle-Activator: com.salesforce.ide.core.ForceIdeCorePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: com.salesforce.ide.api;bundle-version="[36.0.0,37.0.0)",
- org.eclipse.ui.ide;bundle-version="3.8.0",
- org.eclipse.ui;bundle-version="3.103.0",
- org.eclipse.core.runtime;bundle-version="3.8.0",
- org.eclipse.core.net;bundle-version="1.2.0";resolution:=optional,
- org.eclipse.core.resources;bundle-version="3.8.0",
- org.eclipse.ui.editors;bundle-version="3.8.0",
- org.eclipse.core.expressions;bundle-version="3.4.0",
+ org.eclipse.ui.ide;bundle-version="3.11.0",
+ org.eclipse.ui;bundle-version="3.107.0",
+ org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.eclipse.core.net;bundle-version="1.2.300";resolution:=optional,
+ org.eclipse.core.resources;bundle-version="3.10.1",
+ org.eclipse.ui.editors;bundle-version="3.9.0",
+ org.eclipse.core.expressions;bundle-version="3.5.0",
  org.apache.xerces;bundle-version="2.9.0",
  com.salesforce.ide.core.compatibility;bundle-version="[36.0.0,37.0.0)",
  com.salesforce.ide.core.compatibility.auth.equinox;bundle-version="[36.0.0,37.0.0)"
@@ -133,6 +132,6 @@ Export-Package: antlr,
  org.aspectj.lang,
  org.objectweb.asm,
  org.springframework.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.apache.log4j, org.apache.jakarta_log4j, com.salesforce.ide.api

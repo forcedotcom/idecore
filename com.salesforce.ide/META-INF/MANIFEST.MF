@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Build-Changlist-Number: @p4_build_version@
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide; singleton:=true
 Bundle-Version: 36.0.0.qualifier
@@ -10,7 +9,7 @@ Bundle-Localization: plugin
 Bundle-ClassPath: .
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
- org.eclipse.core.runtime;bundle-version="3.8.0"
+Require-Bundle: org.eclipse.ui;bundle-version="3.107.0";visibility:=reexport,
+ org.eclipse.core.runtime;bundle-version="3.11.1"
 Eclipse-BuddyPolicy: registered
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
