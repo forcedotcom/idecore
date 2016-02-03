@@ -218,7 +218,6 @@ public class RunTestsLaunchConfigurationDelegate extends LaunchConfigurationDele
 			return finalLogLevels;
 		}
 		
-		@SuppressWarnings("unchecked")
 		Map<String, String> savedLogLevels = (Map<String, String>) configuration.getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap());
 		
 		for (String categoryName : savedLogLevels.keySet()) {

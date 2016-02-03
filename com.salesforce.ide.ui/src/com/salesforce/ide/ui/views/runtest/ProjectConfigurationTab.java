@@ -384,7 +384,6 @@ public class ProjectConfigurationTab extends RunTestsTab {
 	        // Set log levels
             boolean shouldEnableLogging = configuration.getAttribute(RunTestsConstants.ATTR_ENABLE_LOGGING, false);
             shouldEnableLevels(shouldEnableLogging);
-			@SuppressWarnings("unchecked")
 			Map<String, String> logLevels = (Map<String, String>) configuration.getAttribute(RunTestsConstants.ATTR_LOG_LEVELS, Collections.emptyMap());
             setLogLevels(logLevels);
 		} catch (CoreException e) {}
