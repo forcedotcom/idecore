@@ -10,11 +10,11 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.internal.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -30,7 +30,6 @@ import apex.jorje.data.ast.CompilationUnit.ClassDeclUnit;
 import apex.jorje.data.ast.Modifier;
 import apex.jorje.data.ast.Modifier.Annotation;
 import apex.jorje.data.ast.Modifier.TestMethodModifier;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.core.factories.ComponentFactory;
@@ -40,12 +39,12 @@ import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.services.ProjectService;
 
 /**
- * Utilities for working on Apex source files that are marked as tests.
+ * Utilities for working on Apex source files.
  * 
  * @author jwidjaja, nchen
  * 
  */
-public class ApexTestsUtils {
+public class ApexSourceUtils {
     private final class TestModifierDeterminer extends Modifier.SwitchBlockWithDefault {
         boolean hasSeenTestModifier;
 
@@ -65,11 +64,11 @@ public class ApexTestsUtils {
         protected void _default(Modifier x) {}
     }
 
-    private static final Logger logger = Logger.getLogger(ApexTestsUtils.class);
+    private static final Logger logger = Logger.getLogger(ApexSourceUtils.class);
 
-    public static final ApexTestsUtils INSTANCE = new ApexTestsUtils();
+    public static final ApexSourceUtils INSTANCE = new ApexSourceUtils();
 
-    private ApexTestsUtils() {}
+    private ApexSourceUtils() {}
 
     /**
      * Find test classes in a given project. Test classes are annotated with @IsTest.
@@ -246,7 +245,7 @@ public class ApexTestsUtils {
      * @return List of IResource
      */
     public List<IResource> findSourcesInProject(IProject project) {
-        List<IResource> projectSources = new ArrayList<IResource>();
+        List<IResource> projectSources = Lists.newArrayList();
         if (project == null)
             return projectSources;
 

@@ -382,6 +382,7 @@ public class TestConfigurationTab extends RunTestsTab {
     	
     	dialog.setTitle(Messages.Tab_ClassDialogTitle);
         dialog.setMessage(Messages.Tab_ClassDialogInstruction);
+        dialog.setHelpAvailable(false);
         IProject selectedProject = projectTab.getProjectFromName();
         TestsHolder rt = allTests.get(selectedProject);
         // We already got the test classes earlier so just display them
@@ -444,6 +445,7 @@ public class TestConfigurationTab extends RunTestsTab {
     	
     	dialog.setTitle(Messages.Tab_MethodDialogTitle);
     	dialog.setMessage(Messages.Tab_MethodDialogInstruction);
+    	dialog.setHelpAvailable(false);
     	if (testMethodNames != null && !testMethodNames.isEmpty()) {
     		dialog.setElements(testMethodNames.toArray());
     	}

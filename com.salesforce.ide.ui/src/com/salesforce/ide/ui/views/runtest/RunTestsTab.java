@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
+import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 
 public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
@@ -35,7 +35,7 @@ public abstract class RunTestsTab extends AbstractLaunchConfigurationTab {
 	@VisibleForTesting
 	public Color colorGray;
 	
-	protected final ApexTestsUtils sourceLookup = ApexTestsUtils.INSTANCE;
+	protected final ApexSourceUtils sourceLookup = ApexSourceUtils.INSTANCE;
 	
 	public abstract void saveSiblingTab(RunTestsTab tab);
 	public abstract boolean validatePage();

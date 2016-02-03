@@ -286,6 +286,7 @@ public class ProjectConfigurationTab extends RunTestsTab {
         // Display the projects in dialog. If there is none, user cannot launch config.
         dialog.setTitle(Messages.Tab_ProjectDialogTitle);
         dialog.setMessage(Messages.Tab_ProjectDialogInstruction);
+        dialog.setHelpAvailable(false);
         dialog.setElements(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProjects()
                 .toArray());
 

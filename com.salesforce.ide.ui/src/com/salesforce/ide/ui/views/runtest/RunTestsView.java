@@ -56,7 +56,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.salesforce.ide.apex.internal.core.ApexTestsUtils;
+import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.QualifiedNames;
@@ -810,8 +810,8 @@ public class RunTestsView extends BaseViewPart {
     	
 		IProject proj = forceProject.getProject();
 		// Get a list of existing Apex classes & triggers
-		List<IResource> resources = ApexTestsUtils.INSTANCE.findSourcesInProject(proj);
-		resources = ApexTestsUtils.INSTANCE.filterSourcesByClassOrTrigger(resources);
+		List<IResource> resources = ApexSourceUtils.INSTANCE.findSourcesInProject(proj);
+		resources = ApexSourceUtils.INSTANCE.filterSourcesByClassOrTrigger(resources);
 		
 		// Save overall code coverage
     	Integer orgWidePercent = Utils.isNotEmpty(orgWide) ? orgWide.getPercentCovered() : 0 ;
@@ -953,16 +953,16 @@ public class RunTestsView extends BaseViewPart {
     }
     
     private ApexCodeLocation findClass(IResource resource) {
-    	return ApexTestsUtils.INSTANCE.findClassLocInFile(resource);
+    	return ApexSourceUtils.INSTANCE.findClassLocInFile(resource);
     }
     
     @VisibleForTesting
     public Map<IResource, List<String>> findTestClasses(IProject project) {
-    	return ApexTestsUtils.INSTANCE.findTestClassesInProject(project);
+    	return ApexSourceUtils.INSTANCE.findTestClassesInProject(project);
     }
     
     private Map<String, ApexCodeLocation> findTestMethods(IResource resource) {
-		return ApexTestsUtils.INSTANCE.findTestMethodLocsInFile(resource);
+		return ApexSourceUtils.INSTANCE.findTestMethodLocsInFile(resource);
 	}
     
     /**
