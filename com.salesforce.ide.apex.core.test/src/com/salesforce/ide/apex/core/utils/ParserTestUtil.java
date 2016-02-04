@@ -16,16 +16,16 @@ import java.util.Scanner;
 
 import org.antlr.runtime.RecognitionException;
 
+import com.salesforce.ide.apex.core.ApexParserFactory;
+import com.salesforce.ide.test.common.utils.IdeTestUtil;
+
 import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.parser.impl.ApexParserImpl;
+import apex.jorje.parser.impl.ApexParser;
 import apex.jorje.semantic.ast.AstNodeFactory;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.exception.Errors;
-
-import com.salesforce.ide.apex.core.ApexParserFactory;
-import com.salesforce.ide.test.common.utils.IdeTestUtil;
 
 /**
  * Some shared utils for initializing the parser.
@@ -35,9 +35,9 @@ import com.salesforce.ide.test.common.utils.IdeTestUtil;
  */
 public class ParserTestUtil {
 
-    public static ApexParserImpl parseFromFile(String path) throws IOException, URISyntaxException {
+    public static ApexParser parseFromFile(String path) throws IOException, URISyntaxException {
         String string = readFromFile(path);
-        ApexParserImpl parser = ApexParserFactory.create(string);
+        ApexParser parser = ApexParserFactory.create(string);
         return parser;
     }
 
@@ -57,8 +57,8 @@ public class ParserTestUtil {
         return sb.toString();
     }
 
-    public static ApexParserImpl parseFromString(String contents) throws IOException, URISyntaxException {
-        ApexParserImpl parser = ApexParserFactory.create(contents);
+    public static ApexParser parseFromString(String contents) throws IOException, URISyntaxException {
+        ApexParser parser = ApexParserFactory.create(contents);
         return parser;
     }
 
@@ -67,7 +67,7 @@ public class ParserTestUtil {
      */
     public static CompilationUnit parseCompilationUnitFromFile(String path) throws IOException, URISyntaxException,
             RecognitionException {
-        ApexParserImpl parser = parseFromFile(path);
+        ApexParser parser = parseFromFile(path);
         return parser.compilationUnit();
     }
 
@@ -86,7 +86,7 @@ public class ParserTestUtil {
      */
     public static CompilationUnit parseCompilationUnitFromString(String contents) throws IOException,
             URISyntaxException, RecognitionException {
-        ApexParserImpl parser = parseFromString(contents);
+        ApexParser parser = parseFromString(contents);
         return parser.compilationUnit();
     }
 

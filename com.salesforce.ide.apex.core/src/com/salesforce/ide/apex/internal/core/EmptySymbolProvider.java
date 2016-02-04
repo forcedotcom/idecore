@@ -27,14 +27,16 @@ public class EmptySymbolProvider implements SymbolProvider {
 
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 
-    private EmptySymbolProvider() {}
+    private EmptySymbolProvider() {
+    }
 
     public static EmptySymbolProvider get() {
         return INSTANCE;
     }
 
     @Override
-    public void reportParsed(final CodeUnit codeUnit) {}
+    public void reportParsed(final CodeUnit codeUnit) {
+    }
 
     @Override
     public TypeInfo find(final SymbolResolver symbols, final TypeInfo referencingType, final String lowerCaseFullName) {
@@ -47,13 +49,17 @@ public class EmptySymbolProvider implements SymbolProvider {
     }
 
     @Override
-    public TypeInfo getVfComponentType(final SymbolResolver symbols, final TypeInfo referencingType,
-            final Namespace namespace, final String name) {
+    public TypeInfo getVfComponentType(
+        final SymbolResolver symbols,
+        final TypeInfo referencingType,
+        final Namespace namespace,
+        final String name
+    ) {
         return null;
     }
 
     @Override
-    public TypeInfo getFlowInterviewType(final SymbolResolver symbols, final Namespace namespace, final String name) {
+    public TypeInfo getFlowInterviewType(final SymbolResolver symbols, final TypeInfo referencingType, final Namespace namespace, final String name) {
         return null;
     }
 
@@ -68,7 +74,7 @@ public class EmptySymbolProvider implements SymbolProvider {
     }
 
     @Override
-    public boolean hasLabelField(final Namespace namespace, final String name) {
+    public boolean hasLabelField(final TypeInfo referencingType, final Namespace namespace, final String name) {
         return false;
     }
 }

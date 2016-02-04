@@ -38,7 +38,7 @@ import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.exception.Errors;
 import apex.jorje.semantic.symbol.member.variable.FieldInfo;
-import apex.jorje.semantic.symbol.resolver.SymbolResolverImpl;
+import apex.jorje.semantic.symbol.resolver.StandardSymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -174,7 +174,7 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
                         .setInput(
                             new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
                                     null, null, null)).build();
-        SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler), new Errors());
+        SymbolScope scope = new SymbolScope(new StandardSymbolResolver(compiler), new Errors());
         visitor = new VariablesVisitor();
         compilation.traverse(visitor, scope);
     }

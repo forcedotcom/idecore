@@ -18,19 +18,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.data.ast.CompilationUnit.ClassDeclUnit;
-import apex.jorje.data.ast.CompilationUnit.EnumDeclUnit;
-import apex.jorje.data.ast.CompilationUnit.InterfaceDeclUnit;
-import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
-import apex.jorje.parser.impl.ApexParserImpl;
-
 import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.apex.internal.core.ApexModelManager;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.errors.ApexErrorMarkerHandler;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;
 import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
+
+import apex.jorje.data.ast.CompilationUnit;
+import apex.jorje.data.ast.CompilationUnit.ClassDeclUnit;
+import apex.jorje.data.ast.CompilationUnit.EnumDeclUnit;
+import apex.jorje.data.ast.CompilationUnit.InterfaceDeclUnit;
+import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
+import apex.jorje.parser.impl.ApexParser;
 
 /**
  * The runnable that is called each time the reconciler needs to run.
@@ -40,7 +40,7 @@ import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
  */
 public class ApexParserRunnable implements ISafeRunnable {
     private ApexReconcilingStrategy apexReconcilingStrategy;
-    private ApexParserImpl fParser;
+    private ApexParser fParser;
     private ApexErrorMarkerHandler fMarkerHandler;
     private CompilationUnit fCompilationUnit;
     private IFile file;

@@ -10,7 +10,9 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline;
 
-import junit.framework.TestCase;
+import com.salesforce.ide.apex.core.utils.ParserTestUtil;
+import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider;
+
 import apex.jorje.data.Loc;
 import apex.jorje.data.ast.BlockMember;
 import apex.jorje.data.ast.BlockMember.FieldMember;
@@ -30,10 +32,8 @@ import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
 import apex.jorje.data.ast.EnumDecl;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.InterfaceDecl;
-import apex.jorje.parser.impl.ApexParserImpl;
-
-import com.salesforce.ide.apex.core.utils.ParserTestUtil;
-import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider;
+import apex.jorje.parser.impl.ApexParser;
+import junit.framework.TestCase;
 
 /**
  * This tests the text label functionalities for the outline view. We generate synthetic constructs that are valid and
@@ -81,35 +81,35 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
 
     public void testInnerClassMember() throws Exception {
         String innerClassMember = "class InnerClass {}";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(innerClassMember);
+        ApexParser parser = ParserTestUtil.parseFromString(innerClassMember);
         BlockMember member = parser.classMember();
         handler.handle((InnerClassMember) member);
     }
 
     public void testInnerInterfaceMember() throws Exception {
         String innerInterfaceMember = "interface InnerInterface {}";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(innerInterfaceMember);
+        ApexParser parser = ParserTestUtil.parseFromString(innerInterfaceMember);
         BlockMember member = parser.classMember();
         handler.handle((InnerInterfaceMember) member);
     }
 
     public void testInnerEnumDecl() throws Exception {
         String innerEnumClassMember = "enum InnerEnum {}";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(innerEnumClassMember);
+        ApexParser parser = ParserTestUtil.parseFromString(innerEnumClassMember);
         BlockMember member = parser.classMember();
         handler.handle((InnerEnumMember) member);
     }
 
     public void testStmntBlockMember() throws Exception {
         String stmnt = "{ field = 2; }";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(stmnt);
+        ApexParser parser = ParserTestUtil.parseFromString(stmnt);
         BlockMember member = parser.classMember();
         handler.handle((StmntBlockMember) member);
     }
 
     public void testStaticStmntBlockMember() throws Exception {
         String staticStmnt = "static { field  = 2; }";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(staticStmnt);
+        ApexParser parser = ParserTestUtil.parseFromString(staticStmnt);
         BlockMember member = parser.classMember();
         handler.handle((StaticStmntBlockMember) member);
     }
@@ -117,7 +117,7 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
     public void testFieldMember() throws Exception {
         String fieldClassMember =
                 "public static final Map<String, String> fieldClassMember = new Map<String, String>();";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(fieldClassMember);
+        ApexParser parser = ParserTestUtil.parseFromString(fieldClassMember);
         BlockMember member = parser.classMember();
         handler.handle((FieldMember) member);
     }
@@ -125,7 +125,7 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
     public void testMethodMember() throws Exception {
         String methodClassMember =
                 "public static Map<String, String> methodClassMember(List<String> l, Integer i) { return null; }";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(methodClassMember);
+        ApexParser parser = ParserTestUtil.parseFromString(methodClassMember);
         BlockMember member = parser.classMember();
         handler.handle((MethodMember) member);
     }
@@ -133,7 +133,7 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
     public void testPropertyMember() throws Exception {
         String propertyMember =
                 "public Set<Integer> values { get; set; }";
-        ApexParserImpl parser = ParserTestUtil.parseFromString(propertyMember);
+        ApexParser parser = ParserTestUtil.parseFromString(propertyMember);
         BlockMember member = parser.classMember();
         handler.handle((PropertyMember) member);
     }

@@ -10,9 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline.text;
 
-import apex.jorje.data.Optional;
-import apex.jorje.data.Optional.None;
-import apex.jorje.data.Optional.Some;
 import apex.jorje.data.ast.BlockMember.MethodMember;
 import apex.jorje.data.ast.FormalParameter;
 import apex.jorje.data.ast.Identifier;
@@ -46,28 +43,24 @@ final class OutlineViewMethodClassMemberPrinter implements Printer<MethodMember>
         sb.append(identifierPrinter.print(x.methodDecl.name, context) + "("
                 + formalParametersPrinter.print(x.methodDecl.formalParameters.values, context) + ")");
 
-        if (x.methodDecl.type instanceof Optional.Some) { // If we have a value
-            sb.append(" : " + printTypeRef(x.methodDecl.type));
+        if (x.methodDecl.type.isPresent()) { // If we have a value
+            sb.append(" : " + printTypeRef(x.methodDecl.type.get()));
         }
 
         return sb.toString();
     }
 
-    private final Optional.MatchBlock<TypeRef, String> optionalTypeMatchBlock =
-            new Optional.MatchBlock<TypeRef, String>() {
+    private final TypeRef.MatchBlockWithDefault<String> optionalTypeMatchBlock =
+            new TypeRef.MatchBlockWithDefault<String>() {
 
-                @Override
-                public String _case(Some<TypeRef> x) {
-                    return typeRefPrinter.print(x.value, new PrintContext());
-                }
+				@Override
+				protected String _default(TypeRef x) {
+					return typeRefPrinter.print(x, new PrintContext());
+				}
 
-                @Override
-                public String _case(None<TypeRef> x) {
-                    return "";
-                }
             };
 
-    private String printTypeRef(Optional<TypeRef> type) {
+    private String printTypeRef(TypeRef type) {
         return type.match(optionalTypeMatchBlock);
     }
 }

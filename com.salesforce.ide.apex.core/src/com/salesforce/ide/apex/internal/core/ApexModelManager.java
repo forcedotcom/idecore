@@ -19,14 +19,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
-import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.parser.impl.ApexParserImpl;
-import apex.jorje.semantic.ast.AstNodeFactory;
-import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.semantic.compiler.Namespaces;
-import apex.jorje.semantic.compiler.SourceFile;
-import apex.jorje.semantic.exception.Errors;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -34,6 +26,14 @@ import com.google.common.io.CharStreams;
 import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.apex.core.exceptions.InvalidCompilationASTException;
 import com.salesforce.ide.apex.core.exceptions.InvalidCompilationUnitException;
+
+import apex.jorje.data.ast.CompilationUnit;
+import apex.jorje.parser.impl.ApexParser;
+import apex.jorje.semantic.ast.AstNodeFactory;
+import apex.jorje.semantic.ast.compilation.Compilation;
+import apex.jorje.semantic.compiler.Namespaces;
+import apex.jorje.semantic.compiler.SourceFile;
+import apex.jorje.semantic.exception.Errors;
 
 /**
  * Central point for getting any form of model information about the current project. Right now we have a jadt and
@@ -58,7 +58,7 @@ public class ApexModelManager {
                 public CompilationUnit load(IFile file) throws InvalidCompilationUnitException {
                     try {
                         String body = CharStreams.toString(new InputStreamReader(file.getContents()));
-                        ApexParserImpl parser = ApexParserFactory.create(body);
+                        ApexParser parser = ApexParserFactory.create(body);
                         return parser.compilationUnit();
                     } catch (CoreException | RecognitionException | IOException ce) {
                         throw new InvalidCompilationUnitException(ce);

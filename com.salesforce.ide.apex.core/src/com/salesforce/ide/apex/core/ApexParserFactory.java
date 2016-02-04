@@ -17,8 +17,8 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.TokenStream;
 import org.apache.log4j.Logger;
 
-import apex.jorje.parser.impl.ApexLexerImpl;
-import apex.jorje.parser.impl.ApexParserImpl;
+import apex.jorje.parser.impl.ApexLexer;
+import apex.jorje.parser.impl.ApexParser;
 import apex.jorje.parser.impl.CaseInsensitiveReaderStream;
 import apex.jorje.services.exception.UnhandledException;
 
@@ -31,13 +31,13 @@ import apex.jorje.services.exception.UnhandledException;
 public class ApexParserFactory {
     private static final Logger logger = Logger.getLogger(ApexParserFactory.class);
 
-    public static ApexParserImpl create(String inputString) {
+    public static ApexParser create(String inputString) {
         try {
             String canonicalizedString = canonicalizeString(inputString);
             CharStream stream = CaseInsensitiveReaderStream.create(canonicalizedString);
-            ApexLexerImpl lexer = new ApexLexerImpl(stream);
+            ApexLexer lexer = new ApexLexer(stream);
             TokenStream tokenStream = new CommonTokenStream(lexer);
-            return new ApexParserImpl(tokenStream);
+            return new ApexParser(tokenStream);
         } catch (UnhandledException ue) {
             logger.error(ue);
         }

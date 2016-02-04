@@ -26,6 +26,20 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.salesforce.ide.apex.internal.core.ApexModelManager;
+import com.salesforce.ide.apex.internal.core.EmptySymbolProvider;
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
+import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
+import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanceMembersProcessorForLocals.LocalVariablesVisitor.LocalInfoWrapper;
+import com.salesforce.ide.ui.internal.ForceImages;
+import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
+
 import apex.jorje.data.Loc;
 import apex.jorje.data.Loc.RealLoc;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -51,22 +65,8 @@ import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.exception.Errors;
 import apex.jorje.semantic.symbol.member.variable.LocalInfo;
-import apex.jorje.semantic.symbol.resolver.SymbolResolverImpl;
+import apex.jorje.semantic.symbol.resolver.StandardSymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.salesforce.ide.apex.internal.core.ApexModelManager;
-import com.salesforce.ide.apex.internal.core.EmptySymbolProvider;
-import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
-import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
-import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanceMembersProcessorForLocals.LocalVariablesVisitor.LocalInfoWrapper;
-import com.salesforce.ide.ui.internal.ForceImages;
-import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
 
 /**
  * <p>
@@ -215,7 +215,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
                         .setInput(
                             new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
                                     null, null, null)).build();
-        SymbolScope scope = new SymbolScope(new SymbolResolverImpl(compiler), new Errors());
+        SymbolScope scope = new SymbolScope(new StandardSymbolResolver(compiler), new Errors());
         visitor = new LocalVariablesVisitor();
         compilation.traverse(visitor, scope);
     }

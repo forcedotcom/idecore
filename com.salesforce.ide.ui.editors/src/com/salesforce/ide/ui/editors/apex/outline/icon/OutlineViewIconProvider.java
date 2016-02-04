@@ -17,7 +17,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
-import apex.jorje.data.Optional;
 import apex.jorje.data.ast.BlockMember.FieldMember;
 import apex.jorje.data.ast.BlockMember.InnerClassMember;
 import apex.jorje.data.ast.BlockMember.InnerEnumMember;
@@ -272,7 +271,7 @@ public class OutlineViewIconProvider implements IOutlineViewElementHandler<Image
      */
     private static int adornWithMethodClassDetails(MethodMember element, int accessorFlags_JDT) {
         int flags = accessorFlags_JDT;
-        if (element.methodDecl.type instanceof Optional.None) { // No return type means that it is a constructor
+        if (!element.methodDecl.type.isPresent()) { // No return type means that it is a constructor
             flags |= JavaElementImageDescriptor.CONSTRUCTOR;
         }
         return flags;
