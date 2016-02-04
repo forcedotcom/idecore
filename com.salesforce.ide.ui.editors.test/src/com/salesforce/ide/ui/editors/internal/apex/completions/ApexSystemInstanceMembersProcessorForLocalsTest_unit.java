@@ -10,13 +10,12 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.internal.apex.completions;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -27,11 +26,12 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 import com.salesforce.ide.apex.core.utils.ParserTestUtil;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.editors.internal.apex.completions.ApexCompletionUtils.CompletionPrefix;
+
+import apex.jorje.semantic.ast.compilation.Compilation;
+import junit.framework.TestCase;
 
 /**
  * @author nchen
@@ -71,7 +71,7 @@ public class ApexSystemInstanceMembersProcessorForLocalsTest_unit extends TestCa
 
         compilation = constructCompilation();
 
-        when(mEditor.getEditorInput().getAdapter(IResource.class)).thenReturn(null);
+        when(mEditor.getEditorInput().getAdapter(any())).thenReturn(null);
         when(mViewer.getDocument().get()).thenReturn(FILE_CONTENTS);
     }
 
