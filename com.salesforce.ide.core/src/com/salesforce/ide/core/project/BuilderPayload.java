@@ -250,14 +250,15 @@ public class BuilderPayload {
         }
 
         // go get selective components and create components from remote retrieve
-        RetrieveResultExt retrieveResultHandler =
-                serviceLocator.getPackageRetrieveService().retrieveSelective(connection, projectPackageList, true,
-                    monitor);
+        RetrieveResultExt retrieveResultHandler = serviceLocator.getPackageRetrieveService().retrieveSelective(
+        		connection,
+        		projectPackageList,
+        		true,
+                monitor);
 
         if (retrieveResultHandler == null) {
             String logDisplay = null == connection ? "" : connection.getLogDisplay();
-            logger.warn("Unable to perform conflict check - retrieve handler null for " + logDisplay
-                + " and project package " + projectPackageList);
+            logger.warn("Unable to perform conflict check - retrieve handler null for " + logDisplay + " and project package " + projectPackageList);
             return;
         }
 
@@ -273,13 +274,13 @@ public class BuilderPayload {
         }
 
         if (retrieveResultHandler.getZipFileCount() != projectPackageList.getComponentCount(false)) {
-            logger.warn("Remote retrieve result count [" + retrieveResultHandler.getZipFileCount()
-                + "] does not equal request count [" + projectPackageList.getComponentCount(false) + "].");
+            logger.warn("Remote retrieve result count [" + retrieveResultHandler.getZipFileCount() + "] does not equal request count [" + projectPackageList.getComponentCount(false) + "].");
         }
 
-        ProjectPackageList remoteProjectPackageList =
-                factoryLocator.getProjectPackageFactory().getProjectPackageListInstance(project,
-                    retrieveResultHandler.getZipFile(), retrieveResultHandler.getFileMetadataHandler());
+        ProjectPackageList remoteProjectPackageList = factoryLocator.getProjectPackageFactory().getProjectPackageListInstance(
+        		project,
+                retrieveResultHandler.getZipFile(),
+                retrieveResultHandler.getFileMetadataHandler());
 
         // for each component in each package in build payload, check for conflict
         for (ProjectPackage projectPackage : projectPackageList) {
@@ -289,15 +290,21 @@ public class BuilderPayload {
                 tmpComponentList.addAll(componentList);
                 for (Iterator<Component> componentIterator = tmpComponentList.iterator(); componentIterator.hasNext();) {
                     Component component = componentIterator.next();
-                    conflictCheck(component, componentList, remoteProjectPackageList, new SubProgressMonitor(monitor,
-                        IProgressMonitor.UNKNOWN));
+                    conflictCheck(
+                    		component,
+                    		componentList,
+                    		remoteProjectPackageList,
+                    		new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN));
                 }
             }
         }
     }
 
-    private void conflictCheck(Component component, ComponentList componentList,
-            ProjectPackageList remoteProjectPackageList, IProgressMonitor monitor) {
+    private void conflictCheck(
+    		Component component,
+    		ComponentList componentList,
+            ProjectPackageList remoteProjectPackageList,
+            IProgressMonitor monitor) {
         // skip package.xml
         if (component.isPackageManifest()) {
             if (logger.isDebugEnabled()) {

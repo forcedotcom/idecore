@@ -795,8 +795,7 @@ public class ProjectPackage {
                     }
                     continue;
                 }
-                Component otherComponent =
-                        other.getComponentList().getComponentByFilePath(component.getMetadataFilePath());
+                Component otherComponent = other.getComponentList().getComponentByFilePath(component.getMetadataFilePath());
                 if (component.hasRemoteChanged(otherComponent, monitor)) {
                     return false;
                 }
@@ -857,18 +856,39 @@ public class ProjectPackage {
 
     @Override
     public String toString() {
-        final String TAB = ", ";
+        final String SEP = ", ";
         StringBuffer retValue = new StringBuffer();
-        retValue.append("ProjectPackage ( ").append(super.toString()).append(TAB).append("name = ").append(this.name)
-                .append(TAB).append("installed = ").append(this.isInstalled()).append(TAB).append("id = ").append(
-                    this.id).append(TAB).append("orgId = ").append(this.orgId).append(TAB).append("description = ")
-                .append(this.description).append(TAB).append("managed = ").append(this.managed).append(TAB).append(
-                    "version name = ").append(this.versionName).append(TAB);
+        retValue
+        	.append("ProjectPackage ( ")
+        	.append(super.toString())
+        	.append(SEP)
+        	.append("name = ")
+        	.append(this.name)
+            .append(SEP)
+            .append("installed = ")
+            .append(this.isInstalled())
+            .append(SEP)
+            .append("id = ")
+            .append(this.id)
+            .append(SEP)
+            .append("orgId = ")
+            .append(this.orgId)
+            .append(SEP)
+            .append("description = ")
+            .append(this.description)
+            .append(SEP)
+            .append("managed = ")
+            .append(this.managed)
+            .append(SEP)
+            .append("version name = ")
+            .append(this.versionName)
+            .append(SEP);
 
         if (Utils.isNotEmpty(componentList)) {
-            retValue.append("\n");
-            retValue.append("  ");
-            retValue.append(componentList.toString());
+            retValue
+            	.append("\n")
+            	.append("  ")
+            	.append(componentList.toString());
         } else {
             retValue.append(" no components");
         }
