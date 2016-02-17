@@ -192,17 +192,14 @@ public abstract class ActionController {
                     logger.warn("Unable to perform sync check", ForceExceptionUtils.getRootCause(e));
                     DialogUtils.getInstance().cancelMessage(
                         UIMessages.getString("Deployment.SyncCheckError.title"),
-                        UIMessages
-                        .getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils
-                                .getStrippedRootCauseMessage(cause) }), MessageDialog.WARNING);
+                        UIMessages.getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
+                        MessageDialog.WARNING);
                 } else {
                     logger.warn("Unable to perform sync check: " + ForceExceptionUtils.getRootCauseMessage(e));
                     DialogUtils.getInstance().continueMessage(
                         UIMessages.getString("Deployment.SyncCheckError.title"),
-                        UIMessages.getString("Deployment.SyncCheckError.message",
-                            new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
-                            MessageDialog.WARNING);
-
+                        UIMessages.getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
+                        MessageDialog.WARNING);
                 }
             }
 
