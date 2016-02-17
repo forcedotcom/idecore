@@ -32,7 +32,9 @@ public interface Constants {
     String PREV_IDE_BUNDLE_NAME = "com.salesforce.toolkit";
     String BUNDLE_ATTRIBUTE_NAME = "Bundle-Name";
     String BUNDLE_ATTRIBUTE_VERSION = "Bundle-Version";
-
+    String FORCE_PLUGIN_CONTEXT_ID = FORCE_PLUGIN_PREFIX + ".context";
+    String FORCE_PLUGIN_PERSPECTIVE = FORCE_PLUGIN_PREFIX + ".perspective";
+    
     // B E A N S
     String SERVICE_LOCATOR_BEAN = "serviceLocator";
     String FACTORY_LOCATOR_BEAN = "factoryLocator";

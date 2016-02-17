@@ -1091,6 +1091,7 @@ public class RunTestsView extends BaseViewPart {
             IMarker marker = location.getFile().createMarker(IMarker.TEXT);
             marker.setAttributes(map);
             IDE.openEditor(getSite().getWorkbenchWindow().getActivePage(), marker);
+            marker.delete();
         } catch (Exception e) {
         	logger.error("Unable to highlight line", e);
             throwErrorMsg(Messages.View_ErrorOpenSourceTitle, Messages.View_ErrorOpenSourceSolution);

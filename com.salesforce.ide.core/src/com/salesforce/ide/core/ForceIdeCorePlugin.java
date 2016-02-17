@@ -21,10 +21,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.salesforce.ide.core.internal.ForceIdePerspectiveListener;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.preferences.PreferenceManager;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -118,6 +120,12 @@ public class ForceIdeCorePlugin extends AbstractUIPlugin {
         initialLogger();
         initApplicationContext();
         initPreferences();
+        IWorkbench workbench = getDefault().getWorkbench();
+        if (workbench != null) {
+        	if (workbench.getWorkbenchWindowCount() == 1) {
+        		workbench.getWorkbenchWindows()[0].addPerspectiveListener(new ForceIdePerspectiveListener());
+        	}
+        }
 
         // project delete preparation
         projectDeletePreparator = new ProjectDeletePreparator();

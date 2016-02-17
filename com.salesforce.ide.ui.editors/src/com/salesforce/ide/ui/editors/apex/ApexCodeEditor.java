@@ -339,7 +339,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         apexSourceViewerConfiguration.init(project);
         setSourceViewerConfiguration(apexSourceViewerConfiguration);
     }
-
+    
     /**
      * Creates and returns the preference store for this Java editor with the given input.
      * 

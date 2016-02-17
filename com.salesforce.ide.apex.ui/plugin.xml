@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.ui.contexts">
+		<context id="com.salesforce.ide.context"
+			name="Force.com Context"
+			parentId="org.eclipse.ui.contexts.window"/>
+	</extension>
+	<extension point="org.eclipse.ui.bindings">
+    	<key sequence="M1+M2+T"
+         	commandId="com.salesforce.ide.apex.ui.command.openType"
+         	contextId="com.salesforce.ide.context"
+         	schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+ 	</extension>
+    <extension point="org.eclipse.ui.commands">
+        <category id="com.salesforce.ide.apex.ui.commands.category" name="Force.com"/>
+		<command categoryId="com.salesforce.ide.apex.ui.commands.category" 
+          	description="Open Apex Type" 
+          	id="com.salesforce.ide.apex.ui.command.openType" 
+          	name="Open Apex Type"/>
+    </extension>
+    <extension point="org.eclipse.ui.handlers">
+		<handler class="com.salesforce.ide.apex.handlers.OpenTypeHandler" 
+			commandId="com.salesforce.ide.apex.ui.command.openType"/>
+    </extension>
+</plugin>
