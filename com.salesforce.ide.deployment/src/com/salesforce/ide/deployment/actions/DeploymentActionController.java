@@ -36,8 +36,7 @@ public class DeploymentActionController extends ActionController {
             return false;
         }
 
-        // proactively sync check against org to avoid overwriting updated content; false to not cancel on sync error
-        return syncCheck(false);
+        return true;
     }
 
     @Override
