@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEventHandler;
@@ -28,7 +29,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.salesforce.ide.api.metadata.types.MetadataExt;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -958,8 +958,7 @@ public class Component extends ComponentResource {
         return hasRemoteChanged(anotherComponent, true, monitor);
     }
 
-    public boolean hasRemoteChanged(Component anotherComponent, boolean includeIdCheck, IProgressMonitor monitor)
-            throws InterruptedException {
+    public boolean hasRemoteChanged(Component anotherComponent, boolean includeIdCheck, IProgressMonitor monitor) throws InterruptedException {
         monitorCheck(monitor);
         if (equals(anotherComponent, includeIdCheck)) {
             return hasChanged(anotherComponent, getRemoteChangedPredicates());
@@ -968,24 +967,9 @@ public class Component extends ComponentResource {
         return true;
     }
 
-    private final Predicate<Component> somethingChangedPredicate = new Predicate<Component>() {
-        @Override
-        public boolean apply(Component remoteComponent) {
-            return getBodyChecksum() != remoteComponent.getBodyChecksum();
-        }
-    };
-    private final Predicate<Component> remoteChangedPredicate = new Predicate<Component>() {
-        @Override
-        public boolean apply(Component remoteComponent) {
-            return getOriginalBodyChecksum() != remoteComponent.getBodyChecksum();
-        }
-    };
-    private final Predicate<Component> localChangedPredicate = new Predicate<Component>() {
-        @Override
-        public boolean apply(Component remoteComponent) {
-            return getBodyChecksum() != getOriginalBodyChecksum();
-        }
-    };
+    private final Predicate<Component> somethingChangedPredicate = remoteComponent -> getBodyChecksum() != remoteComponent.getBodyChecksum();
+    private final Predicate<Component> remoteChangedPredicate = remoteComponent -> getOriginalBodyChecksum() != remoteComponent.getBodyChecksum();
+    private final Predicate<Component> localChangedPredicate = remoteComponent -> getBodyChecksum() != getOriginalBodyChecksum();
 
     public List<Predicate<Component>> getRemoteChangedPredicates() {
         return Lists.newArrayList(somethingChangedPredicate, remoteChangedPredicate);
@@ -995,16 +979,12 @@ public class Component extends ComponentResource {
         return Lists.newArrayList(somethingChangedPredicate, localChangedPredicate);
     }
 
-    /**
-     * @return
-     */
     private static boolean hasChanged(Component remoteComponent, List<Predicate<Component>> predicates) {
         for (Predicate<Component> predicate : predicates) {
-            if (!predicate.apply(remoteComponent)) {
+            if (!predicate.test(remoteComponent)) {
                 return false;
             }
         }
-
         return true;
     }
 

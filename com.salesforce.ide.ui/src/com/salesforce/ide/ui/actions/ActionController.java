@@ -24,6 +24,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -191,17 +192,14 @@ public abstract class ActionController {
                     logger.warn("Unable to perform sync check", ForceExceptionUtils.getRootCause(e));
                     DialogUtils.getInstance().cancelMessage(
                         UIMessages.getString("Deployment.SyncCheckError.title"),
-                        UIMessages
-                        .getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils
-                                .getStrippedRootCauseMessage(cause) }), MessageDialog.WARNING);
+                        UIMessages.getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
+                        MessageDialog.WARNING);
                 } else {
                     logger.warn("Unable to perform sync check: " + ForceExceptionUtils.getRootCauseMessage(e));
                     DialogUtils.getInstance().continueMessage(
                         UIMessages.getString("Deployment.SyncCheckError.title"),
-                        UIMessages.getString("Deployment.SyncCheckError.message",
-                            new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
-                            MessageDialog.WARNING);
-
+                        UIMessages.getString("Deployment.SyncCheckError.message", new String[] { ForceExceptionUtils.getStrippedRootCauseMessage(cause) }),
+                        MessageDialog.WARNING);
                 }
             }
 
@@ -217,7 +215,7 @@ public abstract class ActionController {
         if (!isInSync) {
             boolean openSyncAction = openOutOfSyncMsgBox();
             if (openSyncAction) {
-                openSyncPerspective().start();
+            	Display.getDefault().asyncExec(() -> SynchronizeHandler.execute(PlatformUI.getWorkbench(), new StructuredSelection(project)));
                 if (logger.isInfoEnabled()) {
                     logger.info("Canceling save to server and opening sync process");
                 }
@@ -239,8 +237,9 @@ public abstract class ActionController {
                     boolean tmpInSync = false;
                     for (IResource resource : getSelectedResources()) {
                         ProjectService projectService = ContainerDelegate.getInstance().getServiceLocator().getProjectService();
-                        tmpInSync = projectService.isResourceInSync(resource,
-                            new SubProgressMonitor(monitor, 4));
+                        tmpInSync = projectService.isResourceInSync(
+                        		resource,
+                                new SubProgressMonitor(monitor, 4));
                         if (!tmpInSync) {
                             isInSync = false;
                         }
@@ -258,15 +257,6 @@ public abstract class ActionController {
         return Utils.openQuestion("Project Not in Sync",
             "Project is not synchronized with the associated Salesforce organization.\n\n"
                     + "Do you want to cancel deployment and open Synchronize?");
-    }
-
-    protected Thread openSyncPerspective() {
-        return new Thread() {
-            @Override
-            public void run() {
-                SynchronizeHandler.execute(PlatformUI.getWorkbench(), new StructuredSelection(project));
-            }
-        };
     }
 
     //   P R O G R E S S   C H E C K S

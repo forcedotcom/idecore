@@ -2564,14 +2564,12 @@ public class ProjectService extends BaseService {
         try {
             component = getComponentFactory().getComponentFromFile(file);
         } catch (FactoryException e) {
-            logger.warn("Unable to check in sync for file '" + file.getName()
-                    + "' - unable to create component from file");
+            logger.warn("Unable to check in sync for file '" + file.getName() + "' - unable to create component from file");
             return true;
         }
 
         if (component.isPackageManifest()) {
             logger.warn("Component is a package manifest - skipping as sync file resource");
-            // REVIEWME: what if the user wants to sync a package manifest?
             return true;
         }
 
@@ -2580,8 +2578,7 @@ public class ProjectService extends BaseService {
         localProjectPackageList.addComponent(component, true);
 
         monitorWorkCheck(monitor, "Retrieving remote contents...");
-        RetrieveResultExt retrieveResultExt =
-                getPackageRetrieveService().retrieveSelective(localProjectPackageList, true, monitor);
+        RetrieveResultExt retrieveResultExt = getPackageRetrieveService().retrieveSelective(localProjectPackageList, true, monitor);
 
         if (retrieveResultExt == null) {
             logger.warn("Unable to check in sync for file '" + file.getName() + "' - retrieve result is null");
@@ -2591,21 +2588,22 @@ public class ProjectService extends BaseService {
         return evaluateLocalAndRemote(localProjectPackageList, retrieveResultExt, monitor);
     }
 
-    private boolean evaluateLocalAndRemote(ProjectPackageList localProjectPackageList,
-            RetrieveResultExt retrieveResultExt, IProgressMonitor monitor) throws InterruptedException, IOException {
+    private boolean evaluateLocalAndRemote(
+    		ProjectPackageList localProjectPackageList,
+            RetrieveResultExt retrieveResultExt,
+            IProgressMonitor monitor) throws InterruptedException, IOException {
 
         // get remote package list to evaluate
-        ProjectPackageList remoteProjectPackageList = retrieveResultExt.getProjectPackageList();
+        ProjectPackageList remoteProjectPackageList = factoryLocator.getProjectPackageFactory().getProjectPackageListInstance(
+        		localProjectPackageList.getProject(),
+                retrieveResultExt.getZipFile(),
+                retrieveResultExt.getFileMetadataHandler());
 
-        monitorCheckSubTask(monitor, Messages.getString("Components.Generating"));
-        remoteProjectPackageList.generateComponents(retrieveResultExt.getZipFile(),
-            retrieveResultExt.getFileMetadataHandler(), monitor);
         monitorWork(monitor);
-
         monitorCheck(monitor);
         // if either local or remote are empty, assume project is out-of-sync
         if ((localProjectPackageList.isEmpty() && remoteProjectPackageList.isNotEmpty())
-                || (localProjectPackageList.isNotEmpty() && remoteProjectPackageList.isEmpty())) {
+             || (localProjectPackageList.isNotEmpty() && remoteProjectPackageList.isEmpty())) {
             return false;
         }
 
@@ -2615,17 +2613,14 @@ public class ProjectService extends BaseService {
             monitorCheck(monitor);
             // local package does not exist remotely, assume project is out-of-sync
             if (!remoteProjectPackageList.hasPackage(localProjectPackage.getName())) {
-                logger.warn("Project package '" + localProjectPackage.getName()
-                        + "' does not exist remotely - assuming project is out of sync");
+                logger.warn("Project package '" + localProjectPackage.getName() + "' does not exist remotely - assuming project is out of sync");
                 return false;
             }
 
             // deep equal check on same-named project package
-            ProjectPackage remoteProjectPackage =
-                    remoteProjectPackageList.getProjectPackage(localProjectPackage.getName());
+            ProjectPackage remoteProjectPackage = remoteProjectPackageList.getProjectPackage(localProjectPackage.getName());
             if (!localProjectPackage.hasChanged(remoteProjectPackage)) {
-                logger.warn("Project package '" + localProjectPackage.getName()
-                        + "' does not jive with remote package - assuming project is out of sync");
+                logger.warn("Project package '" + localProjectPackage.getName() + "' does not jive with remote package - assuming project is out of sync");
                 return false;
             }
             monitorCheck(monitor);
