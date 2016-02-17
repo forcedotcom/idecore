@@ -166,18 +166,6 @@ public class UIUtils {
         });
     }
 
-    public static void removePerspectiveListener(final PerspectiveAdapter perspectivListener) {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                if (window != null) {
-                    window.removePerspectiveListener(perspectivListener);
-                }
-            }
-        });
-    }
-    
     public static Object[] getStylizedSummary(List<String> summaries) {
         StringBuffer strBuff = new StringBuffer();
         StyleRange[] ranges = new StyleRange[summaries.size()];

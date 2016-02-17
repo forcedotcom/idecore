@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.core.internal;
+package com.salesforce.ide.ui.perspective;
 
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbench;

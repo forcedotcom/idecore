@@ -30,6 +30,8 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.MessageDialogRunnable;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
+import com.salesforce.ide.ui.internal.utils.UIUtils;
+import com.salesforce.ide.ui.perspective.ForceIdePerspectiveListener;
 
 /**
  * Forces initialization of ForceIdeUIPlugin so that component wizards are dynamically created.
@@ -94,6 +96,7 @@ public class ForceStartup implements IStartup {
                 }
             }
         });
+        UIUtils.addPerspectiveListener(new ForceIdePerspectiveListener());
 
         addPackageManifestChangeListener();
     }
