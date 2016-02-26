@@ -72,7 +72,7 @@ public class ForceIdePerspectiveListener extends PerspectiveAdapter {
 		}
 	}
 
-	private void activateForceContext() {
+	public void activateForceContext() {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IContextService service = workbench.getService(IContextService.class);
 		if (!service.getActiveContextIds().contains(Constants.FORCE_PLUGIN_CONTEXT_ID)) {
@@ -80,7 +80,7 @@ public class ForceIdePerspectiveListener extends PerspectiveAdapter {
 		}
 	}
 
-	private void deactivateForceContext() {
+	public void deactivateForceContext() {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IContextService service = workbench.getService(IContextService.class);
 		if (service.getActiveContextIds().contains(Constants.FORCE_PLUGIN_CONTEXT_ID)) {

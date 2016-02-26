@@ -13,7 +13,6 @@ package com.salesforce.ide.apex.handlers;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -21,8 +20,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
@@ -31,7 +28,6 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.apex.core.util.ApexVisitorUtil;
 import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
@@ -51,7 +47,7 @@ import com.salesforce.ide.ui.handlers.BaseHandler;
 public class OpenTypeHandler extends BaseHandler {
 
     private static final Logger logger = Logger.getLogger(OpenTypeHandler.class);
-	
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
         final List<IProject> projects = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProjects();
@@ -62,9 +58,8 @@ public class OpenTypeHandler extends BaseHandler {
 	}
 	
 	private void openTypeDialog(Shell shell, List<IProject> projects) {
-		List<OpenTypeClassHolder> resources = Lists.newArrayList();
+		Map<String, OpenTypeClassHolder> resources = Maps.newHashMap();
 		for (IProject project : projects) {
-
 			List<IResource> sources = ApexSourceUtils.INSTANCE.findSourcesInProject(project);
 			List<IResource> typeRef = ApexSourceUtils.INSTANCE.filterSourcesByClassOrTrigger(sources);
 			for (IResource resource : typeRef) {
@@ -74,7 +69,7 @@ public class OpenTypeHandler extends BaseHandler {
 				OpenTypeClassHolder holder = null;
 				for (String className : mapping.keySet()) {
 					holder = new OpenTypeClassHolder(resource, project.getName(), className, mapping.get(className));
-					resources.add(holder);
+					resources.put(resource.getFullPath().toString(), holder);
 				}
 			}
 		}
@@ -100,43 +95,21 @@ public class OpenTypeHandler extends BaseHandler {
             logger.warn("Unable to update open a selected apex resource: " + logMessage);		
 		}
 	}
-
-	private OpenTypeClassHolder[] getType(Shell shell, List<OpenTypeClassHolder> resources) {
-		ILabelProvider listLabelProvider = new LabelProvider() {
-			@Override 
-			public String getText(Object element) {
-				if (element != null && element instanceof OpenTypeClassHolder) {
-					OpenTypeClassHolder resource = (OpenTypeClassHolder) element;
-					return resource.displayName;
-				}
-				return null;
-			}
-		};
-		
-		ILabelProvider detailsLabelProvider = new LabelProvider() {
-			@Override 
-			public String getText(Object element) {
-				if (element != null && element instanceof OpenTypeClassHolder) {
-					OpenTypeClassHolder resource = (OpenTypeClassHolder) element;
-					return resource.projectName;
-				}
-				return null;
-			}
-		};
-
-		FilteredItemsSelectionDialog filteredDialog = new FilteredApexResourcesSelectionDialog(shell, true, resources, 
-				listLabelProvider, detailsLabelProvider);
+	
+	private OpenTypeClassHolder[] getType(Shell shell, Map<String, OpenTypeClassHolder> resources) {
+		FilteredItemsSelectionDialog filteredDialog = new FilteredApexResourcesSelectionDialog(shell, true, resources);
 		filteredDialog.setTitle(Messages.OpenTypeView_View_Title);
 		filteredDialog.setMessage(Messages.OpenTypeView_View_Message);
+		filteredDialog.setHelpAvailable(false);
 		if (filteredDialog.open() == Window.OK) {
 			Object[] selected = filteredDialog.getResult();
 			if (selected.length > 0) {
 				return Arrays.copyOf(selected, selected.length, OpenTypeClassHolder[].class);
 			}
-		};
+		}
 		return null;
 	}
-	
+
 	public static class OpenTypeClassHolder {
 		public final IResource resource;
 		public final String projectName;
@@ -153,9 +126,40 @@ public class OpenTypeHandler extends BaseHandler {
 		@Override
 		public String toString() {
 			return displayName;
-			
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((displayName == null) ? 0 : displayName.hashCode());
+			result = prime * result + line;
+			result = prime * result + ((projectName == null) ? 0 : projectName.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			OpenTypeClassHolder other = (OpenTypeClassHolder) obj;
+			if (displayName == null) {
+				if (other.displayName != null)
+					return false;
+			} else if (!displayName.equals(other.displayName))
+				return false;
+			if (line != other.line)
+				return false;
+			if (projectName == null) {
+				if (other.projectName != null)
+					return false;
+			} else if (!projectName.equals(other.projectName))
+				return false;
+			return true;
 		}
 	}
-	
-
 }

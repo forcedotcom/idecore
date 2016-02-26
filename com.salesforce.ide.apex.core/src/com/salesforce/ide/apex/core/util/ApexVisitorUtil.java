@@ -51,6 +51,18 @@ public class ApexVisitorUtil {
 		return ApexModelManager.INSTANCE.getCompilation(file);
 	}
 
+	public SymbolScope buildSymbolScope(SourceFile virtualSourceFile) {
+		ApexCompiler compiler = ApexCompiler.builder()
+				.setInput(new CompilationInput(
+						Collections.singleton(virtualSourceFile),
+						EmptySymbolProvider.get(),
+						null,
+						null,
+						null))
+				.build();
+        return new SymbolScope(new StandardSymbolResolver(compiler), new Errors());
+    }
+	
 	public SymbolScope buildSymbolScope(IResource resource) {
 		IFile file = (IFile) resource; 
 		String body = "";
@@ -59,10 +71,10 @@ public class ApexVisitorUtil {
 			body = CharStreams.toString(new InputStreamReader(file.getContents()));
 		} catch (CoreException | IOException e) {}
 
-		SourceFile virtualSourceFile = SourceFile.builder().setBody(body).setNamespace(Namespaces.EMPTY).build();
-		ApexCompiler compiler = ApexCompiler.builder().setInput(new CompilationInput(Collections.singleton(virtualSourceFile), 
-				EmptySymbolProvider.get(), null, null, null)).build();
-		SymbolScope scope = new SymbolScope(new StandardSymbolResolver(compiler), new Errors());
-		return scope;
+		SourceFile virtualSourceFile = SourceFile.builder()
+				.setBody(body)
+				.setNamespace(Namespaces.EMPTY)
+				.build();
+		return buildSymbolScope(virtualSourceFile);
 	}
 }

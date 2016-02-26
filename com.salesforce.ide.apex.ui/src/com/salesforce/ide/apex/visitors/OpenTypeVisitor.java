@@ -20,6 +20,7 @@ import apex.jorje.data.Loc.SyntheticLoc;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
+import apex.jorje.semantic.ast.compilation.UserInterface;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.ast.visitor.SymbolScope;
@@ -50,7 +51,13 @@ public class OpenTypeVisitor extends AstVisitor<SymbolScope> {
 			@Override
 			public void _case(RealLoc x) {
 				String apexName = node.getDefiningType().getApexName();
-				numberLineMapping.put(apexName, x.line);
+				int index = apexName.lastIndexOf('.'); 
+				if (index == -1) {
+					numberLineMapping.put(apexName, x.line);
+				} else {
+					apexName = apexName.substring(index+1, apexName.length());
+					numberLineMapping.put(apexName, x.line);
+				}
 			}
 		});
 	}
@@ -62,6 +69,16 @@ public class OpenTypeVisitor extends AstVisitor<SymbolScope> {
 	
 	@Override
 	public void visitEnd(UserClass node, SymbolScope scope) {
+		addNumberLineMappingEntryIfPossible(node);
+	}
+	
+	@Override
+	public boolean visit(UserInterface node, SymbolScope scope) {
+		return true;
+	}
+	
+	@Override
+	public void visitEnd(UserInterface node, SymbolScope scope) {
 		addNumberLineMappingEntryIfPossible(node);
 	}
 	
