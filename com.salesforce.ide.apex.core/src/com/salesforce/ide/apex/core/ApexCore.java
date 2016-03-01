@@ -10,6 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.core;
 
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -27,9 +28,9 @@ import org.osgi.framework.BundleContext;
  * @author nchen
  * 
  */
-public class ApexCore implements BundleActivator {
-
+public class ApexCore extends Plugin {
     private static BundleContext context;
+    private static ApexCore plugin;
 
     static BundleContext getContext() {
         return context;
@@ -41,7 +42,9 @@ public class ApexCore implements BundleActivator {
      */
     @Override
     public void start(BundleContext bundleContext) throws Exception {
+    	super.start(bundleContext);
         ApexCore.context = bundleContext;
+        ApexCore.plugin = this;
     }
 
     /*
@@ -51,6 +54,12 @@ public class ApexCore implements BundleActivator {
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
         ApexCore.context = null;
+        plugin = null;
+        super.stop(bundleContext);
+    }
+    
+    public static ApexCore getDefault() {
+    	return plugin;
     }
 
 }

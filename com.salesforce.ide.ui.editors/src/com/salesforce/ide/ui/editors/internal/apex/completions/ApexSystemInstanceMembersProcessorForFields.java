@@ -197,7 +197,7 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
 
             @Override
             public String getReplacementString() {
-                return fieldInfo.getByteCodeName();
+                return fieldInfo.getBytecodeName();
             }
 
             @Override
@@ -224,7 +224,7 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
         public boolean visit(Field node, SymbolScope scope) {
             node.resolve(scope.getSymbols());
             FieldInfo fieldInfo = node.getFieldInfo();
-            fields.put(fieldInfo.getByteCodeName().toLowerCase(), new FieldInfoWrapper(fieldInfo));
+            fields.put(fieldInfo.getBytecodeName().toLowerCase(), new FieldInfoWrapper(fieldInfo));
             return true;
         }
     }

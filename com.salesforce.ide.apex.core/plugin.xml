@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.core.resources.builders"
+     id="com.salesforce.ide.apex.core.builder.jorje"
+     name="Jorje Builder">
+      <builder>
+        <run class="com.salesforce.ide.apex.internal.core.builder.JorjeBuilder">
+        </run>
+      </builder>
+   </extension>
+</plugin>
