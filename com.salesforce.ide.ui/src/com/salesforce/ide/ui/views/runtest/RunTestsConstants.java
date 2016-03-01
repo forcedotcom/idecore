@@ -16,7 +16,10 @@ import org.eclipse.swt.graphics.Image;
 
 import com.salesforce.ide.ui.internal.ForceImages;
 
-public class RunTestsConstants {
+public final class RunTestsConstants {
+	
+	private RunTestsConstants() {
+	}
 
 	public static final String TOOLING_ENDPOINT = "/services/data/";
 	
@@ -52,10 +55,12 @@ public class RunTestsConstants {
     public static final String TABLE_CODE_COV_COL_DIR = "OneColumnDirection";
     
     // Tooling API queries
-    public static final String QUERY_TESTRESULT = "SELECT Id, ApexClassId, ApexClass.Name, ApexLogId, AsyncApexJobId, Message, "
-			+ "MethodName, Outcome, QueueItemId, StackTrace, TestTimestamp "
+    public static final String QUERY_TESTRESULT = "SELECT Id, ApexClassId, ApexClass.Name, ApexLogId, AsyncApexJobId,"
+    		+ "Message, MethodName, Outcome, QueueItemId, StackTrace, TestTimestamp "
 			+ "FROM ApexTestResult WHERE AsyncApexJobId = '%s' ORDER BY ApexClass.Name, MethodName ASC";
     public static final String QUERY_APEX_LOG = "SELECT Id, Application, DurationMilliseconds, Location, LogLength, LogUserId, Operation, Request, StartTime, Status FROM ApexLog WHERE Id = '%s'";
+    public static final String QUERY_APEX_TEST_QUEUE_ITEM_PROCESSED_COUNT = "SELECT COUNT(Id) total FROM ApexTestQueueItem WHERE Status IN ('Completed', 'Failed', 'Aborted') AND ParentJobId = '%s'";
+    public static final String QUERY_APEX_TEST_QUEUE_ITEM_COUNT = "SELECT COUNT(Id) total FROM ApexTestQueueItem WHERE ParentJobId = '%s'";
     public static final String QUERY_APEX_TEST_QUEUE_ITEM = "SELECT Id, Status FROM ApexTestQueueItem WHERE ParentJobId = '%s'";
     public static final String QUERY_APEX_CODE_COVERAGE_AGG = "SELECT ApexClassOrTriggerId, ApexClassOrTrigger.Name, "
 			+ "NumLinesCovered, NumLinesUncovered, Coverage FROM ApexCodeCoverageAggregate "

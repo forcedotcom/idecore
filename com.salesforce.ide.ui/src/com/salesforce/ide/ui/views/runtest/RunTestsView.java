@@ -82,6 +82,7 @@ import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.views.BaseViewPart;
+import com.sforce.soap.tooling.AggregateResult;
 import com.sforce.soap.tooling.ApexLog;
 import com.sforce.soap.tooling.ApexLogLevel;
 import com.sforce.soap.tooling.ApexOrgWideCoverage;
@@ -102,7 +103,19 @@ import com.sforce.soap.tooling.TestSuiteMembership;
  *
  */
 public class RunTestsView extends BaseViewPart {
-    private static final Logger logger = Logger.getLogger(RunTestsView.class);
+    private static final class ApexTestResultComparator implements Comparator<ApexTestResult> {
+		@Override
+		public int compare(ApexTestResult tr1, ApexTestResult tr2) {
+			int compareDir = tr1.getApexClass().getName().compareTo(tr2.getApexClass().getName());
+			if (compareDir == 0) {
+				return tr1.getMethodName().compareTo(tr2.getMethodName());
+			}
+			
+			return compareDir;
+		}
+	}
+
+	private static final Logger logger = Logger.getLogger(RunTestsView.class);
     
     private static RunTestsView INSTANCE = null;
     
@@ -226,7 +239,7 @@ public class RunTestsView extends BaseViewPart {
             	
             	if (Utils.isNotEmpty(enqueueResult) && isAsync) {
             		// If it's an async run, the enqueue result is an async test run ID, so we poll for test results
-            		getAsyncTestResults(enqueueResult, totalTestMethods, testResources, monitor);
+            		getAsyncTestResults(enqueueResult, testResources, monitor);
                 	// Display code coverage from ApexCodeCoverageAggregate & ApexOrgWideCoverage
                 	displayCodeCoverage();
             	} else if (Utils.isNotEmpty(enqueueResult) && !isAsync) {
@@ -471,8 +484,8 @@ public class RunTestsView extends BaseViewPart {
 	 * @return List of ApexTestResult
 	 */
     @VisibleForTesting
-	public void getAsyncTestResults(String testRunId, final int totalTestMethods, 
-			final Map<IResource, List<String>> testResources, IProgressMonitor monitor) {
+	public void getAsyncTestResults(String testRunId, final Map<IResource, List<String>> testResources, 
+			IProgressMonitor monitor) {
 		if (Utils.isEmpty(forceProject) || Utils.isEmpty(testRunId)) return;
 		testRunId = testRunId.replace("\"", "");
 		
@@ -495,40 +508,18 @@ public class RunTestsView extends BaseViewPart {
 			// Poll for remaining test cases to be executed
 			// No timeout here because we don't know how long a test run can be.
 			// If user wants to exit, then they can cancel the launch config.
-			int totalTestDone = 0;
-			while (totalTestDone < totalTestMethods) {
-				List<ApexTestResult> testResults = Lists.newLinkedList();
-				// Query for test results (one ApexTestResult object per test method)
-				QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId));
-				if (qr != null && qr.getSize() > 0) {
-					// Even though the query specifies the sort order, getRecords() messages up the order.
-					// Need to sort before displaying the results
-					for (SObject sObj : qr.getRecords()) {
-						ApexTestResult testResult = (ApexTestResult) sObj;
-						testResults.add(testResult);
-					}
-				}
+			Integer totalItems = queryTotalQueueItems(testRunId);
+			
+			int processedItems = 0;
+			while (processedItems < totalItems) {
+				List<ApexTestResult> testResults = queryTestResults(testRunId);
+				processedItems = queryProcessedQueueItem(testRunId);
 				
 				// Update progress bar and results view if new results came in
-				if (totalTestDone != testResults.size()) {
-					totalTestDone = testResults.size();
-					updateProgress(0, totalTestMethods, totalTestDone);
-					
-					Collections.sort(testResults, new Comparator<ApexTestResult>() {
-						@Override
-						public int compare(ApexTestResult tr1, ApexTestResult tr2) {
-							int compareDir = tr1.getApexClass().getName().compareTo(tr2.getApexClass().getName());
-							if (compareDir == 0) {
-								return tr1.getMethodName().compareTo(tr2.getMethodName());
-							}
-							
-							return compareDir;
-						}
-						
-					});
-			    	processAsyncTestResults(testResources, testResults,
-			    			totalTestMethods == totalTestDone);
-				}
+				updateProgress(0, totalItems, processedItems);
+
+				Collections.sort(testResults, new ApexTestResultComparator());
+				processAsyncTestResults(testResources, testResults, processedItems == totalItems);
 				
 				// User wants to abort so we'll tell the server to abort the test run
 				// and stop polling for test results. There may be some finished test results
@@ -539,7 +530,7 @@ public class RunTestsView extends BaseViewPart {
 				}
 				
 				// Wait according to the interval
-				int wait = getPollInterval(totalTestMethods - totalTestDone, apiRequestsRemaining);
+				int wait = getPollInterval(totalItems - processedItems, apiRequestsRemaining);
 				Thread.sleep(wait);
 			}
 		} catch (Exception e) {
@@ -547,6 +538,40 @@ public class RunTestsView extends BaseViewPart {
 			throwErrorMsg(Messages.View_ErrorGetAsyncTestResultsTitle, 
 					Messages.View_ErrorGetAsyncTestResultsSolution);
 		}
+	}
+
+	private List<ApexTestResult> queryTestResults(String testRunId) throws ForceRemoteException {
+		List<ApexTestResult> testResults = Lists.newLinkedList();
+		// Query for test results (one ApexTestResult object per test method)
+		QueryResult qr = toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId));
+		if (qr != null && qr.getSize() > 0) {
+			// Even though the query specifies the sort order, getRecords() messages up the order.
+			// Need to sort before displaying the results
+			for (SObject sObj : qr.getRecords()) {
+				ApexTestResult testResult = (ApexTestResult) sObj;
+				testResults.add(testResult);
+			}
+		}
+		return testResults;
+	}
+
+    // Number of items that have been processed (i.,e anything no longer in queue so success, failure, etc).
+	@VisibleForTesting
+	public int queryProcessedQueueItem(String testRunId) throws ForceRemoteException {
+		int processedItems;
+		QueryResult processedQuery = toolingStubExt.query(String.format(RunTestsConstants.QUERY_APEX_TEST_QUEUE_ITEM_PROCESSED_COUNT, testRunId));
+		AggregateResult processedAgg = (AggregateResult) processedQuery.getRecords()[0];
+		processedItems = (Integer) processedAgg.getField("total");
+		return processedItems;
+	}
+
+    // Number of items that have been designated for processing.
+	@VisibleForTesting
+	public Integer queryTotalQueueItems(String testRunId) throws ForceRemoteException {
+		QueryResult totalQuery = toolingStubExt.query(String.format(RunTestsConstants.QUERY_APEX_TEST_QUEUE_ITEM_COUNT, testRunId));
+		AggregateResult totalAgg = (AggregateResult) totalQuery.getRecords()[0];
+		Integer totalItems = (Integer) totalAgg.getField("total");
+		return totalItems;
 	}
 	
 	/**
@@ -585,18 +610,18 @@ public class RunTestsView extends BaseViewPart {
 	}
 	
 	/**
-	 * Get the appropriate poll interval depending on the number of tests remaining
+	 * Get the appropriate poll interval depending on the number of ApexTestQueueItems remaining
 	 * and the number of API requests remaining. The higher the number of tests remaining, the slower
 	 * we should poll. The higher the number of remaining API requests, the faster we should poll.
 	 * @return A poll interval
 	 */
     @VisibleForTesting
-	public int getPollInterval(int totalTestRemaining, float apiRequestsRemaining) {
+	public int getPollInterval(int queuedItemsRemaining, float apiRequestsRemaining) {
 		int intervalA = RunTestsConstants.POLL_SLOW, intervalB = RunTestsConstants.POLL_SLOW;
 		
-		if (totalTestRemaining <= 10) {
+		if (queuedItemsRemaining <= 2) {
 			intervalA = RunTestsConstants.POLL_FAST;
-		} else if (totalTestRemaining <= 50) {
+		} else if (queuedItemsRemaining <= 10) {
 			intervalA = RunTestsConstants.POLL_MED;
 		} else {
 			intervalA = RunTestsConstants.POLL_SLOW;
