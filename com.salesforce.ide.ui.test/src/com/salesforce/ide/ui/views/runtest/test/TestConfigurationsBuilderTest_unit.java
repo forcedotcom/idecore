@@ -46,7 +46,7 @@ public class TestConfigurationsBuilderTest_unit extends TestCase {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         testBuilder = new TestConfigurationsBuilder(sourceUtils);
-		mAllTests = Maps.newHashMap();
+		mAllTests = Maps.newLinkedHashMap();
 		IResource testClassA = mock(IResource.class);
 		when(testClassA.getPersistentProperty(QualifiedNames.QN_ID)).thenReturn("001ptestClassA");
 		when(testClassA.getName()).thenReturn("testClassA");

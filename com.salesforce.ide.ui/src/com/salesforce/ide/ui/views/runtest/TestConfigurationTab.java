@@ -11,17 +11,14 @@
 
 package com.salesforce.ide.ui.views.runtest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -46,8 +43,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.salesforce.ide.core.internal.utils.QualifiedNames;
-import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.tooling.RunTests.SuiteManager;
 import com.salesforce.ide.core.remote.tooling.RunTests.SuiteManager.MySuite;
@@ -64,7 +59,6 @@ import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder.Test;
 public class TestConfigurationTab extends RunTestsTab {
 	
 	private ProjectConfigurationTab projectTab;
-	private final TestConfigurationsBuilder testBuilder = TestConfigurationsBuilder.INSTANCE;
 	
 	@VisibleForTesting
 	public Map<IProject, TestsHolder> allTests;
@@ -501,15 +495,19 @@ public class TestConfigurationTab extends RunTestsTab {
 		validatePage();
 		return getErrorMessage() == null;
 	}
+
+	private TestConfigurationsBuilder getTestConfigurationsBuilder() {
+		return TestConfigurationsBuilder.INSTANCE;
+	}
 	
 	@VisibleForTesting
 	public TestsHolder buildTestsForProject(IProject project) {
-		return testBuilder.buildTestsForProject(project);
+		return getTestConfigurationsBuilder().buildTestsForProject(project);
     }
-	
+
 	@VisibleForTesting
 	public TestsHolder buildTestsForConfig(IProject selectedProject) {
-		return testBuilder.buildTestsForConfig(selectedProject, allTests, getTestClassName(), getTestMethodName());
+		return getTestConfigurationsBuilder().buildTestsForConfig(selectedProject, allTests, getTestClassName(), getTestMethodName());
     }
     
     /**

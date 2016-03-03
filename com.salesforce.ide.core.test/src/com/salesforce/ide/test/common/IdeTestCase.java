@@ -277,8 +277,8 @@ public class IdeTestCase extends TestCase {
         // used for pde_ui tests. see runTestPreWorker()
         // disable if jvm arg test-timeout=false set
         if (testTimeout <= 0
-                || (System.getProperty(IdeTestConstants.JVM_ARG_TIMEOUT) != null && !(new Boolean(System
-                        .getProperty(IdeTestConstants.JVM_ARG_TIMEOUT)).booleanValue()))) {
+            || (System.getProperty(IdeTestConstants.JVM_ARG_TIMEOUT) != null 
+            	&& !(new Boolean(System.getProperty(IdeTestConstants.JVM_ARG_TIMEOUT)).booleanValue()))) {
             testResult = callable.call();
         } else {
 
