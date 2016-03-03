@@ -512,8 +512,8 @@ public class RunTestsView extends BaseViewPart {
 			
 			int processedItems = 0;
 			while (processedItems < totalItems) {
-				List<ApexTestResult> testResults = queryTestResults(testRunId);
 				processedItems = queryProcessedQueueItem(testRunId);
+				List<ApexTestResult> testResults = queryTestResults(testRunId);
 				
 				// Update progress bar and results view if new results came in
 				updateProgress(0, totalItems, processedItems);
