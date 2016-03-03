@@ -11,7 +11,7 @@
     <extension point="org.eclipse.wst.xml.core.catalogContributions">
         <catalogContribution>
             <uri id="com.salesforce.ide.ui.xmlcatalog.metadata"
-                name=" http://soap.sforce.com/2006/04/metadata"
+                name="http://soap.sforce.com/2006/04/metadata"
                 uri="schema/metadata.xsd"/>
         </catalogContribution>
     </extension>
