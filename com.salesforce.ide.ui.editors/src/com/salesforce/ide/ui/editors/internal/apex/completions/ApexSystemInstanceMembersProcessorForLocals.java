@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -32,8 +31,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.salesforce.ide.apex.internal.core.ApexModelManager;
-import com.salesforce.ide.apex.internal.core.EmptySymbolProvider;
+import com.salesforce.ide.apex.internal.core.CompilerService;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanceMembersProcessorForLocals.LocalVariablesVisitor.LocalInfoWrapper;
@@ -42,7 +40,6 @@ import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescri
 
 import apex.jorje.data.Loc;
 import apex.jorje.data.Loc.RealLoc;
-import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 import apex.jorje.semantic.ast.member.Method;
@@ -57,15 +54,9 @@ import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 import apex.jorje.semantic.ast.statement.VariableDeclarationStatements;
 import apex.jorje.semantic.ast.statement.WhileLoopStatement;
+import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
-import apex.jorje.semantic.ast.visitor.SymbolScope;
-import apex.jorje.semantic.compiler.ApexCompiler;
-import apex.jorje.semantic.compiler.CompilationInput;
-import apex.jorje.semantic.compiler.Namespaces;
-import apex.jorje.semantic.compiler.SourceFile;
-import apex.jorje.semantic.exception.Errors;
 import apex.jorje.semantic.symbol.member.variable.LocalInfo;
-import apex.jorje.semantic.symbol.resolver.StandardSymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
 /**
@@ -91,7 +82,6 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         IContentAssistProcessor {
     private final ITextEditor editor;
     private LocalVariablesVisitor visitor;
-    private Compilation compilation;
 
     private static final class VariableNamePredicate implements Predicate<AbstractCompletionProposalDisplayable> {
         private final String variablePrefix;
@@ -111,16 +101,14 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
     }
 
     @VisibleForTesting
-    public ApexSystemInstanceMembersProcessorForLocals(ApexCompletionUtils utils, Completions completions,
-            ITextEditor editor, Compilation compilation) {
+    public ApexSystemInstanceMembersProcessorForLocals(
+        ApexCompletionUtils utils,
+        Completions completions,
+        ITextEditor editor
+    ) {
         this(editor);
         this.utils = utils;
         this.completions = completions;
-        this.compilation = compilation;
-    }
-
-    public Compilation getCompilationUnit(IResource resource) {
-        return compilation != null ? compilation : ApexModelManager.INSTANCE.getCompilation((IFile) resource);
     }
 
     @Override
@@ -128,7 +116,8 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
-        visitVariables(viewer);
+        IFile resource = (IFile) editor.getEditorInput().getAdapter(IFile.class);
+        visitVariables(resource);
 
         try {
             if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
@@ -203,21 +192,9 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         return ForceImages.get(ForceImages.APEX_GLOBAL_METHOD, accessorFlags_JVM, decoratedDesc);
     }
 
-    protected void visitVariables(ITextViewer viewer) {
-        IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
-        SourceFile virtualSourceFile =
-                SourceFile.builder().setBody(viewer.getDocument().get())
-                        .setNamespace(Namespaces.EMPTY).build();
-        Compilation compilation = getCompilationUnit(resource);
-        ApexCompiler compiler =
-                ApexCompiler
-                        .builder()
-                        .setInput(
-                            new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
-                                    null, null, null)).build();
-        SymbolScope scope = new SymbolScope(new StandardSymbolResolver(compiler), new Errors());
+    protected void visitVariables(IFile file) {
         visitor = new LocalVariablesVisitor();
-        compilation.traverse(visitor, scope);
+        CompilerService.INSTANCE.visitAstFromFile(file, visitor);
     }
 
     /**
@@ -227,7 +204,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
      * @author nchen
      * 
      */
-    static class LocalVariablesVisitor extends AstVisitor<SymbolScope> {
+    static class LocalVariablesVisitor extends AstVisitor<AdditionalPassScope> {
         static class LocalInfoWrapper extends AbstractCompletionProposalDisplayable {
             LocalInfo localInfo;
 
@@ -256,12 +233,12 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
 
         // To enable completions with details from classes and triggers, we tell the visitor that we want to "visit" the innards of those elements
         @Override
-        public boolean visit(UserClass node, SymbolScope scope) {
+        public boolean visit(UserClass node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(UserTrigger node, SymbolScope scope) {
+        public boolean visit(UserTrigger node, AdditionalPassScope scope) {
             return true;
         }
 
@@ -269,8 +246,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
          * There are two special methods that are "visited" even though we didn't necessarily declare them so we have to be mindful: clinit and clone.
          */
         @Override
-        public boolean visit(Method node, SymbolScope scope) {
-            node.resolve(scope.getSymbols());
+        public boolean visit(Method node, AdditionalPassScope scope) {
             node.getLoc()._switch(new Loc.SwitchBlockWithDefault() {
 
                 @Override
@@ -286,7 +262,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         }
 
         @Override
-        public void visitEnd(Method node, SymbolScope scope) {
+        public void visitEnd(Method node, AdditionalPassScope scope) {
             super.visitEnd(node, scope);
             if (currentScopeLocalsCollector != null) {
                 locals.put(currentMethodPosition, currentScopeLocalsCollector);
@@ -294,42 +270,42 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         }
 
         @Override
-        public boolean visit(BlockStatement node, SymbolScope scope) {
+        public boolean visit(BlockStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(ForEachStatement node, SymbolScope scope) {
+        public boolean visit(ForEachStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(ForLoopStatement node, SymbolScope scope) {
+        public boolean visit(ForLoopStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(IfBlockStatement node, SymbolScope scope) {
+        public boolean visit(IfBlockStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(IfElseBlockStatement node, SymbolScope scope) {
+        public boolean visit(IfElseBlockStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(RunAsBlockStatement node, SymbolScope scope) {
+        public boolean visit(RunAsBlockStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(WhileLoopStatement node, SymbolScope scope) {
+        public boolean visit(WhileLoopStatement node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(TryCatchFinallyBlockStatement node, SymbolScope scope) {
+        public boolean visit(TryCatchFinallyBlockStatement node, AdditionalPassScope scope) {
             return true;
         }
 
@@ -337,13 +313,12 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
          * This doesn't work for the parameters since FormalParameterNode doesn't produce a LocalInfo.
          */
         @Override
-        public boolean visit(Parameter node, SymbolScope scope) {
+        public boolean visit(Parameter node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(VariableDeclaration node, SymbolScope scope) {
-            node.createLocal(scope.getSymbols());
+        public boolean visit(VariableDeclaration node, AdditionalPassScope scope) {
             LocalInfo localInfo = node.getLocalInfo();
             if (localInfo != null) {
                 currentScopeLocalsCollector.add(new LocalInfoWrapper(localInfo));
@@ -352,8 +327,7 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
         }
 
         @Override
-        public boolean visit(VariableDeclarationStatements node, SymbolScope scope) {
-            node.resolveType(scope.getSymbols());
+        public boolean visit(VariableDeclarationStatements node, AdditionalPassScope scope) {
             return true;
         }
     }

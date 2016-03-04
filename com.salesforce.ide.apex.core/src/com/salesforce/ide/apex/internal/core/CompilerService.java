@@ -10,6 +10,8 @@
 *******************************************************************************/
 package com.salesforce.ide.apex.internal.core;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
@@ -19,13 +21,16 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
+import com.salesforce.ide.core.internal.utils.QualifiedNames;
 
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
@@ -35,13 +40,14 @@ import apex.jorje.semantic.compiler.CompilationInput;
 import apex.jorje.semantic.compiler.CompilerContext;
 import apex.jorje.semantic.compiler.CompilerOperation;
 import apex.jorje.semantic.compiler.CompilerStage;
+import apex.jorje.semantic.compiler.Namespace;
+import apex.jorje.semantic.compiler.Namespaces;
 import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
 import apex.jorje.semantic.compiler.sfdc.QueryValidator;
 import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
 import apex.jorje.semantic.tester.TestAccessEvaluator;
 import apex.jorje.semantic.tester.TestQueryValidators;
-import apex.jorje.semantic.tester.TestSymbolProvider;
 
 /**
  * Central point for interfacing with the compiler.
@@ -58,8 +64,24 @@ public class CompilerService {
             try {
                 body = canonicalizeString(CharStreams.toString(new InputStreamReader(resource.getContents())));
             } catch (CoreException | IOException e) {}
-            return SourceFile.builder().setBody(body).setKnownName(resource.getFullPath().toOSString()).build();
+            return SourceFile.builder()
+                .setBody(body)
+                .setKnownName(resource.getFullPath().toOSString())
+                .setNamespace(RESOURCE_NAMEPSACE.apply(resource))
+                .build();
         }};
+   
+    Function<? super IFile, ? extends Namespace> RESOURCE_NAMEPSACE = new Function<IFile, Namespace>() {
+
+        @Override
+        public Namespace apply(IFile file) {
+            try {
+                String namespace = file.getPersistentProperty(QualifiedNames.QN_NAMESPACE_PREFIX);
+                return isNullOrEmpty(namespace) ? Namespaces.EMPTY : Namespaces.create(namespace);
+            } catch (CoreException e) { }
+            return Namespaces.EMPTY;
+        }
+    };
 
     private static final Logger logger = Logger.getLogger(CompilerService.class);
     
@@ -68,11 +90,23 @@ public class CompilerService {
     private final AccessEvaluator accessEvaluator;
     private QueryValidator queryValidator;
     
+    /**
+     * Configure a compiler with the default configurations:
+     * @param symbolProvider - EmptySymbolProvider, doesn't provide any symbols that are not part of source.
+     * @param accessEvaluator - TestAccessEvaluator, doesn't provide any validation.
+     * @param queryValidator - TestQueryValidators.Noop, no validation of queries.
+     */
     CompilerService() {
         this(new EmptySymbolProvider(), new TestAccessEvaluator(), new TestQueryValidators.Noop());
     }
     
-    CompilerService(SymbolProvider symbolProvider, AccessEvaluator accessEvaluator, QueryValidator queryValidator) {
+    /**
+     * Configure a compiler with the following configurations:
+     * @param symbolProvider - a way to retrieve symbols, where symbols are names of types.
+     * @param accessEvaluator - a way to check for accesses to certain fields in types.
+     * @param queryValidator - a way to validate your queries.
+     */
+    public CompilerService(SymbolProvider symbolProvider, AccessEvaluator accessEvaluator, QueryValidator queryValidator) {
         this.symbolProvider = symbolProvider;
         this.accessEvaluator = accessEvaluator;
         this.queryValidator = queryValidator;
