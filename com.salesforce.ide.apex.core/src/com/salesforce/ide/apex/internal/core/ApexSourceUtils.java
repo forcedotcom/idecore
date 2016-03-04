@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -267,7 +268,7 @@ public class ApexSourceUtils {
      * @param projectResources
      * @return List of IResource that are only Apex classes
      */
-    public List<IResource> filterSourcesByClass(List<IResource> projectResources) {
+    public List<IResource> filterSourcesByClass(final List<IResource> projectResources) {
         return filterSourcesByType(projectResources, "ApexClass");
     }
 
@@ -277,33 +278,29 @@ public class ApexSourceUtils {
      * @param projectResources
      * @return List of IResource that are only Apex triggers
      */
-    public List<IResource> filterSourcesByTrigger(List<IResource> projectResources) {
+    public List<IResource> filterSourcesByTrigger(final List<IResource> projectResources) {
         return filterSourcesByType(projectResources, "ApexTrigger");
     }
     
     /**
-     * Filter a list of IResource for Apex classes and triggers
+     * Filter a list of IFile for Apex classes and triggers
      * 
      * @param projectResources
      * @return List of IResource that are only Apex classes and triggers
      */
-    public List<IResource> filterSourcesByClassOrTrigger(List<IResource> projectResources) {
-    	if (projectResources == null || projectResources.isEmpty())
-            return projectResources;
-
-        ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
-        Component classComponent = componentFactory.getComponentByComponentType("ApexClass");
-        String classExt = classComponent == null ? ".cls" : classComponent.getFileExtension();
-        Component trgComponent = componentFactory.getComponentByComponentType("ApexTrigger");
-        String trgExt = trgComponent == null ? ".trigger" : trgComponent.getFileExtension();
-        for (Iterator<IResource> iterator = projectResources.iterator(); iterator.hasNext();) {
-            IResource res = iterator.next();
-            if (!res.getFileExtension().equals(classExt) && !res.getFileExtension().equals(trgExt)) {
-                iterator.remove();
-            }
+    public List<IResource> filterSourcesByClassOrTrigger(final List<IResource> projectResources) {
+        if (projectResources == null) {
+            return Lists.newArrayList();
+        } else {
+            ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory(); Component classComponent = componentFactory.getComponentByComponentType("ApexClass");
+            String classExt = classComponent == null ? ".cls" : classComponent.getFileExtension();
+            Component trgComponent = componentFactory.getComponentByComponentType("ApexTrigger");
+            String trgExt = trgComponent == null ? ".trigger" : trgComponent.getFileExtension();
+            
+            return projectResources.stream()
+                .filter(r -> r.getFileExtension().equals(classExt) || r.getFileExtension().equals(trgExt))
+                .collect(Collectors.toList());
         }
-
-        return projectResources;
     }
 
     /**
@@ -313,20 +310,18 @@ public class ApexSourceUtils {
      * @param type
      * @return List of IResource that are only the wanted type
      */
-    public List<IResource> filterSourcesByType(List<IResource> projectResources, String type) {
-        if (projectResources == null || projectResources.isEmpty())
-            return projectResources;
-
-        ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
-        Component component = componentFactory.getComponentByComponentType(type);
-        for (Iterator<IResource> iterator = projectResources.iterator(); iterator.hasNext();) {
-            IResource res = iterator.next();
-            if (component != null && !res.getFileExtension().equals(component.getFileExtension())) {
-                iterator.remove();
-            }
+    public List<IResource> filterSourcesByType(final List<IResource> projectResources, final String type) {
+        if (projectResources == null) {
+            return Lists.newArrayList();
+        } else {
+            ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
+            Component component = componentFactory.getComponentByComponentType(type);
+            String extension = component.getFileExtension();
+            
+            return projectResources.stream()
+                .filter(r -> r.getFileExtension().equals(extension))
+                .collect(Collectors.toList());
         }
-
-        return projectResources;
     }
 
     /**

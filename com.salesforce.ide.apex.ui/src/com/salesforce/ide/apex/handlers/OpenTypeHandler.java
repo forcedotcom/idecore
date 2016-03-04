@@ -13,9 +13,11 @@ package com.salesforce.ide.apex.handlers;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,8 +31,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 
 import com.google.common.collect.Maps;
-import com.salesforce.ide.apex.core.util.ApexVisitorUtil;
 import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
+import com.salesforce.ide.apex.internal.core.CompilerService;
 import com.salesforce.ide.apex.ui.Messages;
 import com.salesforce.ide.apex.ui.views.FilteredApexResourcesSelectionDialog;
 import com.salesforce.ide.apex.visitors.OpenTypeVisitor;
@@ -64,7 +66,7 @@ public class OpenTypeHandler extends BaseHandler {
 			List<IResource> typeRef = ApexSourceUtils.INSTANCE.filterSourcesByClassOrTrigger(sources);
 			for (IResource resource : typeRef) {
 				OpenTypeVisitor visitor = new OpenTypeVisitor();
-				ApexVisitorUtil.INSTANCE.traverse(visitor, resource);
+			    CompilerService.INSTANCE.visitAstFromFile((IFile) resource, visitor);
 				Map<String, Integer> mapping = visitor.getNumberLineMapping();
 				OpenTypeClassHolder holder = null;
 				for (String className : mapping.keySet()) {
