@@ -37,7 +37,7 @@ public class ModelBuilder extends AstVisitor<AdditionalPassScope> {
 
 	public ModelBuilder(IProject project) {
 		GraphDatabaseService service = StandardGraphDatabaseService.INSTANCE;
-		graph = service.getOrCreate(new EclipseGraphHandleProvider(project));
+		graph = service.getOrCreateNoTx(new EclipseGraphHandleProvider(project));
 		typeInfoRepo = new TypeInfoRepository(graph);
 	}
 

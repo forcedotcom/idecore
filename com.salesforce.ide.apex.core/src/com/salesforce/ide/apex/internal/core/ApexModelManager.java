@@ -23,7 +23,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.io.CharStreams;
-import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.apex.core.exceptions.InvalidCompilationASTException;
 import com.salesforce.ide.apex.core.exceptions.InvalidCompilationUnitException;
 

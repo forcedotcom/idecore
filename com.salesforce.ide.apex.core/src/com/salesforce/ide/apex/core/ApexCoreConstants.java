@@ -15,5 +15,8 @@ package com.salesforce.ide.apex.core;
  *
  */
 public final class ApexCoreConstants {
+	private ApexCoreConstants() {
+	}
+
 	public static final String APEX_JORJE_BUILDER_ID = "com.salesforce.ide.apex.core.builder.jorje";
 }

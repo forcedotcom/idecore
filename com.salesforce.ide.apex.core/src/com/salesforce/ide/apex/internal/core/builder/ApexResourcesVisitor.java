@@ -10,8 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.internal.core.builder;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -20,23 +18,19 @@ import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import apex.jorje.semantic.compiler.SourceFile;
-
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
 import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 
 /**
- * Traverses the resources in the current project and creates {@link SourceFile} representations for the supported Apex
- * files.
+ * Traverses the resources in the current project and collects Apex files (classes and triggers).
  * 
  * @author nchen
  * 
  */
 class ApexResourcesVisitor implements IResourceProxyVisitor {
-    List<SourceFile> sources = Lists.newArrayList();
+    List<IFile> files = Lists.newArrayList();
     private final String classExtension;
     private final String triggerExtension;
     
@@ -52,18 +46,7 @@ class ApexResourcesVisitor implements IResourceProxyVisitor {
             case IResource.FILE:
                 if (proxy.getName().endsWith(classExtension) 
                 	|| proxy.getName().endsWith(triggerExtension)) {
-                    IFile file = (IFile) proxy.requestResource();
-                    String body = "";
-                    
-                    try {
-                        body = CharStreams.toString(new InputStreamReader(file.getContents()));
-                        sources.add(
-                        		SourceFile.builder()
-                        		.setBody(body)
-                        		.setKnownName(proxy.requestFullPath().toOSString())
-                        		.build());
-                    } catch (CoreException | IOException e) {}
-                    
+                    files.add((IFile) proxy.requestResource());
                 }
                 return false;
             case IResource.FOLDER:
@@ -76,7 +59,7 @@ class ApexResourcesVisitor implements IResourceProxyVisitor {
         }
     }
     
-    public List<SourceFile> getSources() {
-        return sources;
+    public List<IFile> getFiles() {
+        return files;
     }
 }

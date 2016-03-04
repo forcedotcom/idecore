@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import com.salesforce.ide.apex.core.ApexParserFactory;
 import com.salesforce.ide.apex.internal.core.ApexModelManager;
+import com.salesforce.ide.apex.internal.core.ApexParserFactory;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.errors.ApexErrorMarkerHandler;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;

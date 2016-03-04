@@ -29,7 +29,7 @@ public class EmptySymbolProvider implements SymbolProvider {
 
 	private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 
-	private EmptySymbolProvider() {
+	EmptySymbolProvider() {
 	}
 
 	public static EmptySymbolProvider get() {

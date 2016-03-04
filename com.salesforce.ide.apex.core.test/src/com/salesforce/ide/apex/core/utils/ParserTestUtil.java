@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 import org.antlr.runtime.RecognitionException;
 
-import com.salesforce.ide.apex.core.ApexParserFactory;
+import com.salesforce.ide.apex.internal.core.ApexParserFactory;
 import com.salesforce.ide.test.common.utils.IdeTestUtil;
 
 import apex.jorje.data.ast.CompilationUnit;
