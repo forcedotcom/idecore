@@ -25,6 +25,7 @@ import apex.jorje.data.Loc;
 import apex.jorje.data.Loc.RealLoc;
 import apex.jorje.data.Loc.SyntheticLoc;
 import apex.jorje.data.errors.UserError;
+import apex.jorje.services.exception.CompilationException;
 import apex.jorje.services.exception.ParseException;
 import apex.jorje.services.printers.PrintContext;
 import apex.jorje.services.printers.PrinterUtil;
@@ -54,13 +55,15 @@ public class ApexErrorMarkerHandler {
         MarkerUtils.getInstance().clearMarkers(fFile, null, MarkerUtils.MARKER_COMPILE_ERROR);
     }
 
-    public void handleSyntaxErrors(List<ParseException> parseExceptions) {
-        for (ParseException parseException : parseExceptions) {
-            Map<String, Object> config = createSyntacticMarkerIfApplicable(parseException);
+    public void handleSyntaxErrors(List<CompilationException> errors) {
+        errors.stream()
+        .filter(exception -> exception instanceof ParseException)
+        .forEach(exception -> {
+            Map<String, Object> config = createSyntacticMarkerIfApplicable((ParseException) exception);
             if (config != null) {
                 MarkerUtils.getInstance().createMarker(fFile, config, MarkerUtils.MARKER_COMPILE_ERROR);
             }
-        }
+        });
     }
 
     private Map<String, Object> createSyntacticMarkerIfApplicable(final ParseException parseException) {

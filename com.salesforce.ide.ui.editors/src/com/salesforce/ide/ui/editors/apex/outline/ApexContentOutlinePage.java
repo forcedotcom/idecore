@@ -16,12 +16,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
-import apex.jorje.data.ast.CompilationUnit;
-
 /**
  * Content outline page that represents the contents of the current editor
  * 
- * @author nchen (modified from original implementation by cwall)
+ * @author nchen
  * 
  */
 public class ApexContentOutlinePage extends ContentOutlinePage {
@@ -45,14 +43,14 @@ public class ApexContentOutlinePage extends ContentOutlinePage {
         viewer.setLabelProvider(new ApexLabelProvider());
     }
 
-    public void update(CompilationUnit fCompilationUnit) {
+    public void update(OutlineViewVisitor outlineViewVisitor) {
         TreeViewer viewer = getTreeViewer();
 
         if (viewer != null) {
             Control control = viewer.getControl();
             if (control != null && !control.isDisposed()) {
                 control.setRedraw(false);
-                viewer.setInput(fCompilationUnit);
+                viewer.setInput(outlineViewVisitor);
                 viewer.expandAll();
                 control.setRedraw(true);
             }

@@ -80,6 +80,7 @@ import com.salesforce.ide.ui.ForceIdeUIPlugin;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.apex.outline.ApexContentOutlinePage;
 import com.salesforce.ide.ui.editors.apex.outline.OutlineViewDispatcher;
+import com.salesforce.ide.ui.editors.apex.outline.OutlineViewDispatcherOld;
 import com.salesforce.ide.ui.editors.apex.preferences.PreferenceConstants;
 import com.salesforce.ide.ui.editors.apex.util.ParserLocationTranslator.HighlightRange;
 import com.salesforce.ide.ui.editors.internal.utils.EditorMessages;

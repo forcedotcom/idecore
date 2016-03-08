@@ -11,7 +11,7 @@
 package com.salesforce.ide.ui.editors.apex.outline;
 
 import com.salesforce.ide.apex.core.utils.ParserTestUtil;
-import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider;
+import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProviderOld;
 
 import apex.jorje.data.Loc;
 import apex.jorje.data.ast.BlockMember;
@@ -149,9 +149,9 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
      * Thus, I created this class that implements the IOutlineViewElementHandler interface to handle the different cases. 
      * If it forgets one, it will throw an error at compile-time.
      */
-    final class TextProviderHandlerProxy implements IOutlineViewElementHandler<Void> {
+    final class TextProviderHandlerProxy implements IOutlineViewElementHandlerOld<Void> {
 
-        OutlineViewElementTextProvider handler = new OutlineViewElementTextProvider();
+        OutlineViewElementTextProviderOld handler = new OutlineViewElementTextProviderOld();
 
         @Override
         public Void handle(TriggerDeclUnit element) {

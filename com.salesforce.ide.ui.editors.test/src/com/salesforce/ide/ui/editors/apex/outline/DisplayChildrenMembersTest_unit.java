@@ -41,7 +41,7 @@ import apex.jorje.data.ast.Identifier;
  * 
  */
 public class DisplayChildrenMembersTest_unit extends TestCase {
-    private ApexOutlineContentProvider provider;
+    private ApexOutlineContentProviderOld provider;
 
     Object[] classNoNestedChildren;
     Object[] interfaceNoNested;
@@ -55,7 +55,7 @@ public class DisplayChildrenMembersTest_unit extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        provider = new ApexOutlineContentProvider();
+        provider = new ApexOutlineContentProviderOld();
         classNoNestedChildren = setUpCompilationUnit("/filemetadata/outline/classes/ClassWithValidMembersNoNested.cls");
         interfaceNoNested = setUpCompilationUnit("/filemetadata/outline/classes/InterfaceWithValidMembers.cls");
         enumNoNested = setUpCompilationUnit("/filemetadata/outline/classes/EnumOnly.cls");
@@ -65,7 +65,7 @@ public class DisplayChildrenMembersTest_unit extends TestCase {
 
     private Object[] setUpCompilationUnit(String testFile) throws IOException, URISyntaxException, RecognitionException {
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromFile(testFile);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         return provider.getChildren(filter.getRootElements()[0]);
     }

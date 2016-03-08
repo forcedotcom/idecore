@@ -21,13 +21,11 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 import com.salesforce.ide.core.internal.utils.QualifiedNames;
@@ -115,44 +113,44 @@ public class CompilerService {
     // These method names are verbose because they have similar parameter types, i.e., List<X> files, Lists<X> resources.
     // Type erasure in Java will collapse them to the same thing (List) and won't compile if the methods are overloaded.
     
-    public void visitAstFromString(String source, AstVisitor<AdditionalPassScope> visitor) {
-        visitAstsFromStrings(ImmutableList.of(source), visitor, CompilerStage.POST_TYPE_RESOLVE);
+    public ApexCompiler visitAstFromString(String source, AstVisitor<AdditionalPassScope> visitor) {
+        return visitAstsFromStrings(ImmutableList.of(source), visitor, CompilerStage.POST_TYPE_RESOLVE);
     }
 
-    public void visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor) {
-        visitAstsFromStrings(sources, visitor, CompilerStage.POST_TYPE_RESOLVE);
+    public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor) {
+        return visitAstsFromStrings(sources, visitor, CompilerStage.POST_TYPE_RESOLVE);
     }
 
-    public void visitAstFromFile(IFile resource, AstVisitor<AdditionalPassScope> visitor) {
-        visitAstsFromFiles(ImmutableList.of(resource), visitor, CompilerStage.POST_TYPE_RESOLVE);
+    public ApexCompiler visitAstFromFile(IFile resource, AstVisitor<AdditionalPassScope> visitor) {
+        return visitAstsFromFiles(ImmutableList.of(resource), visitor, CompilerStage.POST_TYPE_RESOLVE);
     }
 
-    public void visitAstsFromFiles(List<IFile> resources, AstVisitor<AdditionalPassScope> visitor) {
-        visitAstsFromFiles(resources, visitor, CompilerStage.POST_TYPE_RESOLVE);
+    public ApexCompiler visitAstsFromFiles(List<IFile> resources, AstVisitor<AdditionalPassScope> visitor) {
+        return visitAstsFromFiles(resources, visitor, CompilerStage.POST_TYPE_RESOLVE);
     }
 
-    public void visitAstFromString(String source, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
-        visitAstsFromStrings(ImmutableList.of(source), visitor, compilerStage);
+    public ApexCompiler visitAstFromString(String source, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+        return visitAstsFromStrings(ImmutableList.of(source), visitor, compilerStage);
     }
 
-    public void visitAstFromFile(IFile resource, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
-        visitAstsFromFiles(ImmutableList.of(resource), visitor, compilerStage);
+    public ApexCompiler visitAstFromFile(IFile resource, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+        return visitAstsFromFiles(ImmutableList.of(resource), visitor, compilerStage);
     }
 
-    public void visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+    public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
         List<SourceFile> sourceFiles =
             sources.stream().map(s -> SourceFile.builder().setBody(canonicalizeString(s)).build()).collect(Collectors.toList());
         CompilationInput compilationUnit = createCompilationInput(sourceFiles, visitor);
-        compile(compilationUnit, visitor, compilerStage);
+        return compile(compilationUnit, visitor, compilerStage);
     }
 
-    public void visitAstsFromFiles(List<IFile> resources, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+    public ApexCompiler visitAstsFromFiles(List<IFile> resources, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
         List<SourceFile> sourceFiles = resources.stream().map(RESOURCE_TO_SOURCE).collect(Collectors.toList());
         CompilationInput compilationUnit = createCompilationInput(sourceFiles, visitor);
-        compile(compilationUnit, visitor, compilerStage);
+        return compile(compilationUnit, visitor, compilerStage);
     }
 
-    private void compile(
+    private ApexCompiler compile(
         CompilationInput compilationInput,
         AstVisitor<AdditionalPassScope> visitor,
         CompilerStage compilerStage
@@ -160,6 +158,7 @@ public class CompilerService {
         ApexCompiler compiler = ApexCompiler.builder().setInput(compilationInput).build();
         compiler.compile(compilerStage);
         callAdditionalPassVisitor(compiler);
+        return compiler;
     }
     
     private CompilationInput createCompilationInput(

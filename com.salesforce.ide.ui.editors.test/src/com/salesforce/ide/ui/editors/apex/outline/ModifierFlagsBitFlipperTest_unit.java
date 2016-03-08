@@ -38,7 +38,7 @@ import apex.jorje.data.ast.Modifier.WithSharingModifier;
 import apex.jorje.data.ast.Modifier.WithoutSharingModifier;
 
 import com.salesforce.ide.ui.editors.apex.outline.icon.AccessorFlags;
-import com.salesforce.ide.ui.editors.apex.outline.icon.ModifierFlagsBitFlipper;
+import com.salesforce.ide.ui.editors.apex.outline.icon.ModifierFlagsBitFlipperOld;
 import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
 
 /**
@@ -175,10 +175,10 @@ public class ModifierFlagsBitFlipperTest_unit extends TestCase {
      */
     final class BitsFlipperHandlerProxy implements Modifier.SwitchBlock {
 
-        ModifierFlagsBitFlipper handler;
+        ModifierFlagsBitFlipperOld handler;
 
         public BitsFlipperHandlerProxy(AccessorFlags flags) {
-            handler = new ModifierFlagsBitFlipper(flags);
+            handler = new ModifierFlagsBitFlipperOld(flags);
         }
 
         public AccessorFlags getAccessorFlags() {

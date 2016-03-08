@@ -27,13 +27,13 @@ import apex.jorje.data.ast.CompilationUnit;
  * 
  */
 public class DisplayInvalidMembersTest_unit extends TestCase {
-    ApexOutlineContentProvider provider = new ApexOutlineContentProvider();
+    ApexOutlineContentProviderOld provider = new ApexOutlineContentProviderOld();
     
 
     public void testBadFieldMember() throws Exception {
         String classDecl = "class Bad { integer a; integer b integer c;}"; // Missing semicolon after integer b
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
     }
@@ -41,7 +41,7 @@ public class DisplayInvalidMembersTest_unit extends TestCase {
     public void testBadMethodMember_incompleteTypeParameter() throws Exception {
         String classDecl = "class Bad { public void method(List<> a, Integer b) {}}";
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
     }
@@ -59,7 +59,7 @@ public class DisplayInvalidMembersTest_unit extends TestCase {
     public void testBadPropertyMember_noGetterOrSetter() throws Exception {
         String classDecl = "class Bad { public String myProperty{}}";
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
     }
@@ -67,7 +67,7 @@ public class DisplayInvalidMembersTest_unit extends TestCase {
     public void testBadPropertyMember_noClosingParentheses() throws Exception {
         String classDecl = "class Bad { public String myProperty{ }";
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
     }
@@ -75,7 +75,7 @@ public class DisplayInvalidMembersTest_unit extends TestCase {
     public void testBadInnerClassMember() throws Exception {
         String classDecl = "class Bad { interface Inner { void method(List<> a, Integer b); } }";
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         Object[] children = provider.getChildren(filter.getRootElements()[0]);
         isFreeFromNulls(provider.getChildren(children[0]));
@@ -84,7 +84,7 @@ public class DisplayInvalidMembersTest_unit extends TestCase {
     public void testBadInnerInterfaceMember() throws Exception {
         String classDecl = "class Bad { interface Inner { void method(List<> a); } }";
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         Object[] children = provider.getChildren(filter.getRootElements()[0]);
         isFreeFromNulls(provider.getChildren(children[0]));
@@ -93,7 +93,7 @@ public class DisplayInvalidMembersTest_unit extends TestCase {
     public void testBadInnerEnumMember() throws Exception {
         String classDecl = "class Bad { enum MyEnum { bad.dot.bad } }";
         CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilter filter = new RootElementFilter();
+        RootElementFilterOld filter = new RootElementFilterOld();
         cu._switch(filter);
         isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
     }

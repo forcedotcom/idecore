@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,19 +12,13 @@ package com.salesforce.ide.ui.editors.apex.outline;
 
 import org.apache.log4j.Logger;
 
-import apex.jorje.data.ast.BlockMember.FieldMember;
-import apex.jorje.data.ast.BlockMember.InnerClassMember;
-import apex.jorje.data.ast.BlockMember.InnerEnumMember;
-import apex.jorje.data.ast.BlockMember.InnerInterfaceMember;
-import apex.jorje.data.ast.BlockMember.MethodMember;
-import apex.jorje.data.ast.BlockMember.PropertyMember;
-import apex.jorje.data.ast.BlockMember.StaticStmntBlockMember;
-import apex.jorje.data.ast.BlockMember.StmntBlockMember;
-import apex.jorje.data.ast.ClassDecl;
-import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
-import apex.jorje.data.ast.EnumDecl;
-import apex.jorje.data.ast.Identifier;
-import apex.jorje.data.ast.InterfaceDecl;
+import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserEnum;
+import apex.jorje.semantic.ast.compilation.UserInterface;
+import apex.jorje.semantic.ast.compilation.UserTrigger;
+import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.member.Method;
+import apex.jorje.semantic.ast.member.Property;
 
 /**
  * This class provides some form of type sanity for the outline view. The outline view in Eclipse is dispatched based on
@@ -38,45 +32,33 @@ import apex.jorje.data.ast.InterfaceDecl;
  */
 public class OutlineViewDispatcher<T> {
     private static final Logger logger = Logger.getLogger(OutlineViewDispatcher.class);
-
+    
     private IOutlineViewElementHandler<T> handler;
-
+    
     public OutlineViewDispatcher(IOutlineViewElementHandler<T> handler) {
         this.handler = handler;
     }
-
+    
     public T dispatch(Object element) {
-        if (element instanceof TriggerDeclUnit) {
-            return handler.handle((TriggerDeclUnit) element);
-        } else if (element instanceof ClassDecl) {
-            return handler.handle((ClassDecl) element);
-        } else if (element instanceof InterfaceDecl) {
-            return handler.handle((InterfaceDecl) element);
-        } else if (element instanceof EnumDecl) {
-            return handler.handle((EnumDecl) element);
-        } else if (element instanceof InnerClassMember) {
-            return handler.handle((InnerClassMember) element);
-        } else if (element instanceof InnerInterfaceMember) {
-            return handler.handle((InnerInterfaceMember) element);
-        } else if (element instanceof InnerEnumMember) {
-            return handler.handle((InnerEnumMember) element);
-        } else if (element instanceof StmntBlockMember) {
-            return handler.handle((StmntBlockMember) element);
-        } else if (element instanceof StaticStmntBlockMember) {
-            return handler.handle((StaticStmntBlockMember) element);
-        } else if (element instanceof FieldMember) {
-            return handler.handle((FieldMember) element);
-        } else if (element instanceof MethodMember) {
-            return handler.handle((MethodMember) element);
-        } else if (element instanceof PropertyMember) {
-            return handler.handle((PropertyMember) element);
-        } else if (element instanceof Identifier) {
-            return handler.handle((Identifier) element);
+        if (element instanceof UserClass) {
+            return handler.handle((UserClass) element);
+        } else if (element instanceof UserInterface) {
+            return handler.handle((UserInterface) element);
+        } else if (element instanceof UserTrigger) {
+            return handler.handle((UserTrigger) element);
+        } else if (element instanceof UserEnum) {
+            return handler.handle((UserEnum) element);
+        } else if (element instanceof Method) {
+            return handler.handle((Method) element);
+        } else if (element instanceof Property) {
+            return handler.handle((Property) element);
+        } else if (element instanceof Field) {
+            return handler.handle((Field) element);
         } else {
             return handleUnknownElementType(element);
         }
     }
-
+    
     protected T handleUnknownElementType(Object element) {
         logger.debug("Encountered an unexpected element in the outline view: " + element);
         return null;

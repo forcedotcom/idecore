@@ -28,12 +28,12 @@ import apex.jorje.data.ast.InterfaceDecl;
  */
 public class RootElementFilterTest_unit extends TestCase {
 
-    private RootElementFilter filter;
+    private RootElementFilterOld filter;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        filter = new RootElementFilter();
+        filter = new RootElementFilterOld();
     }
 
     public void testTriggerRecognized() throws Exception {

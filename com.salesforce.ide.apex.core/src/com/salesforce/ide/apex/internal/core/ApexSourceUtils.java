@@ -11,7 +11,6 @@
 package com.salesforce.ide.apex.internal.core;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +22,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.salesforce.ide.core.factories.ComponentFactory;
+import com.salesforce.ide.core.internal.context.ContainerDelegate;
+import com.salesforce.ide.core.model.ApexCodeLocation;
+import com.salesforce.ide.core.model.Component;
+import com.salesforce.ide.core.services.ProjectService;
+
 import apex.jorje.data.Loc.RealLoc;
 import apex.jorje.data.ast.BlockMember;
 import apex.jorje.data.ast.BlockMember.MethodMember;
@@ -31,13 +38,6 @@ import apex.jorje.data.ast.CompilationUnit.ClassDeclUnit;
 import apex.jorje.data.ast.Modifier;
 import apex.jorje.data.ast.Modifier.Annotation;
 import apex.jorje.data.ast.Modifier.TestMethodModifier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.salesforce.ide.core.factories.ComponentFactory;
-import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.model.ApexCodeLocation;
-import com.salesforce.ide.core.model.Component;
-import com.salesforce.ide.core.services.ProjectService;
 
 /**
  * Utilities for working on Apex source files.
