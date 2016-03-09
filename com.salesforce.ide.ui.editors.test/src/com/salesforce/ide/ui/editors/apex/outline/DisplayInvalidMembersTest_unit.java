@@ -10,10 +10,9 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline;
 
-import com.salesforce.ide.apex.core.utils.ParserTestUtil;
+import com.salesforce.ide.apex.internal.core.CompilerService;
 
 import junit.framework.TestCase;
-import apex.jorje.data.ast.CompilationUnit;
 
 /**
  * This tests the robustness of our outline view against malformed elements. The minimal guarantee that we provide is
@@ -24,84 +23,69 @@ import apex.jorje.data.ast.CompilationUnit;
  * This is not exhaustive, unfortunately, but tries to handle the common cases that have arisen through manual testing.
  * 
  * @author nchen
- * 
+ *         
  */
 public class DisplayInvalidMembersTest_unit extends TestCase {
-    ApexOutlineContentProviderOld provider = new ApexOutlineContentProviderOld();
+    private ApexOutlineContentProvider contentProvider;
     
-
+    public DisplayInvalidMembersTest_unit() {
+        contentProvider = new ApexOutlineContentProvider();
+    }
+    
+    /**
+     * Expands all of the elements like we would in the outline view. The point of this is to ensure that we don't hit
+     * any NPE.
+     */
+    private void expandAll(Object o) {
+        Object[] children = contentProvider.getChildren(o);
+        for (Object child : children) {
+            expandAll(child);
+        }
+    }
+    
     public void testBadFieldMember() throws Exception {
         String classDecl = "class Bad { integer a; integer b integer c;}"; // Missing semicolon after integer b
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
+        setupOutlineVisitor(classDecl);
     }
 
+    private void setupOutlineVisitor(String classDecl) {
+        OutlineViewVisitor visitor = new OutlineViewVisitor();
+        CompilerService.INSTANCE.visitAstFromString(classDecl, visitor);
+        expandAll(visitor.getTopLevel());
+    }
+    
     public void testBadMethodMember_incompleteTypeParameter() throws Exception {
         String classDecl = "class Bad { public void method(List<> a, Integer b) {}}";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
+        setupOutlineVisitor(classDecl);
     }
-
-    //    This causes a NPE but because we have more robust handlers now, it does not cause an issue in the IDE.
-    //    Will check with spags about whether this is intended behavior  
-    //    public void testBadMethodMember_incompleteArray() throws Exception {
-    //        String classDecl = "class Bad { public void method(MyObject[ a) {}}";
-    //        CompilationUnit cu = OutlineTestUtil.parseCompilationUnitFromString(classDecl);
-    //        RootElementFilter filter = new RootElementFilter();
-    //        cu._switch(filter);
-    //        isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
-    //    }
-
+    
+    public void testBadMethodMember_incompleteArray() throws Exception {
+        String classDecl = "class Bad { public void method(MyObject[ a) {}}";
+        setupOutlineVisitor(classDecl);
+    }
+    
     public void testBadPropertyMember_noGetterOrSetter() throws Exception {
         String classDecl = "class Bad { public String myProperty{}}";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
+        setupOutlineVisitor(classDecl);
     }
-
+    
     public void testBadPropertyMember_noClosingParentheses() throws Exception {
         String classDecl = "class Bad { public String myProperty{ }";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
+        setupOutlineVisitor(classDecl);
     }
-
+    
     public void testBadInnerClassMember() throws Exception {
         String classDecl = "class Bad { interface Inner { void method(List<> a, Integer b); } }";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        Object[] children = provider.getChildren(filter.getRootElements()[0]);
-        isFreeFromNulls(provider.getChildren(children[0]));
+        setupOutlineVisitor(classDecl);
     }
-
+    
     public void testBadInnerInterfaceMember() throws Exception {
         String classDecl = "class Bad { interface Inner { void method(List<> a); } }";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        Object[] children = provider.getChildren(filter.getRootElements()[0]);
-        isFreeFromNulls(provider.getChildren(children[0]));
+        setupOutlineVisitor(classDecl);
     }
-
+    
     public void testBadInnerEnumMember() throws Exception {
         String classDecl = "class Bad { enum MyEnum { bad.dot.bad } }";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromString(classDecl);
-        RootElementFilterOld filter = new RootElementFilterOld();
-        cu._switch(filter);
-        isFreeFromNulls(provider.getChildren(filter.getRootElements()[0]));
-    }
-
-    private void isFreeFromNulls(Object[] toCheck) {
-        for (Object each : toCheck) {
-            if (each == null)
-                fail("Saw a null element, this would be bad when we are trying to display in outline view");
-        }
+        setupOutlineVisitor(classDecl);
     }
 }

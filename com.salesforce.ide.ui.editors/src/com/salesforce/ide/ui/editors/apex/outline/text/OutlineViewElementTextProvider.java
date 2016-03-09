@@ -10,7 +10,8 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline.text;
 
-import com.salesforce.ide.ui.editors.apex.outline.ApexLabelProvider;
+import java.util.stream.Collectors;
+
 import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
 
 import apex.jorje.semantic.ast.compilation.UserClass;
@@ -73,39 +74,51 @@ public final class OutlineViewElementTextProvider implements IOutlineViewElement
         return FieldPrinter.print(field);
     }
     
-    static final class MethodInfoPrinter {
-        static String print(MethodInfo methodInfo) {
+    // PRINTERS
+    ///////////
+    
+    public static final class MethodInfoPrinter {
+        public static String print(MethodInfo methodInfo) {
+            StringBuilder sb = new StringBuilder();
             if (isImplicitInit(methodInfo)) {
-                return ApexLabelProvider.ELLIPSIS_SUFFIX;
+                sb.append(TypeInfoPrinter.print(methodInfo.getDefiningType()));
+                sb.append("(");
+                sb.append(
+                    methodInfo.getParameters().stream()
+                    .map(p -> TypeInfoPrinter.print(p.getType()))
+                    .collect(Collectors.joining(", ")));
+                sb.append(")");
             } else {
-                StringBuilder sb = new StringBuilder();
                 sb.append(methodInfo.getCanonicalName());
                 sb.append("(");
-                methodInfo.getParameters().stream().forEach(p -> {
-                    sb.append(TypeInfoPrinter.print(p.getType()));
-                });
+                sb.append(
+                    methodInfo.getParameters().stream()
+                    .map(p -> TypeInfoPrinter.print(p.getType()))
+                    .collect(Collectors.joining(", ")));
                 sb.append(")");
                 sb.append(" : ");
-                sb.append(methodInfo.getReturnType().getApexName());
-                return sb.toString();
+                sb.append(TypeInfoPrinter.print(methodInfo.getReturnType()));
             }
+            return sb.toString();
         }
         
         static boolean isImplicitInit(MethodInfo methodInfo) {
             String canonicalName = methodInfo.getCanonicalName();
-            return canonicalName.equals(AsmMethod.INIT) || canonicalName.equals(AsmMethod.STATIC_INIT);
+            return canonicalName.equals(AsmMethod.INIT);
         }
         
     }
     
-    static final class TypeInfoPrinter {
-        static String print(TypeInfo typeInfo) {
-            return typeInfo.getApexName();
+    public static final class TypeInfoPrinter {
+        public static String print(TypeInfo typeInfo) {
+            String fullyQualifiedApexName = typeInfo.getApexName();
+            String[] split = fullyQualifiedApexName.split("\\.");
+            return split[split.length -1];
         }
     }
     
-    static final class FieldPrinter {
-        static String print(Field field) {
+    public static final class FieldPrinter {
+        public static String print(Field field) {
             StringBuilder sb = new StringBuilder();
             FieldInfo fieldInfo = field.getFieldInfo();
             if (fieldInfo.getDefiningType().getUnitType() == UnitType.ENUM) {
@@ -119,8 +132,8 @@ public final class OutlineViewElementTextProvider implements IOutlineViewElement
         }
     }
     
-    static final class PropertyPrinter {
-        static String print(Property property) {
+    public static final class PropertyPrinter {
+        public static String print(Property property) {
             StringBuilder sb = new StringBuilder();
             FieldInfo fieldInfo = property.getFieldInfo();
             sb.append(fieldInfo.getName());

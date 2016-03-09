@@ -28,13 +28,10 @@ import apex.jorje.semantic.ast.member.Property;
 /**
  * Highlights the relevant element in the editor when a selection occurs in the outline view.
  * 
- * Class is package-protected so that we can use it for testing purposes. The handlers all return HighlightRange objects
- * for testing purposes.
- * 
  * @author nchen
  *         
  */
-class OutlineViewSelectionHandler implements IOutlineViewElementHandler<HighlightRange> {
+public class OutlineViewSelectionHandler implements IOutlineViewElementHandler<HighlightRange> {
     private final ApexCodeEditor fEditor;
     
     OutlineViewSelectionHandler(ApexCodeEditor codeEditor) {

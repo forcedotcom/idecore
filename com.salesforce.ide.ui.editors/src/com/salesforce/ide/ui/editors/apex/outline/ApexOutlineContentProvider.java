@@ -39,7 +39,7 @@ import apex.jorje.semantic.ast.compilation.UserTriggerMembers;
  */
 public class ApexOutlineContentProvider implements ITreeContentProvider {
     /**
-     * Filters out only real locations.
+     * Filters out only real locations. 
      */
     private static final MatchBlock<Boolean> REAL_LOC_FILTER_FN = new Loc.MatchBlock<Boolean>() {
         @Override
@@ -160,7 +160,9 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
     }
     
     private List<Locatable> filterNonSyntheticMembers(List<Locatable> locatables) {
-        return locatables.stream().filter(l -> l.getLoc().match(REAL_LOC_FILTER_FN)).sorted(LOCATABLE_COMPARATOR)
+        return locatables.stream()
+            .filter(l -> l.getLoc().match(REAL_LOC_FILTER_FN))
+            .sorted(LOCATABLE_COMPARATOR)
             .collect(Collectors.toList());
     }
     

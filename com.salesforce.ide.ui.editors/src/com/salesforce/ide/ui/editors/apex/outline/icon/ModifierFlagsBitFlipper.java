@@ -25,6 +25,7 @@ import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.VIRTUAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.WEB_SERVICE;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.WITHOUT_SHARING;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.WITH_SHARING;
+import static apex.jorje.semantic.symbol.type.AnnotationTypeInfos.IS_TEST;
 
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.ui.JavaElementImageDescriptor;
@@ -51,6 +52,11 @@ public final class ModifierFlagsBitFlipper {
             accessorFlag_JDT |= ApexElementImageDescriptor.TESTMETHOD;
         }
         
+        if (modifiers.has(IS_TEST)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.TESTMETHOD;
+            accessorFlag_JDT |= ApexElementImageDescriptor.TESTMETHOD;
+        }
+
         if (modifiers.has(GLOBAL)) {
             accessorFlag_JVM |= ApexElementImageDescriptor.GLOBAL;
             accessorFlag_JDT |= ApexElementImageDescriptor.GLOBAL;
