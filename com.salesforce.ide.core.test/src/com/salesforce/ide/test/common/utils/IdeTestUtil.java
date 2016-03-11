@@ -1282,11 +1282,10 @@ public class IdeTestUtil {
     public static String getCurrentEclipseMajorVersion()
             throws IdeTestException {
 
-        String osgiFrameworkVersion = System
-                .getProperty("osgi.framework.version");
+        String osgiFrameworkVersion = System.getProperty("osgi.framework.version");
         if (IdeTestUtil.isEmpty(osgiFrameworkVersion))
-            throw IdeTestException
-            .getWrappedException("Couldn't retrieve osgi.framework.version system Property. Cannot determine Eclipse version.");
+            throw IdeTestException.getWrappedException(
+            		"Couldn't retrieve osgi.framework.version system Property. Cannot determine Eclipse version.");
         return osgiFrameworkVersion.substring(0, 3);
     }
 

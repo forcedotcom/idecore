@@ -227,6 +227,8 @@ public class PackageManifestController extends Controller {
 
                 for (String key : ext.getFilePropertiesMap(typeList).keySet()) {
                     try {
+                    	if (key.equals(Constants.STANDARD_OBJECT))
+                    		continue;
                         fillTypeStructures(key);
                     } catch (Throwable th) {
                         erroneousComponentTypes.put(key, th);
@@ -255,6 +257,8 @@ public class PackageManifestController extends Controller {
             for (Node componentType : componentTypes) {
                 String key = PackageManifestDocumentUtils.getComponentName(componentType);
                 try {
+                	if (key.equals(Constants.STANDARD_OBJECT))
+                		continue;
                     fillTypeStructures(key);
                 } catch (Throwable th) {
                     erroneousComponentTypes.put(key, th);
@@ -276,6 +280,10 @@ public class PackageManifestController extends Controller {
         if (Utils.isNotEmpty(subCompType)) {
             for (String subType : subCompType) {
                 subTypes.add(subType);
+                
+                if (parentTypes.containsKey(subType) && false == parentTypes.get(subType).equals(key)){
+                	logger.error("subType: "+subType+ " has already been assigned a parentType: "+parentTypes.get(subType)+ " and will now be overwritten by parentType: "+key+"\n");
+                }
                 parentTypes.put(subType, key);
             }
         }
@@ -939,6 +947,11 @@ public class PackageManifestController extends Controller {
                     compName = memberName.substring(index + 1);
                 }
 
+                if (Constants.STANDARD_OBJECT.equals(parentType) && CustomObjectNameResolver.getCheckerForCustomObject().check(parentName, Constants.CUSTOM_OBJECT) ||
+                	Constants.CUSTOM_OBJECT.equals(parentType) && false == CustomObjectNameResolver.getCheckerForCustomObject().check(parentName, Constants.CUSTOM_OBJECT))
+                	continue;
+                
+                
                 String path = getPath(parentNode);
                 if (CustomObjectNameResolver.getCheckerForCustomObject().check(parentName, Constants.CUSTOM_OBJECT)) {
                     path = Constants.CUSTOM_OBJECT.toLowerCase() + Constants.FOWARD_SLASH;

@@ -112,7 +112,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
     private ProjectionSupport fProjectionSupport; // The projection support
     private IProject project = null;
     private final OutlineUpdateResourceListener outlineUpdateResourceListener = new OutlineUpdateResourceListener();
-    protected AbstractSelectionChangedListener outlineSelectionChangedListener = new OutlineSelectionChangedListener();
+    private final AbstractSelectionChangedListener outlineSelectionChangedListener = new OutlineSelectionChangedListener();
     private EditorSelectionChangedListener editorSelectionChangedListener;
     private ApexSourceViewerConfiguration apexSourceViewerConfiguration = null;
 
@@ -153,21 +153,25 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
     protected void createActions() {
         super.createActions();
 
-        IAction action =
-                new TextOperationAction(EditorMessages.getResourceBundle(),
-                        "ApexEditor.ContentAssistProposal.", this, ISourceViewer.CONTENTASSIST_PROPOSALS); //$NON-NLS-1$
+        IAction action = new TextOperationAction(
+            EditorMessages.getResourceBundle(),
+            "ApexEditor.ContentAssistProposal.",
+            this, ISourceViewer.CONTENTASSIST_PROPOSALS);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
         setAction(ACTION_CONTENT_ASSIST_PROPOSAL, action);
 
-        action =
-                new TextOperationAction(EditorMessages.getResourceBundle(),
-                        "ApexEditor.ContentAssistTip.", this, ISourceViewer.CONTENTASSIST_CONTEXT_INFORMATION); //$NON-NLS-1$
+        action = new TextOperationAction(
+            EditorMessages.getResourceBundle(),
+            "ApexEditor.ContentAssistTip.",
+            this,
+            ISourceViewer.CONTENTASSIST_CONTEXT_INFORMATION);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
         setAction(ACTION_CONTENT_ASSIST_TIP, action);
 
-        action =
-                new DefineFoldingRegionAction(EditorMessages.getResourceBundle(),
-                        "ApexEditor.DefineFoldingRegion.", this); //$NON-NLS-1$
+        action = new DefineFoldingRegionAction(
+            EditorMessages.getResourceBundle(),
+            "ApexEditor.DefineFoldingRegion.",
+            this);
         setAction(ACTION_DEFINE_FOLDING_REGION, action);
     }
 
@@ -188,7 +192,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
 
         if (outlineSelectionChangedListener != null) {
             outlineSelectionChangedListener.uninstall(getSelectionProvider());
-            outlineSelectionChangedListener = null;
         }
 
         if (editorSelectionChangedListener != null) {
@@ -373,8 +376,7 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         IPreferenceStore preferenceStore = getPreferenceStore();
         boolean closeBrackets = preferenceStore.getBoolean(PreferenceConstants.EDITOR_CLOSE_BRACKETS);
         boolean closeStrings = preferenceStore.getBoolean(PreferenceConstants.EDITOR_CLOSE_STRINGS);
-        boolean closeAngularBrackets =
-                "1.5".compareTo(preferenceStore.getString(PreferenceConstants.COMPILER_SOURCE)) <= 0; // $NON-NLS-1$
+        boolean closeAngularBrackets = "1.5".compareTo(preferenceStore.getString(PreferenceConstants.COMPILER_SOURCE)) <= 0; // $NON-NLS-1$
 
         fBracketInserter.setCloseBracketsEnabled(closeBrackets);
         fBracketInserter.setCloseStringsEnabled(closeStrings);
@@ -400,7 +402,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         fProjectionSupport.addSummarizableAnnotationType(ANNOTATION_TYPE_APEX_ERROR); //$NON-NLS-1$
         fProjectionSupport.addSummarizableAnnotationType(ANNOTATION_TYPE_APEX_WARNING); //$NON-NLS-1$
         fProjectionSupport.install();
-        //        viewer.doOperation(ProjectionViewer.TOGGLE);
         setTitleToolTip(EDITOR_NAME);
 
         // ensure source viewer decoration support has been created and configured

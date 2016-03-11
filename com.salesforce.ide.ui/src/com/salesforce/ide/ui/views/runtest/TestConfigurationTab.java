@@ -11,17 +11,14 @@
 
 package com.salesforce.ide.ui.views.runtest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -46,8 +43,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.salesforce.ide.core.internal.utils.QualifiedNames;
-import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.tooling.RunTests.SuiteManager;
 import com.salesforce.ide.core.remote.tooling.RunTests.SuiteManager.MySuite;
@@ -500,102 +495,19 @@ public class TestConfigurationTab extends RunTestsTab {
 		validatePage();
 		return getErrorMessage() == null;
 	}
+
+	private TestConfigurationsBuilder getTestConfigurationsBuilder() {
+		return TestConfigurationsBuilder.INSTANCE;
+	}
 	
-	/**
-     * Retrieve test classes and methods for a specific project. This
-     * should only be called when opening the config for the first time
-     * or when user changes the project.
-     * @return RunTests POJO
-     */
 	@VisibleForTesting
 	public TestsHolder buildTestsForProject(IProject project) {
-    	TestsHolder rt = new TestsHolder();
-    	List<Test> testClasses = new ArrayList<Test>();
-    	
-    	Map<IResource, List<String>> allTests = sourceLookup.findTestClassesInProject(project);
-    	for (IResource resource : allTests.keySet()) {
-    		List<String> testMethods = allTests.get(resource);
-    		if (Utils.isEmpty(testMethods)) {
-    			continue;
-    		}
-    		
-    		// If there is more than one test method in the test class, add the 'all methods' option
-    		if (testMethods.size() > 1) {
-    			testMethods.add(0, Messages.Tab_AllMethods);
-    		}
-    		
-    		String resourceId = ResourceProperties.getProperty(resource, QualifiedNames.QN_ID);
-    		
-    		Test testClass = new TestsHolder.Test();
-    		testClass.setClassId(resourceId);
-    		testClass.setClassName(resource.getName());
-    		testClass.setTestMethods(testMethods);
-    		
-    		testClasses.add(testClass);
-    	}
-    	
-    	// If there is more than one test class in the project, add the 'all classes' option
-    	if (testClasses != null && testClasses.size() > 1) {
-    		Test allClasses = new TestsHolder.Test();
-    		allClasses.setClassId(Messages.Tab_AllClasses);
-    		allClasses.setClassName(Messages.Tab_AllClasses);
-    		List<String> allMethods = new ArrayList<String>();
-    		allMethods.add(Messages.Tab_AllMethods);
-    		allClasses.setTestMethods(allMethods);
-    		
-    		testClasses.add(0, allClasses);
-    	}
-    	
-    	rt.setTests(testClasses);
-    	return rt;
+		return getTestConfigurationsBuilder().buildTestsForProject(project);
     }
-	
-	/**
-	 * Create the JSON object of tests to run.
-	 */
+
 	@VisibleForTesting
 	public TestsHolder buildTestsForConfig(IProject selectedProject) {
-    	if (Utils.isEmpty(selectedProject)) return null;
-    	/*
-    	 * Clone the original RunTests because the following logic
-    	 * will filter out unwanted test classes/methods. We need to maintain the
-    	 * original so we don't to re-build when user changes test class/method.
-    	 */
-    	TestsHolder th = allTests.containsKey(selectedProject) ? allTests.get(selectedProject).clone() : null;
-    	if (Utils.isEmpty(th)) return null;
-    	
-    	boolean oneTestClass = (classText != null && getTestClassName() != null && !getTestClassName().equals(Messages.Tab_AllClasses));
-    	boolean oneTestMethod = (testMethodText != null && getTestMethodName() != null && !getTestMethodName().equals(Messages.Tab_AllMethods));
-
-		// Iterate through the test classes
-		for (Iterator<Test> tcItr = th.getTests().iterator(); tcItr.hasNext();) {
-			Test curTest = tcItr.next();
-			/*
-			 * Remove this Test object if:
-			 * - User wants all test classes and this test class says 'all'
-			 * - User wants one test class and this is not the one user wants
-			 */
-			if ((!oneTestClass && curTest.getClassName().equals(Messages.Tab_AllClasses)) || 
-					(oneTestClass && !curTest.getClassName().equals(getTestClassName()))) {
-				tcItr.remove();
-				continue;
-			}
-			// Iterate through the test methods
-			for (Iterator<String> tmItr = curTest.getTestMethods().iterator(); tmItr.hasNext();) {
-				String curMethod = tmItr.next();
-				/*
-				 * Remove this test method if:
-				 * - User wants all test methods and this test method says 'all'
-				 * - User wants one test method and this is not the one user wants
-				 */
-				if ((!oneTestMethod && curMethod.equals(Messages.Tab_AllMethods)) || 
-						(oneTestMethod && !curMethod.equals(getTestMethodName()))) {
-					tmItr.remove();
-				}
-			}
-		}
-		
-    	return th;
+		return getTestConfigurationsBuilder().buildTestsForConfig(selectedProject, allTests, getTestClassName(), getTestMethodName());
     }
     
     /**

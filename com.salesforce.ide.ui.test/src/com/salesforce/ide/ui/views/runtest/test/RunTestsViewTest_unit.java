@@ -124,7 +124,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, never()).prepareForRunningTests(any(IProject.class));
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
@@ -166,7 +166,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
@@ -216,7 +216,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
-		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
@@ -257,7 +257,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
 		
-		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
 		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
@@ -269,7 +269,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).enqueueTests(eq(testsInJson), eq(shouldUseSuites), eq(isAsync), eq(isDebugging));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
-		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
@@ -324,7 +324,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
-		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, times(1)).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		verify(mockedView, times(1)).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
@@ -372,7 +372,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
 		
-		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
 		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
@@ -384,7 +384,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
 		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
-		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
 		verify(mockedView, never()).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
@@ -474,30 +474,30 @@ public class RunTestsViewTest_unit extends TestCase {
 	
 	@Test
 	public void testGetAsyncTestResultsNullTestRunId() throws Exception {
-		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		
-		mockedView.getAsyncTestResults(null, 0, mock(Map.class), mock(IProgressMonitor.class));
+		mockedView.getAsyncTestResults(null, mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
 	public void testGetAsyncTestResultsEmptyTestRunId() throws Exception {
-		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		
-		mockedView.getAsyncTestResults("", 0, mock(Map.class), mock(IProgressMonitor.class));
+		mockedView.getAsyncTestResults("", mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
 	public void testGetAsyncTestResultsNullApiLimit() throws Exception {
-		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		when(mockedView.getApiLimit(any(ForceProject.class), eq(LimitsCommand.Type.DailyApiRequests))).thenReturn(null);
 		
-		mockedView.getAsyncTestResults("123", 0, mock(Map.class), mock(IProgressMonitor.class));
+		mockedView.getAsyncTestResults("123", mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
 	public void testGetAsyncTestResultsNotEnoughApiRequestsRemaining() throws Exception {
-		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		
 		Limit dailyRemaining = mock(Limit.class);
@@ -505,12 +505,12 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(dailyRemaining.getMax()).thenReturn(10);
 		when(mockedView.getApiLimit(any(ForceProject.class), eq(LimitsCommand.Type.DailyApiRequests))).thenReturn(dailyRemaining);
 		
-		mockedView.getAsyncTestResults("123", 0, mock(Map.class), mock(IProgressMonitor.class));
+		mockedView.getAsyncTestResults("123", mock(Map.class), mock(IProgressMonitor.class));
 	}
 	
 	@Test
 	public void testGetAsyncTestResultsAborted() throws Exception {
-		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		
 		Limit dailyRemaining = mock(Limit.class);
@@ -519,14 +519,14 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.getApiLimit(any(ForceProject.class), eq(LimitsCommand.Type.DailyApiRequests))).thenReturn(dailyRemaining);
 		
 		String testRunId = "123";
-		int totalTestMethods = 5;
 		IProgressMonitor monitor = mock(IProgressMonitor.class);
 		when(monitor.isCanceled()).thenReturn(true);
 		when(mockedView.abortTestRun(testRunId)).thenReturn(true);
 		
 		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId))).thenReturn(null);
+		when(mockedView.queryTotalQueueItems(testRunId)).thenReturn(1);
 		
-		mockedView.getAsyncTestResults(testRunId, totalTestMethods, mock(Map.class), monitor);
+		mockedView.getAsyncTestResults(testRunId, mock(Map.class), monitor);
 		
 		verify(mockedView, times(1)).abortTestRun(testRunId);
 		verify(mockedView, never()).getPollInterval(any(Integer.class), any(Float.class));
@@ -534,7 +534,7 @@ public class RunTestsViewTest_unit extends TestCase {
 	
 	@Test
 	public void testGetAsyncTestResults() throws Exception {
-		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Integer.class), any(Map.class), any(IProgressMonitor.class));
+		doCallRealMethod().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
 		
 		Limit dailyRemaining = mock(Limit.class);
@@ -553,12 +553,14 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(qr.getSize()).thenReturn(1);
 		when(qr.getRecords()).thenReturn(new SObject[] { tr });
 		when(mockedView.toolingStubExt.query(String.format(RunTestsConstants.QUERY_TESTRESULT, testRunId))).thenReturn(qr);
+		when(mockedView.queryTotalQueueItems(testRunId)).thenReturn(1);
+		when(mockedView.queryProcessedQueueItem(testRunId)).thenReturn(1);
 		
 		doNothing().when(mockedView).updateProgress(eq(0), eq(totalTestMethods), eq(totalTestDone));
 		
 		when(mockedView.getPollInterval(any(Integer.class), any(Float.class))).thenReturn(0);
 				
-		mockedView.getAsyncTestResults(testRunId, totalTestMethods, mock(Map.class), monitor);
+		mockedView.getAsyncTestResults(testRunId, mock(Map.class), monitor);
 		
 		verify(mockedView, never()).abortTestRun(testRunId);
 		verify(mockedView, times(1)).getPollInterval(any(Integer.class), any(Float.class));

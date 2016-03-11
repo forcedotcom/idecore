@@ -15,6 +15,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -25,11 +28,9 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.salesforce.ide.apex.core.utils.ParserTestUtil;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.editors.internal.apex.completions.ApexCompletionUtils.CompletionPrefix;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
 import junit.framework.TestCase;
 
 /**
@@ -56,10 +57,11 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
 
     private Completions completions;
 
-    private Compilation compilation;
-
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ITextEditor mEditor;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private IFile mFile;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ITextViewer mViewer;
@@ -70,9 +72,9 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
         MockitoAnnotations.initMocks(this);
         completions = CompletionsTestUtils.INSTANCE.createTestCompletions();
 
-        compilation = constructCompilation();
-
-        when(mEditor.getEditorInput().getAdapter(any())).thenReturn(null);
+        when(mEditor.getEditorInput().getAdapter(any())).thenReturn(mFile);
+        when(mFile.getContents()).thenReturn(new ByteArrayInputStream(FILE_CONTENTS.getBytes()));
+        when(mFile.getPersistentProperty(any())).thenReturn(null);
         when(mViewer.getDocument().get()).thenReturn(FILE_CONTENTS);
     }
 
@@ -83,10 +85,6 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
         return sUtils;
     }
 
-    private Compilation constructCompilation() throws Exception {
-        return ParserTestUtil.parseCompilationFromString(FILE_CONTENTS);
-    }
-
     @Test
     public void testShouldNotSuggestFieldNameWhenNewOnSameLine() throws Exception {
         ApexCompletionUtils sUtil = spy(ApexCompletionUtils.INSTANCE);
@@ -95,7 +93,7 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
         doReturn(new CompletionPrefix("MYS")).when(sUtil).determineFullyQualifiedNameFromPrefix("MYS");
 
         ApexCompletionProcessor processor =
-                new ApexSystemInstanceMembersProcessorForFields(sUtil, completions, mEditor, compilation);
+                new ApexSystemInstanceMembersProcessorForFields(sUtil, completions, mEditor);
 
         ICompletionProposal[] proposals = processor.computeCompletionProposals(mViewer, BOGUS_OFFSET);
 
@@ -106,7 +104,7 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
     public void testShouldNotSuggestFieldNameForBogusField() throws Exception {
         ApexCompletionUtils sUtils = constructSpy("somethingThatDoesntExist");
         ApexCompletionProcessor processor =
-                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor, compilation);
+                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor);
 
         ICompletionProposal[] proposals = processor.computeCompletionProposals(mViewer, BOGUS_OFFSET);
 
@@ -117,7 +115,7 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
     public void testSuggestFieldNameFromTopOfFile() throws Exception {
         ApexCompletionUtils sUtils = constructSpy("MYS");
         ApexCompletionProcessor processor =
-                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor, compilation);
+                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor);
 
         ICompletionProposal[] proposals = processor.computeCompletionProposals(mViewer, BOGUS_OFFSET);
 
@@ -130,7 +128,7 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
     public void testSuggestFieldNameFromMiddleOfFile() throws Exception {
         ApexCompletionUtils sUtils = constructSpy("MYinT");
         ApexCompletionProcessor processor =
-                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor, compilation);
+                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor);
 
         ICompletionProposal[] proposals = processor.computeCompletionProposals(mViewer, BOGUS_OFFSET);
 
@@ -145,7 +143,7 @@ public class ApexSystemInstanceMembersProcessorForFieldsTest_unit extends TestCa
     public void testSuggestFieldMembers() throws Exception {
         ApexCompletionUtils sUtils = constructSpy("MYSET.ADD");
         ApexCompletionProcessor processor =
-                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor, compilation);
+                new ApexSystemInstanceMembersProcessorForFields(sUtils, completions, mEditor);
 
         ICompletionProposal[] proposals = processor.computeCompletionProposals(mViewer, BOGUS_OFFSET);
 

@@ -20,7 +20,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -nosplash"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dsfdc-internal=true&#10;-Dosgi.requiredJavaVersion=1.8&#10;-Dforce-ide-log-level=info&#10;-Xms256m&#10;-Xmx512m&#10;-Dforce-ide-temp=/tmp&#10;-Dforce-ide-properties=/home/chris/.salesforce/force-default.properties&#10;-Dorg.eclipse.swt.internal.carbon.smallFonts"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dsfdc-internal=true&#10;-Dosgi.requiredJavaVersion=1.8&#10;-Dforce-ide-log-level=info&#10;-Xms256m&#10;-Xmx2G&#10;-Dforce-ide-temp=/tmp&#10;-Dforce-ide-properties=/home/chris/.salesforce/force-default.properties&#10;-Dorg.eclipse.swt.internal.carbon.smallFonts"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="com.salesforce.ide.product"/>
 <setAttribute key="selected_features">

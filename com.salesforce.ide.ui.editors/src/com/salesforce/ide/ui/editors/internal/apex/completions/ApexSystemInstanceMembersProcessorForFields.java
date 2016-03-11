@@ -11,11 +11,9 @@
 package com.salesforce.ide.ui.editors.internal.apex.completions;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.jdt.ui.JavaElementImageDescriptor;
@@ -26,33 +24,25 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.semantic.ast.compilation.UserClass;
-import apex.jorje.semantic.ast.compilation.UserTrigger;
-import apex.jorje.semantic.ast.member.Field;
-import apex.jorje.semantic.ast.visitor.AstVisitor;
-import apex.jorje.semantic.ast.visitor.SymbolScope;
-import apex.jorje.semantic.compiler.ApexCompiler;
-import apex.jorje.semantic.compiler.CompilationInput;
-import apex.jorje.semantic.compiler.Namespaces;
-import apex.jorje.semantic.compiler.SourceFile;
-import apex.jorje.semantic.exception.Errors;
-import apex.jorje.semantic.symbol.member.variable.FieldInfo;
-import apex.jorje.semantic.symbol.resolver.StandardSymbolResolver;
-import apex.jorje.semantic.symbol.type.TypeInfo;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.salesforce.ide.apex.internal.core.ApexModelManager;
-import com.salesforce.ide.apex.internal.core.EmptySymbolProvider;
+import com.salesforce.ide.apex.internal.core.CompilerService;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.AbstractCompletionProposalDisplayable;
 import com.salesforce.ide.apex.internal.core.tooling.systemcompletions.model.Completions;
 import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanceMembersProcessorForFields.VariablesVisitor.FieldInfoWrapper;
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
+
+import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserTrigger;
+import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
+import apex.jorje.semantic.ast.visitor.AstVisitor;
+import apex.jorje.semantic.symbol.member.variable.FieldInfo;
+import apex.jorje.semantic.symbol.type.TypeInfo;
 
 /**
  * <p>
@@ -76,23 +66,20 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
         IContentAssistProcessor {
     private final ITextEditor editor;
     private VariablesVisitor visitor;
-    private Compilation compilation;
 
     public ApexSystemInstanceMembersProcessorForFields(ITextEditor editor) {
         this.editor = editor;
     }
 
     @VisibleForTesting
-    public ApexSystemInstanceMembersProcessorForFields(ApexCompletionUtils utils, Completions completions,
-            ITextEditor editor, Compilation compilation) {
+    public ApexSystemInstanceMembersProcessorForFields(
+        ApexCompletionUtils utils,
+        Completions completions,
+        ITextEditor editor
+    ) {
         this(editor);
         this.utils = utils;
         this.completions = completions;
-        this.compilation = compilation;
-    }
-
-    public Compilation getCompilationUnit(IResource resource) {
-        return compilation != null ? compilation : ApexModelManager.INSTANCE.getCompilation((IFile) resource);
     }
 
     @Override
@@ -100,8 +87,8 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
         Collection<AbstractCompletionProposalDisplayable> suggestions = Lists.newArrayList();
         ApexCompletionUtils.CompletionPrefix completionPrefix = null;
 
-        IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
-        visitVariables(viewer.getDocument().get(), getCompilationUnit(resource));
+        IFile file =  (IFile) editor.getEditorInput().getAdapter(IFile.class);
+        visitVariables(file);
 
         try {
             if (!getUtil().hasInvokedNewOnSameLine(viewer, offset)) {
@@ -164,19 +151,9 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
         return ForceImages.get(ForceImages.APEX_GLOBAL_METHOD, accessorFlags_JVM, decoratedDesc);
     }
 
-    protected void visitVariables(String documentInput, Compilation compilation) {
-        SourceFile virtualSourceFile =
-                SourceFile.builder().setBody(documentInput)
-                        .setNamespace(Namespaces.EMPTY).build();
-        ApexCompiler compiler =
-                ApexCompiler
-                        .builder()
-                        .setInput(
-                            new CompilationInput(Collections.singleton(virtualSourceFile), EmptySymbolProvider.get(),
-                                    null, null, null)).build();
-        SymbolScope scope = new SymbolScope(new StandardSymbolResolver(compiler), new Errors());
+    protected void visitVariables(IFile file) {
         visitor = new VariablesVisitor();
-        compilation.traverse(visitor, scope);
+        CompilerService.INSTANCE.visitAstFromFile(file, visitor);
     }
 
     /**
@@ -186,7 +163,7 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
      * @author nchen
      * 
      */
-    static class VariablesVisitor extends AstVisitor<SymbolScope> {
+    static final class VariablesVisitor extends AstVisitor<AdditionalPassScope> {
         static class FieldInfoWrapper extends AbstractCompletionProposalDisplayable {
 
             FieldInfo fieldInfo;
@@ -197,7 +174,7 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
 
             @Override
             public String getReplacementString() {
-                return fieldInfo.getByteCodeName();
+                return fieldInfo.getBytecodeName();
             }
 
             @Override
@@ -210,21 +187,20 @@ public class ApexSystemInstanceMembersProcessorForFields extends ApexCompletionP
 
         // To enable completions with details from classes and triggers, we tell the visitor that we want to "visit" the innards of those elements
         @Override
-        public boolean visit(UserClass node, SymbolScope scope) {
+        public boolean visit(UserClass node, AdditionalPassScope scope) {
             return true;
         }
 
         @Override
-        public boolean visit(UserTrigger node, SymbolScope scope) {
+        public boolean visit(UserTrigger node, AdditionalPassScope scope) {
             return true;
         }
 
         // These are the elements for which we collect type info for
         @Override
-        public boolean visit(Field node, SymbolScope scope) {
-            node.resolve(scope.getSymbols());
+        public boolean visit(Field node, AdditionalPassScope scope) {
             FieldInfo fieldInfo = node.getFieldInfo();
-            fields.put(fieldInfo.getByteCodeName().toLowerCase(), new FieldInfoWrapper(fieldInfo));
+            fields.put(fieldInfo.getBytecodeName().toLowerCase(), new FieldInfoWrapper(fieldInfo));
             return true;
         }
     }

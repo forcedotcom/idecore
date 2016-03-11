@@ -66,7 +66,6 @@ public class RunTestsViewComposite extends Composite {
     private Text systemLogsTextArea = null;
     private Text userLogsTextArea = null;
     private ProgressBar progressBar = null;
-    private String progressText = "%d out of %d tests finished";
     protected RunTestsView runView = null;
     protected IProject project = null;
     
@@ -237,7 +236,6 @@ public class RunTestsViewComposite extends Composite {
         gridData2.verticalAlignment = SWT.END;
         progressBar = new ProgressBar(rightHandComposite, SWT.SMOOTH);
         progressBar.setLayoutData(gridData2);
-        progressBar.setToolTipText(String.format(progressText, 0, 0));
     }
     
     /**
@@ -384,7 +382,6 @@ public class RunTestsViewComposite extends Composite {
     		progressBar.setMinimum(min);
     		progressBar.setMaximum(max);
     		progressBar.setSelection(cur);
-    		progressBar.setToolTipText(String.format(progressText, cur, max));
     	}
     }
     

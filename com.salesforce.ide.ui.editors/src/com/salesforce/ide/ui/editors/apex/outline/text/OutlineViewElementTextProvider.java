@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,22 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline.text;
 
-import apex.jorje.data.ast.BlockMember.FieldMember;
-import apex.jorje.data.ast.BlockMember.InnerClassMember;
-import apex.jorje.data.ast.BlockMember.InnerEnumMember;
-import apex.jorje.data.ast.BlockMember.InnerInterfaceMember;
-import apex.jorje.data.ast.BlockMember.MethodMember;
-import apex.jorje.data.ast.BlockMember.PropertyMember;
-import apex.jorje.data.ast.BlockMember.StaticStmntBlockMember;
-import apex.jorje.data.ast.BlockMember.StmntBlockMember;
-import apex.jorje.data.ast.ClassDecl;
-import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
-import apex.jorje.data.ast.EnumDecl;
-import apex.jorje.data.ast.Identifier;
-import apex.jorje.data.ast.InterfaceDecl;
-import apex.jorje.services.printers.ListPrinter;
-import apex.jorje.services.printers.PrintContext;
-import apex.jorje.services.printers.Printer;
-import apex.jorje.services.printers.PrinterFactory;
-import apex.jorje.services.printers.PrinterUtil;
+import java.util.stream.Collectors;
 
-import com.salesforce.ide.ui.editors.apex.outline.ApexLabelProvider;
 import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
+
+import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserEnum;
+import apex.jorje.semantic.ast.compilation.UserInterface;
+import apex.jorje.semantic.ast.compilation.UserTrigger;
+import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.member.Method;
+import apex.jorje.semantic.ast.member.Property;
+import apex.jorje.semantic.bcl.AsmMethod;
+import apex.jorje.semantic.symbol.member.method.MethodInfo;
+import apex.jorje.semantic.symbol.member.variable.FieldInfo;
+import apex.jorje.semantic.symbol.type.TypeInfo;
+import apex.jorje.semantic.symbol.type.UnitType;
 
 /**
  * Provides the text labeling for the outline view elements.
@@ -40,86 +35,111 @@ import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
  * occur. This is also why it has been marked final.
  * 
  * @author nchen
- * 
+ *         
  */
 public final class OutlineViewElementTextProvider implements IOutlineViewElementHandler<String> {
-    private static final PrinterFactory printerFactory = PrinterUtil.get().getFactory();
-    private static Printer<Identifier> identifierPrinter = printerFactory.identifierPrinter();
-    private static OutlineViewVariableDeclsPrinter variableDeclsPrinter = new OutlineViewVariableDeclsPrinter(
-            printerFactory);
-    private static OutlineViewFormalParameterPrinter formalParameterPrinter = new OutlineViewFormalParameterPrinter(
-            printerFactory);
-    private static OutlineViewMethodClassMemberPrinter methodMemberPrinter = new OutlineViewMethodClassMemberPrinter(
-            printerFactory, ListPrinter.create(formalParameterPrinter, ", ", "", ""));
-    private static OutlineViewPropertyClassMemberPrinter propertyMemberPrinter =
-            new OutlineViewPropertyClassMemberPrinter(printerFactory);
-
-    private static PrintContext defaultPrintContext() {
-        return new PrintContext();
-    }
-
+    
     @Override
-    public String handle(TriggerDeclUnit element) {
-        return identifierPrinter.print(element.name, defaultPrintContext());
+    public String handle(UserClass userClass) {
+        return TypeInfoPrinter.print(userClass.getDefiningType());
     }
-
+    
     @Override
-    public String handle(ClassDecl element) {
-        return identifierPrinter.print(element.name, defaultPrintContext());
+    public String handle(UserInterface userInterface) {
+        return TypeInfoPrinter.print(userInterface.getDefiningType());
     }
-
+    
     @Override
-    public String handle(InterfaceDecl element) {
-        return identifierPrinter.print(element.name, defaultPrintContext());
+    public String handle(UserTrigger userTrigger) {
+        return TypeInfoPrinter.print(userTrigger.getDefiningType());
     }
-
+    
     @Override
-    public String handle(EnumDecl element) {
-        return identifierPrinter.print(element.name, defaultPrintContext());
+    public String handle(UserEnum userEnum) {
+        return TypeInfoPrinter.print(userEnum.getDefiningType());
     }
-
+    
     @Override
-    public String handle(InnerClassMember element) {
-        return identifierPrinter.print(element.body.name, defaultPrintContext());
+    public String handle(Method method) {
+        return MethodInfoPrinter.print(method.getMethodInfo());
     }
-
+    
     @Override
-    public String handle(InnerInterfaceMember element) {
-        return identifierPrinter.print(element.body.name, defaultPrintContext());
+    public String handle(Property property) {
+        return PropertyPrinter.print(property);
     }
-
+    
     @Override
-    public String handle(InnerEnumMember element) {
-        return identifierPrinter.print(element.body.name, defaultPrintContext());
+    public String handle(Field field) {
+        return FieldPrinter.print(field);
     }
-
-    @Override
-    public String handle(StmntBlockMember element) {
-        return ApexLabelProvider.ELLIPSIS_SUFFIX;
+    
+    // PRINTERS
+    ///////////
+    
+    public static final class MethodInfoPrinter {
+        public static String print(MethodInfo methodInfo) {
+            StringBuilder sb = new StringBuilder();
+            if (isImplicitInit(methodInfo)) {
+                sb.append(TypeInfoPrinter.print(methodInfo.getDefiningType()));
+                sb.append("(");
+                sb.append(
+                    methodInfo.getParameters().stream()
+                    .map(p -> TypeInfoPrinter.print(p.getType()))
+                    .collect(Collectors.joining(", ")));
+                sb.append(")");
+            } else {
+                sb.append(methodInfo.getCanonicalName());
+                sb.append("(");
+                sb.append(
+                    methodInfo.getParameters().stream()
+                    .map(p -> TypeInfoPrinter.print(p.getType()))
+                    .collect(Collectors.joining(", ")));
+                sb.append(")");
+                sb.append(" : ");
+                sb.append(TypeInfoPrinter.print(methodInfo.getReturnType()));
+            }
+            return sb.toString();
+        }
+        
+        static boolean isImplicitInit(MethodInfo methodInfo) {
+            String canonicalName = methodInfo.getCanonicalName();
+            return canonicalName.equals(AsmMethod.INIT);
+        }
+        
     }
-
-    @Override
-    public String handle(StaticStmntBlockMember element) {
-        return ApexLabelProvider.ELLIPSIS_SUFFIX;
+    
+    public static final class TypeInfoPrinter {
+        public static String print(TypeInfo typeInfo) {
+            String fullyQualifiedApexName = typeInfo.getApexName();
+            String[] split = fullyQualifiedApexName.split("\\.");
+            return split[split.length -1];
+        }
     }
-
-    @Override
-    public String handle(FieldMember element) {
-        return variableDeclsPrinter.print(element.variableDecls, defaultPrintContext());
+    
+    public static final class FieldPrinter {
+        public static String print(Field field) {
+            StringBuilder sb = new StringBuilder();
+            FieldInfo fieldInfo = field.getFieldInfo();
+            if (fieldInfo.getDefiningType().getUnitType() == UnitType.ENUM) {
+                sb.append(fieldInfo.getName());
+            } else {
+                sb.append(fieldInfo.getName());
+                sb.append(" : ");
+                sb.append(TypeInfoPrinter.print(fieldInfo.getType()));
+            }
+            return sb.toString();
+        }
     }
-
-    @Override
-    public String handle(MethodMember element) {
-        return methodMemberPrinter.print(element, defaultPrintContext());
-    }
-
-    @Override
-    public String handle(PropertyMember element) {
-        return propertyMemberPrinter.print(element, defaultPrintContext());
-    }
-
-    @Override
-    public String handle(Identifier element) {
-        return identifierPrinter.print(element, defaultPrintContext());
+    
+    public static final class PropertyPrinter {
+        public static String print(Property property) {
+            StringBuilder sb = new StringBuilder();
+            FieldInfo fieldInfo = property.getFieldInfo();
+            sb.append(fieldInfo.getName());
+            sb.append(" : ");
+            sb.append(TypeInfoPrinter.print(fieldInfo.getType()));
+            return sb.toString();
+        }
     }
 }

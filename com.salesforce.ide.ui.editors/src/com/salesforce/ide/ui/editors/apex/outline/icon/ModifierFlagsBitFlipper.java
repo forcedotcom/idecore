@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,144 +8,116 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
+
 package com.salesforce.ide.ui.editors.apex.outline.icon;
+
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.ABSTRACT;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.GLOBAL;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.PRIVATE;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.PROTECTED;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.PUBLIC;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TRANSIENT;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.VIRTUAL;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.WEB_SERVICE;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.WITHOUT_SHARING;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.WITH_SHARING;
+import static apex.jorje.semantic.symbol.type.AnnotationTypeInfos.IS_TEST;
 
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.ui.JavaElementImageDescriptor;
 
-import apex.jorje.data.ast.Modifier;
-import apex.jorje.data.ast.Modifier.AbstractModifier;
-import apex.jorje.data.ast.Modifier.Annotation;
-import apex.jorje.data.ast.Modifier.FinalModifier;
-import apex.jorje.data.ast.Modifier.GlobalModifier;
-import apex.jorje.data.ast.Modifier.OverrideModifier;
-import apex.jorje.data.ast.Modifier.PrivateModifier;
-import apex.jorje.data.ast.Modifier.ProtectedModifier;
-import apex.jorje.data.ast.Modifier.PublicModifier;
-import apex.jorje.data.ast.Modifier.StaticModifier;
-import apex.jorje.data.ast.Modifier.TestMethodModifier;
-import apex.jorje.data.ast.Modifier.TransientModifier;
-import apex.jorje.data.ast.Modifier.VirtualModifier;
-import apex.jorje.data.ast.Modifier.WebServiceModifier;
-import apex.jorje.data.ast.Modifier.WithSharingModifier;
-import apex.jorje.data.ast.Modifier.WithoutSharingModifier;
-
 import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
 
+import apex.jorje.semantic.ast.modifier.ModifierGroup;
+
 /**
- * Determines the accessor flags based on the modifiers set. Since there is a list of modifiers, you may need to bitwise
- * AND the modifiers together. Pass in the value that you want to AND into the constructor.
- * 
- * REVIEWME: Is there a faster way to do this than to rely on static method dispatch on the type?
- * 
- * TODO: Add support for all the different annotations in
- * http://www.salesforce.com/us/developer/docs/apexcode/Content/apex_classes_annotation.htm
+ * This class is used so that we can compute both the JVM and SWT-style accessor flags at the same time for the
+ * modifiers. Apparently, both set of flags represent slightly different things but they chose to use same bit locations
+ * - so, sticking them into the same bitvector will clobber one another. Thus, we have to maintain two different
+ * bitvectors.
  * 
  * @author nchen
- * 
  */
-public final class ModifierFlagsBitFlipper implements Modifier.SwitchBlock {
-
-    private Integer accessorFlag_JVM;
-    private Integer accessorFlag_JDT;
-
-    public ModifierFlagsBitFlipper(AccessorFlags flags) {
-        this.accessorFlag_JVM = flags.accessorFlags_JVM;
-        this.accessorFlag_JDT = flags.accessorFlags_JDT;
-    }
-
-    @Override
-    public void _case(TestMethodModifier x) {
-        accessorFlag_JVM |= ApexElementImageDescriptor.TESTMETHOD;
-        accessorFlag_JDT |= ApexElementImageDescriptor.TESTMETHOD;
-    }
-
-    @Override
-    public void _case(GlobalModifier x) {
-        accessorFlag_JVM |= ApexElementImageDescriptor.GLOBAL;
-        accessorFlag_JDT |= ApexElementImageDescriptor.GLOBAL;
-    }
-
-    @Override
-    public void _case(WebServiceModifier x) {
-        accessorFlag_JVM |= ApexElementImageDescriptor.WEBSERVICE;
-        accessorFlag_JDT |= ApexElementImageDescriptor.WEBSERVICE;
-    }
-
-    @Override
-    public void _case(PublicModifier x) {
-        accessorFlag_JVM |= Flags.AccPublic;
-    }
-
-    @Override
-    public void _case(PrivateModifier x) {
-        accessorFlag_JVM |= Flags.AccPrivate;
-    }
-
-    @Override
-    public void _case(ProtectedModifier x) {
-        accessorFlag_JVM |= Flags.AccProtected;
-    }
-
-    @Override
-    public void _case(WithSharingModifier x) {
-        accessorFlag_JVM |= ApexElementImageDescriptor.WITHSHARING;
-        accessorFlag_JDT |= ApexElementImageDescriptor.WITHSHARING;
-    }
-
-    @Override
-    public void _case(WithoutSharingModifier x) {
-        accessorFlag_JVM |= ApexElementImageDescriptor.WITHOUTSHARING;
-        accessorFlag_JDT |= ApexElementImageDescriptor.WITHOUTSHARING;
-    }
-
-    @Override
-    public void _case(StaticModifier x) {
-        accessorFlag_JVM |= Flags.AccStatic;
-        accessorFlag_JDT |= JavaElementImageDescriptor.STATIC;
-    }
-
-    @Override
-    public void _case(TransientModifier x) {
-        accessorFlag_JVM |= Flags.AccTransient;
-        accessorFlag_JDT |= JavaElementImageDescriptor.TRANSIENT;
-    }
-
-    @Override
-    public void _case(AbstractModifier x) {
-        accessorFlag_JVM |= Flags.AccAbstract;
-        accessorFlag_JDT |= JavaElementImageDescriptor.ABSTRACT;
-    }
-
-    @Override
-    public void _case(FinalModifier x) {
-        accessorFlag_JVM |= Flags.AccFinal;
-        accessorFlag_JDT |= JavaElementImageDescriptor.FINAL;
-    }
-
-    @Override
-    public void _case(OverrideModifier x) {
-        accessorFlag_JDT |= JavaElementImageDescriptor.OVERRIDES;
-    }
-
-    @Override
-    public void _case(VirtualModifier x) {
-        accessorFlag_JVM |= ApexElementImageDescriptor.VIRTUAL;
-        accessorFlag_JDT |= ApexElementImageDescriptor.VIRTUAL;
-    }
-
-    /*
-     * Another way to another a test method is to use the @IsTest annotation so be sure to set it here too.
-     */
-    @Override
-    public void _case(Annotation x) {
-        if (x.name.value.equalsIgnoreCase("istest")) {
+public final class ModifierFlagsBitFlipper {
+    public static final AccessorFlags flipBits(ModifierGroup modifiers) {
+        Integer accessorFlag_JVM = 0;
+        Integer accessorFlag_JDT = 0;
+        
+        if (modifiers.has(TEST_METHOD)) {
             accessorFlag_JVM |= ApexElementImageDescriptor.TESTMETHOD;
             accessorFlag_JDT |= ApexElementImageDescriptor.TESTMETHOD;
         }
-    }
-    
-    public AccessorFlags getAccessorFlags() {
+        
+        if (modifiers.has(IS_TEST)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.TESTMETHOD;
+            accessorFlag_JDT |= ApexElementImageDescriptor.TESTMETHOD;
+        }
+
+        if (modifiers.has(GLOBAL)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.GLOBAL;
+            accessorFlag_JDT |= ApexElementImageDescriptor.GLOBAL;
+        }
+        
+        if (modifiers.has(WEB_SERVICE)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.WEBSERVICE;
+            accessorFlag_JDT |= ApexElementImageDescriptor.WEBSERVICE;
+        }
+        
+        if (modifiers.has(PUBLIC)) {
+            accessorFlag_JVM |= Flags.AccPublic;
+        }
+        
+        if (modifiers.has(PRIVATE)) {
+            accessorFlag_JVM |= Flags.AccPrivate;
+        }
+        
+        if (modifiers.has(PROTECTED)) {
+            accessorFlag_JVM |= Flags.AccProtected;
+        }
+        
+        if (modifiers.has(WITH_SHARING)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.WITHSHARING;
+            accessorFlag_JDT |= ApexElementImageDescriptor.WITHSHARING;
+        }
+        
+        if (modifiers.has(WITHOUT_SHARING)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.WITHOUTSHARING;
+            accessorFlag_JDT |= ApexElementImageDescriptor.WITHOUTSHARING;
+        }
+        
+        if (modifiers.has(STATIC)) {
+            accessorFlag_JVM |= Flags.AccStatic;
+            accessorFlag_JDT |= JavaElementImageDescriptor.STATIC;
+        }
+        
+        if (modifiers.has(TRANSIENT)) {
+            accessorFlag_JVM |= Flags.AccTransient;
+            accessorFlag_JDT |= JavaElementImageDescriptor.TRANSIENT;
+        }
+        
+        if (modifiers.has(ABSTRACT)) {
+            accessorFlag_JVM |= Flags.AccAbstract;
+            accessorFlag_JDT |= JavaElementImageDescriptor.ABSTRACT;
+        }
+        
+        if (modifiers.has(FINAL)) {
+            accessorFlag_JVM |= Flags.AccFinal;
+            accessorFlag_JDT |= JavaElementImageDescriptor.FINAL;
+        }
+        
+        if (modifiers.has(OVERRIDE)) {
+            accessorFlag_JDT |= JavaElementImageDescriptor.OVERRIDES;
+        }
+        
+        if (modifiers.has(VIRTUAL)) {
+            accessorFlag_JVM |= ApexElementImageDescriptor.VIRTUAL;
+            accessorFlag_JDT |= ApexElementImageDescriptor.VIRTUAL;
+        }
+        
         return new AccessorFlags(accessorFlag_JVM, accessorFlag_JDT);
     }
 }

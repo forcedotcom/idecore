@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,23 +13,22 @@ package com.salesforce.ide.ui.editors.apex.outline;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
-
 import org.antlr.runtime.RecognitionException;
 
 import com.salesforce.ide.apex.core.utils.ParserTestUtil;
+import com.salesforce.ide.apex.internal.core.CompilerService;
+import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider.FieldPrinter;
+import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider.MethodInfoPrinter;
+import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider.PropertyPrinter;
+import com.salesforce.ide.ui.editors.apex.outline.text.OutlineViewElementTextProvider.TypeInfoPrinter;
 
-import apex.jorje.data.ast.BlockMember.FieldMember;
-import apex.jorje.data.ast.BlockMember.InnerClassMember;
-import apex.jorje.data.ast.BlockMember.InnerEnumMember;
-import apex.jorje.data.ast.BlockMember.InnerInterfaceMember;
-import apex.jorje.data.ast.BlockMember.MethodMember;
-import apex.jorje.data.ast.BlockMember.PropertyMember;
-import apex.jorje.data.ast.BlockMember.StaticStmntBlockMember;
-import apex.jorje.data.ast.BlockMember.StmntBlockMember;
-import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
-import apex.jorje.data.ast.Identifier;
+import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserEnum;
+import apex.jorje.semantic.ast.compilation.UserInterface;
+import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.member.Method;
+import apex.jorje.semantic.ast.member.Property;
+import junit.framework.TestCase;
 
 /**
  * Tests that we are obtaining all the children that we want in the outline view. This is not a simple test of the
@@ -64,134 +63,107 @@ public class DisplayChildrenMembersTest_unit extends TestCase {
     }
 
     private Object[] setUpCompilationUnit(String testFile) throws IOException, URISyntaxException, RecognitionException {
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromFile(testFile);
-        RootElementFilter filter = new RootElementFilter();
-        cu._switch(filter);
-        return provider.getChildren(filter.getRootElements()[0]);
+        String fileContents = ParserTestUtil.readFromFile(testFile);
+        OutlineViewVisitor visitor = new OutlineViewVisitor();
+        CompilerService.INSTANCE.visitAstFromString(fileContents, visitor);
+        return provider.getChildren(visitor.getTopLevel());
     }
 
     public void testFieldMembers() {
-        FieldMember staticField = (FieldMember) classNoNestedChildren[0];
-        assertEquals("staticField", staticField.variableDecls.decls.get(0).name.value);
+        Field staticField = (Field) classNoNestedChildren[0];
+        assertEquals("staticField : Integer", FieldPrinter.print(staticField));
 
-        FieldMember instanceField = (FieldMember) classNoNestedChildren[1];
-        assertEquals("field", instanceField.variableDecls.decls.get(0).name.value);
+        Field instanceField = (Field) classNoNestedChildren[1];
+        assertEquals("field : Integer", FieldPrinter.print(instanceField));
 
         // Internally, we split the declaration into three lines
         // So each variable is on a different line in the outline view
         // This is the best way to display it
-        FieldMember instanceFields = (FieldMember) classNoNestedChildren[2];
-        assertEquals("field1", instanceFields.variableDecls.decls.get(0).name.value);
-        instanceFields = (FieldMember) classNoNestedChildren[3];
-        assertEquals("field2", instanceFields.variableDecls.decls.get(0).name.value);
-        instanceFields = (FieldMember) classNoNestedChildren[4];
-        assertEquals("field3", instanceFields.variableDecls.decls.get(0).name.value);
+        Field instanceFields = (Field) classNoNestedChildren[2];
+        assertEquals("field1 : Integer", FieldPrinter.print(instanceFields));
+        instanceFields = (Field) classNoNestedChildren[3];
+        assertEquals("field2 : Integer", FieldPrinter.print(instanceFields));
+        instanceFields = (Field) classNoNestedChildren[4];
+        assertEquals("field3 : Integer", FieldPrinter.print(instanceFields));
     }
 
     public void testPropertyMember() {
-        PropertyMember propertyField = (PropertyMember) classNoNestedChildren[5];
-        assertEquals("property", propertyField.propertyDecl.name.value);
+        Property propertyField = (Property) classNoNestedChildren[5];
+        assertEquals("property : Integer", PropertyPrinter.print(propertyField));
     }
 
-    // StaticInitializers do not have names, we just test that they are present.
-    public void testStaticStmntBlockMember() {
-        StaticStmntBlockMember staticInitializer = (StaticStmntBlockMember) classNoNestedChildren[6];
-        assertNotNull(staticInitializer);
-    }
-
-    // Initializers do not have names, we just test that they are present.
-    public void testStmntBlockMember() {
-        StmntBlockMember initializer = (StmntBlockMember) classNoNestedChildren[7];
-        assertNotNull(initializer);
-    }
-
-    public void testMethodMember() {
-        MethodMember initializer = (MethodMember) classNoNestedChildren[8];
-        assertEquals("ClassWithValidMembersNoNested", initializer.methodDecl.name.value);
+    public void testConstructor() {
+        Method initializer = (Method) classNoNestedChildren[6];
+        assertEquals("ClassWithValidMembersNoNested()", MethodInfoPrinter.print(initializer.getMethodInfo()));
     }
 
     // Interfaces
     /////////////
 
     public void testInterfaceMethod() {
-        MethodMember initializer = (MethodMember) interfaceNoNested[0];
-        assertEquals("method", initializer.methodDecl.name.value);
+        Method method = (Method) interfaceNoNested[0];
+        assertEquals("method() : void", MethodInfoPrinter.print(method.getMethodInfo()));
     }
 
     // Enums
     ////////
 
     public void testEnumMembers() {
-        Identifier enumIdentifier = (Identifier) enumNoNested[0];
-        assertEquals("YES", enumIdentifier.value);
+        Field enumIdentifier = (Field) enumNoNested[0];
+        assertEquals("YES", FieldPrinter.print(enumIdentifier));
 
-        enumIdentifier = (Identifier) enumNoNested[1];
-        assertEquals("NO", enumIdentifier.value);
+        enumIdentifier = (Field) enumNoNested[1];
+        assertEquals("NO", FieldPrinter.print(enumIdentifier));
     }
 
     // Triggers
     ///////////
-
-    public void testTrickyGetElementsForTriggers() throws Exception {
-        String triggerFile = "/filemetadata/outline/classes/TriggerWithValidMembers.trigger";
-        CompilationUnit cu = ParserTestUtil.parseCompilationUnitFromFile(triggerFile);
-
-        provider.inputChanged(null, null, cu);
-
-        TriggerDeclUnit firstPass = (TriggerDeclUnit) provider.getElements(cu)[0];
-        assertEquals("MyTrigger", firstPass.name.value);
-
-        Object[] secondPass = provider.getElements(cu);
-        assertTrue(secondPass[0] instanceof FieldMember);
-        assertTrue(secondPass[1] instanceof FieldMember);
-        assertTrue(secondPass[2] instanceof InnerClassMember);
-    }
 
     public void testTriggerMembers() {
         // Should only see the two fields and one inner class
         // Should not see the for loop as a stmnt
         assertEquals(3, triggerNestedChildren.length);
         
-        FieldMember staticVar = (FieldMember) triggerNestedChildren[0];
-        assertEquals("staticVar", staticVar.variableDecls.decls.get(0).name.value);
+        Field staticVar = (Field) triggerNestedChildren[0];
+        assertEquals("staticVar : Integer", FieldPrinter.print(staticVar));
 
-        FieldMember instanceVar = (FieldMember) triggerNestedChildren[1];
-        assertEquals("instanceVar", instanceVar.variableDecls.decls.get(0).name.value);
+        Field instanceVar = (Field) triggerNestedChildren[1];
+        assertEquals("instanceVar : Integer", FieldPrinter.print(instanceVar));
 
-        InnerClassMember myInnerClass = (InnerClassMember) triggerNestedChildren[2];
-        assertEquals("MyInnerClass", myInnerClass.body.name.value);
+        UserClass myInnerClass = (UserClass) triggerNestedChildren[2];
+        assertEquals("MyInnerClass", TypeInfoPrinter.print(myInnerClass.getDefiningType()));
         
-        MethodMember methodMember = (MethodMember) myInnerClass.body.members.values.get(0);
-        assertEquals("innerClassMethod", methodMember.methodDecl.name.value);
+        Method methodMember = (Method) provider.getChildren(myInnerClass)[0];
+        assertEquals("innerClassMethod() : void", MethodInfoPrinter.print(methodMember.getMethodInfo()));
     }
 
     // Nested elements
     ///////////////////
 
     public void testNestedEnum() {
-        InnerEnumMember innerEnum = (InnerEnumMember) classNestedChildren[0];
+        UserEnum innerEnum = (UserEnum) classNestedChildren[0];
         Object[] children = provider.getChildren(innerEnum);
 
-        Identifier enumIdentifier = (Identifier) children[0];
-        assertEquals("YES", enumIdentifier.value);
+        Field enumIdentifier = (Field) children[0];
+        assertEquals("YES", FieldPrinter.print(enumIdentifier));
 
-        enumIdentifier = (Identifier) children[1];
-        assertEquals("NO", enumIdentifier.value);
+        enumIdentifier = (Field) children[1];
+        assertEquals("NO", FieldPrinter.print(enumIdentifier));
     }
 
     public void testNestedClass() {
-        InnerClassMember innerClass = (InnerClassMember) classNestedChildren[1];
+        UserClass innerClass = (UserClass) classNestedChildren[1];
         Object[] children = provider.getChildren(innerClass);
 
-        FieldMember field = (FieldMember) children[0];
-        assertEquals("field", field.variableDecls.decls.get(0).name.value);
+        Field field = (Field) children[0];
+        assertEquals("field : Integer", FieldPrinter.print(field));
     }
 
     public void testNestedInterface() {
-        InnerInterfaceMember innerInterface = (InnerInterfaceMember) classNestedChildren[2];
+        UserInterface innerInterface = (UserInterface) classNestedChildren[2];
         Object[] children = provider.getChildren(innerInterface);
 
-        MethodMember method = (MethodMember) children[0];
-        assertEquals("innerInterfaceMethod", method.methodDecl.name.value);
+        Method method = (Method) children[0];
+        assertEquals("innerInterfaceMethod() : void", MethodInfoPrinter.print(method.getMethodInfo()));
     }
 }

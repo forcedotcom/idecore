@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,180 +10,167 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.apex.outline;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import apex.jorje.data.ast.BlockMember;
-import apex.jorje.data.ast.ClassDecl;
-import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.data.ast.CompilationUnit.TriggerDeclUnit;
-import apex.jorje.data.ast.EnumDecl;
-import apex.jorje.data.ast.Identifier;
-import apex.jorje.data.ast.InterfaceDecl;
+import com.google.common.collect.Lists;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import apex.jorje.data.Loc;
+import apex.jorje.data.Loc.MatchBlock;
+import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.data.Loc.SyntheticLoc;
+import apex.jorje.semantic.ast.Locatable;
+import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserClassMembers;
+import apex.jorje.semantic.ast.compilation.UserEnum;
+import apex.jorje.semantic.ast.compilation.UserInterface;
+import apex.jorje.semantic.ast.compilation.UserInterfaceMembers;
+import apex.jorje.semantic.ast.compilation.UserTrigger;
+import apex.jorje.semantic.ast.compilation.UserTriggerMembers;
 
 /**
- * TODO: Factor this out so that there is no dependency on the UI for easy unit testing
+ * Provides the contents to be displayed in the outline view.
  * 
  * @author nchen
- * 
  */
 public class ApexOutlineContentProvider implements ITreeContentProvider {
+    /**
+     * Filters out only real locations. 
+     */
+    private static final MatchBlock<Boolean> REAL_LOC_FILTER_FN = new Loc.MatchBlock<Boolean>() {
+        @Override
+        public Boolean _case(RealLoc x) {
+            return true;
+        }
+        
+        @Override
+        public Boolean _case(SyntheticLoc x) {
+            return false;
+        }
+    };
+    
+    /**
+     * Compares two Loc for ordering. Only RealLocs have an ordering defined. SyntheticLocs have no ordering.
+     */
+    public static final Comparator<Locatable> LOCATABLE_COMPARATOR = new Comparator<Locatable>() {
+        @Override
+        public int compare(Locatable left, Locatable right) {
+            Loc leftLoc = left.getLoc();
+            Loc rightLoc = right.getLoc();
+            return leftLoc.match(new Loc.MatchBlock<Integer>() {
+                
+                @Override
+                public Integer _case(RealLoc realLeftLoc) {
+                    return rightLoc.match(new Loc.MatchBlock<Integer>() {
+                        
+                        @Override
+                        public Integer _case(RealLoc realRightLoc) {
+                            if (realLeftLoc.line != realRightLoc.line) {
+                                return Integer.compare(realLeftLoc.line, realRightLoc.line);
+                            } else {
+                                return Integer.compare(realLeftLoc.column, realRightLoc.column);
+                            }
+                        }
+                        
+                        @Override
+                        public Integer _case(SyntheticLoc x) {
+                            return 0;
+                        }
+                    });
+                }
+                
+                @Override
+                public Integer _case(SyntheticLoc synthetic) {
+                    return 0;
+                }
+            });
+        }
+    };
+    
     private static final Object[] NO_CHILDREN = new Object[0];
-
-    private CompilationUnit fCompilationUnit;
-    private boolean displayingTopLevelTrigger = true;
-
+    
+    private OutlineViewVisitor visitor;
+    
     @Override
     public void dispose() {}
-
+    
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput instanceof CompilationUnit) {
-            fCompilationUnit = (CompilationUnit) newInput;
-            displayingTopLevelTrigger = true;
+        if (newInput instanceof OutlineViewVisitor) {
+            visitor = (OutlineViewVisitor) newInput;
         }
     }
-
+    
     @Override
     public Object[] getElements(Object inputElement) {
-        if (hasValidCompilationUnit()) {
-            if (inputElement instanceof TriggerDeclUnit) {
-                // This part is complicated due to an implementation detail with triggers.
-                // Unlike its counterparts (Class, Enum, etc) there is no TriggerDecl under TriggerDeclUnit
-                // We want to display the top level Trigger node, while also processing its subnodes.
-                // The main idea here is that we want the node to play two roles: the first time, display the node itself,
-                // the second time, display its children.
-                if (displayingTopLevelTrigger) {
-                    displayingTopLevelTrigger = false;
-                    RootElementFilter switchBlock = new RootElementFilter();
-                    fCompilationUnit._switch(switchBlock);
-                    return switchBlock.getRootElements();
-                } else {
-                    return childrenOf((TriggerDeclUnit) inputElement);
-                }
-            } else {
-                RootElementFilter switchBlock = new RootElementFilter();
-                fCompilationUnit._switch(switchBlock);
-                return switchBlock.getRootElements();
-            }
-        }
-
-        return NO_CHILDREN;
+        return new Object[] { visitor.getTopLevel() };
     }
-
-    private boolean hasValidCompilationUnit() {
-        return fCompilationUnit != null;
-    }
-
+    
     /**
-     * Cannot do static dispatch because we declare the type to be Object. This was probably done by Eclipse in
+     * Cannot do static dispatch because Eclipse declares the static type of the parameter to be Object.
      */
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof EnumDecl) {
-            return childrenOf((EnumDecl) parentElement);
-        } else if (parentElement instanceof ClassDecl) {
-            return childrenOf(((ClassDecl) parentElement));
-        } else if (parentElement instanceof InterfaceDecl) {
-            return childrenOf(((InterfaceDecl) parentElement));
-        } else if (parentElement instanceof TriggerDeclUnit) {
-            return childrenOf((TriggerDeclUnit) parentElement);
-        } else if (parentElement instanceof BlockMember) {
-            return childrenOf((BlockMember) parentElement);
+        if (parentElement instanceof UserClass) {
+            return childrenOf((UserClass) parentElement);
+        } else if (parentElement instanceof UserInterface) {
+            return childrenOf(((UserInterface) parentElement));
+        } else if (parentElement instanceof UserEnum) {
+            return childrenOf(((UserEnum) parentElement));
+        } else if (parentElement instanceof UserTrigger) {
+            return childrenOf((UserTrigger) parentElement);
         }
         return NO_CHILDREN;
     }
-
-    public static Object[] childrenOf(EnumDecl enumDecl) {
-        if (enumDecl.members != null && enumDecl.members.values != null) {
-            // Basically just the identifiers
-            return validIdentifiers(enumDecl.members.values).toArray(Identifier.class);
-        }
-
-        return NO_CHILDREN;
+    
+    private Object[] childrenOf(UserClass userClass) {
+        List<Locatable> children = Lists.newArrayList();
+        UserClassMembers members = userClass.getMembers();
+        children.addAll(members.getFields());
+        children.addAll(members.getProperties());
+        children.addAll(members.getInnerTypes());
+        children.addAll(members.getMethods());
+        return filterNonSyntheticMembers(children).toArray();
     }
-
-    public static FluentIterable<Identifier> validIdentifiers(Iterable<Identifier> list) {
-        return FluentIterable.from(list).filter(new Predicate<Identifier>() {
-
-            @Override
-            public boolean apply(Identifier id) {
-                return id != null;
-            }
-        });
+    
+    private Object[] childrenOf(UserInterface userInterface) {
+        List<Locatable> children = Lists.newArrayList();
+        UserInterfaceMembers members = userInterface.getMembers();
+        children.addAll(members.getMethods());
+        return filterNonSyntheticMembers(children).toArray();
     }
-
-    // These two are identical except for the types
-    public static Object[] childrenOf(ClassDecl classDecl) {
-        if (classDecl.members != null && classDecl.members.values != null) {
-            List<BlockMember> values = classDecl.members.values;
-            return validBlockMembers(values);
-        }
-        return NO_CHILDREN;
+    
+    private Object[] childrenOf(UserEnum userEnum) {
+        List<Locatable> children = Lists.newArrayList();
+        children.addAll(userEnum.getFields());
+        return filterNonSyntheticMembers(children).toArray();
     }
-
-    public static Object[] childrenOf(InterfaceDecl interfaceDecl) {
-        if (interfaceDecl.members != null && interfaceDecl.members.values != null) {
-            List<BlockMember> values = interfaceDecl.members.values;
-            return validBlockMembers(values);
-        }
-        return NO_CHILDREN;
+    
+    private Object[] childrenOf(UserTrigger userTrigger) {
+        List<Locatable> children = Lists.newArrayList();
+        UserTriggerMembers members = userTrigger.getMembers();
+        children.addAll(members.getInnerTypes());
+        children.addAll(members.getFields());
+        children.addAll(members.getMethods());
+        return filterNonSyntheticMembers(children).toArray();
     }
-
-    private static Object[] childrenOf(TriggerDeclUnit triggerDeclUnit) {
-        if (triggerDeclUnit.members != null && triggerDeclUnit.members.values != null) {
-            List<BlockMember> values = triggerDeclUnit.members.values;
-            return validTriggerBlockMembers(values);
-        }
-        return NO_CHILDREN;
+    
+    private List<Locatable> filterNonSyntheticMembers(List<Locatable> locatables) {
+        return locatables.stream()
+            .filter(l -> l.getLoc().match(REAL_LOC_FILTER_FN))
+            .sorted(LOCATABLE_COMPARATOR)
+            .collect(Collectors.toList());
     }
-
-    public static Object[] validBlockMembers(List<BlockMember> values) {
-        final List<Object> children = new ArrayList<>();
-        for (BlockMember member : values) {
-            if (member != null) { // the parser can produce partial jADT with null members
-                member._switch(new BlockMemberFilter(children));
-            }
-        }
-        // Basically just the class members
-        return children.toArray();
-    }
-
-    public static Object[] validTriggerBlockMembers(List<BlockMember> values) {
-        final List<Object> children = new ArrayList<>();
-        for (BlockMember member : values) {
-            if (member != null) { // the parser can produce partial jADT with null members
-                member._switch(new TriggerMemberFilter(children));
-            }
-        }
-        // Basically just the main members, minus any statements
-        return children.toArray();
-    }
-
-    public static Object[] childrenOf(BlockMember classMember) {
-        NestedClassMemberFilter filter = new NestedClassMemberFilter();
-        classMember._switch(filter);
-        return filter.getChildren().toArray();
-    }
-
+    
     @Override
     public Object getParent(Object element) {
         return null;
     }
-
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-     * 
-     * TODO: Optimize this. Right now, we are just going to call getChildren and return if we have a non-zero value
-     * 
-     */
+    
     @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length >= 1;
