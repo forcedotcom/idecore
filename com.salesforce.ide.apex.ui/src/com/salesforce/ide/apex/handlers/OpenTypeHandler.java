@@ -13,9 +13,11 @@ package com.salesforce.ide.apex.handlers;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,8 +31,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 
 import com.google.common.collect.Maps;
-import com.salesforce.ide.apex.core.util.ApexVisitorUtil;
 import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
+import com.salesforce.ide.apex.internal.core.CompilerService;
 import com.salesforce.ide.apex.ui.Messages;
 import com.salesforce.ide.apex.ui.views.FilteredApexResourcesSelectionDialog;
 import com.salesforce.ide.apex.visitors.OpenTypeVisitor;
@@ -60,16 +62,18 @@ public class OpenTypeHandler extends BaseHandler {
 	private void openTypeDialog(Shell shell, List<IProject> projects) {
 		Map<String, OpenTypeClassHolder> resources = Maps.newHashMap();
 		for (IProject project : projects) {
-			List<IResource> sources = ApexSourceUtils.INSTANCE.findSourcesInProject(project);
+			List<IResource> sources = ApexSourceUtils.INSTANCE.findLocalSourcesInProject(project);
+			List<IResource> managedSources = ApexSourceUtils.INSTANCE.findReferencedSourcesInProject(project);
+			sources.addAll(managedSources);
 			List<IResource> typeRef = ApexSourceUtils.INSTANCE.filterSourcesByClassOrTrigger(sources);
 			for (IResource resource : typeRef) {
 				OpenTypeVisitor visitor = new OpenTypeVisitor();
-				ApexVisitorUtil.INSTANCE.traverse(visitor, resource);
+			    CompilerService.INSTANCE.visitAstFromFile((IFile) resource, visitor);
 				Map<String, Integer> mapping = visitor.getNumberLineMapping();
 				OpenTypeClassHolder holder = null;
 				for (String className : mapping.keySet()) {
 					holder = new OpenTypeClassHolder(resource, project.getName(), className, mapping.get(className));
-					resources.put(resource.getFullPath().toString(), holder);
+					resources.put(resource.getFullPath().toString() + className, holder);
 				}
 			}
 		}
@@ -128,13 +132,17 @@ public class OpenTypeHandler extends BaseHandler {
 			return displayName;
 		}
 
+		/**
+		 * line is excluded from hashCode and equals because we don't want selection history to think 
+		 * two resources are different if only their line number has changed. 
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + ((displayName == null) ? 0 : displayName.hashCode());
-			result = prime * result + line;
 			result = prime * result + ((projectName == null) ? 0 : projectName.hashCode());
+			result = prime * result + ((resource == null) ? 0 : resource.hashCode());
 			return result;
 		}
 
@@ -152,12 +160,15 @@ public class OpenTypeHandler extends BaseHandler {
 					return false;
 			} else if (!displayName.equals(other.displayName))
 				return false;
-			if (line != other.line)
-				return false;
 			if (projectName == null) {
 				if (other.projectName != null)
 					return false;
 			} else if (!projectName.equals(other.projectName))
+				return false;
+			if (resource == null) {
+				if (other.resource != null)
+					return false;
+			} else if (!resource.equals(other.resource))
 				return false;
 			return true;
 		}

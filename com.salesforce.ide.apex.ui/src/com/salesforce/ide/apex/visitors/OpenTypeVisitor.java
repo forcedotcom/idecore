@@ -22,8 +22,8 @@ import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
+import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
-import apex.jorje.semantic.ast.visitor.SymbolScope;
 
 /**
  * This visits all the user classes (class and inner class) and triggers 
@@ -32,7 +32,7 @@ import apex.jorje.semantic.ast.visitor.SymbolScope;
  * @author wchow
  *
  */
-public class OpenTypeVisitor extends AstVisitor<SymbolScope> {
+public class OpenTypeVisitor extends AstVisitor<AdditionalPassScope> {
 
 	private Map<String, Integer> numberLineMapping = Maps.newHashMap();
 	
@@ -63,42 +63,42 @@ public class OpenTypeVisitor extends AstVisitor<SymbolScope> {
 	}
 	
 	@Override
-	public boolean visit(UserClass node, SymbolScope scope) {
+	public boolean visit(UserClass node, AdditionalPassScope scope) {
 		return true;
 	}
 	
 	@Override
-	public void visitEnd(UserClass node, SymbolScope scope) {
+	public void visitEnd(UserClass node, AdditionalPassScope scope) {
 		addNumberLineMappingEntryIfPossible(node);
 	}
 	
 	@Override
-	public boolean visit(UserInterface node, SymbolScope scope) {
+	public boolean visit(UserInterface node, AdditionalPassScope scope) {
 		return true;
 	}
 	
 	@Override
-	public void visitEnd(UserInterface node, SymbolScope scope) {
+	public void visitEnd(UserInterface node, AdditionalPassScope scope) {
 		addNumberLineMappingEntryIfPossible(node);
 	}
 	
 	@Override
-	public boolean visit(UserTrigger node, SymbolScope scope) {
+	public boolean visit(UserTrigger node, AdditionalPassScope scope) {
 		return true;
 	}
 	
 	@Override
-	public void visitEnd(UserTrigger node, SymbolScope scope) {
+	public void visitEnd(UserTrigger node, AdditionalPassScope scope) {
 		addNumberLineMappingEntryIfPossible(node);
 	}
 	
 	@Override
-    public boolean visit(final UserEnum node, SymbolScope scope) {
+    public boolean visit(final UserEnum node, AdditionalPassScope scope) {
         return true;
     }
 
 	@Override
-    public void visitEnd(final UserEnum node, SymbolScope scope) {
+    public void visitEnd(final UserEnum node, AdditionalPassScope scope) {
 		addNumberLineMappingEntryIfPossible(node);
     }
 	

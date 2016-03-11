@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.ui.contexts">
 		<context id="com.salesforce.ide.context"
-			name="Force.com Context"
+			name="Force.com Perspective"
 			parentId="org.eclipse.ui.contexts.window"/>
 	</extension>
 	<extension point="org.eclipse.ui.bindings">
@@ -18,9 +18,77 @@
           	description="Open Apex Type" 
           	id="com.salesforce.ide.apex.ui.command.openType" 
           	name="Open Apex Type"/>
+		<command categoryId="com.salesforce.ide.apex.ui.commands.category" 
+          description="Add Jorje Builder" 
+          id="com.salesforce.ide.apex.ui.command.addJorje" 
+          name="Add Jorje Builder"/>
+        <command categoryId="com.salesforce.ide.apex.ui.commands.category" 
+          description="Remove Jorje Builder" 
+          id="com.salesforce.ide.apex.ui.command.removeJorje" 
+          name="Remove Jorje Builder"/>
     </extension>
     <extension point="org.eclipse.ui.handlers">
 		<handler class="com.salesforce.ide.apex.handlers.OpenTypeHandler" 
 			commandId="com.salesforce.ide.apex.ui.command.openType"/>
+		<handler class="com.salesforce.ide.apex.handlers.AddJorjeBuilderHandler" 
+          commandId="com.salesforce.ide.apex.ui.command.addJorje"/>
+        <handler class="com.salesforce.ide.apex.handlers.RemoveJorjeBuilderHandler" 
+          commandId="com.salesforce.ide.apex.ui.command.removeJorje"/>
     </extension>
+    <extension point="org.eclipse.ui.menus">
+       <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any">
+            <menu icon="icons/appExDevIco16.png"
+              id="com.salesforce.ide.ui.menu.context"
+              label="Force.com"
+              mnemonic=".">
+				<command commandId="com.salesforce.ide.apex.ui.command.addJorje" 
+				  id="addJorjeBuilder" 
+				  label="Add Jorje Builder" 
+				  style="push">
+				  <visibleWhen checkEnabled="false">
+					<and>
+					  <count value="1"/>
+					  <iterate ifEmpty="false" operator="and">
+						<reference definitionId="com.salesforce.ide.projectFile"/>
+						<adapt type="org.eclipse.core.resources.IProject">
+						  <instanceof value="org.eclipse.core.resources.IProject"/>
+						</adapt>
+					  </iterate>
+					</and>
+				  </visibleWhen>
+				</command>
+				<command commandId="com.salesforce.ide.apex.ui.command.removeJorje" 
+				  id="removeJorjeBuilder" 
+				  label="Remove Jorje Builder" 
+				  style="push">
+				  <visibleWhen checkEnabled="false">
+					<and>
+					  <count value="1"/>
+					  <iterate ifEmpty="false" operator="and">
+						<reference definitionId="com.salesforce.ide.projectFile"/>
+						<adapt type="org.eclipse.core.resources.IProject">
+						  <instanceof value="org.eclipse.core.resources.IProject"/>
+						</adapt>
+					  </iterate>
+					</and>
+				  </visibleWhen>
+				</command>
+        	</menu>
+    	</menuContribution>
+       <menuContribution locationURI="menu:navigate?before=open.ext">
+			<separator name="group7" visible="true"/>
+			<command commandId="com.salesforce.ide.apex.ui.command.openType"
+                id="com.salesforce.ide.apex.ui.command.openType"
+                label="Open Apex Type"
+                style="push">
+                <visibleWhen checkEnabled="true">
+                	<with variable="activeContexts">
+                    	<iterate operator="or">
+                        	<equals value="com.salesforce.ide.context"/>
+						</iterate>
+					</with>
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
 </plugin>

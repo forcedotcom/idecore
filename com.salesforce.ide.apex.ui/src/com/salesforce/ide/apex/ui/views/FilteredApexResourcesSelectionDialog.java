@@ -25,9 +25,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
-
 import com.salesforce.ide.apex.handlers.OpenTypeHandler.OpenTypeClassHolder;
 import com.salesforce.ide.apex.ui.Activator;
+import com.salesforce.ide.apex.ui.Messages;
 
 /**
  * Opex apex type dialog (ctrl-shift-t in Force.com perspective)
@@ -38,7 +38,7 @@ import com.salesforce.ide.apex.ui.Activator;
 public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelectionDialog {
 
 	private Map<String, OpenTypeClassHolder> resources;
-	
+
 	// Prevent opening of multiple dialogs
 	private static boolean alreadyOpen = false;
 	private static final ILabelProvider listLabelProvider = new LabelProvider() {
@@ -46,7 +46,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 		public String getText(Object element) {
 			if (element != null && element instanceof OpenTypeClassHolder) {
 				OpenTypeClassHolder resource = (OpenTypeClassHolder) element;
-				return resource.displayName;
+				return resource.displayName + " - " + resource.projectName; //$NON-NLS-1$
 			}
 			return null;
 		}
@@ -56,7 +56,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 		public String getText(Object element) {
 			if (element != null && element instanceof OpenTypeClassHolder) {
 				OpenTypeClassHolder resource = (OpenTypeClassHolder) element;
-				return resource.projectName;
+				return resource.projectName + " - " + resource.resource.getProjectRelativePath(); //$NON-NLS-1$
 			}
 			return null;
 		}
@@ -75,7 +75,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 		return null;
 	}
 
-	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";	
+	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 
 	@Override
 	protected IDialogSettings getDialogSettings() {
@@ -145,7 +145,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 	protected void fillContentProvider(AbstractContentProvider contentProvider,
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
 					throws CoreException {
-		progressMonitor.beginTask("Searching", resources.size());
+		progressMonitor.beginTask(Messages.FilteredApexResourcesSelectionDialog_Searching, resources.size());
 		for (String key : resources.keySet()) {
 			contentProvider.add(resources.get(key), itemsFilter);
 			progressMonitor.worked(1);
@@ -162,12 +162,14 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 	}
 
 	private class ApexTypeSelectionHistory extends SelectionHistory {
+		static final String CLASS_NAME = "className";
 		static final String RESOURCE = "resource";
 
 		@Override
 		protected Object restoreItemFromMemento(IMemento memento) {
+			String className = memento.getString(CLASS_NAME);
 			String resourcePath = memento.getString(RESOURCE);
-			OpenTypeClassHolder holder = resources.get(resourcePath);
+			OpenTypeClassHolder holder = resources.get(resourcePath + className);
 			return holder;
 		}
 
@@ -175,6 +177,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 		protected void storeItemToMemento(Object item, IMemento memento) {
 			if (item instanceof OpenTypeClassHolder) {
 				OpenTypeClassHolder ref = (OpenTypeClassHolder) item;
+				memento.putString(CLASS_NAME, ref.displayName);
 				memento.putString(RESOURCE, ref.resource.getFullPath().toString());
 			}
 		}

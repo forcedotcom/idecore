@@ -28,6 +28,6 @@ public class AllUnitTests extends SimpleTestSuite {
 
     public AllUnitTests() {
         logStart(getClass().getName());
-        addTest(new com.salesforce.ide.apex.core.AllUnitTests());
+        addTest(new com.salesforce.ide.apex.internal.core.AllUnitTests());
     }
 }

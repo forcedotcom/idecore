@@ -1533,7 +1533,9 @@ public class ProjectService extends BaseService {
                 && !resource.getProjectRelativePath().toPortableString().contains(Constants.PROJECT_FILE)
                 /* not sure how else to do this, because isHidden() doesn't work for "." files and directories */
                 && !resource.getProjectRelativePath().toPortableString().contains(Constants.SVN_DIR)
-                && !resource.getProjectRelativePath().toPortableString().endsWith(Constants.SCHEMA_FILENAME) && (isManagedResource(resource) && (!isReferencedPackageResource(resource) && !isPackageManifestFile(resource))));
+                && !resource.getProjectRelativePath().toPortableString().endsWith(Constants.SCHEMA_FILENAME)
+                && isManagedResource(resource) 
+                && !isPackageManifestFile(resource));
     }
 
     // F I L E   P R O P E R T I E S

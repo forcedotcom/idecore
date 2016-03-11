@@ -85,13 +85,19 @@ public class ForceStartup implements IStartup {
             @Override
             public void run() {
                 IPerspectiveDescriptor[] perspectives =
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getOpenPerspectives();
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSortedPerspectives();
                 if (Utils.isNotEmpty(perspectives)) {
-                    for (IPerspectiveDescriptor perspectiveDescriptor : perspectives) {
+                    for (int i = 0; i < perspectives.length; i++) {
+                    	IPerspectiveDescriptor perspectiveDescriptor = perspectives[i];
                         if (perspectiveDescriptor.getId().equals(Constants.FORCE_PLUGIN_PERSPECTIVE)) {
-                        	// Do it here so it's registered early enough to establish the context
                         	ForceIdePerspectiveListener forcePerspectiveListener = new ForceIdePerspectiveListener();
-                        	forcePerspectiveListener.activateForceContext();
+                        	/**
+                        	 *  Do it here so it's registered early enough to establish the context
+                        	 *  But also only if it's the last one to be opened 
+                        	 */
+                        	if (i == perspectives.length - 1) {
+                        		forcePerspectiveListener.activateForceContext();
+                        	}
                         	UIUtils.addPerspectiveListener(forcePerspectiveListener);
                         	logger.debug("Found " + perspectiveDescriptor.getId() + " perspective"); //$NON-NLS-1$ //$NON-NLS-2$
                         }

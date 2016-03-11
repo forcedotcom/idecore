@@ -16,9 +16,12 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.salesforce.ide.apex.ui.messages"; //$NON-NLS-1$
 
 	public static String ApexTypeHierarchyView_View_Name;
+
 	public static String OpenTypeView_View_Title;
 	public static String OpenTypeView_View_Message;
 	public static String OpenTypeView_View_Label;
+	
+	public static String FilteredApexResourcesSelectionDialog_Searching;
 	
 	static {
 		// initialize resource bundle

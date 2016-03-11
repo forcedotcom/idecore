@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,15 @@
  ******************************************************************************/
 package com.salesforce.ide.apex.internal.core;
 
+import static apex.jorje.semantic.symbol.type.AnnotationTypeInfos.IS_TEST;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.TEST_METHOD;
+
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -22,14 +26,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import apex.jorje.data.Loc.RealLoc;
-import apex.jorje.data.ast.BlockMember;
-import apex.jorje.data.ast.BlockMember.MethodMember;
-import apex.jorje.data.ast.CompilationUnit;
-import apex.jorje.data.ast.CompilationUnit.ClassDeclUnit;
-import apex.jorje.data.ast.Modifier;
-import apex.jorje.data.ast.Modifier.Annotation;
-import apex.jorje.data.ast.Modifier.TestMethodModifier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.core.factories.ComponentFactory;
@@ -38,6 +34,13 @@ import com.salesforce.ide.core.model.ApexCodeLocation;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.services.ProjectService;
 
+import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.member.Method;
+import apex.jorje.semantic.ast.modifier.ModifierGroup;
+import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
+import apex.jorje.semantic.ast.visitor.AstVisitor;
+
 /**
  * Utilities for working on Apex source files.
  * 
@@ -45,25 +48,6 @@ import com.salesforce.ide.core.services.ProjectService;
  * 
  */
 public class ApexSourceUtils {
-    private final class TestModifierDeterminer extends Modifier.SwitchBlockWithDefault {
-        boolean hasSeenTestModifier;
-
-        @Override
-        public void _case(TestMethodModifier x) {
-            hasSeenTestModifier = true;
-        }
-
-        @Override
-        public void _case(Annotation x) {
-            if (x.name.value.equalsIgnoreCase("istest")) {
-                hasSeenTestModifier = true;
-            }
-        }
-
-        @Override
-        protected void _default(Modifier x) {}
-    }
-
     private static final Logger logger = Logger.getLogger(ApexSourceUtils.class);
 
     public static final ApexSourceUtils INSTANCE = new ApexSourceUtils();
@@ -79,7 +63,7 @@ public class ApexSourceUtils {
     public Map<IResource, List<String>> findTestClassesInProject(IProject project) {
         final Map<IResource, List<String>> allTests = Maps.newHashMap();
 
-        List<IResource> projectResources = findSourcesInProject(project);
+        List<IResource> projectResources = findLocalSourcesInProject(project);
         List<IResource> projectClasses = filterSourcesByClass(projectResources);
         try {
             for (final IResource projectResource : projectClasses) {
@@ -106,32 +90,26 @@ public class ApexSourceUtils {
         final List<String> methodNames = Lists.newArrayList();
 
         try {
-            IFile file = (IFile) resource;
-            CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
-            compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
+            CompilerService.INSTANCE.visitAstFromFile((IFile) resource, new AstVisitor<AdditionalPassScope>() {
 
                 @Override
-                public void _case(ClassDeclUnit classDeclUnit) {
-                    if (classDeclUnit.body != null && classDeclUnit.body.members != null) {
-                        for (BlockMember member : classDeclUnit.body.members.values) {
-                            member._switch(new BlockMember.SwitchBlockWithDefault() {
-
-                                @Override
-                                public void _case(MethodMember x) {
-                                    if (hasTestModifier(x.methodDecl.modifiers)) {
-                                        methodNames.add(x.methodDecl.name.value);
-                                    }
-                                }
-
-                                @Override
-                                protected void _default(BlockMember x) {}
-                            });
-                        }
-                    }
+                public boolean visit(UserClass node, AdditionalPassScope scope) {
+                    return true;
                 }
 
                 @Override
-                protected void _default(CompilationUnit x) {}
+                public void visitEnd(UserClass node, AdditionalPassScope scope) {
+                    super.visitEnd(node, scope);
+                }
+
+                @Override
+                public boolean visit(Method method, AdditionalPassScope scope) {
+                    if (isTestMethod(method.getModifiers())) {
+                        methodNames.add(method.getMethodInfo().getName());
+                    }
+                    return super.visit(method, scope);
+                }
+                
             });
         } catch (Exception e) {
             logger.error("Encountered an issue trying to find test method names for " + resource.getName(), e);
@@ -141,7 +119,7 @@ public class ApexSourceUtils {
     }
     
     /**
-     * Find location of test methdods in a given resource.
+     * Find location of test methods in a given resource.
      * Test methods are annotated with @IsTest or 'testmethod'.
      * 
      * @param resource
@@ -151,34 +129,28 @@ public class ApexSourceUtils {
     	final Map<String, ApexCodeLocation> testMethods = Maps.newHashMap();
     	
     	try {
-            final IFile file = (IFile) resource;
-            CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
-            compilationUnit._switch(new CompilationUnit.SwitchBlockWithDefault() {
+            CompilerService.INSTANCE.visitAstFromFile((IFile) resource, new AstVisitor<AdditionalPassScope>() {
 
                 @Override
-                public void _case(ClassDeclUnit classDeclUnit) {
-                    if (classDeclUnit.body != null && classDeclUnit.body.members != null) {
-                        for (final BlockMember member : classDeclUnit.body.members.values) {
-                            member._switch(new BlockMember.SwitchBlockWithDefault() {
-
-                                @Override
-                                public void _case(MethodMember x) {
-                                    if (hasTestModifier(x.methodDecl.modifiers)) {
-                                    	RealLoc realLoc = (RealLoc) x.methodDecl.name.loc;
-                                    	ApexCodeLocation loc = new ApexCodeLocation(file, realLoc.line, realLoc.column);
-                                    	testMethods.put(x.methodDecl.name.value, loc);
-                                    }
-                                }
-
-                                @Override
-                                protected void _default(BlockMember x) {}
-                            });
-                        }
-                    }
+                public boolean visit(UserClass node, AdditionalPassScope scope) {
+                    return true;
                 }
 
                 @Override
-                protected void _default(CompilationUnit x) {}
+                public void visitEnd(UserClass node, AdditionalPassScope scope) {
+                    super.visitEnd(node, scope);
+                }
+
+                @Override
+                public boolean visit(Method method, AdditionalPassScope scope) {
+                    if (isTestMethod(method.getModifiers())) {
+                        RealLoc realLoc = (RealLoc) method.getLoc();
+                        ApexCodeLocation loc = new ApexCodeLocation((IFile) resource, realLoc.line, realLoc.column);
+                        testMethods.put(method.getMethodInfo().getCanonicalName(), loc);
+                    }
+                    return super.visit(method, scope);
+                }
+                
             });
         } catch (Exception e) {
             logger.error("Encountered an issue trying to find test methods for " + resource.getName(), e);
@@ -195,62 +167,62 @@ public class ApexSourceUtils {
      * @return Location of class decl
      */
     public ApexCodeLocation findClassLocInFile(IResource resource) {
-    	final class Pair {
-    		private final int line;
-    		private final int col;
-    		
-    		public Pair(int line, int col) {
-    			this.line = line;
-    			this.col = col;
-    		}
-    		
-    		public int getLine() {
-    			return this.line;
-    		}
-    		
-    		public int getCol() {
-    			return this.col;
-    		}
-    	}
-    	
-    	final IFile file = (IFile) resource;
-    	
-    	try {
-    		CompilationUnit compilationUnit = ApexModelManager.INSTANCE.getCompilationUnit(file);
-        	Pair match = compilationUnit.match(new CompilationUnit.MatchBlockWithDefault<Pair>() {
-        		@Override
-                public Pair _case(ClassDeclUnit classDeclUnit) {
-        			RealLoc realLoc = (RealLoc) classDeclUnit.body.name.loc;
-					return new Pair(realLoc.line, realLoc.column);
-        		}
-
-        		@Override
-                protected Pair _default(CompilationUnit x) {
-        			return new Pair(1, 1);
-        		}
-        	});
-        	
-        	return new ApexCodeLocation(file, match.getLine(), match.getCol());
-    	} catch (Exception e) {
+        ApexCodeLocation[] returnValue = new ApexCodeLocation[1];
+        try {
+            CompilerService.INSTANCE.visitAstFromFile((IFile) resource, new AstVisitor<AdditionalPassScope>() {
+                
+                @Override
+                public boolean visit(UserClass userClass, AdditionalPassScope scope) {
+                    RealLoc realLoc = (RealLoc) userClass.getLoc();
+                    returnValue[0] = new ApexCodeLocation((IFile) resource, realLoc.line, realLoc.column);
+                    return super.visit(userClass, scope);
+                }
+                
+            });
+            return returnValue[0];
+        } catch (Exception e) {
             logger.error("Encountered an issue trying to find location of class declaration " + resource.getName(), e);
         }
-    	
-    	return null;
+        
+        return null;
     }
     
     /**
-     * Find all IResource in a given project.
+     * Find all local IResource (excluding managed package) in a given project.
      * 
      * @param project
      * @return List of IResource
      */
-    public List<IResource> findSourcesInProject(IProject project) {
+    public List<IResource> findLocalSourcesInProject(IProject project) {
         List<IResource> projectSources = Lists.newArrayList();
         if (project == null)
             return projectSources;
 
         ProjectService ps = ContainerDelegate.getInstance().getServiceLocator().getProjectService();
         IFolder folder = ps.getSourceFolder(project);
+        if (folder == null)
+            return projectSources;
+
+        try {
+            projectSources = ps.getAllFilesOnly(Arrays.asList(folder.members()));
+        } catch (CoreException e) {}
+
+        return projectSources;
+    }
+    
+    /**
+     * Find all managed IResource (in a Referenced Package) in a given project.
+     * 
+     * @param project
+     * @return List of IResource
+     */
+    public List<IResource> findReferencedSourcesInProject(IProject project) {
+        List<IResource> projectSources = Lists.newArrayList();
+        if (project == null)
+            return projectSources;
+
+        ProjectService ps = ContainerDelegate.getInstance().getServiceLocator().getProjectService();
+        IFolder folder = ps.getReferencedPackagesFolder(project);
         if (folder == null)
             return projectSources;
 
@@ -267,7 +239,7 @@ public class ApexSourceUtils {
      * @param projectResources
      * @return List of IResource that are only Apex classes
      */
-    public List<IResource> filterSourcesByClass(List<IResource> projectResources) {
+    public List<IResource> filterSourcesByClass(final List<IResource> projectResources) {
         return filterSourcesByType(projectResources, "ApexClass");
     }
 
@@ -277,33 +249,29 @@ public class ApexSourceUtils {
      * @param projectResources
      * @return List of IResource that are only Apex triggers
      */
-    public List<IResource> filterSourcesByTrigger(List<IResource> projectResources) {
+    public List<IResource> filterSourcesByTrigger(final List<IResource> projectResources) {
         return filterSourcesByType(projectResources, "ApexTrigger");
     }
     
     /**
-     * Filter a list of IResource for Apex classes and triggers
+     * Filter a list of IFile for Apex classes and triggers
      * 
      * @param projectResources
      * @return List of IResource that are only Apex classes and triggers
      */
-    public List<IResource> filterSourcesByClassOrTrigger(List<IResource> projectResources) {
-    	if (projectResources == null || projectResources.isEmpty())
-            return projectResources;
-
-        ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
-        Component classComponent = componentFactory.getComponentByComponentType("ApexClass");
-        String classExt = classComponent == null ? ".cls" : classComponent.getFileExtension();
-        Component trgComponent = componentFactory.getComponentByComponentType("ApexTrigger");
-        String trgExt = trgComponent == null ? ".trigger" : trgComponent.getFileExtension();
-        for (Iterator<IResource> iterator = projectResources.iterator(); iterator.hasNext();) {
-            IResource res = iterator.next();
-            if (!res.getFileExtension().equals(classExt) && !res.getFileExtension().equals(trgExt)) {
-                iterator.remove();
-            }
+    public List<IResource> filterSourcesByClassOrTrigger(final List<IResource> projectResources) {
+        if (projectResources == null) {
+            return Lists.newArrayList();
+        } else {
+            ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory(); Component classComponent = componentFactory.getComponentByComponentType("ApexClass");
+            String classExt = classComponent == null ? ".cls" : classComponent.getFileExtension();
+            Component trgComponent = componentFactory.getComponentByComponentType("ApexTrigger");
+            String trgExt = trgComponent == null ? ".trigger" : trgComponent.getFileExtension();
+            
+            return projectResources.stream()
+                .filter(r -> !StringUtils.isEmpty(r.getFileExtension()) && (r.getFileExtension().equals(classExt) || r.getFileExtension().equals(trgExt)))
+                .collect(Collectors.toList());
         }
-
-        return projectResources;
     }
 
     /**
@@ -313,41 +281,21 @@ public class ApexSourceUtils {
      * @param type
      * @return List of IResource that are only the wanted type
      */
-    public List<IResource> filterSourcesByType(List<IResource> projectResources, String type) {
-        if (projectResources == null || projectResources.isEmpty())
-            return projectResources;
-
-        ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
-        Component component = componentFactory.getComponentByComponentType(type);
-        for (Iterator<IResource> iterator = projectResources.iterator(); iterator.hasNext();) {
-            IResource res = iterator.next();
-            if (component != null && !res.getFileExtension().equals(component.getFileExtension())) {
-                iterator.remove();
-            }
+    public List<IResource> filterSourcesByType(final List<IResource> projectResources, final String type) {
+        if (projectResources == null) {
+            return Lists.newArrayList();
+        } else {
+            ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
+            Component component = componentFactory.getComponentByComponentType(type);
+            String extension = component.getFileExtension();
+            
+            return projectResources.stream()
+                .filter(r -> r.getFileExtension().equals(extension))
+                .collect(Collectors.toList());
         }
-
-        return projectResources;
     }
 
-    /**
-     * Check if a list of modifiers has a test modifier.
-     * 
-     * @param modifiers
-     * @return True if there is a test modifier. False otherwise.
-     */
-    private boolean hasTestModifier(List<Modifier> modifiers) {
-        if (modifiers == null || modifiers.isEmpty()) {
-            return false;
-        }
-
-        for (Modifier modifier : modifiers) {
-            TestModifierDeterminer switchBlock = new TestModifierDeterminer();
-            modifier._switch(switchBlock);
-
-            if (switchBlock.hasSeenTestModifier)
-                return true;
-        }
-
-        return false;
+    private boolean isTestMethod(ModifierGroup modifiers) {
+        return modifiers != null && (modifiers.has(TEST_METHOD) || modifiers.has(IS_TEST));
     }
 }
