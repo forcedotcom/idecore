@@ -242,6 +242,19 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="apiVersion" ref="lastSupportedApiVersion" />
     </bean>
 
+	<!-- AuraDefinitionBundle -->
+    <bean id="AuraDefinitionBundle" parent="component" scope="prototype" lazy-init="true">
+      <!-- "${<object-type-name>.<whatever>}" are properties defined in plugin.properties -->
+          <property name="displayName" value="${AuraDefinitionBundle.displayName}" />
+          <property name="componentType" value="${AuraDefinitionBundle.componentType}" />
+          <property name="defaultFolder" value="${AuraDefinitionBundle.defaultFolder}" />
+          <lookup-method name="getDefaultMetadataExtInstance" bean="apexClassMetadata" />
+	</bean>
+
+    <bean id="auraDefinitionBundleMetadata" class="${xmlComponentType.package.name}.${AuraDefinitionBundle.componentType}" lazy-init="true">
+        <property name="apiVersion" ref="lastSupportedApiVersion" />
+    </bean>
+
     <!-- custom application -->
     <bean id="CustomApplication" parent="component" scope="prototype" lazy-init="true">
         <property name="displayName" value="${CustomApplication.displayName}" />

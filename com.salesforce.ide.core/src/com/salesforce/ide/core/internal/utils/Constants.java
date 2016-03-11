@@ -53,6 +53,7 @@ public interface Constants {
     String APEX_TRIGGER = "ApexTrigger";
     String APEX_TRIGGER_COUPLING = "ApexTriggerCoupling";
     String APEX_PAGE = "ApexPage";
+    String AURA_DEFINITION_BUNDLE = "AuraDefinitionBundle";
     String APP_MENU = "AppMenu";
     String APPROVAL_PROCESS = "ApprovalProcess";
     String AUTH_PROVIDER = "AuthProvider";

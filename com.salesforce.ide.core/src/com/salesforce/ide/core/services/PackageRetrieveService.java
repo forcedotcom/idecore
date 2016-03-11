@@ -211,8 +211,11 @@ public class PackageRetrieveService extends BasePackageService {
     /**
      * Support retrieve "selected" installed packages
      */
-    public RetrieveResultExt retrieveInstalledPackages(IProject project, String[] packageNames, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException, ForceRemoteException {
+    public RetrieveResultExt retrieveInstalledPackages(
+        IProject project,
+        String[] packageNames,
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException, ForceRemoteException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -250,8 +253,12 @@ public class PackageRetrieveService extends BasePackageService {
         return retrievePackage(connection, project, packageName, monitor);
     }
 
-    public RetrieveResultExt retrievePackage(Connection connection, IProject project, String packageName,
-            IProgressMonitor monitor) throws ForceConnectionException, FactoryException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrievePackage(
+        Connection connection,
+        IProject project,
+        String packageName,
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, FactoryException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
         if ((project == null && connection == null) || Utils.isEmpty(packageName)) {
             throw new IllegalArgumentException("Package name and/or project and connection cannot be null");
         }
@@ -281,9 +288,12 @@ public class PackageRetrieveService extends BasePackageService {
     /**
      * Retrieve retrieve all type-specific components in a package.
      */
-    public RetrieveResultExt retrieveComponentsForComponentTypes(Connection connection, String packageName,
-            String[] componentTypes, IProgressMonitor monitor) throws ServiceException,
-            ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieveComponentsForComponentTypes(
+        Connection connection,
+        String packageName,
+        String[] componentTypes,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(packageName) || Utils.isEmpty(componentTypes)) {
             throw new IllegalArgumentException("Connection, package name, and/or object types cannot be null");
         }
@@ -336,8 +346,12 @@ public class PackageRetrieveService extends BasePackageService {
     /**
      * Retrieve individual component. Option to include metadata component to retrieve request.
      */
-    public RetrieveResultExt retrieveComponent(Connection connection, Component component, boolean includeMetadata,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieveComponent(
+        Connection connection,
+        Component component,
+        boolean includeMetadata,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || component == null) {
             throw new IllegalArgumentException("Component and/or connection cannot be null");
         }
