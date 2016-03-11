@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.core.services;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,10 +71,8 @@ public class PackageRetrieveService extends BasePackageService {
         }
     }
 
-    // C O N S T R U C T O R
     public PackageRetrieveService() {}
 
-    // M E T H O D S
     public static OperationStats getOperationStats() {
         return operationStats;
     }
@@ -102,20 +99,12 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve all packages and their contents and unpackaged using manifest in project.
-     * 
-     * @param project
-     * @param includeDefaultManifest
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws RemoteException
-     * @throws InterruptedException
      */
-    public RetrieveResultExt retrieveAll(IProject project, boolean includeDefaultManifest, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException,
-            ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieveAll(
+        IProject project,
+        boolean includeDefaultManifest,
+        IProgressMonitor monitor
+    ) throws Exception {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -129,17 +118,8 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveResultHandler;
     }
 
-    /**
-     * @param project
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws RemoteException
-     * @throws InterruptedException
-     */
-    public RetrieveResultExt retrieveAll(IProject project, IProgressMonitor monitor) throws ForceConnectionException,
-            ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieveAll(IProject project, IProgressMonitor monitor) 
+        throws ForceConnectionException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -149,36 +129,17 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve all packages and their contents for a given connection.
-     * 
-     * @param connection
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws RemoteException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrieveAll(Connection connection, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException, ForceRemoteException,
-            InterruptedException {
+            throws ForceConnectionException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
         return retrieveAll(connection, null, monitor);
     }
 
     /**
      * Retrieve all packages and their contents for a given connection.
-     * 
-     * @param connection
-     * @param defaultMainfest
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws InterruptedException
-     * @throws RemoteException
      */
     public RetrieveResultExt retrieveAll(Connection connection, Package defaultMainfest, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException,
-            ForceRemoteException {
+            throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException, ForceRemoteException {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -208,8 +169,7 @@ public class PackageRetrieveService extends BasePackageService {
     }
 
     public RetrieveResultExt retrieveManagedInstalledPackages(IProject project, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException,
-            InterruptedException, ForceRemoteException {
+            throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException, ForceRemoteException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -250,16 +210,9 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Support retrieve "selected" installed packages
-     * 
-     * @param project
-     * @param packageNames
-     *            - selected installed package names
-     * @param monitor
-     * 
      */
     public RetrieveResultExt retrieveInstalledPackages(IProject project, String[] packageNames, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException,
-            InterruptedException, ForceRemoteException {
+            throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException, ForceRemoteException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -286,21 +239,9 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve non-installed packages and their contents.
-     * 
-     * @param connection
-     * @param project
-     * @param packageName
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws FactoryException
-     * @throws RetrieveException
-     * @throws RemoteException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrievePackage(IProject project, String packageName, IProgressMonitor monitor)
-            throws ForceConnectionException, FactoryException, ServiceException, ForceRemoteException,
-            ForceRemoteException, InterruptedException {
+            throws ForceConnectionException, FactoryException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
         }
@@ -310,8 +251,7 @@ public class PackageRetrieveService extends BasePackageService {
     }
 
     public RetrieveResultExt retrievePackage(Connection connection, IProject project, String packageName,
-            IProgressMonitor monitor) throws ForceConnectionException, FactoryException, ServiceException,
-            ForceRemoteException, ForceRemoteException, InterruptedException {
+            IProgressMonitor monitor) throws ForceConnectionException, FactoryException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
         if ((project == null && connection == null) || Utils.isEmpty(packageName)) {
             throw new IllegalArgumentException("Package name and/or project and connection cannot be null");
         }
@@ -340,15 +280,6 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve retrieve all type-specific components in a package.
-     * 
-     * @param connection
-     * @param packageName
-     * @param componentTypes
-     * @param monitor
-     * @return
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrieveComponentsForComponentTypes(Connection connection, String packageName,
             String[] componentTypes, IProgressMonitor monitor) throws ServiceException,
@@ -372,13 +303,6 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve individual component.
-     * 
-     * @param component
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrieveComponent(Component component, IProgressMonitor monitor)
             throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException {
@@ -391,14 +315,6 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve individual component.
-     * 
-     * @param project
-     * @param component
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrieveComponent(IProject project, Component component, IProgressMonitor monitor)
             throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException {
@@ -411,14 +327,6 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve individual component.
-     * 
-     * @param connection
-     * @param component
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrieveComponent(Connection connection, Component component, IProgressMonitor monitor)
             throws ServiceException, ForceRemoteException, InterruptedException {
@@ -427,20 +335,9 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve individual component. Option to include metadata component to retrieve request.
-     * 
-     * @param connection
-     * @param component
-     * @param includeMetadata
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws InterruptedException
      */
     public RetrieveResultExt retrieveComponent(Connection connection, Component component, boolean includeMetadata,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException,
-            InterruptedException {
+            IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || component == null) {
             throw new IllegalArgumentException("Component and/or connection cannot be null");
         }
@@ -460,18 +357,9 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve default package. Method assembles package manifest based on enabled object types.
-     * 
-     * @param connection
-     * @param monitor
-     * @return
-     * @throws RetrieveException
-     * @throws InterruptedException
-     * @throws RemoteException
      */
     public RetrieveResultExt retrieveDefaultPackage(Connection connection, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException,
-            ForceRemoteException {
-
+            throws ServiceException, ForceRemoteException, InterruptedException, ForceRemoteException {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -480,14 +368,6 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveWork(connection, null, defaultPackageManifest, monitor);
     }
 
-    /**
-     * @param projectPackageList
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws InterruptedException
-     */
     public RetrieveResultExt retrieveSelective(ProjectPackageList projectPackageList, IProgressMonitor monitor)
             throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException {
         return retrieveSelective(projectPackageList, true, monitor);
@@ -495,18 +375,12 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve selective packages and their contents for a given project package list.
-     * 
-     * @param projectPackageList
-     * @param selective
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws InterruptedException
      */
-    public RetrieveResultExt retrieveSelective(ProjectPackageList projectPackageList, boolean selective,
-            IProgressMonitor monitor) throws ForceConnectionException, ServiceException, ForceRemoteException,
-            InterruptedException {
+    public RetrieveResultExt retrieveSelective(
+        ProjectPackageList projectPackageList,
+        boolean selective, 
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, ServiceException, ForceRemoteException, InterruptedException {
         if (projectPackageList == null || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Project package list and/or containing project cannot be null");
         }
@@ -516,26 +390,23 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve selective packages and their contents for a given project package list.
-     * 
-     * @param connection
-     * @param projectPackageList
-     * @param selective
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws InterruptedException
      */
-    public RetrieveResultExt retrieveSelective(Connection connection, ProjectPackageList projectPackageList,
-            boolean selective, IProgressMonitor monitor) throws ServiceException, ForceRemoteException,
-            InterruptedException {
+    public RetrieveResultExt retrieveSelective(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        boolean selective,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         return retrieveSelective(connection, projectPackageList, selective, true, monitor);
     }
 
-    public RetrieveResultExt retrieveSelective(Connection connection, String[] filePaths, String packageName,
-            IProject project, IProgressMonitor monitor) throws ServiceException,
-            ForceRemoteException, FactoryException, InterruptedException {
+    public RetrieveResultExt retrieveSelective(
+        Connection connection,
+        String[] filePaths,
+        String packageName,
+        IProject project,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, FactoryException, InterruptedException {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -575,9 +446,13 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveResultExt;
     }
 
-    public RetrieveResultExt retrieveSelective(Connection connection, ProjectPackageList projectPackageList,
-            boolean selective, boolean singlePackage, IProgressMonitor monitor) throws ServiceException,
-            ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieveSelective(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        boolean selective,
+        boolean singlePackage,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || projectPackageList == null) {
             throw new IllegalArgumentException("Project package list and/or connection cannot be null");
         }
@@ -650,8 +525,13 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveResultExt;
     }
 
-    public RetrieveResultExt retrieveSelective(Connection connection, ProjectPackageList projectPackageList,
-            boolean selective, Package packageManifest, IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieveSelective(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        boolean selective,
+        Package packageManifest,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || projectPackageList == null) {
             throw new IllegalArgumentException("Project package list and/or connection cannot be null");
         }
@@ -691,23 +571,12 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve selective packages and their contents for a given project package list.
-     * 
-     * @param projectPackageList
-     * @param componentTypes
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws InterruptedException
-     * @throws ForceRemoteException
-     * @throws CoreException
-     * @throws MetadataServiceException
-     *             , InsufficientOrgPermissions
      */
-    public RetrieveResultExt retrieveSelective(ProjectPackageList projectPackageList, String[] componentTypes,
-            IProgressMonitor monitor) throws ForceConnectionException, ServiceException, ForceRemoteException,
-            FactoryException, InterruptedException, ForceRemoteException, CoreException {
+    public RetrieveResultExt retrieveSelective(
+        ProjectPackageList projectPackageList,
+        String[] componentTypes,
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException, InterruptedException, ForceRemoteException, CoreException {
         if (projectPackageList == null || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Package list and/or project cannot be null");
         }
@@ -716,29 +585,12 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveSelective(connection, projectPackageList, componentTypes, monitor);
     }
 
-    /**
-     * 
-     * @param connection
-     * @param projectPackageList
-     * @param componentTypes
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws InterruptedException
-     * @throws CoreException
-     * @throws RemoteException
-     * @throws ForceRemoteException
-     * @throws RemoteException
-     * @throws ForceRemoteException
-     * @throws CoreException
-     * @throws MetadataServiceException
-     *             , InsufficientOrgPermissions
-     */
-    public RetrieveResultExt retrieveSelective(Connection connection, ProjectPackageList projectPackageList,
-            String[] componentTypes, IProgressMonitor monitor) throws ForceConnectionException, ServiceException,
-            ForceRemoteException, FactoryException, InterruptedException, ForceRemoteException, CoreException {
+    public RetrieveResultExt retrieveSelective(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        String[] componentTypes,
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException, InterruptedException, ForceRemoteException, CoreException {
         if (projectPackageList == null || connection == null) {
             throw new IllegalArgumentException("Package list and/or connection cannot be null");
         }
@@ -802,9 +654,11 @@ public class PackageRetrieveService extends BasePackageService {
         return hasAssociatedComponentTypes;
     }
 
-    private String[] getFilePathsByComponentTypes(IProject project, Connection connection, String[] componentTypes)
-            throws FactoryException, ForceConnectionException, ForceRemoteException, CoreException,
-            InterruptedException {
+    private String[] getFilePathsByComponentTypes(
+        IProject project,
+        Connection connection,
+        String[] componentTypes
+    ) throws FactoryException, ForceConnectionException, ForceRemoteException, CoreException, InterruptedException {
         List<String> filePathList = new ArrayList<>();
         List<ListMetadataQuery> queryList = new ArrayList<>();
         for (String componentType : componentTypes) {
@@ -855,26 +709,12 @@ public class PackageRetrieveService extends BasePackageService {
         return filePathList.toArray(new String[filePathList.size()]);
     }
 
-    /**
-     * @param projectPackageList
-     * @param componentTypes
-     * @param subComponentFolder
-     *            - retrieve content for given subComponentFolder
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws FactoryException
-     * @throws InterruptedException
-     * @throws ForceRemoteException
-     * @throws CoreException
-     * @throws MetadataServiceException
-     *             , InsufficientOrgPermissions
-     */
-    public RetrieveResultExt retrieveSelectiveSubComponentFolder(ProjectPackageList projectPackageList,
-            String[] componentTypes, String subComponentFolder, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException,
-            InterruptedException, ForceRemoteException, CoreException {
+    public RetrieveResultExt retrieveSelectiveSubComponentFolder(
+        ProjectPackageList projectPackageList,
+        String[] componentTypes,
+        String subComponentFolder,
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, ServiceException, ForceRemoteException, FactoryException, InterruptedException, ForceRemoteException, CoreException {
         if (projectPackageList == null || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Package list and/or project cannot be null");
         }
@@ -883,33 +723,19 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveSelective(connection, projectPackageList, componentTypes, monitor);
     }
 
-    /**
-     * @param connection
-     * @param projectPackageList
-     * @param monitor
-     * @return
-     * @throws RetrieveException
-     * @throws InterruptedException
-     */
-    public RetrieveResultExt retrieve(Connection connection, ProjectPackageList projectPackageList,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
+    public RetrieveResultExt retrieve(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         return retrieveSelective(connection, projectPackageList, false, monitor);
     }
 
-    /**
-     * @param project
-     * @param packageNames
-     * @param monitor
-     * @return
-     * @throws ForceConnectionException
-     * @throws RetrieveException
-     * @throws RemoteException
-     * @throws InterruptedException
-     * @throws FactoryException
-     */
-    public RetrieveResultExt retrieve(IProject project, List<String> packageNames, IProgressMonitor monitor)
-            throws ForceConnectionException, ServiceException, ForceRemoteException, ForceRemoteException,
-            InterruptedException, FactoryException {
+    public RetrieveResultExt retrieve(
+        IProject project,
+        List<String> packageNames,
+        IProgressMonitor monitor
+    ) throws ForceConnectionException, ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException, FactoryException {
         if (Utils.isEmpty(packageNames)) {
             return retrieveAll(project, monitor);
         }
@@ -927,43 +753,25 @@ public class PackageRetrieveService extends BasePackageService {
 
     /**
      * Retrieve packages and their contents for a given connection and project package list.
-     * 
-     * @param connection
-     * @param packageNames
-     * @param packageManifest
-     * @param monitor
-     * @return
-     * @throws RetrieveException
-     * @throws InterruptedException
      */
-    public RetrieveResultExt retrieve(Connection connection, String[] packageNames, Package packageManifest,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException,
-            InterruptedException {
+    public RetrieveResultExt retrieve(
+        Connection connection,
+        String[] packageNames,
+        Package packageManifest,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         return retrieveWork(connection, packageNames, packageManifest, monitor);
     }
 
     /**
      * Retrieves asynchronous result from server for a given operation id.
-     * 
-     * @param retrieveResultExt
-     * @param asyncResult
-     * @param metadataStubExt
-     * @param monitor
-     * 
-     * @return retrieveResultExt
-     * 
-     * @throws RemoteException
-     * @throws InterruptedException
-     * @throws ServiceException
-     *             , InsufficientOrgPermissions
-     * @throws ServiceException
-     *             , InsufficientOrgPermissions
-     * @throws ServiceException
-     *             , InsufficientOrgPermissions
      */
-    public RetrieveResultExt getRetrieveResult(RetrieveResultExt retrieveResultExt, AsyncResult asyncResult,
-            MetadataStubExt metadataStubExt, IProgressMonitor monitor) throws ForceRemoteException, ServiceException,
-            ForceRemoteException, InterruptedException {
+    public RetrieveResultExt getRetrieveResult(
+        RetrieveResultExt retrieveResultExt,
+        AsyncResult asyncResult,
+        MetadataStubExt metadataStubExt,
+        IProgressMonitor monitor
+    ) throws ForceRemoteException, ServiceException, ForceRemoteException, InterruptedException {
         if (metadataStubExt == null) {
             throw new IllegalArgumentException("MetadataStubExt cannot be null");
         }
@@ -1000,10 +808,12 @@ public class PackageRetrieveService extends BasePackageService {
         return retrieveResultExt;
     }
 
-    public RetrieveResultExt handleRetrieveServiceTimeoutException(ServiceTimeoutException ex, String operation,
-            IProgressMonitor monitor) throws ForceRemoteException, ServiceException, ForceRemoteException,
-            InterruptedException {
-
+    public RetrieveResultExt handleRetrieveServiceTimeoutException(
+        ServiceTimeoutException ex,
+        String operation,
+        IProgressMonitor monitor
+    ) throws ForceRemoteException, ServiceException, ForceRemoteException, InterruptedException {
+            
         // REVIEWME: ui-stuff (dialog to continue) should be handled outside of services
         boolean proceed = DialogUtils.getInstance().presentCycleLimitExceptionDialog(ex, monitor);
         if (proceed) {
@@ -1020,9 +830,12 @@ public class PackageRetrieveService extends BasePackageService {
     }
 
     // W O R K E R   B E E   R E T R I E V E   M E T H O D S
-    private RetrieveResultExt retrieveWork(Connection connection, String[] packageNames, Package packageManifest,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException,
-            InterruptedException {
+    private RetrieveResultExt retrieveWork(
+        Connection connection,
+        String[] packageNames,
+        Package packageManifest,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -1044,8 +857,11 @@ public class PackageRetrieveService extends BasePackageService {
         return resultExt;
     }
 
-    private RetrieveResultExt retrieveWork(Connection connection, RetrieveRequest retrieveRequest,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
+    private RetrieveResultExt retrieveWork(
+        Connection connection,
+        RetrieveRequest retrieveRequest,
+        IProgressMonitor monitor
+    ) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || retrieveRequest == null) {
             throw new IllegalArgumentException("Connection and/or RetrieveRequest cannot be null");
         }
@@ -1086,11 +902,7 @@ public class PackageRetrieveService extends BasePackageService {
             // get async result
             retrieveResultExt = getRetrieveResult(retrieveResultExt, asyncResult, metadataStubExt, monitor);
 
-        } catch (ServiceTimeoutException e) {
-            throw e;
-        } catch (InterruptedException e) {
-            throw e;
-        } catch (InsufficientPermissionsException e) {
+        } catch (ServiceTimeoutException | InterruptedException | InsufficientPermissionsException e) {
             throw e;
         } catch (ServiceException e) {
             logger.warn("Unable to retrieve components: " + ForceExceptionUtils.getRootCauseMessage(e));
@@ -1233,29 +1045,37 @@ class RetrieveResultAdapter implements IFileBasedResultAdapter {
 
     @Override
     public String logStatus(Logger logger) {
-        String status =
-                "Retrieve result state is '" + retrieveResult.getStatus().toString() + "' for operation id '"
-                        + asyncResult.getId() + "'";
+        String status = "Retrieve result state is '" 
+            + retrieveResult.getStatus().toString() 
+            + "' for operation id '"
+            + asyncResult.getId() 
+            + "'";
         logger.debug(status);
         return status;
     }
 
     @Override
     public String logFailure(Logger logger) {
-        StringBuffer strBuff =
-                new StringBuffer().append(retrieveResult.getErrorMessage()).append(" (")
-                        .append(retrieveResult.getStatus()).append(")");
+        StringBuffer strBuff = new StringBuffer()
+            .append(retrieveResult.getErrorMessage())
+            .append(" (")
+            .append(retrieveResult.getStatus())
+            .append(")");
         logger.warn("Retrieve operation from '" + metadataStubExt.getServerName() + "' failed: " + strBuff.toString());
         return strBuff.toString();
     }
 
     @Override
     public String logResult(Logger logger, OperationStats operationStats) {
-        StringBuffer errorMessageBuffer = new StringBuffer();
-
-        errorMessageBuffer.append("\nOperation : ").append(operationStats.getOperationName()).append("\nMessage : ")
-                .append(retrieveResult.getMessages().toString()).append("\nState Detail : ")
-                .append(retrieveResult.getStatus()).append("\nStatus Code : ").append(retrieveResult.getStatus());
+        StringBuffer errorMessageBuffer = new StringBuffer()
+            .append("\nOperation : ")
+            .append(operationStats.getOperationName())
+            .append("\nMessage : ")
+            .append(retrieveResult.getMessages().toString())
+            .append("\nState Detail : ")
+            .append(retrieveResult.getStatus())
+            .append("\nStatus Code : ")
+            .append(retrieveResult.getStatus());
 
         logger.debug(errorMessageBuffer.toString());
         return errorMessageBuffer.toString();
