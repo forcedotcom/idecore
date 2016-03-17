@@ -43,7 +43,7 @@
 
 	<target name="compile.jaxb.objects">
 		<echo message="Compiling xsd generated source files..." />
-		<javac destdir="${tmp.dir}/classes" debug="on" verbose="true" target="1.6">
+		<javac destdir="${tmp.dir}/classes" debug="on" verbose="true" target="1.8">
 			<src path="${tmp.dir}/gen-src" />
 			<classpath refid="classpath" />
 		</javac>
