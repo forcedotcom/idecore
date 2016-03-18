@@ -7,10 +7,9 @@ Bundle-Vendor: salesforce.com
 Fragment-Host: com.salesforce.ide.apex.core;bundle-version="36.0.0"
 Require-Bundle: org.junit,
  com.salesforce.ide.test.commonlibs,
- com.salesforce.ide.apex.ui,
- org.eclipse.swt,
- org.eclipse.jface,
- org.eclipse.ui.ide,
- com.salesforce.ide.ui,
- com.salesforce.ide.core
+ com.salesforce.ide.apex.ui;bundle-version="36.0.0",
+ org.eclipse.jface;bundle-version="3.11.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: com.salesforce.ide.apex.core,
+ com.salesforce.ide.apex.core.test,
+ com.salesforce.ide.apex.core.utils
