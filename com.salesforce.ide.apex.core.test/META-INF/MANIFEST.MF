@@ -14,5 +14,3 @@ Require-Bundle: org.junit,
  com.salesforce.ide.ui,
  com.salesforce.ide.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: com.salesforce.ide.apex.core.test,
- com.salesforce.ide.apex.core.utils

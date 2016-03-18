@@ -18,6 +18,5 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.salesforce.ide.apex.handlers,
- com.salesforce.ide.apex.ui,
  com.salesforce.ide.apex.ui.views,
  com.salesforce.ide.apex.visitors
