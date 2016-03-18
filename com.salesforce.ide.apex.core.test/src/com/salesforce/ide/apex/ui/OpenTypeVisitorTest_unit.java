@@ -18,7 +18,7 @@ import com.salesforce.ide.apex.internal.core.CompilerService;
 import com.salesforce.ide.apex.visitors.OpenTypeVisitor;
 import junit.framework.TestCase;
 
-public class OpenTypeVisitor_unit extends TestCase {
+public class OpenTypeVisitorTest_unit extends TestCase {
 	OpenTypeVisitor visitor = new OpenTypeVisitor();
 	
 	@Test

@@ -41,7 +41,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 
 	// Prevent opening of multiple dialogs
 	private static boolean alreadyOpen = false;
-	private static final ILabelProvider listLabelProvider = new LabelProvider() {
+	public static final ILabelProvider listLabelProvider = new LabelProvider() {
 		@Override 
 		public String getText(Object element) {
 			if (element != null && element instanceof OpenTypeClassHolder) {
@@ -51,7 +51,7 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 			return null;
 		}
 	};
-	private static final ILabelProvider detailsLabelProvider = new LabelProvider() {
+	public static final ILabelProvider detailsLabelProvider = new LabelProvider() {
 		@Override 
 		public String getText(Object element) {
 			if (element != null && element instanceof OpenTypeClassHolder) {
@@ -62,10 +62,13 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 		}
 	};
 
-	public FilteredApexResourcesSelectionDialog(Shell shell, boolean multi, Map<String, OpenTypeClassHolder> resources) {
-		super(shell, multi);
+	public FilteredApexResourcesSelectionDialog(Shell shell, Map<String, OpenTypeClassHolder> resources) {
+		super(shell, true);
 		super.setListLabelProvider(listLabelProvider);
 		super.setDetailsLabelProvider(detailsLabelProvider);
+		this.setHelpAvailable(false);
+		this.setTitle(Messages.OpenTypeView_View_Title);
+		this.setMessage(Messages.OpenTypeView_View_Message);
 		super.setSelectionHistory(new ApexTypeSelectionHistory());
 		this.resources = resources;
 	}
@@ -75,6 +78,11 @@ public class FilteredApexResourcesSelectionDialog extends FilteredItemsSelection
 		return null;
 	}
 
+	@Override
+	public String getMessage() {
+		return super.getMessage();
+	}
+	
 	private static final String DIALOG_SETTINGS = "FilteredResourcesSelectionDialogExampleSettings";
 
 	@Override

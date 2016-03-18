@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,16 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.apex.core.test;
+package com.salesforce.ide.apex.ui;
 
 import junit.framework.Test;
 
-import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.test.common.utils.SimpleTestSuite;
+import com.salesforce.ide.test.common.BaseAllUnitTests;
 
-public class AllUnitTests extends SimpleTestSuite {
+public class AllUnitTests extends BaseAllUnitTests {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());
-        Utils.logStats();
     }
 
     public static Test suite() {
@@ -27,8 +25,21 @@ public class AllUnitTests extends SimpleTestSuite {
     }
 
     public AllUnitTests() {
-        logStart(getClass().getName());
-        addTest(new com.salesforce.ide.apex.internal.core.AllUnitTests());
-        addTest(new com.salesforce.ide.apex.ui.AllUnitTests());
+        super();
+    }
+
+    @Override
+    protected String getPackageName() {
+        return getClass().getPackage().getName();
+    }
+
+    @Override
+    protected Class<?> getTestClass() {
+        return this.getClass();
+    }
+    
+    @Override
+    protected ClassLoader getClassLoader() {
+        return getClass().getClassLoader();
     }
 }

@@ -33,7 +33,6 @@ import org.eclipse.ui.ide.IDE;
 import com.google.common.collect.Maps;
 import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
 import com.salesforce.ide.apex.internal.core.CompilerService;
-import com.salesforce.ide.apex.ui.Messages;
 import com.salesforce.ide.apex.ui.views.FilteredApexResourcesSelectionDialog;
 import com.salesforce.ide.apex.visitors.OpenTypeVisitor;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
@@ -101,10 +100,7 @@ public class OpenTypeHandler extends BaseHandler {
 	}
 	
 	private OpenTypeClassHolder[] getType(Shell shell, Map<String, OpenTypeClassHolder> resources) {
-		FilteredItemsSelectionDialog filteredDialog = new FilteredApexResourcesSelectionDialog(shell, true, resources);
-		filteredDialog.setTitle(Messages.OpenTypeView_View_Title);
-		filteredDialog.setMessage(Messages.OpenTypeView_View_Message);
-		filteredDialog.setHelpAvailable(false);
+		FilteredItemsSelectionDialog filteredDialog = new FilteredApexResourcesSelectionDialog(shell, resources);
 		if (filteredDialog.open() == Window.OK) {
 			Object[] selected = filteredDialog.getResult();
 			if (selected.length > 0) {
