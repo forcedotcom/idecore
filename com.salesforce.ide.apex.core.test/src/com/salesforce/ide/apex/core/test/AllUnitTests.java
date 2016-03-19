@@ -12,14 +12,12 @@ package com.salesforce.ide.apex.core.test;
 
 import junit.framework.Test;
 
-import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.test.common.utils.SimpleTestSuite;
 
 public class AllUnitTests extends SimpleTestSuite {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());
-        Utils.logStats();
     }
 
     public static Test suite() {

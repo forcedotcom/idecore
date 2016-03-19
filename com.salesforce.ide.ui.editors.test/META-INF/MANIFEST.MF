@@ -6,7 +6,8 @@ Bundle-Version: 36.0.0.qualifier
 Fragment-Host: com.salesforce.ide.ui.editors
 Bundle-Vendor: %providerName
 Require-Bundle: org.junit,
- com.salesforce.ide.test.commonlibs
+ com.salesforce.ide.test.commonlibs;bundle-version="36.0.0",
+ com.salesforce.ide.apex.core.test;bundle-version="36.0.0"
 Export-Package: com.salesforce.ide.ui.editors.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin

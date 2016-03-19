@@ -10,14 +10,15 @@ Require-Bundle: org.junit,
  org.apache.log4j,
  org.eclipse.ui,
  org.eclipse.core.runtime,
- com.salesforce.ide.core,
- com.salesforce.ide.ui,
- com.salesforce.ide.deployment,
- com.salesforce.ide.schemabrowser,
- com.salesforce.ide.ui.editors,
- com.salesforce.ide.upgrade,
+ com.salesforce.ide.core;bundle-version="36.0.0",
+ com.salesforce.ide.ui;bundle-version="36.0.0",
+ com.salesforce.ide.deployment;bundle-version="36.0.0",
+ com.salesforce.ide.schemabrowser;bundle-version="36.0.0",
+ com.salesforce.ide.ui.editors;bundle-version="36.0.0",
+ com.salesforce.ide.upgrade;bundle-version="36.0.0",
  org.eclipse.core.resources,
- com.salesforce.ide.apex.core
+ com.salesforce.ide.apex.core;bundle-version="36.0.0",
+ com.salesforce.ide.apex.core.test;bundle-version="36.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
