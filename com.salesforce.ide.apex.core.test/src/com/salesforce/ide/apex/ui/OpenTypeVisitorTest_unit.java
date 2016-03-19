@@ -28,7 +28,7 @@ public class OpenTypeVisitorTest_unit extends TestCase {
         Map<String, Integer> lineNumberMapping = visitor.getNumberLineMapping();
         
         // Assertions for the line numbers and what they map to
-        assertEquals(9, lineNumberMapping.size());
+        assertEquals(10, lineNumberMapping.size());
         assertLineNumberMapping("KitchenSink", lineNumberMapping, 4);
         assertLineNumberMapping("MyInterface", lineNumberMapping, 34);
         assertLineNumberMapping("MySecondInterface", lineNumberMapping, 42);
@@ -38,6 +38,7 @@ public class OpenTypeVisitorTest_unit extends TestCase {
         assertLineNumberMapping("AnotherChildClass", lineNumberMapping, 108);
         assertLineNumberMapping("MyException", lineNumberMapping, 116);
         assertLineNumberMapping("MySecondException", lineNumberMapping, 130);
+        assertLineNumberMapping("NumericEnum", lineNumberMapping, 150);
     }
 	
 	@Test
