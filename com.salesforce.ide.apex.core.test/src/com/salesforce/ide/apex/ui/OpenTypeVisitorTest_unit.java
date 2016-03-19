@@ -38,7 +38,7 @@ public class OpenTypeVisitorTest_unit extends TestCase {
         assertLineNumberMapping("AnotherChildClass", lineNumberMapping, 108);
         assertLineNumberMapping("MyException", lineNumberMapping, 116);
         assertLineNumberMapping("MySecondException", lineNumberMapping, 130);
-        assertLineNumberMapping("NumericEnum", lineNumberMapping, 150);
+        assertLineNumberMapping("NumericEnum", lineNumberMapping, 151);
     }
 	
 	@Test
