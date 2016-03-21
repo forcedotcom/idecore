@@ -5,11 +5,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/force-ide-metadata.jar" sourcepath="lib/force-ide-metadata.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wsc_partnerwsdl.jar" sourcepath="lib/wsc_partnerwsdl.jar"/>
-  <classpathentry exported="true" kind="lib" path="lib/wsc.jar" sourcepath="lib/wsc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wsc.jar" sourcepath="lib/wsc.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-discovery.jar" sourcepath="com.salesforce.ide.apisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar" sourcepath="com.salesforce.ide.apisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/wsc_apexwsdl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wsc_metadatawsdl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wsc_toolingwsdl.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

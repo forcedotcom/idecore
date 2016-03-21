@@ -15,3 +15,6 @@ local.properties
 
 # External tool builders
 .externalToolBuilders/
+
+# Maven
+target/
