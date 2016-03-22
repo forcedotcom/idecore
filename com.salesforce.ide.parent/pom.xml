@@ -14,6 +14,7 @@
 		<tycho.version>0.24.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<eclipse-p2-repo.url>http://download.eclipse.org/releases/mars</eclipse-p2-repo.url>
+		<os-jvm-flags /> <!-- for the default case -->
 	</properties>
 
 	<repositories>
@@ -23,6 +24,20 @@
 			<layout>p2</layout>
 		</repository>
 	</repositories>
+
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>

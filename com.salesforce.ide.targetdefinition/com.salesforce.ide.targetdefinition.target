@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Force.com IDE Eclipse 4.5.1. (Mars)" sequenceNumber="23">
+<?pde version="3.8"?><target name="Force.com IDE Eclipse 4.5.1. (Mars)" sequenceNumber="24">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.wst.web_sdk.feature.feature.group" version="3.7.1.v201509022125"/>
 <unit id="org.eclipse.wst.xml_sdk.feature.feature.group" version="3.7.1.v201508271605"/>
 <repository location="http://download.eclipse.org/webtools/repository/mars"/>
 </location>
-<location path="${project_loc}/../libraries" type="Directory"/>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.swtbot.forms.feature.group" version="2.3.0.201506081302"/>
 <unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.3.0.201506081302"/>
