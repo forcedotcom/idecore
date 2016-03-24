@@ -63,10 +63,38 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
-					<useUIHarness>true</useUIHarness>
-					<testClass>com.salesforce.ide.test.MainAllUnitTests</testClass>
-					<argLine>-Dsfdc-internal=true -Xms256m -Xmx512m ${os-jvm-flags}</argLine>
+					<skip>true</skip>
 				</configuration>
+				<executions>
+					<execution>
+						<id>unit-tests</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+							<useUIHarness>true</useUIHarness>
+							<testClass>com.salesforce.ide.test.MainAllUnitTests</testClass>
+							<appArgLine>${test.appArgs}</appArgLine>
+							<argLine>${test.vmArgs}</argLine>
+						</configuration>
+					</execution>
+					<execution>
+						<id>ui-tests</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+							<useUIHarness>true</useUIHarness>
+							<testClass>com.salesforce.ide.test.MainAllPdeUITests</testClass>
+							<appArgLine>${test.appArgs}</appArgLine>
+							<argLine>${test.vmArgs}</argLine>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
