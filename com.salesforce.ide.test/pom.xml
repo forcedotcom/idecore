@@ -73,8 +73,10 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
-							<skip>false</skip>
+							<skip>${test.skipUnitTests}</skip>
+							<reportsDirectory>${test.reportsDirectory}</reportsDirectory>
 							<useUIHarness>true</useUIHarness>
+							<testFailureIgnore>true</testFailureIgnore>
 							<testClass>com.salesforce.ide.test.MainAllUnitTests</testClass>
 							<appArgLine>${test.appArgs}</appArgLine>
 							<argLine>${test.vmArgs}</argLine>
@@ -87,12 +89,27 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
-							<skip>false</skip>
+							<skip>${test.skipUITests}</skip>
+							<reportsDirectory>${test.reportsDirectory}</reportsDirectory>
 							<useUIHarness>true</useUIHarness>
+							<testFailureIgnore>true</testFailureIgnore>
 							<testClass>com.salesforce.ide.test.MainAllPdeUITests</testClass>
 							<appArgLine>${test.appArgs}</appArgLine>
 							<argLine>${test.vmArgs}</argLine>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>${surefire-report.version}</version>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>report-only</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

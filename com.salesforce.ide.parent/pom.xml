@@ -12,14 +12,23 @@
 	</organization>
 	<properties>
 		<tycho.version>0.24.0</tycho.version>
+		<surefire-report.version>2.7.2</surefire-report.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<eclipse-p2-repo.url>http://download.eclipse.org/releases/mars</eclipse-p2-repo.url>
+
 		<os-jvm-flags /> <!-- for the default case -->
+
 		<test.keyring.file>${project.build.directory}/.eclipse.keyring</test.keyring.file>
 		<test.keyring.password>${project.build.directory}/../../.gitignore</test.keyring.password>
 		<test.appserver>-Dappserver-for-test=nchen-wsl1:6109</test.appserver>
 		<test.appArgs>-eclipse.keyring ${test.keyring.file} -eclipse.password ${test.keyring.password}</test.appArgs>
 		<test.vmArgs>${os-jvm-flags} -Dsfdc-internal=true -Xms512m -Xmx2048m ${test.appserver}</test.vmArgs>
+		<test.reportsDirectory>${project.build.directory}/surefire-reports</test.reportsDirectory>
+		<test.skipUnitTests>false</test.skipUnitTests>
+		<test.skipUITests>false</test.skipUITests>
+		<test.skipBotTests>false</test.skipBotTests>
 	</properties>
 
 	<repositories>
@@ -56,7 +65,6 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho.version}</version>
-
 				<configuration>
 					<target>
 						<artifact>
@@ -94,7 +102,6 @@
 					</environments>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<name>Force.com IDE</name>
