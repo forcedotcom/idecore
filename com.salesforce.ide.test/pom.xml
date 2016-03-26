@@ -54,6 +54,11 @@
 								<id>com.salesforce.ide.upgrade.test</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.sdk</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>
@@ -75,7 +80,7 @@
 						<configuration>
 							<skip>${test.skipUnitTests}</skip>
 							<reportsDirectory>${test.reportsDirectory}</reportsDirectory>
-							<useUIHarness>true</useUIHarness>
+							<useUIHarness>false</useUIHarness>
 							<testFailureIgnore>true</testFailureIgnore>
 							<testClass>com.salesforce.ide.test.MainAllUnitTests</testClass>
 							<appArgLine>${test.appArgs}</appArgLine>
@@ -92,6 +97,8 @@
 							<skip>${test.skipUITests}</skip>
 							<reportsDirectory>${test.reportsDirectory}</reportsDirectory>
 							<useUIHarness>true</useUIHarness>
+							<product>org.eclipse.sdk.ide</product>
+							<application>org.eclipse.ui.ide.workbench</application>
 							<testFailureIgnore>true</testFailureIgnore>
 							<testClass>com.salesforce.ide.test.MainAllPdeUITests</testClass>
 							<appArgLine>${test.appArgs}</appArgLine>
