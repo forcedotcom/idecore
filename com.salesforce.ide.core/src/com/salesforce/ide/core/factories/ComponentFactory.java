@@ -1146,7 +1146,7 @@ public class ComponentFactory extends ApplicationContextFactory {
         try {
             component = (Component) getBean(id);
         } catch (Exception e) {
-            logger.warn("Unable to get component for id '" + id + "': " + e.getMessage());
+            logger.info("Unable to get component for id '" + id + "': " + e.getMessage());
             return null;
         }
         return component;

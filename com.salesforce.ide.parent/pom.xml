@@ -26,6 +26,7 @@
 		<test.appArgs>-eclipse.keyring ${test.keyring.file} -eclipse.password ${test.keyring.password}</test.appArgs>
 		<test.vmArgs>${os-jvm-flags} -Dsfdc-internal=true -Xms512m -Xmx2048m ${test.appserver}</test.vmArgs>
 		<test.reportsDirectory>${project.build.directory}/surefire-reports</test.reportsDirectory>
+		<test.screenshotsDirectory>${project.build.directory}/surefire-reports/screenshots</test.screenshotsDirectory>
 		<test.skipUnitTests>false</test.skipUnitTests>
 		<test.skipUITests>false</test.skipUITests>
 		<test.skipBotTests>false</test.skipBotTests>
