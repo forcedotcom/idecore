@@ -84,7 +84,7 @@
 							<testFailureIgnore>true</testFailureIgnore>
 							<testClass>com.salesforce.ide.test.MainAllUnitTests</testClass>
 							<appArgLine>${test.appArgs}</appArgLine>
-							<argLine>${test.vmArgs}</argLine>
+							<argLine>${tycho.testArgLine} ${test.vmArgs}</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -102,7 +102,7 @@
 							<testFailureIgnore>true</testFailureIgnore>
 							<testClass>com.salesforce.ide.test.MainAllPdeUITests</testClass>
 							<appArgLine>${test.appArgs}</appArgLine>
-							<argLine>${test.vmArgs}</argLine>
+							<argLine>${tycho.testArgLine} ${test.vmArgs}</argLine>
 						</configuration>
 					</execution>
 				</executions>

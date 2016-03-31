@@ -13,6 +13,7 @@
 	<properties>
 		<tycho.version>0.24.0</tycho.version>
 		<surefire-report.version>2.19.1</surefire-report.version>
+		<jacoco.version>0.7.6.201602180812</jacoco.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -26,10 +27,16 @@
 		<test.appArgs>-eclipse.keyring ${test.keyring.file} -eclipse.password ${test.keyring.password}</test.appArgs>
 		<test.vmArgs>${os-jvm-flags} -Dsfdc-internal=true -Xms512m -Xmx2048m ${test.appserver}</test.vmArgs>
 		<test.reportsDirectory>${project.build.directory}/surefire-reports</test.reportsDirectory>
-		<test.screenshotsDirectory>${project.build.directory}/surefire-reports/screenshots</test.screenshotsDirectory>
+		<test.screenshotsDirectory>${test.reportsDirectory}/screenshots</test.screenshotsDirectory>
+		<test.coverageDirectory>${test.reportsDirectory}/coverage</test.coverageDirectory>
 		<test.skipUnitTests>false</test.skipUnitTests>
 		<test.skipUITests>false</test.skipUITests>
 		<test.skipBotTests>false</test.skipBotTests>
+		
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.language>java</sonar.language>
 	</properties>
 
 	<repositories>
@@ -102,6 +109,23 @@
 						</environment>
 					</environments>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<configuration>
+					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-init</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
