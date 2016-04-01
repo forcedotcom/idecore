@@ -9,4 +9,30 @@
 		<artifactId>com.salesforce.ide.parent</artifactId>
 		<relativePath>../com.salesforce.ide.parent</relativePath>
 	</parent>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${resources.version}</version>
+				<executions>
+					<execution>
+						<id>copy-jacoco-data</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${test.topLevel}</directory>
+									<include>${test.jacoco.fileName}</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

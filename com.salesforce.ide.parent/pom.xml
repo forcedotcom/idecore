@@ -14,6 +14,7 @@
 		<tycho.version>0.24.0</tycho.version>
 		<surefire-report.version>2.19.1</surefire-report.version>
 		<jacoco.version>0.7.6.201602180812</jacoco.version>
+		<resources.version>2.7</resources.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -26,16 +27,27 @@
 		<test.appserver>-Dappserver-for-test=nchen-wsl1:6109</test.appserver>
 		<test.appArgs>-eclipse.keyring ${test.keyring.file} -eclipse.password ${test.keyring.password}</test.appArgs>
 		<test.vmArgs>${os-jvm-flags} -Dsfdc-internal=true -Xms512m -Xmx2048m ${test.appserver}</test.vmArgs>
+		<test.topLevel>${project.build.directory}/../../..</test.topLevel>
 		<test.reportsDirectory>${project.build.directory}/surefire-reports</test.reportsDirectory>
 		<test.screenshotsDirectory>${test.reportsDirectory}/screenshots</test.screenshotsDirectory>
-		<test.coverageDirectory>${test.reportsDirectory}/coverage</test.coverageDirectory>
 		<test.skipUnitTests>false</test.skipUnitTests>
 		<test.skipUITests>false</test.skipUITests>
 		<test.skipBotTests>false</test.skipBotTests>
 		
+		<!-- Our module structure is not typical. If we have unit & integration
+		tests in each module, there will be a Jacoco data file in each
+		and Sonarqube can parse that data file and figure out the code coverage
+		of the sources in that module. Instead, we have three modules that have
+		tests for all the other modules. The trick we're doing here is to output
+		all code coverage into a top level Jacoco data file. Then, we copy
+		this data file to each non-test module. Then, let Sonar do its job. -->
+		<test.jacoco.fileName>jacoco.exec</test.jacoco.fileName>
+		<test.jacoco.filePath>${test.topLevel}/${test.jacoco.fileName}</test.jacoco.filePath>
+		
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.itReportPath>${sonar.jacoco.reportPath}</sonar.jacoco.itReportPath>
 		<sonar.language>java</sonar.language>
 	</properties>
 
@@ -115,14 +127,21 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
 				<configuration>
-					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<!-- Append all code coverage info to one file -->
+					<destFile>${test.jacoco.filePath}</destFile>
 					<append>true</append>
 				</configuration>
 				<executions>
 					<execution>
-						<id>jacoco-init</id>
+						<id>agent-for-ut</id>
 						<goals>
 							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>agent-for-it</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
 						</goals>
 					</execution>
 				</executions>
