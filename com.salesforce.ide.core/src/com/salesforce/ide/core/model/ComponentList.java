@@ -21,8 +21,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.factories.FactoryException;
 import com.salesforce.ide.core.factories.ProjectPackageFactory;
@@ -45,7 +43,6 @@ public class ComponentList extends ArrayList<Component> {
 
     protected transient ProjectService projectService = null;
 
-    //   M E T H O D S
     public ProjectService getProjectService() {
         return projectService;
     }
@@ -115,20 +112,19 @@ public class ComponentList extends ArrayList<Component> {
     }
 
     public boolean hasFolderComponent(Component component) {
-        if (component == null || !component.isWithinFolder() || component.getFileResource() == null
-                || component.getFileResource().getParent() == null
-                || component.getFileResource().getParent().getType() != IResource.FOLDER) {
+        if (component == null 
+            || !component.isWithinFolder() 
+            || component.getFileResource() == null
+            || component.getFileResource().getParent() == null
+            || component.getFileResource().getParent().getType() != IResource.FOLDER) {
             return false;
         }
 
         IFolder parentFolder = (IFolder) component.getFileResource().getParent();
-        String folderMetadataFilePath =
-                Utils.stripSourceFolder(parentFolder.getProjectRelativePath().toPortableString());
+        String folderMetadataFilePath = Utils.stripSourceFolder(parentFolder.getProjectRelativePath().toPortableString());
         folderMetadataFilePath += Constants.DEFAULT_METADATA_FILE_EXTENSION;
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Looking for folder metadata component '" + folderMetadataFilePath + "'");
-        }
+        logger.debug("Looking for folder metadata component '" + folderMetadataFilePath + "'");
 
         return hasComponentByFilePath(folderMetadataFilePath);
     }
@@ -140,8 +136,7 @@ public class ComponentList extends ArrayList<Component> {
 
         for (Component component : this) {
             if (componentType.equals(component.getComponentType())
-                    || (Utils.isNotEmpty(component.getSecondaryComponentType()) && componentType.equals(component
-                        .getSecondaryComponentType()))) {
+                || (Utils.isNotEmpty(component.getSecondaryComponentType()) && componentType.equals(component.getSecondaryComponentType()))) {
                 return true;
             }
         }
@@ -296,49 +291,50 @@ public class ComponentList extends ArrayList<Component> {
 
     @Override
     public boolean add(Component component) {
-        return add(component, false);
+        return add(
+            component,
+            PackageConfiguration.builder().build());
     }
-
+    
     public boolean add(Component component, boolean includeComposite) {
-        return add(component, includeComposite, false);
+        return add(
+            component,
+            PackageConfiguration.builder()
+            .setIncludeComposite(includeComposite)
+            .build());
     }
 
-    public boolean add(Component component, boolean includeComposite, boolean replace) {
+    public boolean add(Component component, PackageConfiguration configuration) {
         if (component == null) {
-            logger.warn("Unable to add component to list - component null");
             return false;
+        }
+        
+        if(component.isBundle) {
+            remove(component);
+            Component replacement = component.preComponentListAddition();
+            return super.add(replacement);
         }
 
         if (contains(component)) {
-            if (replace) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Replacing existing component " + component.getFullDisplayName());
-                }
+            if (configuration.replaceComponent) {
                 remove(component);
             } else {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Component " + component.getFullDisplayName() + " already exists in list - skipping");
-                }
                 return false;
             }
         }
 
         boolean addSuccess = super.add(component);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug((addSuccess ? "Added " : "Did not add ") + component.getFullDisplayName()
-                + " to component list");
-        }
-
-        if (!includeComposite || !component.isMetadataComposite() || !addSuccess) {
+        if (!configuration.includeComposite || !component.isMetadataComposite()) {
             return addSuccess;
+        } else {
+            return addComponentComposite(component, addSuccess);
         }
+    }
 
-        // load component composite
+    private boolean addComponentComposite(Component component, boolean addSuccess) {
         String compositeComponentFilePath = component.getCompositeMetadataFilePath();
         if (Utils.isEmpty(compositeComponentFilePath)) {
-            logger.error("Component metadata path is null for " + component.getFullDisplayName());
-            remove(component);
             return false;
         }
 
@@ -346,14 +342,16 @@ public class ComponentList extends ArrayList<Component> {
             throw new IllegalArgumentException("Project service and/or project cannot be null");
         }
 
-        // get handle on file
-        IFile compositeComponentFile =
-                projectService.getComponentFileForFilePath(component.getFileResource().getProject(),
-                    compositeComponentFilePath);
+        IFile compositeComponentFile = projectService.getComponentFileForFilePath(
+            component.getFileResource().getProject(),
+            compositeComponentFilePath);
+
         if (compositeComponentFile == null || !compositeComponentFile.exists()) {
-            logger.error("Component composite file not found at filepath '" + compositeComponentFilePath
-                + "' for component " + component.getFullDisplayName());
-            remove(component);
+            logger.error(
+                "Component composite file not found at filepath '" 
+                + compositeComponentFilePath
+                + "' for component " 
+                + component.getFullDisplayName());
             return false;
         }
 
@@ -362,10 +360,11 @@ public class ComponentList extends ArrayList<Component> {
             Component compositeComponent = getComponentFactory().getComponentFromFile(compositeComponentFile);
 
             if (compositeComponent == null) {
-                logger.error("Component metadata not created for '"
-                        + compositeComponentFile.getProjectRelativePath().toPortableString() + "' for component "
-                        + component.getFullDisplayName());
-                remove(component);
+                logger.error(
+                    "Component metadata not created for '"
+                    + compositeComponentFile.getProjectRelativePath().toPortableString() 
+                    + "' for component "
+                    + component.getFullDisplayName());
                 return false;
             }
 
@@ -377,19 +376,14 @@ public class ComponentList extends ArrayList<Component> {
 
             if (!addSuccess) {
                 logger.error("Unable to add composite component '" + compositeComponentFilePath + "' to component list");
-                remove(component);
                 return false;
             }
 
-            if (logger.isInfoEnabled()) {
-                logger.info("Added component metadata " + compositeComponent.getFullDisplayName()
-                    + " to project package");
-            }
-
         } catch (FactoryException e) {
-            logger.error("Unable to get composite component from filepath '" + compositeComponentFilePath + "'"
-                    + e.getMessage());
-            remove(component);
+            logger.error(
+                "Unable to get composite component from filepath '" 
+                + compositeComponentFilePath + "'"
+                + e.getMessage());
             return false;
         }
 
@@ -398,12 +392,8 @@ public class ComponentList extends ArrayList<Component> {
 
     public boolean remove(Component component) {
         if (super.remove(component)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Removed component " + component.getFullDisplayName() + " from component list");
-            }
             return true;
         }
-        logger.warn("Unable to remove component " + component.getFullDisplayName() + " from component list");
         return false;
     }
 
@@ -446,23 +436,15 @@ public class ComponentList extends ArrayList<Component> {
     }
 
     boolean hasOnlySupportedContainerMembers() {
-        return FluentIterable.from(this).allMatch(new Predicate<Component>() {
-
-            @Override
-            public boolean apply(Component cmp) {
-                ToolingService toolingService = ContainerDelegate.getInstance().getServiceLocator().getToolingService();
-                return toolingService.checkIfCanCreateContainerMember(cmp, ComponentList.this);
-            }
+        return this.stream().allMatch(cmp -> {
+            ToolingService toolingService = ContainerDelegate.getInstance().getServiceLocator().getToolingService();
+            return toolingService.checkIfCanCreateContainerMember(cmp, ComponentList.this);
         });
     }
-
+    
     boolean hasOnlyExistentComponents() {
-        return FluentIterable.from(this).allMatch(new Predicate<Component>() {
-
-            @Override
-            public boolean apply(Component cmp) {
-                return cmp.getId() != null && !cmp.getId().equals("");
-            }
+        return this.stream().allMatch(cmp -> {
+            return cmp.getId() != null && !cmp.getId().equals("");
         });
     }
 

@@ -69,7 +69,6 @@ public class RefreshResourceActionController extends ActionController {
     @Override
     public boolean preRun() {
         if (Utils.isEmpty(selectedResources)) {
-            logger.info("Operation cancelled.  Resources not provided.");
             return false;
         }
 
@@ -91,7 +90,6 @@ public class RefreshResourceActionController extends ActionController {
                     "Confirm Refresh Open File",
                     strBuffer.toString());
                 if (!result) {
-                    logger.info("User cancelled.  File is open for edit or dirty.");
                     return false;
                 }
             }
@@ -105,7 +103,6 @@ public class RefreshResourceActionController extends ActionController {
      */
     public boolean refreshResources(IProgressMonitor monitor) throws Exception {
         if (Utils.isEmpty(selectedResources)) {
-            logger.warn("Unable to refresh resources - resources is null or empty");
             return false;
         }
 
@@ -428,7 +425,12 @@ public class RefreshResourceActionController extends ActionController {
                 }
 
                 if (retrieveResultHandler == null
-                    || !getProjectService().handleRetrieveResult(projectPackageList, retrieveResultHandler, true, saveComponentTypes, monitor)) {
+                    || !getProjectService().handleRetrieveResult(
+                        projectPackageList,
+                        retrieveResultHandler,
+                        true,
+                        saveComponentTypes,
+                        monitor)) {
                     logger.warn("Unable to refresh component folders");
                     failRefreshResult();
                 }
@@ -452,7 +454,10 @@ public class RefreshResourceActionController extends ActionController {
             monitorCheck(monitor);
             RetrieveResultExt retrieveResultHandler = null;
             try {
-                retrieveResultHandler = getServiceLocator().getPackageRetrieveService().retrieveSelective(projectPackageList, true, monitor);
+                retrieveResultHandler = getServiceLocator().getPackageRetrieveService().retrieveSelective(
+                    projectPackageList,
+                    true,
+                    monitor);
             } catch (ServiceTimeoutException ex) {
                 retrieveResultHandler = getServiceLocator().getPackageRetrieveService().handleRetrieveServiceTimeoutException(
                     ex,
@@ -461,7 +466,10 @@ public class RefreshResourceActionController extends ActionController {
             }
 
             if (retrieveResultHandler == null
-                || !getProjectService().handleRetrieveResult(retrieveResultHandler, true, monitor)) {
+                || !getProjectService().handleRetrieveResult(
+                    retrieveResultHandler,
+                    true,
+                    monitor)) {
                 logger.warn("Unable to refresh component files");
                 failRefreshResult();
             }

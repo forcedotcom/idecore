@@ -390,21 +390,18 @@ public class ProjectController extends Controller {
 
         switch (getProjectModel().getContentSelection()) {
         case ALL_APEX_CONTENT:
-            packageManifest =
-                    ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageManifestFactory()
+            packageManifest = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageManifestFactory()
                             .createDefaultPackageManifestForComponentTypes(getEnabledComponentTypes());
             break;
         case SPECIFIC_PACKAGE:
-            packageManifest =
-                    ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageManifestFactory()
+            packageManifest = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageManifestFactory()
                             .createPackageManifest(getProjectModel().getSelectedPackageName());
             break;
         case CUSTOM_COMPONENTS:
             packageManifest = getProjectModel().getPackageManifestModel().getPackageManifest();
             break;
         default:
-            packageManifest =
-                    ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageManifestFactory()
+            packageManifest = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageManifestFactory()
                             .createGenericDefaultPackageManifest();
         }
 

@@ -84,9 +84,8 @@ public class PackageRetrieveService extends BasePackageService {
         } else {
             lastSupportedEndpointVersion = getProjectService().getLastSupportedEndpointVersion();
         }
-        if (logger.isInfoEnabled()) {
-            logger.info("RetrieveRequest's api version is set to '" + lastSupportedEndpointVersion + "'");
-        }
+
+        logger.info("RetrieveRequest's api version is set to '" + lastSupportedEndpointVersion + "'");
         return getRetrieveRequest(lastSupportedEndpointVersion);
     }
 
@@ -144,15 +143,12 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Connection cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieve all components for:\n" + connection.getLogDisplay());
-        }
+        logger.debug("Retrieve all components for:\n" + connection.getLogDisplay());
+
         ProjectPackageList projectPackageList =
                 getProjectPackageFactory().getDevelopmentAndUnmanagedInstalledProjectPackages(connection);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Packages for " + connection.getLogDisplay() + " " + projectPackageList.toString());
-        }
+        logger.debug("Packages for " + connection.getLogDisplay() + " " + projectPackageList.toString());
 
         RetrieveRequest retrieveRequest = getRetrieveRequest();
         retrieveRequest.setPackageNames(projectPackageList.getNamedPackageNames());
@@ -188,9 +184,7 @@ public class PackageRetrieveService extends BasePackageService {
                 getProjectPackageFactory().getManagedInstalledProjectPackages(connection);
 
         if (Utils.isEmpty(projectPackageList)) {
-            if (logger.isInfoEnabled()) {
-                logger.info("No installed, managed packages to retrieve");
-            }
+            logger.info("No installed, managed packages to retrieve");
             return new RetrieveResultExt();
         }
 
@@ -221,9 +215,7 @@ public class PackageRetrieveService extends BasePackageService {
         }
 
         if (Utils.isEmpty(packageNames)) {
-            if (logger.isInfoEnabled()) {
-                logger.info("No installed, managed packages to retrieve");
-            }
+            logger.info("No installed, managed packages to retrieve");
             return null;
         }
 
@@ -302,8 +294,7 @@ public class PackageRetrieveService extends BasePackageService {
         Package packageManifest = null;
         String[] packageNames = null;
         if (Constants.DEFAULT_PACKAGED_NAME.equals(packageName)) {
-            packageManifest =
-                    getPackageManifestFactory().createPackageManifestForComponentTypes(packageName, componentTypes);
+            packageManifest = getPackageManifestFactory().createPackageManifestForComponentTypes(packageName, componentTypes);
         } else {
             packageNames = new String[] { packageName };
         }
@@ -425,9 +416,7 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Connection cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
-        }
+        logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
 
         if (Utils.isEmpty(filePaths)) {
             logger.warn("Nothing to retrieve - filename list is empty");
@@ -435,9 +424,6 @@ public class PackageRetrieveService extends BasePackageService {
         }
 
         RetrieveRequest retrieveRequest = getRetrieveRequest();
-
-        // specific files
-        retrieveRequest.setSpecificFiles(filePaths);
 
         // set unpackaged manifest or package naming; if the former and the project's package.xml refers to a
         // package (name=<something>), adjust on the fly to retrieve unpacakged content using package.xml definitions
@@ -471,9 +457,7 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Project package list and/or connection cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
-        }
+        logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
 
         if (projectPackageList.isEmpty()) {
             logger.warn("Nothing to retrieve - ProjectPackageList is empty");
@@ -482,21 +466,14 @@ public class PackageRetrieveService extends BasePackageService {
 
         RetrieveRequest retrieveRequest = getRetrieveRequest();
 
-        // specific files
-        String[] filePaths = projectPackageList.getComponentFilePathArray(true);
-        if (selective && Utils.isNotEmpty(filePaths)) {
-            retrieveRequest.setSpecificFiles(filePaths);
-        }
-
         // specific packages
         retrieveRequest.setPackageNames(projectPackageList.getNamedPackageNames());
 
         // default package
         Package defaultPackageManifest = null;
         if (projectPackageList.hasPackage(Constants.DEFAULT_PACKAGED_NAME)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Include retrieval of default package manifest");
-            }	
+            logger.debug("Include retrieval of default package manifest");
+
             if (selective) {
             	defaultPackageManifest = getPackageManifestFactory().createGenericDefaultPackageManifest();
             	Map<String, List<String>> packageManifestMap = Maps.newHashMap();
@@ -550,9 +527,7 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Project package list and/or connection cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
-        }
+        logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
 
         if (projectPackageList.isEmpty()) {
             logger.warn("Nothing to retrieve - ProjectPackageList is empty");
@@ -560,12 +535,6 @@ public class PackageRetrieveService extends BasePackageService {
         }
 
         RetrieveRequest retrieveRequest = getRetrieveRequest();
-
-        // specific files
-        String[] filePaths = projectPackageList.getComponentFilePathArray(true);
-        if (selective && Utils.isNotEmpty(filePaths)) {
-            retrieveRequest.setSpecificFiles(filePaths);
-        }
 
         // specific packages
         retrieveRequest.setPackageNames(projectPackageList.getNamedPackageNames());
@@ -609,9 +578,7 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Package list and/or connection cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieving selective component types for given packages from " + connection.getLogDisplay());
-        }
+        logger.debug("Retrieving selective component types for given packages from " + connection.getLogDisplay());
 
         RetrieveRequest retrieveRequest = getRetrieveRequest();
         retrieveRequest.setPackageNames(projectPackageList.getNamedPackageNames());
@@ -626,24 +593,18 @@ public class PackageRetrieveService extends BasePackageService {
                     logRefreshFilePaths(filePaths);
                 }
 
-                if (Utils.isNotEmpty(filePaths)) {
-                    retrieveRequest.setSpecificFiles(filePaths);
-                }
-
                 if (projectPackageList.hasPackage(Constants.DEFAULT_PACKAGED_NAME)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Include retrieval of default package manifest");
-                    }
+                    logger.debug("Include retrieval of default package manifest");
                     packageManifest = getPackageManifestFactory().getDefaultPackageManifest(projectPackageList);
 
                 }
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Include retrieval of subset of stanzas from default package manifest");
-                }
-                packageManifest =
-                        getPackageManifestFactory().getPackageManifestForComponentTypes(project,
-                            Constants.DEFAULT_PACKAGED_NAME, componentTypes, true);
+                logger.debug("Include retrieval of subset of stanzas from default package manifest");
+                packageManifest = getPackageManifestFactory().getPackageManifestForComponentTypes(
+                    project,
+                    Constants.DEFAULT_PACKAGED_NAME,
+                    componentTypes,
+                    true);
             }
             retrieveRequest.setUnpackaged(getPackageManifestFactory().convert(packageManifest));
         }
@@ -662,8 +623,8 @@ public class PackageRetrieveService extends BasePackageService {
     private boolean hasComponentTypeWthAssociatedComponentTypes(String[] componentTypes) {
         boolean hasAssociatedComponentTypes = false;
         for (String componentType : componentTypes) {
-            hasAssociatedComponentTypes =
-                    hasAssociatedComponentTypes | getComponentFactory().hasAssociatedComponentTypes(componentType);
+            hasAssociatedComponentTypes = hasAssociatedComponentTypes 
+                | getComponentFactory().hasAssociatedComponentTypes(componentType);
         }
         return hasAssociatedComponentTypes;
     }
@@ -689,8 +650,7 @@ public class PackageRetrieveService extends BasePackageService {
             // separate if statement for this check due to custom object component type could have * and specific member
             // entry for standard obj in package.xml
             if (getPackageManifestFactory().hasExplicitMemberForComponentType(project, componentType)) {
-                List<String> filePathListForComponentType =
-                        getPackageManifestFactory().getFilePathsForComponentType(project, componentType);
+                List<String> filePathListForComponentType = getPackageManifestFactory().getFilePathsForComponentType(project, componentType);
                 filePathList.addAll(filePathListForComponentType);
             }
 
@@ -699,9 +659,11 @@ public class PackageRetrieveService extends BasePackageService {
             if (getComponentFactory().hasSubComponentTypesForComponentType(componentType)) {
                 ProjectPackageList projectPackage = getProjectPackageListInstance();
                 IFolder componentFolder = getProjectService().getComponentFolderByComponentType(project, componentType);
-                projectPackage =
-                        getProjectPackageFactory().loadProjectPackageList(componentFolder, projectPackage, false,
-                            new NullProgressMonitor());
+                projectPackage = getProjectPackageFactory().loadProjectPackageList(
+                    componentFolder,
+                    projectPackage,
+                    false,
+                    new NullProgressMonitor());
                 List<String> filePaths = projectPackage.getFilePaths(true);
                 filePathList.addAll(filePaths);
             }
@@ -711,8 +673,11 @@ public class PackageRetrieveService extends BasePackageService {
         // aggregate all listMetadata call into one call - reduce traffic.
         if (queryList.size() > 0) {
             ListMetadataQuery[] queryArray = queryList.toArray(new ListMetadataQuery[queryList.size()]);
-            FileMetadataExt fileMetadataExt =
-                    getMetadataService().listMetadata(connection, queryArray, true, new NullProgressMonitor());
+            FileMetadataExt fileMetadataExt = getMetadataService().listMetadata(
+                connection,
+                queryArray,
+                true,
+                new NullProgressMonitor());
             if (fileMetadataExt.getFilePropertiesCount() > 0) {
                 for (FileProperties fileProperties : fileMetadataExt.getFileProperties()) {
                     filePathList.add(fileProperties.getFileName());
@@ -794,9 +759,11 @@ public class PackageRetrieveService extends BasePackageService {
 
         RetrieveResult retrieveResult;
         try {
-            IFileBasedResultAdapter result =
-                    waitForResult(new RetrieveResultAdapter(asyncResult, metadataStubExt), metadataStubExt,
-                        operationStats, monitor);
+            IFileBasedResultAdapter result = waitForResult(
+                new RetrieveResultAdapter(asyncResult, metadataStubExt),
+                metadataStubExt,
+                operationStats,
+                monitor);
             retrieveResult = ((RetrieveResultAdapter) result).getRetrieveResult();
 
         } catch (ServiceTimeoutException e) {
@@ -804,9 +771,7 @@ public class PackageRetrieveService extends BasePackageService {
             throw e;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Received retrieve() result at " + (new Date()).toString());
-        }
+        logger.debug("Received retrieve() result at " + (new Date()).toString());
 
         if (retrieveResultExt == null) {
             retrieveResultExt = new RetrieveResultExt();
@@ -880,19 +845,14 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Connection and/or RetrieveRequest cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("");
-            logger.debug("***   R E T R I E V E   C O M P O N E N T S   ***");
-        }
+        logger.debug("***   R E T R I E V E   C O M P O N E N T S   ***");
 
         monitorWorkCheck(monitor);
 
         if (Utils.isNotEmpty(retrieveRequest.getPackageNames())
                 && (retrieveRequest.getPackageNames().length > 1 || retrieveRequest.getUnpackaged() != null)) {
             retrieveRequest.setSinglePackage(false);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Adjusted singlePackage=false after finding request containing > 1 packages");
-            }
+            logger.debug("Adjusted singlePackage=false after finding request containing > 1 packages");
         }
 
         // log retrieval details
@@ -906,9 +866,7 @@ public class PackageRetrieveService extends BasePackageService {
             monitorWorkCheck(monitor);
 
             // send request and wait for result
-            if (logger.isDebugEnabled()) {
-                logger.debug("Calling retrieve() at " + (new Date()).toString());
-            }
+            logger.debug("Calling retrieve() at " + (new Date()).toString());
 
             AsyncResult asyncResult = metadataStubExt.retrieve(retrieveRequest);
             monitorWork(monitor);
@@ -938,8 +896,10 @@ public class PackageRetrieveService extends BasePackageService {
             String[] packageNames = retrieveRequest.getPackageNames();
             strBuff.append("Retrieval request of the following");
             if (Utils.isNotEmpty(packageNames)) {
-                strBuff.append(" [").append(defaultPackage ? packageNames.length + 1 : packageNames.length)
-                        .append("] packages: ");
+                strBuff
+                .append(" [")
+                .append(defaultPackage ? packageNames.length + 1 : packageNames.length)
+                .append("] packages: ");
                 for (String packageName : packageNames) {
                     strBuff.append("'").append(packageName).append("' ");
                 }
@@ -988,8 +948,10 @@ public class PackageRetrieveService extends BasePackageService {
 
     private void logResult(RetrieveResultExt resultExt) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Retrieve result contains zip of size ["
-                    + (resultExt.getZipFile() != null ? resultExt.getZipFile().length : 0) + "]");
+            logger.debug(
+                "Retrieve result contains zip of size ["
+                + (resultExt.getZipFile() != null ? resultExt.getZipFile().length : 0) 
+                + "]");
             StringBuffer strBuff = new StringBuffer("Retrieved the following components in package(s) '");
             if (resultExt.getProjectPackageList() != null) {
                 String[] packageNames = resultExt.getProjectPackageList().getPackageNames();

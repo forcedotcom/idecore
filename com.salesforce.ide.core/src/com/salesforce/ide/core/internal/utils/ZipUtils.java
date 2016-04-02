@@ -89,10 +89,22 @@ public class ZipUtils {
         public String toString() {
             final String TAB = ", ";
             StringBuffer retValue = new StringBuffer();
-            retValue.append("ZipStats ( ").append(super.toString()).append(TAB).append("numEntries = ").append(
-                this.numEntries).append(TAB).append("numDirectories = ").append(this.numDirectories).append(TAB)
-                    .append("totalBytes = ").append(this.totalBytes).append(TAB).append("totalCompressed = ").append(
-                        this.totalCompressed).append(" )");
+            retValue
+            .append("ZipStats ( ")
+            .append(super.toString())
+            .append(TAB)
+            .append("numEntries = ")
+            .append(this.numEntries)
+            .append(TAB)
+            .append("numDirectories = ")
+            .append(this.numDirectories)
+            .append(TAB)
+            .append("totalBytes = ")
+            .append(this.totalBytes)
+            .append(TAB)
+            .append("totalCompressed = ")
+            .append(this.totalCompressed)
+            .append(" )");
 
             return retValue.toString();
         }

@@ -43,10 +43,7 @@ import com.sforce.soap.partner.wsc.QueryResult;
 public class ProjectPackageFactory extends BaseFactory {
     private static final Logger logger = Logger.getLogger(ProjectPackageFactory.class);
 
-    // C O N S T R U C T O R S
     public ProjectPackageFactory() {}
-
-    // M E T H O D S
 
     // lookup method injection by container
     @Override

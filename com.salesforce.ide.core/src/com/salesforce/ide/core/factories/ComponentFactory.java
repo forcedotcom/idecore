@@ -547,8 +547,6 @@ public class ComponentFactory extends ApplicationContextFactory {
      * @param filePath
      * @return
      */
-    // REVIEWME: the following method was primarly based on the default folder name for determining component type.
-    // instead, why not use file extension?
     public Component getComponentByFilePath(String filePath) {
 
         if (Utils.isEmpty(filePath)) {

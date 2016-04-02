@@ -192,12 +192,14 @@ public class BuilderPayload {
         initProjectPackageList();
 
         // log initial gatherings
-        if (logger.isInfoEnabled()) {
-            logger.info("Initially gathered [" + projectPackageList.getComponentCount(false) + "] components in ["
-                    + projectPackageList.size() + "] project packages to saved");
+            logger.info(
+                "Initially gathered [" 
+                + projectPackageList.getComponentCount(false) 
+                + "] components in ["
+                + projectPackageList.size() 
+                + "] project packages to saved");
             ComponentList tmpComponentList = projectPackageList.getAllComponents();
             logger.info(tmpComponentList != null ? tmpComponentList.toStringLite() : "No components found");
-        }
 
         // check for conflicts
         if (checkForConflicts) {
@@ -209,11 +211,13 @@ public class BuilderPayload {
             }
         }
 
-        if (logger.isInfoEnabled()) {
-            logger.info("Gathered [" + projectPackageList.getComponentCount(false) + "] components in ["
-                    + projectPackageList.size() + "] project packages to saved");
+            logger.info(
+                "Gathered [" 
+                    + projectPackageList.getComponentCount(false) 
+                    + "] components in ["
+                    + projectPackageList.size() 
+                    + "] project packages to saved");
             logger.debug(projectPackageList);
-        }
     }
 
     private void initProjectPackageList() {
@@ -224,13 +228,10 @@ public class BuilderPayload {
         for (Component component : componentList) {
             // ignore install package components
             if (component.isInstalled()) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Skipping referenced package component, " + component.getFullDisplayName());
-                }
+                logger.info("Skipping referenced package component, " + component.getFullDisplayName());
                 continue;
             }
 
-            // if not conflict, add to save list
             projectPackageList.addComponent(component);
         }
     }
@@ -238,9 +239,7 @@ public class BuilderPayload {
     private void filterComponentsInConflict(ProjectPackageList projectPackageList, IProgressMonitor monitor)
             throws ForceConnectionException, InterruptedException, IOException, ForceRemoteException,
             ServiceException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Filtering components in conflict...");
-        }
+        logger.debug("Filtering components in conflict...");
 
         Connection connection = null;
         if (project != null) {
