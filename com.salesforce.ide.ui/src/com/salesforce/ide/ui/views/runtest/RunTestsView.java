@@ -752,8 +752,6 @@ public class RunTestsView extends BaseViewPart {
     
     /**
      * Update the UI with the test results for an synchronous test run.
-     * FIXME: If test results are actually something about compile error,
-     * this logic breaks because it only knows about test classes.
      */
     @VisibleForTesting
 	public void processSyncTestResults(final IProject project, final Map<IResource, List<String>> testResources, 
