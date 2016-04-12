@@ -334,14 +334,12 @@ public class ComponentList extends ArrayList<Component> {
 
     private boolean addComponentComposite(Component component, boolean addSuccess) {
         String compositeComponentFilePath = component.getCompositeMetadataFilePath();
-        if (Utils.isEmpty(compositeComponentFilePath)) {
+        if (Utils.isEmpty(compositeComponentFilePath) 
+            || projectService == null
+            || component.getFileResource() == null) {
             return false;
         }
-
-        if (projectService == null || component.getFileResource() == null) {
-            throw new IllegalArgumentException("Project service and/or project cannot be null");
-        }
-
+        
         IFile compositeComponentFile = projectService.getComponentFileForFilePath(
             component.getFileResource().getProject(),
             compositeComponentFilePath);

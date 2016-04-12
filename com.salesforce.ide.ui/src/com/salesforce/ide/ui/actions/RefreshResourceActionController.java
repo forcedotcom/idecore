@@ -106,19 +106,6 @@ public class RefreshResourceActionController extends ActionController {
             return false;
         }
 
-        if (logger.isDebugEnabled()) {
-            StringBuffer strBuffer = new StringBuffer("Refreshing the following resource roots [" + selectedResources.size() + "]:");
-            int resourceCnt = 0;
-            for (IResource resource : selectedResources) {
-                strBuffer
-                .append("\n (")
-                .append(++resourceCnt)
-                .append(") ")
-                .append(resource.getProjectRelativePath().toPortableString());
-            }
-            logger.debug(strBuffer.toString());
-        }
-
         monitorCheck(monitor);
         monitorSubTask(monitor, "Retrieving remote components...");
 
@@ -159,10 +146,6 @@ public class RefreshResourceActionController extends ActionController {
         // handle if individual/multiple reference package folder was selected
         handleReferencePackageFolderRefresh(monitor);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Overall refresh process was" + (refreshResult ? " " : " NOT") + " successful");
-        }
-
         return refreshResult;
     }
 
@@ -197,10 +180,6 @@ public class RefreshResourceActionController extends ActionController {
     private boolean refreshSourceFolder(IFolder folder, IProgressMonitor monitor) throws Exception {
         if (folder == null || !folder.exists()) {
             return false;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Refreshing folder '" + folder.getProjectRelativePath().toPortableString() + "' resource");
         }
 
         String packageName = getProjectService().getPackageName(project);
@@ -282,8 +261,7 @@ public class RefreshResourceActionController extends ActionController {
                         monitor);
                     if (retrieveResultHandler != null) {
                         ProjectPackageList projectPackageList = getProjectPackageFactory().getProjectPackageListInstance(
-                                    pkgNames.toArray(new String[pkgNames.size()])
-                        );
+                                    pkgNames.toArray(new String[pkgNames.size()]));
 
                         if (projectPackageList != null) {
                             projectPackageList.setProject(project);
@@ -304,10 +282,6 @@ public class RefreshResourceActionController extends ActionController {
     protected boolean retrieveInstalledPackages(IProject project, IProgressMonitor monitor) throws Exception {
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null");
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Fetching and saving all installed, managed components for '" + project.getName() + "'");
         }
 
         // set reference pkg folder contents to readonly=false so save of retrieve content
@@ -366,7 +340,9 @@ public class RefreshResourceActionController extends ActionController {
                     componentTypes.add(component.getComponentType());
                 } else if (getProjectService().isSubComponentFolder(folder)) {
                     Component component = getComponentFactory().getComponentFromSubFolder((IFolder) folder, false);
-                    componentTypes.add(component.getSecondaryComponentType());
+                    if(component != null) {
+                        componentTypes.add(component.getSecondaryComponentType());
+                    }
                 }
                 // reference package folders is handled in methods specific for reference packages.
             }

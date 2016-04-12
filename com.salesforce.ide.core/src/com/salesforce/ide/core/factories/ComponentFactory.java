@@ -53,10 +53,8 @@ public class ComponentFactory extends ApplicationContextFactory {
     private List<String> wildCardSupportedComponentTypes = null;
     private ComponentList enabledRegisteredWildCardComponentRegistry = null;
 
-    //   C O N S T R U C T O R S
     public ComponentFactory() {}
 
-    //   M E T H O D S
     public String getMetadataFileExtension() {
         return metadataFileExtension;
     }
@@ -123,9 +121,6 @@ public class ComponentFactory extends ApplicationContextFactory {
             for (IComponent component : componentRegistry) {
                 if (componentType.equals(component.getComponentType())) {
                     components.add((Component) component);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Added '" + component.getComponentType() + "' as registered type");
-                    }
                     break;
                 }
             }
@@ -216,10 +211,6 @@ public class ComponentFactory extends ApplicationContextFactory {
             }
 
             if (!isValidComponentByComponentType(component) && isDisabledComponentType(componentType)) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("'" + component.getComponentType()
-                            + "' is not IDE-default enabled.  Excluding from registered list.");
-                }
                 continue;
             }
 
@@ -247,14 +238,10 @@ public class ComponentFactory extends ApplicationContextFactory {
             }
 
             if (!isValidComponentByComponentType(component) || isDisabledComponentType(componentType)
-                    || !isWildCardSupportedComponentType(componentType)) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("'" + component.getComponentType()
-                            + "' is not IDE-default enabled.  Excluding from registered list.");
-                }
+                || !isWildCardSupportedComponentType(componentType)) {
                 continue;
             }
-
+            
             enabledRegisteredWildCardComponentRegistry.add(component);
         }
 
@@ -273,9 +260,6 @@ public class ComponentFactory extends ApplicationContextFactory {
             for (Component enabledComponent : enabledComponents) {
                 if (componentType.equals(enabledComponent.getComponentType())) {
                     components.add(enabledComponent);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Added '" + enabledComponent.getComponentType() + "' as registered type");
-                    }
                     break;
                 }
             }
@@ -346,9 +330,6 @@ public class ComponentFactory extends ApplicationContextFactory {
     public boolean isEnabledComponentType(String componentType) {
         ComponentList components = getEnabledRegisteredComponents(new String[] { componentType });
         if (Utils.isEmpty(components)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Object type '" + componentType + "' is not IDE-default enabled");
-            }
             return false;
         }
 		return true;
@@ -411,8 +392,6 @@ public class ComponentFactory extends ApplicationContextFactory {
         Component component = null;
         // if id is not found, get unknown type and set object type manually
         if (Utils.isEmpty(id)) {
-            logger.warn("No id found for object type '" + componentType + "' - creating component from '"
-                    + Constants.UNKNOWN_COMPONENT_TYPE + "' component");
             id = Constants.UNKNOWN_COMPONENT_TYPE;
             component = getComponentBean(id);
             if (Utils.isNotEmpty(componentType)) {
@@ -433,7 +412,6 @@ public class ComponentFactory extends ApplicationContextFactory {
      */
     public Component getComponentByExtension(String extension) {
         if (Utils.isEmpty(extension)) {
-            logger.error("Extension cannot be null");
             throw new IllegalArgumentException("Extension cannot be null");
         }
 
@@ -442,23 +420,13 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Looking up component for extension '" + extension + "'");
-        }
-
         String id = getComponentByIdByExtension(extension);
 
         // get component from context
         Component component = getComponentById(id, id);
 
         if (component == null) {
-            logger.error("Bean not found for id '" + id);
             return null;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found component of type " + component.getFullDisplayName() + " for id '" + id
-                    + "' and extension '" + extension + "'");
         }
 
         checkComponentMetadata(extension, component);
@@ -468,7 +436,6 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     public String getComponentByIdByExtension(String extension) {
         if (Utils.isEmpty(extension)) {
-            logger.error("Extension cannot be null");
             throw new IllegalArgumentException("Extension cannot be null");
         }
 
@@ -496,7 +463,6 @@ public class ComponentFactory extends ApplicationContextFactory {
      */
     public Component getComponentByComponentType(String componentType) {
         if (Utils.isEmpty(componentType)) {
-            logger.error("Component type cannot be null");
             throw new IllegalArgumentException("Object type cannot be null");
         }
 
@@ -512,17 +478,11 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found component of type " + component.getFullDisplayName() + " for id '" + componentType
-                    + "' and object type '" + componentType + "'");
-        }
-
         return component;
     }
 
     public Component getComponentByComponentTypeClass(MetadataExt metadataExt) throws JAXBException {
         if (metadataExt == null) {
-            logger.error("MetadataExt instance cannot be null");
             throw new IllegalArgumentException("MetadataExt instance cannot be null");
         }
 
@@ -550,7 +510,6 @@ public class ComponentFactory extends ApplicationContextFactory {
     public Component getComponentByFilePath(String filePath) {
 
         if (Utils.isEmpty(filePath)) {
-            logger.error("Filepath cannot be null");
             throw new IllegalArgumentException("Filepath cannot be null");
         }
 
@@ -561,10 +520,6 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         // ignore src/ and referenced.../ part of filepath
         String tmpfilePath = Utils.stripSourceFolder(filePath);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Looking up component for filepath '" + tmpfilePath + "'");
-        }
 
         // id to use for bean lookup
         String id = null;
@@ -609,24 +564,16 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         // unable to determine
         if (Utils.isEmpty(id)) {
-            logger.warn("No id found for filepath '" + filePath + "', tagging as component of type '"
-                    + Constants.UNKNOWN_COMPONENT_TYPE + "'");
             id = Constants.UNKNOWN_COMPONENT_TYPE;
         }
 
         // if component is a folder, get folder component and set sub type
         Component component = getComponentBean(id);
         if (isFolderComponent(component, pathParts)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Getting '" + id + "' folder bean for path '" + tmpfilePath + "'");
-            }
             component = getComponentBean(Constants.FOLDER);
             component.setSecondaryComponentType(id);
             setFolderName(component, pathParts);
         } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Getting bean for id '" + id + "'");
-            }
             component = getComponentBean(id);
         }
 
@@ -635,11 +582,11 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        if (CustomObjectNameResolver.getCheckerForStandardObject().check(Utils.getNameFromFilePath(filePath),
-                component.getComponentType())) {
+        if (CustomObjectNameResolver.getCheckerForStandardObject()
+            .check(Utils.getNameFromFilePath(filePath), component.getComponentType())) {
             component = getComponentBean(Constants.STANDARD_OBJECT);
         }
-
+        
         component.setFilePath(filePath);
         component.setNameFromFilePath(filePath);
         component.setManagedFromFilePath(filePath);
@@ -650,11 +597,6 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         // determine if file is metadata
         checkComponentMetadata(filePath, component);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Created component of type '" + component.getComponentType() + "' for id '" + id
-                    + "' and filepath '" + filePath + "'");
-        }
 
         return component;
     }
@@ -667,10 +609,6 @@ public class ComponentFactory extends ApplicationContextFactory {
                     return component.getComponentType();
                 }
             }
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Did not find bean id for path part '" + pathComponentFolderPart + "'");
         }
 
         return null;
@@ -690,7 +628,6 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     public boolean isFolderComponent(String filePath) {
         if (Utils.isEmpty(filePath)) {
-            logger.error("Filepath cannot be null");
             throw new IllegalArgumentException("Filepath cannot be null");
         }
 
@@ -702,9 +639,6 @@ public class ComponentFactory extends ApplicationContextFactory {
         String[] folderTokens = filePath.split("/");
         for (String folderName : folderNames) {
             if (folderName.equals(folderTokens[folderTokens.length - 1])) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Filepath '" + filePath + "' is a Folder component");
-                }
                 return true;
             }
         }
@@ -792,25 +726,17 @@ public class ComponentFactory extends ApplicationContextFactory {
         return file.getName().endsWith(metadataFileExtension);
     }
 
-    /**
+    /*
      * Create new component instance base on given folder name.
-     *
-     * @param folderName
-     * @return
      */
     public Component getComponentByFolderName(String folderName) {
         if (Utils.isEmpty(folderName)) {
-            logger.error("Folder name cannot be null");
             throw new IllegalArgumentException("Folder name cannot be null");
         }
 
         if (Utils.isEmpty(componentRegistry)) {
             logger.warn("Component registry is null or empty");
             return null;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Looking up component for folder name '" + folderName + "'");
         }
 
         String id = null;
@@ -832,32 +758,18 @@ public class ComponentFactory extends ApplicationContextFactory {
         // get empty component for the folder's sub-type to load defaults, if applicable
         setFolderComponentDefaults(component);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found component of type " + component.getFullDisplayName() + " for id '" + id
-                    + "' and folder name '" + folderName + "'");
-        }
-
         return component;
     }
 
-    /**
+    /*
      * Get existing component with given file resource. The component's body will be included.
-     *
-     * @param file
-     * @return
-     * @throws FactoryException
      */
     public Component getComponentFromFile(IFile file) throws FactoryException {
         return getComponentFromFile(file, true);
     }
 
-    /**
+    /*
      * Get existing component with given file resource. Boolean determines whether the body is included.
-     *
-     * @param file
-     * @param includeBody
-     * @return
-     * @throws FactoryException
      */
     public Component getComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
         if (file == null) {
@@ -888,37 +800,27 @@ public class ComponentFactory extends ApplicationContextFactory {
         // get empty component for the folder's sub-type to load defaults, if applicable
         setFolderComponentDefaults(component);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loaded " + component.getFullDisplayName() + " from file '" + file.getName() + "'");
-        }
         return component;
     }
 
     public Component getComponentFromSubFolder(IFolder folder, boolean includeBody) throws FactoryException {
         if (folder == null) {
-            logger.error("Folder cannot be null");
             throw new IllegalArgumentException("Folder cannot be null");
         }
 
         // get associated metadata file
-        String filePath =
-                folder.getProjectRelativePath().toPortableString() + Constants.DEFAULT_METADATA_FILE_EXTENSION;
+        String filePath = folder.getProjectRelativePath().toPortableString() + Constants.DEFAULT_METADATA_FILE_EXTENSION;
         IFile folderMetadataFile = folder.getProject().getFile(filePath);
-        assert null != folderMetadataFile; // Just to appease the compiler. API ensures value is never null.
 
         Component component = null;
         if (folderMetadataFile.exists()) {
             component = getComponentFromFile(folderMetadataFile, true);
             if (component == null) {
-                logger.warn("Unable to get component metadata from file '"
-                        + folderMetadataFile.getProjectRelativePath().toPortableString() + "'");
                 return null;
             }
-
-        } else if (folder.getParent() != null && folder.getParent().getType() == IResource.FOLDER
-                && folder.getParent().exists()) {
-            logger.warn("Unable to get folder's component metadata file '"
-                    + folderMetadataFile.getProjectRelativePath().toPortableString() + "'");
+        } else if (folder.getParent() != null 
+            && folder.getParent().getType() == IResource.FOLDER
+            && folder.getParent().exists()) {
 
             IFolder parent = (IFolder) folder.getParent();
             component = getComponentByFolderName(parent.getName());
@@ -935,19 +837,10 @@ public class ComponentFactory extends ApplicationContextFactory {
 
             String packageName = getProjectService().getPackageName(folder.getProject());
             component.setPackageName(packageName);
-
-        } else {
-            logger.warn("Unable to get folder's component metadata file '"
-                    + folderMetadataFile.getProjectRelativePath().toPortableString() + "' or derive from parent");
-            return null;
+            // get empty component for the folder's sub-type to load defaults, if applicable
+            setFolderComponentDefaults(component);
         }
 
-        // get empty component for the folder's sub-type to load defaults, if applicable
-        setFolderComponentDefaults(component);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loaded " + component.getFullDisplayName() + " from folder '" + folder.getName() + "'");
-        }
         return component;
     }
 
@@ -1002,17 +895,11 @@ public class ComponentFactory extends ApplicationContextFactory {
         return getCompositeComponentFromFile(file, true);
     }
 
-    /**
+    /*
      * Get existing composite component with given file resource. Boolean determines whether the body is included.
-     *
-     * @param file
-     * @param includeBody
-     * @return
-     * @throws FactoryException
      */
     private Component getCompositeComponentFromFile(IFile file, boolean includeBody) throws FactoryException {
         if (file == null) {
-            logger.error("File cannot be null");
             throw new IllegalArgumentException("File cannot be null");
         }
 
@@ -1043,42 +930,28 @@ public class ComponentFactory extends ApplicationContextFactory {
             throw new FactoryException(e);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loaded " + component.getFullDisplayName() + " from file '" + file.getName() + "'");
-        }
         return compositeComponent;
     }
 
-    /**
+    /*
      * Get existing composite component with given associated component. Boolean determines whether the body is
      * included.
-     *
-     * @param component
-     * @return
-     * @throws FactoryException
      */
     public Component getCompositeComponentFromComponent(Component component) throws FactoryException {
         return getCompositeComponentFromComponent(component, true);
     }
 
-    /**
+    /*
      * Get existing composite component with given associated component. The component's body will be included.
-     *
-     * @param component
-     * @param includeBody
-     * @return
-     * @throws FactoryException
      */
     private Component getCompositeComponentFromComponent(Component component, boolean includeBody)
             throws FactoryException {
-        if (component == null
-                || (Utils.isEmpty(component.getCompositeMetadataFilePath()) && Utils.isEmpty(component
-                        .getMetadataFileExtension()))) {
-            logger.error("Component and/or component composite filepath cannot be null");
+        if (component == null || (Utils.isEmpty(component.getCompositeMetadataFilePath())
+            && Utils.isEmpty(component.getMetadataFileExtension()))) {
             throw new IllegalArgumentException(
-                    "Component and/or component composite filepath/metadata extension cannot be null");
+                "Component and/or component composite filepath/metadata extension cannot be null");
         }
-
+        
         Component compositeComponent = null;
         if (Utils.isNotEmpty(component.getCompositeMetadataFilePath())) {
             compositeComponent = getComponentByFilePath(component.getCompositeMetadataFilePath());
@@ -1087,21 +960,27 @@ public class ComponentFactory extends ApplicationContextFactory {
         }
 
         if (compositeComponent == null) {
-            throw new FactoryException("Unable to find component composite from path '"
-                    + component.getCompositeMetadataFilePath() + "'");
+            throw new FactoryException(
+                "Unable to find component composite from path '" 
+                + component.getCompositeMetadataFilePath() 
+                + "'");
         }
 
         setCompositeComponentAttributes(compositeComponent, component);
         if (component.getFileResource() == null || component.getFileResource().getProject() == null) {
-            logger.warn("Unable to load existing '" + compositeComponent.getMetadataFilePath()
-                    + "' from project - associated component's file resource is null.  Assuming new.");
+            logger.warn(
+                "Unable to load existing '" 
+                + compositeComponent.getMetadataFilePath()
+                + "' from project - associated component's file resource is null.  Assuming new.");
             return compositeComponent;
         }
 
         IFile compositeComponentFile = compositeComponent.getFileResource(component.getFileResource().getProject());
         if (compositeComponentFile == null || !compositeComponentFile.exists()) {
-            logger.warn("Unable to load '" + compositeComponent.getMetadataFilePath()
-                    + "' from project - composite component file resource is null");
+            logger.warn(
+                "Unable to load '" 
+                + compositeComponent.getMetadataFilePath()
+                + "' from project - composite component file resource is null");
             return compositeComponent;
         }
 
@@ -1112,10 +991,6 @@ public class ComponentFactory extends ApplicationContextFactory {
             throw new FactoryException(e);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loaded " + compositeComponent.getFullDisplayName() + " from file '"
-                    + compositeComponentFile.getName() + "'");
-        }
         return compositeComponent;
     }
 
@@ -1125,11 +1000,6 @@ public class ComponentFactory extends ApplicationContextFactory {
         }
 
         IFile componentFile = component.getFileResource();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Parsing and creating MetadataExt instance '"
-                    + componentFile.getProjectRelativePath().toPortableString() + "'");
-        }
 
         MetadataExt metadataExt = component.getDefaultMetadataExtInstance();
         Unmarshaller unmarshaller = JAXBContext.newInstance(metadataExt.getClass()).createUnmarshaller();
@@ -1179,7 +1049,6 @@ public class ComponentFactory extends ApplicationContextFactory {
     private static Component loadComponentProperties(ProjectPackage projectPackage, Component component, String filePath,
             byte[] file, FileMetadataExt fileMetadataHandler) {
         if (component == null) {
-            logger.error("Component cannot be null for filepath '" + filePath + "'");
             throw new IllegalArgumentException("Component cannot be null for filepath '" + filePath + "'");
         }
 
@@ -1192,15 +1061,8 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         if (filePath.endsWith(Constants.DEFAULT_METADATA_FILE_EXTENSION)) {
             handleComponentMetadata(projectPackage, component, fileMetadataHandler);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found component metadata file '" + filePath + "'");
-            }
         } else {
             setRemoteProperties(component, fileMetadataHandler);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Created component instance " + component.getFullDisplayName());
         }
 
         return component;
@@ -1212,7 +1074,6 @@ public class ComponentFactory extends ApplicationContextFactory {
 
     private static void setRemoteProperties(Component component, String filePath, FileMetadataExt fileMetadataHandler) {
         if (component == null || fileMetadataHandler == null || Utils.isEmpty(filePath)) {
-            logger.error("Component, filePath,and/or FileMetadataHandler cannot be null");
             throw new IllegalArgumentException("Component, filePath,and/or FileMetadataHandler cannot be null");
         }
 
@@ -1225,16 +1086,11 @@ public class ComponentFactory extends ApplicationContextFactory {
         }
 
         component.setFileProperties(fileProperties);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loaded '" + filePath + "' properties into component " + component.getFullDisplayName());
-        }
     }
 
     private static void handleComponentMetadata(ProjectPackage projectPackage, Component component,
             FileMetadataExt fileMetadataHandler) {
         if (projectPackage == null || component == null || fileMetadataHandler == null) {
-            logger.error("Component, project package, and/or FileMetadataHandler cannot be null");
             throw new IllegalArgumentException("Component, project package, and/or FileMetadataHandler cannot be null");
         }
 
@@ -1261,10 +1117,6 @@ public class ComponentFactory extends ApplicationContextFactory {
 
         component.setFilePath(metadataFilePath);
         component.setFileName(metadataFilePath);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Handled metadata for component " + component.getFullDisplayName());
-        }
     }
 
     private static boolean isComponentMetadataMatch(String filePath, IComponent component) {
@@ -1292,9 +1144,6 @@ public class ComponentFactory extends ApplicationContextFactory {
         // considered metadata, but instead an actual component
         if (path.endsWith(getMetadataFileExtension()) && !Constants.FOLDER.equals(component.getComponentType())) {
             component.setMetadataInstance(true);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Set component '" + path + "' as metadata instance");
-            }
         }
     }
 

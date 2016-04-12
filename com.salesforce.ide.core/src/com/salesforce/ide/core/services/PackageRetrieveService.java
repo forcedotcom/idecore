@@ -143,12 +143,8 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Connection cannot be null");
         }
 
-        logger.debug("Retrieve all components for:\n" + connection.getLogDisplay());
-
         ProjectPackageList projectPackageList =
                 getProjectPackageFactory().getDevelopmentAndUnmanagedInstalledProjectPackages(connection);
-
-        logger.debug("Packages for " + connection.getLogDisplay() + " " + projectPackageList.toString());
 
         RetrieveRequest retrieveRequest = getRetrieveRequest();
         retrieveRequest.setPackageNames(projectPackageList.getNamedPackageNames());
@@ -457,8 +453,6 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Project package list and/or connection cannot be null");
         }
 
-        logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
-
         if (projectPackageList.isEmpty()) {
             logger.warn("Nothing to retrieve - ProjectPackageList is empty");
             return null;
@@ -472,8 +466,6 @@ public class PackageRetrieveService extends BasePackageService {
         // default package
         Package defaultPackageManifest = null;
         if (projectPackageList.hasPackage(Constants.DEFAULT_PACKAGED_NAME)) {
-            logger.debug("Include retrieval of default package manifest");
-
             if (selective) {
             	defaultPackageManifest = getPackageManifestFactory().createGenericDefaultPackageManifest();
             	Map<String, List<String>> packageManifestMap = Maps.newHashMap();
@@ -527,8 +519,6 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Project package list and/or connection cannot be null");
         }
 
-        logger.debug("Retrieving selective packages/components from " + connection.getLogDisplay());
-
         if (projectPackageList.isEmpty()) {
             logger.warn("Nothing to retrieve - ProjectPackageList is empty");
             return null;
@@ -578,8 +568,6 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Package list and/or connection cannot be null");
         }
 
-        logger.debug("Retrieving selective component types for given packages from " + connection.getLogDisplay());
-
         RetrieveRequest retrieveRequest = getRetrieveRequest();
         retrieveRequest.setPackageNames(projectPackageList.getNamedPackageNames());
         IProject project = projectPackageList.getProject();
@@ -594,12 +582,10 @@ public class PackageRetrieveService extends BasePackageService {
                 }
 
                 if (projectPackageList.hasPackage(Constants.DEFAULT_PACKAGED_NAME)) {
-                    logger.debug("Include retrieval of default package manifest");
                     packageManifest = getPackageManifestFactory().getDefaultPackageManifest(projectPackageList);
 
                 }
             } else {
-                logger.debug("Include retrieval of subset of stanzas from default package manifest");
                 packageManifest = getPackageManifestFactory().getPackageManifestForComponentTypes(
                     project,
                     Constants.DEFAULT_PACKAGED_NAME,
@@ -771,8 +757,6 @@ public class PackageRetrieveService extends BasePackageService {
             throw e;
         }
 
-        logger.debug("Received retrieve() result at " + (new Date()).toString());
-
         if (retrieveResultExt == null) {
             retrieveResultExt = new RetrieveResultExt();
         }
@@ -845,14 +829,11 @@ public class PackageRetrieveService extends BasePackageService {
             throw new IllegalArgumentException("Connection and/or RetrieveRequest cannot be null");
         }
 
-        logger.debug("***   R E T R I E V E   C O M P O N E N T S   ***");
-
         monitorWorkCheck(monitor);
 
         if (Utils.isNotEmpty(retrieveRequest.getPackageNames())
-                && (retrieveRequest.getPackageNames().length > 1 || retrieveRequest.getUnpackaged() != null)) {
+            && (retrieveRequest.getPackageNames().length > 1 || retrieveRequest.getUnpackaged() != null)) {
             retrieveRequest.setSinglePackage(false);
-            logger.debug("Adjusted singlePackage=false after finding request containing > 1 packages");
         }
 
         // log retrieval details
@@ -864,9 +845,6 @@ public class PackageRetrieveService extends BasePackageService {
             MetadataStubExt metadataStubExt = getMetadataFactory().getMetadataStubExt(connection);
 
             monitorWorkCheck(monitor);
-
-            // send request and wait for result
-            logger.debug("Calling retrieve() at " + (new Date()).toString());
 
             AsyncResult asyncResult = metadataStubExt.retrieve(retrieveRequest);
             monitorWork(monitor);

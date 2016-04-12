@@ -58,12 +58,10 @@ public abstract class ComponentResource implements IComponent {
     private IFolder bundleFolder;
     private byte[] file;
 
-    //   C O N S T R U C T O R S
     protected ComponentResource() {
         super();
     }
 
-    //   M E T H O D S
     // metadata filepath and filepath are the same for non-installed packages;
     // for installed packages filepath is prefixed with the package name
     @Override
