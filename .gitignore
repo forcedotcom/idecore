@@ -1,20 +1,20 @@
-# From https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
-
-*.pydevproject
-.metadata
-.gradle
 bin/
 tmp/
-*.tmp
+target/
+
+*~
+*.rej
 *.bak
 *.swp
-*~.nib
-local.properties
-.settings/
+*.lock
+*.pydevproject
+
+.DS_Store
+.Trashes
+.metadata
+.gradle
 .loadpath
 
-# External tool builders
-.externalToolBuilders/
-
-# Maven
-target/
+local.properties
+jacoco.exec
+pom.versionBackup
