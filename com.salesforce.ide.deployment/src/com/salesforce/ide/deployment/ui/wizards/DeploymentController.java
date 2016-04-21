@@ -70,7 +70,6 @@ import com.salesforce.ide.deployment.internal.utils.DeploymentConstants;
 import com.salesforce.ide.ui.internal.utils.ComponentArchiver;
 import com.sforce.soap.metadata.DeployOptions;
 import com.sforce.soap.metadata.LogInfo;
-import com.sforce.ws.ConnectionException;
 
 public class DeploymentController extends Controller {
     private static final Logger logger = Logger.getLogger(DeploymentController.class);
@@ -165,9 +164,6 @@ public class DeploymentController extends Controller {
 
     public void generateArchive(ComponentList components, File zipPath, String zipName) throws IOException {
         ComponentArchiver.generateArchive(zipName, zipPath, components);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Generated archive: " + zipPath + File.separator + zipName);
-        }
     }
 
     public void testConnection() throws ForceConnectionException, InsufficientPermissionsException {
@@ -218,10 +214,6 @@ public class DeploymentController extends Controller {
 
         monitorCheck(monitor);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Saving destination org '" + getDeploymentWizardModel().getProjectName() + "' settings");
-        }
-
         ForceProject forceProject = getDeploymentWizardModel().getForceProject();
 
         if (forceProject == null) {
@@ -237,12 +229,13 @@ public class DeploymentController extends Controller {
 
         String otherLabel = Messages.getString("ProjectCreateWizard.OrganizationPage.OtherEnvironment.label");
         if (otherLabel.equals(getDeploymentWizardModel().getEnvironment())) {
-            ForceIdeDeploymentPlugin.savePreference(DeploymentConstants.LAST_DEPLOYMENT_SERVER_SELECTED, forceProject
-                    .getEndpointServer());
-            ForceIdeDeploymentPlugin.savePreference(DeploymentConstants.LAST_DEPLOYMENT_KEEP_ENDPOINT_SELECTED,
+            ForceIdeDeploymentPlugin
+                .savePreference(DeploymentConstants.LAST_DEPLOYMENT_SERVER_SELECTED, forceProject.getEndpointServer());
+            ForceIdeDeploymentPlugin.savePreference(
+                DeploymentConstants.LAST_DEPLOYMENT_KEEP_ENDPOINT_SELECTED,
                 forceProject.isKeepEndpoint());
-            ForceIdeDeploymentPlugin.savePreference(DeploymentConstants.LAST_DEPLOYMENT_PROTOCOL_SELECTED, forceProject
-                    .isHttpsProtocol());
+            ForceIdeDeploymentPlugin
+                .savePreference(DeploymentConstants.LAST_DEPLOYMENT_PROTOCOL_SELECTED, forceProject.isHttpsProtocol());
         }
     }
 
@@ -274,82 +267,68 @@ public class DeploymentController extends Controller {
         return generateDeploymentPayload(deployResources, destinationProject, monitor);
     }
 
-    /**
+    /*
      * Inspects project contents and given remote destination org to determine a deployment plan containing deployment
      * candidates and their respective deployment action - new, overwrite, delete, etc.
-     *
-     * @param project
-     * @param destinationProject
-     * @return
-     * @throws InterruptedException
-     * @throws ConnectionException
-     * @throws RemoteException
-     * @throws Exception
-     * @throws FactoryException
-     * @throws CoreException
-     * @throws MetadataServiceException
      */
-    // FIXME: review exception throwing
-    public DeploymentPayload generateDeploymentPayload(List<IResource> deployResources,
-            ForceProject destinationProject, IProgressMonitor monitor) throws InterruptedException,
-            ForceConnectionException, ForceRemoteException, CoreException, FactoryException {
+    public DeploymentPayload generateDeploymentPayload(
+        List<IResource> deployResources,
+        ForceProject destinationProject,
+        IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
+            CoreException, FactoryException {
         if (Utils.isEmpty(deployResources) || destinationProject == null || model.getProject() == null) {
             throw new IllegalArgumentException("Resources, project, and/or destination cannot be null");
         }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Generating deployment plan for " + destinationProject.getLogDisplay());
-        }
-
+        
         // initialize payload container
         DeploymentPayload deploymentPayload = new DeploymentPayload(model.getProject(), deployResources);
         deploymentPayload.setDestinationOrgUsername(destinationProject.getUserName());
-
+        
         monitorCheckSubTask(monitor, "Getting connection to destination organization...");
-        Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(destinationProject);
+        Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory()
+            .getConnection(destinationProject);
         monitorWork(monitor);
-
+        
         monitorCheckSubTask(monitor, "Getting permissible object types for destination organization...");
-        String[] enabledComponentTypes = ContainerDelegate.getInstance().getServiceLocator().getMetadataService().getEnabledComponentTypes(connection, true, true);
+        String[] enabledComponentTypes = ContainerDelegate.getInstance().getServiceLocator().getMetadataService()
+            .getEnabledComponentTypes(connection, true, true);
         if (Utils.isEmpty(enabledComponentTypes)) {
             logger.warn("No object types are enabled for " + connection.getLogDisplay());
             return deploymentPayload;
         }
         monitorWork(monitor);
-
+        
         List<String> remoteEnabledComponentTypes = new ArrayList<>(enabledComponentTypes.length);
         remoteEnabledComponentTypes.addAll(Arrays.asList(enabledComponentTypes));
-
+        
         monitorCheckSubTask(monitor, "Gathering project contents for resource(s)");
         // get local and remote components
-        localProjectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectContents(deployResources, true, monitor);
+        localProjectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService()
+            .getProjectContents(deployResources, true, monitor);
         localProjectPackageList.setProject(model.getProject());
         monitorWork(monitor);
-
+        
         // there's nothing to deploy if local is empty
         if (localProjectPackageList.isEmpty()) {
             logger.warn("Local package list is empty");
             return deploymentPayload;
         }
-
+        
         //  retrieve remote components
         try {
             loadRemoteProjectPackageList(connection, deployResources, monitor);
         } catch (Exception e) {
             logger.warn("Unable to retrieve remote components for resources", ForceExceptionUtils.getRootCause(e));
         }
-
+        
         // if remote is empty, are components are considered new
         if (Utils.isEmpty(remoteProjectPackageList)) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Remote package list is empty.  Assuming all local components are new.");
-            }
             ComponentList componentList = localProjectPackageList.getAllComponents();
             for (Component component : componentList) {
                 DeploymentComponent deploymentComponent =
-                        createNewDeploymentComponent(component, remoteEnabledComponentTypes);
+                    createNewDeploymentComponent(component, remoteEnabledComponentTypes);
                 deploymentComponent.setRemoteFound(false);
-
+                
                 boolean added = deploymentPayload.add(deploymentComponent, true);
                 if (added) {
                     if (logger.isDebugEnabled()) {
@@ -361,80 +340,57 @@ public class DeploymentController extends Controller {
                     }
                 }
             }
-
+            
         } else {
-            // evaluate local against remote retrieved
-            if (logger.isDebugEnabled()) {
-                logger.debug("Local package count [" + localProjectPackageList.size() + "] and component count ["
-                        + localProjectPackageList.getComponentCount(true) + "]");
-                logger.debug("Remote package count ["
-                        + (Utils.isNotEmpty(remoteProjectPackageList) ? remoteProjectPackageList.size() : 0)
-                        + "] and component count ["
-                        + (Utils.isNotEmpty(remoteProjectPackageList) ? remoteProjectPackageList
-                                .getComponentCount(true) : 0) + "]");
-            }
-
             ComponentList remoteComponents = remoteProjectPackageList.getAllComponents();
             if (Utils.isNotEmpty(remoteComponents)) {
                 deploymentPayload.setRemoteComponentList(remoteComponents);
             }
-
+            
             monitorCheckSubTask(monitor, "Evaluating project and remote components...");
             // test either project package
             for (ProjectPackage localProjectPackage : localProjectPackageList) {
                 monitorCheck(monitor);
-                DeploymentComponentSet deploymentComponentSet =
-                        getDeploymentComponentSetForPackage(localProjectPackage, remoteProjectPackageList,
-                            remoteEnabledComponentTypes, monitor);
+                DeploymentComponentSet deploymentComponentSet = getDeploymentComponentSetForPackage(
+                    localProjectPackage,
+                    remoteProjectPackageList,
+                    remoteEnabledComponentTypes,
+                    monitor);
                 deploymentPayload.addAll(deploymentComponentSet);
             }
             monitorWork(monitor);
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Deployment load count [" + deploymentPayload.size() + "]");
-                logger.debug(deploymentPayload.getDeploymentPlanSummary());
-            }
         }
-
+        
         return deploymentPayload;
     }
-
-    protected void loadRemoteProjectPackageList(Connection connection, List<IResource> deployResources,
-            IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException,
+    
+    protected void loadRemoteProjectPackageList(
+        Connection connection,
+        List<IResource> deployResources,
+        IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException,
             FactoryException, CoreException, IOException, ServiceException {
         if (Utils.isEmpty(deployResources)) {
             logger.warn("Unable to get remote content for resources - resources is null or empty");
         }
-
-        if (logger.isDebugEnabled()) {
-            StringBuffer strBuffer =
-                    new StringBuffer("Retrieve remote components for the following resource roots ["
-                            + deployResources.size() + "]:");
-            int resourceCnt = 0;
-            for (IResource resource : deployResources) {
-                strBuffer.append("\n (").append(++resourceCnt).append(") ").append(
-                    resource.getProjectRelativePath().toPortableString());
-            }
-            logger.debug(strBuffer.toString());
-        }
-
+        
         monitorCheck(monitor);
         monitorSubTask(monitor, "Retrieving remote components...");
-
-        remoteProjectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
+        
+        remoteProjectPackageList =
+            ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
         remoteProjectPackageList.setProject(model.getProject());
-
+        
         // handle if source root was selected
         try {
             handleSourceRetrieve(connection, deployResources, monitor);
-
+            
             // handle source component folders
             // handling sub-src folder selections: some are individual file retrieves and some selections should
             // include new content.  this difference requires that we either query all content and pair-down or make
             // multiple specific, retrieve calls.  the latter was chosen so that we don't bog down the server with large
             // requests and the ide from having to parse large result sets.
             handleSourceComponentFolderRetrieve(connection, deployResources, monitor);
-
+            
             // handle source component files
             handleSourceComponentFileRetrieve(connection, deployResources, monitor);
         } catch (RetrieveException ex) {
@@ -443,29 +399,24 @@ public class DeploymentController extends Controller {
                 throw ex;
             }
         }
-
+        
         // for package content, see if unpackaged instance exists
         handlePackageRetrieve(connection, deployResources, monitor);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Retrieved  "
-                    + (Utils.isNotEmpty(remoteProjectPackageList) ? remoteProjectPackageList.size() : 0)
-                    + " components");
-        }
     }
-
-    protected void handleSourceRetrieve(Connection connection, List<IResource> deployResources, IProgressMonitor monitor)
-            throws InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException,
-            IOException, ServiceException {
+    
+    protected void handleSourceRetrieve(
+        Connection connection,
+        List<IResource> deployResources,
+        IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
+            FactoryException, IOException, ServiceException {
         monitorCheck(monitor);
         if (Utils.isNotEmpty(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getFolder(deployResources, Constants.SOURCE_FOLDER_NAME))) {
             String packageName = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageName(model.getProject());
 
             // perform retrieve
-            RetrieveResultExt retrieveResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrievePackage(connection, model.getProject(),
-                        packageName, monitor);
-
+            RetrieveResultExt retrieveResultHandler = ContainerDelegate.getInstance().getServiceLocator()
+                .getPackageRetrieveService().retrievePackage(connection, model.getProject(), packageName, monitor);
+                
             if (retrieveResultHandler == null) {
                 logger.warn("Unable to retrieve remote components for src folder - retrieve result is null");
                 return;
@@ -473,15 +424,18 @@ public class DeploymentController extends Controller {
 
             monitorWork(monitor);
 
-            remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                    .getFileMetadataHandler());
+            remoteProjectPackageList.generateComponents(
+                retrieveResultHandler.getZipFile(),
+                retrieveResultHandler.getFileMetadataHandler());
         }
     }
 
-    protected void handleSourceComponentFolderRetrieve(Connection connection, List<IResource> deployResources,
-            IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
+    protected void handleSourceComponentFolderRetrieve(
+        Connection connection,
+        List<IResource> deployResources,
+        IProgressMonitor monitor) throws InterruptedException, ForceConnectionException, ForceRemoteException,
             FactoryException, CoreException, IOException, ServiceException {
-
+            
         // if only source root was selected was selected, let's end here
         if (deployResources.size() == 1
                 && Utils.isNotEmpty(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getFolder(deployResources, Constants.SOURCE_FOLDER_NAME))) {
@@ -517,14 +471,15 @@ public class DeploymentController extends Controller {
 
                 if (retrieveResultHandler == null) {
                     logger
-                            .warn("Unable to retrieve remote components for component folder(s) - retrieve result is null");
+                        .warn("Unable to retrieve remote components for component folder(s) - retrieve result is null");
                     return;
                 }
 
                 monitorWork(monitor);
 
-                remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                        .getFileMetadataHandler());
+                remoteProjectPackageList.generateComponents(
+                    retrieveResultHandler.getZipFile(),
+                    retrieveResultHandler.getFileMetadataHandler());
             }
         }
     }
@@ -537,85 +492,85 @@ public class DeploymentController extends Controller {
     // on the server, it will update <nonamespace>.myApexClass AND add <nonamespace>.myApexClass to the
     // newly created 'mypackage' (it's quite possible <nonamespace>.myApexClass was already a member of
     // another package; that relationship would be unchanged).
-    protected void handlePackageRetrieve(Connection connection, List<IResource> deployResources,
-            IProgressMonitor monitor) throws InterruptedException, ForceRemoteException,
-            FactoryException, IOException, ServiceException {
-
+    protected void handlePackageRetrieve(
+        Connection connection,
+        List<IResource> deployResources,
+        IProgressMonitor monitor)
+            throws InterruptedException, ForceRemoteException, FactoryException, IOException, ServiceException {
+            
         // 1.) get list of component not found in remote org - assume components don't exist in package, but might be unpackaged
         // 2.) selectively query for said components
         // 3.) added return components to remoteProjectPackageList
-
-        String packageName = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageName(getProject());
+        
+        String packageName =
+            ContainerDelegate.getInstance().getServiceLocator().getProjectService().getPackageName(getProject());
         // we're only interested if the project's is package content
         if (Utils.isEmpty(packageName) || Constants.DEFAULT_PACKAGED_NAME.equals(packageName)) {
             return;
         }
-
+        
         monitorCheck(monitor);
         ComponentList componentList = localProjectPackageList.getComponentsNotFound(remoteProjectPackageList);
-
+        
         // all components present in remote org
         if (!Utils.isEmpty(componentList)) {
             // check unpackage content for not-found components
             List<String> componentNames = componentList.getFilePaths(true, false);
-
-            if (logger.isDebugEnabled()) {
-                StringBuffer strBuff = new StringBuffer("The following components were not found in package '");
-                strBuff.append(packageName).append("', checking if instances exists in unpackaged:");
-                int cnt = 0;
-                for (String componentName : componentNames) {
-                    strBuff.append("  (").append(++cnt).append(" ").append(componentName);
-                }
-                logger.debug(strBuff.toString());
-            }
-
+            
             RetrieveResultExt retrieveResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrieveSelective(connection,
-                        componentNames.toArray(new String[componentNames.size()]), Constants.DEFAULT_PACKAGED_NAME,
-                        getProject(), monitor);
-
+                ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrieveSelective(
+                    connection,
+                    componentNames.toArray(new String[componentNames.size()]),
+                    Constants.DEFAULT_PACKAGED_NAME,
+                    getProject(),
+                    monitor);
+                    
             if (retrieveResultHandler == null) {
                 logger.warn("Unable to retrieve remote components for component file(s) - retrieve result is null");
                 return;
             }
-
+            
             monitorWork(monitor);
-
-            remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                    .getFileMetadataHandler());
+            
+            remoteProjectPackageList.generateComponents(
+                retrieveResultHandler.getZipFile(),
+                retrieveResultHandler.getFileMetadataHandler());
         }
     }
-
-    protected void handleSourceComponentFileRetrieve(Connection connection, List<IResource> deployResources,
-            IProgressMonitor monitor) throws InterruptedException, ForceRemoteException,
-            IOException, ServiceException {
-
+    
+    protected void handleSourceComponentFileRetrieve(
+        Connection connection,
+        List<IResource> deployResources,
+        IProgressMonitor monitor) throws InterruptedException, ForceRemoteException, IOException, ServiceException {
+        
         // if only source root was selected was selected, let's end here
-        if (deployResources.size() == 1
-                && Utils.isNotEmpty(ContainerDelegate.getInstance().getServiceLocator().getProjectService().getFolder(deployResources, Constants.SOURCE_FOLDER_NAME))) {
+        if (deployResources.size() == 1 && Utils.isNotEmpty(
+            ContainerDelegate.getInstance().getServiceLocator().getProjectService()
+                .getFolder(deployResources, Constants.SOURCE_FOLDER_NAME))) {
             return;
         }
-
+        
         monitorCheck(monitor);
-        List<IResource> files = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getResourcesByType(deployResources, IResource.FILE);
+        List<IResource> files = ContainerDelegate.getInstance().getServiceLocator().getProjectService()
+            .getResourcesByType(deployResources, IResource.FILE);
         if (Utils.isNotEmpty(files)) {
             monitorCheck(monitor);
-            RetrieveResultExt retrieveResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrieveSelective(connection, localProjectPackageList,
-                        true, monitor);
-
+            RetrieveResultExt retrieveResultHandler = ContainerDelegate.getInstance().getServiceLocator()
+                .getPackageRetrieveService().retrieveSelective(connection, localProjectPackageList, true, monitor);
+                
             if (retrieveResultHandler == null) {
                 logger.warn("Unable to retrieve remote components for component file(s) - retrieve result is null");
                 return;
             }
-
+            
             monitorWork(monitor);
-
-            remoteProjectPackageList.generateComponents(retrieveResultHandler.getZipFile(), retrieveResultHandler
-                    .getFileMetadataHandler());
+            
+            remoteProjectPackageList.generateComponents(
+                retrieveResultHandler.getZipFile(),
+                retrieveResultHandler.getFileMetadataHandler());
         }
     }
-
+    
     // inspect local vs. remote project package content
     private DeploymentComponentSet getDeploymentComponentSetForPackage(ProjectPackage localProjectPackage,
             ProjectPackageList remoteProjectPackageList, List<String> remoteEnabledComponentTypes,
@@ -629,12 +584,6 @@ public class DeploymentController extends Controller {
 
         // no corresponding package found in destination org
         if (remoteProjectPackage == null) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Remote package '" + localProjectPackage.getName()
-                        + "' not found.  Assuming all local components [" + localComponentList.size()
-                        + "] in package '" + localProjectPackage.getName() + "' are new.");
-            }
-
             // create deployment candidate for each local component
             for (Component localComponent : localComponentList) {
 
@@ -655,20 +604,7 @@ public class DeploymentController extends Controller {
                     }
                 }
 
-                boolean added = deploymentComponentSet.add(deploymentComponent, false);
-                if (added) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Added  " + deploymentComponent.getFullDisplayName() + " to deployment set");
-                    }
-                } else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(deploymentComponent.getDisplayName() + " already exists in deployment set");
-                    }
-                }
-            }
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Added  [" + deploymentComponentSet.size() + "] deployment components to set");
+               deploymentComponentSet.add(deploymentComponent, false);
             }
 
         } else {
@@ -677,26 +613,11 @@ public class DeploymentController extends Controller {
             remoteComponentList = localProjectPackage.getComponentListInstance();
             remoteComponentList.addAll(remoteProjectPackage.getComponentList());
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Comparing all components in local [" + localComponentList.size() + "] and remote ["
-                        + remoteComponentList.size() + "] package '" + localProjectPackage.getName() + "'");
-            }
-
             for (Component localComponent : localComponentList) {
                 DeploymentComponent deploymentComponent =
                         getDeploymentComponentForComponent(localComponent, remoteEnabledComponentTypes, monitor);
 
-                boolean added = deploymentComponentSet.add(deploymentComponent, true);
-                if (added) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Added  " + deploymentComponent.getFullDisplayName() + " ("
-                                + deploymentComponent.getDestinationSummary() + ") to deployment set");
-                    }
-                } else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(deploymentComponent.getFullDisplayName() + " already exists in deployment set");
-                    }
-                }
+                deploymentComponentSet.add(deploymentComponent, true);
                 monitorCheck(monitor);
             }
 
@@ -705,10 +626,6 @@ public class DeploymentController extends Controller {
                 for (Component remoteComponent : remoteComponentList) {
                     DeploymentComponent deploymentComponent = createDeleteDeploymentComponent(remoteComponent);
                     deploymentComponentSet.add(deploymentComponent, false);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Remote component " + remoteComponent.getFullDisplayName()
-                                + " does not exist locally and will be consider as a delete candidate");
-                    }
                 }
             }
         }
@@ -717,18 +634,20 @@ public class DeploymentController extends Controller {
     }
 
     // evaluate local component vs. remote component
-    private DeploymentComponent getDeploymentComponentForComponent(Component localComponent,
-            List<String> remoteEnabledComponentTypes, IProgressMonitor monitor) throws InterruptedException {
+    private DeploymentComponent getDeploymentComponentForComponent(
+        Component localComponent,
+        List<String> remoteEnabledComponentTypes,
+        IProgressMonitor monitor) throws InterruptedException {
         // create instance containing local deploy candidate
         DeploymentComponent deploymentComponent =
-                createNewDeploymentComponent(localComponent, remoteEnabledComponentTypes);
-
+            createNewDeploymentComponent(localComponent, remoteEnabledComponentTypes);
+            
         Component remoteComponent = remoteComponentList.getComponentByFilePath(localComponent.getMetadataFilePath());
         initDeploymentComponent(deploymentComponent, localComponent, remoteComponent, monitor);
-
+        
         return deploymentComponent;
     }
-
+    
     private void initDeploymentComponent(DeploymentComponent deploymentComponent, Component localComponent,
             Component remoteComponent, IProgressMonitor monitor) throws InterruptedException {
         if (deploymentComponent == null) {
@@ -737,26 +656,15 @@ public class DeploymentController extends Controller {
 
         // if not found in remote list, assume new
         if (remoteComponent == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Did not find " + localComponent.getFullDisplayName() + " in remote package "
-                        + localComponent.getPackageName() + ".  Assuming component is new.");
-            }
-
             deploymentComponent.setRemoteFound(false);
         } else if (DeploymentSummary.isDeployable(deploymentComponent.getDestinationSummary())) {
             // if found, compare attributes to identify change
             boolean changed = localComponent.hasEitherChanged(remoteComponent, monitor);
             if (changed) {
                 deploymentComponent.setDestinationSummary(DeploymentSummary.UPDATED);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Remote component " + remoteComponent.getFullDisplayName() + " has been updated.");
-                }
             } else {
                 deploymentComponent.setDestinationSummary(DeploymentSummary.NO_CHANGE_OVERWRITE);
                 deploymentComponent.setDeploy(false);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Local and remote component " + localComponent.getFullDisplayName() + " are equal");
-                }
             }
 
             // removed from further consideration
@@ -767,46 +675,30 @@ public class DeploymentController extends Controller {
         }
     }
 
-    private static DeploymentComponent createNewDeploymentComponent(Component component,
-            List<String> remoteEnabledComponentTypes) {
+    private static DeploymentComponent createNewDeploymentComponent(
+        Component component,
+        List<String> remoteEnabledComponentTypes) {
         DeploymentComponent deploymentComponent = new DeploymentComponent(component);
         // make sure type is permissible in destination and remote add is supported
         if (Utils.isEmpty(remoteEnabledComponentTypes)
-                || !remoteEnabledComponentTypes.contains(component.getComponentType())) {
+            || !remoteEnabledComponentTypes.contains(component.getComponentType())) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.NOT_PERMISSIBLE);
             deploymentComponent.setDeploy(false);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created deployment component for " + component.getFullDisplayName()
-                        + ": type not permissible");
-            }
         } else if (component.getFileResource() == null || !component.getFileResource().exists()) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.RESOURCE_NOT_FOUND);
             deploymentComponent.setDeploy(false);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created deployment component for " + component.getFullDisplayName()
-                        + ": resource not found");
-            }
         } else if (component.isRemoteAdd()) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.NEW);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created deployment component for " + component.getFullDisplayName() + ": new supported");
-            }
-        } else if (CustomObjectNameResolver.getCheckerForStandardObject().check(component.getName(), component.getComponentType())) {
+        } else if (CustomObjectNameResolver.getCheckerForStandardObject()
+            .check(component.getName(), component.getComponentType())) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.UPDATED);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created deployment component for " + component.getFullDisplayName() + ": updated");
-            }
         } else {
             deploymentComponent.setDestinationSummary(DeploymentSummary.NEW_NOT_SUPPORTED);
             deploymentComponent.setDeploy(false);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Created deployment component for " + component.getFullDisplayName()
-                        + ": new not supported");
-            }
         }
         return deploymentComponent;
     }
-
+    
     private static DeploymentComponent createDeleteDeploymentComponent(Component component) {
         DeploymentComponent deploymentComponent = new DeploymentComponent(component);
         if (component.isRemoteDeleteable()) {
@@ -864,40 +756,26 @@ public class DeploymentController extends Controller {
         } catch (Exception e) {
             throw new InvocationTargetException(e);
         } finally {
-            if (logger.isInfoEnabled()) {
-                logger.info("Deployment was "
-                        + (deploymentResult != null && deploymentResult.isSuccess() ? "SUCCESSFUL" : "FAILED"));
-            }
             // save endpoint, if new
             ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getSalesforceEndpoints()
-                    .addUserEndpoint(getDeploymentWizardModel().getDestinationOrg().getEndpointServer());
+                .addUserEndpoint(getDeploymentWizardModel().getDestinationOrg().getEndpointServer());
         }
     }
 
-    /**
+    /*
      * Deploy given components to given destination. Set checkOnly to true if deployment is to be committed.
-     *
-     * @param destinationProject
-     * @param deploymentPayload
-     * @param checkOnly
-     * @return
-     * @throws ForceConnectionException
-     * @throws ServiceException
-     * @throws FactoryException
-     * @throws ForceProjectException
-     * @throws InterruptedException
-     * @throws ForceRemoteException
      */
-    public DeploymentResult deploy(ForceProject destinationProject, DeploymentPayload deploymentPayload,
-            boolean checkOnly, IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException,
-            InterruptedException, ForceProjectException, FactoryException, ServiceException {
-        Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(destinationProject);
-        if (logger.isDebugEnabled()) {
-            logger.debug(deploymentPayload.getDeploymentPlanSummary());
-        }
+    public DeploymentResult deploy(
+        ForceProject destinationProject,
+        DeploymentPayload deploymentPayload,
+        boolean checkOnly,
+        IProgressMonitor monitor) throws ForceConnectionException, ForceRemoteException, InterruptedException,
+            ForceProjectException, FactoryException, ServiceException {
+        Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory()
+            .getConnection(destinationProject);
         return deployWork(connection, deploymentPayload, checkOnly, monitor);
     }
-
+    
     private DeploymentResult deployWork(Connection connection, DeploymentPayload deploymentPayload, boolean checkOnly,
             IProgressMonitor monitor) throws InterruptedException, ForceProjectException, FactoryException,
             ServiceException, ForceRemoteException {
@@ -910,7 +788,6 @@ public class DeploymentController extends Controller {
         // call this specialized manifest factory method.
         Package manifest = factory.createSpecialDefaultPackageManifest();
         manifest.setVersion(serviceLocator.getProjectService().getLastSupportedEndpointVersion());
-
 
         monitorCheckSubTask(monitor, "Loading deployment candidates...");
         DeploymentComponentSet deploymentComponents = deploymentPayload.getDeploySelectedComponents();
@@ -1019,5 +896,4 @@ public class DeploymentController extends Controller {
         deployOptions.setIgnoreWarnings(true);
         return deployOptions;
     }
-
 }

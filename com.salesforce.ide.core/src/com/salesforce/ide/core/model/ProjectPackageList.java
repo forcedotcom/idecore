@@ -1028,15 +1028,18 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             for (Component component : componentList) {
                 monitorCheck(monitor);
 
-                // Do not save the packageManifest response since that is only for this particular deploy
-                if(component.getComponentType().equals(Constants.PACKAGE_MANIFEST)) {
-                    continue;
-                }
-                
                 // If provided, only save selected object types
                 if (Utils.isNotEmpty(componentTypes)
                     && !isDesignatedSaveComponentType(designatedSaveComponentTypes, component)) {
                     continue;
+                }
+
+                // Do not save the packageManifest response since that is only for this particular deploy
+                if(component.getComponentType().equals(Constants.PACKAGE_MANIFEST)) {
+                    if (Utils.isEmpty(componentTypes)
+                        || !isDesignatedSaveComponentType(designatedSaveComponentTypes, component)) {
+                        continue;
+                    }
                 }
                 
                 try {
