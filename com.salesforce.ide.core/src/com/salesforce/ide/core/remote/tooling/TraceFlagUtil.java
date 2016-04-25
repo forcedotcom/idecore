@@ -32,13 +32,13 @@ import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.HTTPConnection;
 import com.salesforce.ide.core.remote.ToolingStubExt;
 import com.sforce.soap.tooling.ApexLogLevel;
-import com.sforce.soap.tooling.DebugLevel;
+import com.sforce.soap.tooling.sobject.DebugLevel;
 import com.sforce.soap.tooling.DeleteResult;
 import com.sforce.soap.tooling.LogCategory;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.sobject.SObject;
 import com.sforce.soap.tooling.SaveResult;
-import com.sforce.soap.tooling.TraceFlag;
+import com.sforce.soap.tooling.sobject.TraceFlag;
 import com.sforce.soap.tooling.TraceFlagType;
 
 /**

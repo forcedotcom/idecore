@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.ToolingStubExt;
-import com.sforce.soap.tooling.ContainerAsyncRequest;
+import com.sforce.soap.tooling.sobject.ContainerAsyncRequest;
 import com.sforce.soap.tooling.ContainerAsyncRequestState;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.sobject.SObject;
 import com.sforce.soap.tooling.SaveResult;
 
 /**

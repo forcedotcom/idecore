@@ -18,7 +18,7 @@ import com.sforce.soap.tooling.DeleteResult;
 import com.sforce.soap.tooling.DescribeGlobalResult;
 import com.sforce.soap.tooling.DescribeSObjectResult;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.sobject.SObject;
 import com.sforce.soap.tooling.SaveResult;
 import com.sforce.soap.tooling.ToolingConnection;
 import com.sforce.ws.ConnectionException;
@@ -58,7 +58,7 @@ public class ToolingStubExt {
         }
 
         updateSessionId(connection.getSessionId());
-        toolingConnection.setCallOptions(connection.getApplication());
+        toolingConnection.setCallOptions(connection.getApplication(), null);
 
     }
 

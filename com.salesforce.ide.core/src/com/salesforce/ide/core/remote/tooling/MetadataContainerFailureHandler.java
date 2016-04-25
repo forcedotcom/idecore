@@ -16,7 +16,7 @@ import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.ToolingStubExt;
 import com.sforce.soap.tooling.Error;
-import com.sforce.soap.tooling.MetadataContainer;
+import com.sforce.soap.tooling.sobject.MetadataContainer;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.SaveResult;
 import com.sforce.soap.tooling.StatusCode;

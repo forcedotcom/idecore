@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.salesforce.ide</groupId>
 	<artifactId>com.salesforce.ide.parent</artifactId>
-	<version>36.0.0-SNAPSHOT</version>
+	<version>37.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Salesforce.com</name>
@@ -25,25 +25,27 @@
 		<test.keyring.file>${project.build.directory}/.eclipse.keyring</test.keyring.file>
 		<test.keyring.password>${project.build.directory}/../../.gitignore</test.keyring.password>
 		<test.appserver>-Dappserver-for-test=nchen-wsl1:6109</test.appserver>
-		<test.appArgs>-eclipse.keyring ${test.keyring.file} -eclipse.password ${test.keyring.password}</test.appArgs>
-		<test.vmArgs>${os-jvm-flags} -Dsfdc-internal=true -Xms512m -Xmx2048m ${test.appserver}</test.vmArgs>
+		<test.appArgs>-eclipse.keyring ${test.keyring.file} -eclipse.password
+			${test.keyring.password}</test.appArgs>
+		<test.vmArgs>${os-jvm-flags} -Dsfdc-internal=true -Xms512m -Xmx2048m
+			${test.appserver}</test.vmArgs>
 		<test.topLevel>${project.build.directory}/../../..</test.topLevel>
 		<test.reportsDirectory>${project.build.directory}/surefire-reports</test.reportsDirectory>
 		<test.screenshotsDirectory>${test.reportsDirectory}/screenshots</test.screenshotsDirectory>
 		<test.skipUnitTests>false</test.skipUnitTests>
 		<test.skipUITests>false</test.skipUITests>
 		<test.skipBotTests>false</test.skipBotTests>
-		
-		<!-- Our module structure is not typical. If we have unit & integration
-		tests in each module, there will be a Jacoco data file in each
-		and Sonarqube can parse that data file and figure out the code coverage
-		of the sources in that module. Instead, we have three modules that have
-		tests for all the other modules. The trick we're doing here is to output
-		all code coverage into a top level Jacoco data file. Then, we copy
-		this data file to each non-test module. Then, let Sonar do its job. -->
+
+		<!-- Our module structure is not typical. If we have unit & integration 
+			tests in each module, there will be a Jacoco data file in each and Sonarqube 
+			can parse that data file and figure out the code coverage of the sources 
+			in that module. Instead, we have three modules that have tests for all the 
+			other modules. The trick we're doing here is to output all code coverage 
+			into a top level Jacoco data file. Then, we copy this data file to each non-test 
+			module. Then, let Sonar do its job. -->
 		<test.jacoco.fileName>jacoco.exec</test.jacoco.fileName>
 		<test.jacoco.filePath>${test.topLevel}/${test.jacoco.fileName}</test.jacoco.filePath>
-		
+
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
@@ -83,6 +85,11 @@
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
@@ -90,7 +97,7 @@
 						<artifact>
 							<groupId>com.salesforce.ide</groupId>
 							<artifactId>com.salesforce.ide.targetdefinition</artifactId>
-							<version>36.0.0-SNAPSHOT</version>
+							<version>37.0.0-SNAPSHOT</version>
 						</artifact>
 					</target>
 					<environments>

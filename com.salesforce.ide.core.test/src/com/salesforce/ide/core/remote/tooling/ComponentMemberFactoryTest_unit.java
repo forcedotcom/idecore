@@ -16,12 +16,12 @@ import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.services.ToolingService;
 import com.salesforce.ide.test.common.utils.IdeTestUtil;
-import com.sforce.soap.tooling.ApexClassMember;
+import com.sforce.soap.tooling.sobject.ApexClassMember;
 import com.sforce.soap.tooling.ApexCodeUnitStatus;
-import com.sforce.soap.tooling.ApexComponentMember;
-import com.sforce.soap.tooling.ApexPageMember;
-import com.sforce.soap.tooling.ApexTriggerMember;
-import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.sobject.ApexComponentMember;
+import com.sforce.soap.tooling.sobject.ApexPageMember;
+import com.sforce.soap.tooling.sobject.ApexTriggerMember;
+import com.sforce.soap.tooling.sobject.SObject;
 
 /**
  * Tests the factory methods to ensure that we are creating the right ContainerMembers. Again, this method of testing is

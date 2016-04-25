@@ -11,7 +11,7 @@
 package com.salesforce.ide.core.remote.tooling;
 
 import com.salesforce.ide.core.model.Component;
-import com.sforce.soap.tooling.MetadataContainer;
+import com.sforce.soap.tooling.sobject.MetadataContainer;
 
 /**
  * Adapts an ApexComponent component to a ApexComponentMember for deployment.
