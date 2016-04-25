@@ -403,7 +403,16 @@ public class Connection {
     }
 
     public void setClientCallOptions() throws ForceConnectionException {
-        getPartnerConnection().setCallOptions(getClientId(), null, false, null, debugExceptions, getPlatform(), getApplication(), null);
+        getPartnerConnection().setCallOptions(
+            getClientId(),
+            null,
+            false,
+            null,
+            debugExceptions,
+            getPlatform(),
+            getApplication(),
+            null,
+            false);
         if (logger.isDebugEnabled()) {
             logger.debug("Set IDE call options");
         }
@@ -415,7 +424,16 @@ public class Connection {
      * @throws ForceConnectionException
      */
     public void setNonCallOptions() throws ForceConnectionException {
-        partnerConnection.setCallOptions("", null, false, null, debugExceptions, getPlatform(), getApplication(), null);
+        partnerConnection.setCallOptions(
+            "",
+            null,
+            false,
+            null,
+            debugExceptions,
+            getPlatform(),
+            getApplication(),
+            null,
+            false);
         if (logger.isDebugEnabled()) {
             logger.debug("Set non-IDE call options");
         }
@@ -516,7 +534,7 @@ public class Connection {
     }
 
     public void setCallOptions(SoapConnection apexConnection, String clientId) throws ForceConnectionException {
-        apexConnection.setCallOptions(clientId);
+        apexConnection.setCallOptions(clientId, null);
     }
 
     public void setTimeoutMillis(int timeoutMillis) {

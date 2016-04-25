@@ -22,7 +22,7 @@ import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.project.MarkerUtils;
 import com.salesforce.ide.core.services.ToolingDeployService;
-import com.sforce.soap.tooling.ContainerAsyncRequest;
+import com.sforce.soap.tooling.sobject.ContainerAsyncRequest;
 import com.sforce.soap.tooling.ContainerAsyncRequestState;
 import com.sforce.soap.tooling.DeployMessage;
 

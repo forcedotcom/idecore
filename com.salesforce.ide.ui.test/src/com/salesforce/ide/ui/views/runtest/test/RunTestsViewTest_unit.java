@@ -46,13 +46,13 @@ import com.salesforce.ide.core.remote.tooling.RunTests.RunTestsSyncResponse;
 import com.salesforce.ide.ui.views.runtest.RunTestsConstants;
 import com.salesforce.ide.ui.views.runtest.RunTestsView;
 import com.sforce.soap.tooling.ApexLogLevel;
-import com.sforce.soap.tooling.ApexTestQueueItem;
-import com.sforce.soap.tooling.ApexTestResult;
+import com.sforce.soap.tooling.sobject.ApexTestQueueItem;
+import com.sforce.soap.tooling.sobject.ApexTestResult;
 import com.sforce.soap.tooling.AsyncApexJobStatus;
 import com.sforce.soap.tooling.LogCategory;
-import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.sobject.SObject;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.TestSuiteMembership;
+import com.sforce.soap.tooling.sobject.TestSuiteMembership;
 
 import junit.framework.TestCase;
 

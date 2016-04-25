@@ -34,6 +34,7 @@ Export-Package: com.salesforce.ide.api,
  com.sforce.soap.partner.wsc,
  com.sforce.soap.tooling,
  com.sforce.soap.tooling.metadata,
+ com.sforce.soap.tooling.sobject,
  com.sforce.ws;uses:="javax.xml.namespace",
  com.sforce.ws.bind;
   uses:="com.sforce.ws,

@@ -82,18 +82,18 @@ import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
 import com.salesforce.ide.ui.internal.utils.UIConstants;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.ui.views.BaseViewPart;
-import com.sforce.soap.tooling.AggregateResult;
-import com.sforce.soap.tooling.ApexLog;
+import com.sforce.soap.tooling.sobject.AggregateResult;
+import com.sforce.soap.tooling.sobject.ApexLog;
 import com.sforce.soap.tooling.ApexLogLevel;
-import com.sforce.soap.tooling.ApexOrgWideCoverage;
+import com.sforce.soap.tooling.sobject.ApexOrgWideCoverage;
 import com.sforce.soap.tooling.ApexTestOutcome;
-import com.sforce.soap.tooling.ApexTestQueueItem;
-import com.sforce.soap.tooling.ApexTestResult;
+import com.sforce.soap.tooling.sobject.ApexTestQueueItem;
+import com.sforce.soap.tooling.sobject.ApexTestResult;
 import com.sforce.soap.tooling.AsyncApexJobStatus;
 import com.sforce.soap.tooling.LogCategory;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.SObject;
-import com.sforce.soap.tooling.TestSuiteMembership;
+import com.sforce.soap.tooling.sobject.SObject;
+import com.sforce.soap.tooling.sobject.TestSuiteMembership;
 
 /**
  * Responsible for running tests, getting results, and updating the UI with the test results.

@@ -24,9 +24,9 @@ import com.salesforce.ide.core.remote.ForceConnectionException;
 import com.salesforce.ide.core.remote.ForceRemoteException;
 import com.salesforce.ide.core.remote.HTTPConnection;
 import com.salesforce.ide.core.remote.ToolingStubExt;
-import com.sforce.soap.tooling.ApexTestSuite;
+import com.sforce.soap.tooling.sobject.ApexTestSuite;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.SObject;
+import com.sforce.soap.tooling.sobject.SObject;
 
 /**
  * Fetch test suites. 

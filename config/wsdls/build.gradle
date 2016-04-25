@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-version = '35.1.1'
+version = '36.2.0'
 
 repositories {
     mavenCentral()
