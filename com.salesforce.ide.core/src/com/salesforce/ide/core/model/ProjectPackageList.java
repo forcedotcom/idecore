@@ -442,8 +442,10 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         generateComponents(fileMetadataHandler, componentTypes, monitor);
     }
 
-    private void generateComponents(FileMetadataExt fileMetadataHandler, String[] componentTypes,
-            IProgressMonitor monitor) throws InterruptedException {
+    private void generateComponents(
+        FileMetadataExt fileMetadataHandler,
+        String[] componentTypes,
+        IProgressMonitor monitor) throws InterruptedException {
 
         if (fileMetadataHandler == null) {
             throw new IllegalArgumentException("ProjectPackageList and/or fileMetadataHandler cannot be null");

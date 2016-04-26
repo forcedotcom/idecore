@@ -1038,10 +1038,13 @@ class RetrieveResultAdapter implements IFileBasedResultAdapter {
     @Override
     public String retrieveRealTimeStatusUpdatesIfAny() {
         if (retrieveResult != null && retrieveResult.getStatus() != null) {
-            return Messages.getString("Retrieve.ReportingStatus",
+            return Messages.getString(
+                "Retrieve.ReportingStatus",
                 new Object[] { retrieveResult.getStatus(), new Date() });
         }
-        return Messages.getString("PackageService.Polling", new Object[] { metadataStubExt.getServerName() });
+        return Messages.getString(
+            "PackageService.Polling",
+            new Object[] { metadataStubExt.getServerName() });
     }
 
     public RetrieveResult getRetrieveResult() {

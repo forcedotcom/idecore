@@ -53,6 +53,7 @@ public interface Constants {
     String APEX_TRIGGER = "ApexTrigger";
     String APEX_TRIGGER_COUPLING = "ApexTriggerCoupling";
     String APEX_PAGE = "ApexPage";
+    String AURA = "aura";
     String AURA_DEFINITION_BUNDLE = "AuraDefinitionBundle";
     String APP_MENU = "AppMenu";
     String APPROVAL_PROCESS = "ApprovalProcess";
@@ -368,7 +369,6 @@ public interface Constants {
     String GRAY = "GRAY";
 
     String SHARING_RULE_FILE_EXTENSION = "sharingRules";
-
     String ESCALATION_RULES_FILE_EXTENSTION = "escalationRule";
     String ASSIGNMENT_RULES_FILE_EXTENSTION = "assignmentRule";
     String AUTO_RESPONSE_RULES_FILE_EXTENSTION = "autoResponseRule";

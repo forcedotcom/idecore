@@ -529,9 +529,11 @@ public class ComponentFactory extends ApplicationContextFactory {
         assert null != pathParts;
         assert 0 < pathParts.length;
 
-        // quick wins: package.xml and inspect file extension
         if (filePath.endsWith(Constants.PACKAGE_MANIFEST_FILE_NAME)) {
             id = Constants.PACKAGE_MANIFEST;
+            // Because Aura's file extensions are not unique
+        } else if(Constants.AURA.equalsIgnoreCase(pathParts[0])) { 
+            id = Constants.AURA_DEFINITION_BUNDLE;
         } else {
             String fileExtension = Utils.getExtensionFromFilePath(pathParts[pathParts.length - 1]);
             if (Utils.isNotEmpty(fileExtension)) {
@@ -567,8 +569,9 @@ public class ComponentFactory extends ApplicationContextFactory {
             id = Constants.UNKNOWN_COMPONENT_TYPE;
         }
 
-        // if component is a folder, get folder component and set sub type
         Component component = getComponentBean(id);
+
+        // if component is a folder, get folder component and set sub type
         if (isFolderComponent(component, pathParts)) {
             component = getComponentBean(Constants.FOLDER);
             component.setSecondaryComponentType(id);
@@ -1031,8 +1034,11 @@ public class ComponentFactory extends ApplicationContextFactory {
         compositeComponent.setInstalled(component.isInstalled());
     }
 
-    public Component createComponent(ProjectPackage projectPackage, String filePath, byte[] file,
-            FileMetadataExt fileMetadataHandler) {
+    public Component createComponent(
+        ProjectPackage projectPackage,
+        String filePath,
+        byte[] file,
+        FileMetadataExt fileMetadataHandler) {
 
         // strip package name from filepath, if applicable
         String tmpFilePath = filePath;
@@ -1046,8 +1052,12 @@ public class ComponentFactory extends ApplicationContextFactory {
         return loadComponentProperties(projectPackage, component, filePath, file, fileMetadataHandler);
     }
 
-    private static Component loadComponentProperties(ProjectPackage projectPackage, Component component, String filePath,
-            byte[] file, FileMetadataExt fileMetadataHandler) {
+    private static Component loadComponentProperties(
+        ProjectPackage projectPackage,
+        Component component,
+        String filePath,
+        byte[] file,
+        FileMetadataExt fileMetadataHandler) {
         if (component == null) {
             throw new IllegalArgumentException("Component cannot be null for filepath '" + filePath + "'");
         }
