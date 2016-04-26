@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Force.com IDE Eclipse 4.5.1. (Mars)" sequenceNumber="27">
+<?pde version="3.8"?><target name="Force.com IDE Eclipse 4.5.1. (Mars)" sequenceNumber="28">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rcp.sdk.id" version="4.5.1.M20150904-0015"/>
@@ -26,7 +26,7 @@
 <repository location="http://download.eclipse.org/webtools/repository/mars"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="mega.lightning.feature.feature.group" version="2.0.0.201604221527"/>
+<unit id="mega.lightning.feature.feature.group" version="2.0.0.201604252018"/>
 <repository location="https://nexus.soma.salesforce.com/nexus/content/sites/eclipse-p2/mega-lightning/LATEST/"/>
 </location>
 </locations>
