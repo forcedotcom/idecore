@@ -34,8 +34,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.remote.ToolingStubExt;
 import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
@@ -52,8 +50,6 @@ import com.sforce.soap.tooling.AsyncApexJobStatus;
 import com.sforce.soap.tooling.LogCategory;
 import com.sforce.soap.tooling.sobject.SObject;
 import com.sforce.soap.tooling.QueryResult;
-import com.sforce.soap.tooling.sobject.TestSuiteMembership;
-
 import junit.framework.TestCase;
 
 @SuppressWarnings("unchecked")
@@ -123,7 +119,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, never()).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, never()).prepareForRunningTests(any(IProject.class));
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
@@ -165,7 +160,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).getTraceFlagUtil(any(ForceProject.class));
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, never()).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
-		verify(mockedView, never()).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
@@ -204,9 +198,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging)).thenReturn("");
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
-		
-		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
-		
+				
 		mockedView.runTests(project, testsInJson, shouldUseSuites, isAsync, isDebugging,
 				hasExistingTraceFlag, enableLogging, logLevels, monitor);
 		
@@ -215,7 +207,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
-		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, never()).displayCodeCoverage();
@@ -254,9 +245,7 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging)).thenReturn("Amazing");
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
-		
-		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
-		
+				
 		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
@@ -268,7 +257,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(eq(testsInJson), eq(shouldUseSuites), eq(isAsync), eq(isDebugging));
 		verify(mockedView, times(1)).findTestClasses(project);
-		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
@@ -309,8 +297,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
 		
-		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
-		
 		doNothing().when(mockedView).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
 		doNothing().when(mockedView).processSyncTestResults(eq(project), eq(testResources), any(RunTestsSyncResponse.class));
 		doNothing().when(mockedView).displayCodeCoverage();
@@ -323,7 +309,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
-		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, never()).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, times(1)).updateProgress(any(Integer.class), any(Integer.class), any(Integer.class));
@@ -370,8 +355,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		
 		when(mockedView.findTestClasses(project)).thenReturn(Collections.EMPTY_MAP);
 		
-		when(mockedView.countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class))).thenReturn(0);
-		
 		doNothing().when(mockedView).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		doNothing().when(mockedView).displayCodeCoverage();
 		
@@ -383,7 +366,6 @@ public class RunTestsViewTest_unit extends TestCase {
 		verify(mockedView, times(1)).prepareForRunningTests(project);
 		verify(mockedView, times(1)).enqueueTests(any(String.class), any(Boolean.class), any(Boolean.class), any(Boolean.class));
 		verify(mockedView, times(1)).findTestClasses(project);
-		verify(mockedView, times(1)).countTotalTests(eq(testsInJson), eq(shouldUseSuites), any(Map.class));
 		verify(mockedView, times(1)).getAsyncTestResults(any(String.class), any(Map.class), any(IProgressMonitor.class));
 		verify(mockedView, never()).processAsyncTestResults(any(Map.class), any(List.class), any(Boolean.class));
 		verify(mockedView, times(1)).displayCodeCoverage();
@@ -626,139 +608,5 @@ public class RunTestsViewTest_unit extends TestCase {
 		when(mockedView.toolingStubExt.update(any(SObject[].class))).thenReturn(null);
 		
 		assertTrue(mockedView.abortTestRun(testRunId));
-	}
-	
-	@Test
-	public void testCountTotalTestsNull() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		assertEquals(0, mockedView.countTotalTests(null, true, Collections.EMPTY_MAP));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithoutSuitesNoTests() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		String testsInJson = "{\"tests\": []}";
-		boolean useSuites = false;
-		Map<IResource, List<String>> testResources = null;
-		
-		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithoutSuitesNullJson() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		String testsInJson = null;
-		boolean useSuites = false;
-		Map<IResource, List<String>> testResources = null;
-		
-		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithoutSuites() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		String testsInJson = "{\"tests\":["
-				+ "{\"classId\":\"class1\",\"testMethods\":[\"one\",\"two\",\"three\",\"four\"]},"
-				+ "{\"classId\":\"class2\",\"testMethods\":[\"one\",\"two\"]},"
-				+ "{\"classId\":\"class3\",\"testMethods\":[\"one\"]}]}";
-		boolean useSuites = false;
-		Map<IResource, List<String>> testResources = null;
-		
-		assertEquals(7, mockedView.countTotalTests(testsInJson, useSuites, testResources));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithSuitesNoIds() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		String testsInJson = "{\"suiteids\": null}";
-		boolean useSuites = true;
-		Map<IResource, List<String>> testResources = null;
-		
-		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithSuitesNullJson() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		String testsInJson = null;
-		boolean useSuites = true;
-		Map<IResource, List<String>> testResources = null;
-		
-		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithSuitesEmptyQueryResult() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		String testsInJson = "{\"suiteids\": \"suite1,suite2\"}";
-		boolean useSuites = true;
-		Map<IResource, List<String>> testResources = null;
-		
-		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
-		
-		ToolingStubExt toolingStub = mock(ToolingStubExt.class);
-		QueryResult qr = mock(QueryResult.class);
-		when(qr.getSize()).thenReturn(0);
-		when(toolingStub.query(RunTestsConstants.QUERY_TEST_SUITE_MEMBERSHIP)).thenReturn(qr);
-		mockedView.toolingStubExt = toolingStub;
-		
-		assertEquals(0, mockedView.countTotalTests(testsInJson, useSuites, testResources));
-	}
-	
-	@Test
-	public void testCountTotalTestsWithSuite() throws Exception {
-		doCallRealMethod().when(mockedView).countTotalTests(any(String.class), any(Boolean.class), any(Map.class));
-		
-		boolean useSuites = true;
-		// suite1 will contain class1
-		String suite1 = "suite1";
-		// suite2 will contain class1 and class2
-		String suite2 = "suite2";
-		String testsInJson = "{\"suiteids\": \"" + suite1 + "," + suite2 + "\"}";
-		Map<IResource, List<String>> testResources = Maps.newHashMap();
-		// class1 has two test methods
-		IResource class1Res = mock(IResource.class);
-		String class1Id = "class1";
-		testResources.put(class1Res, Lists.newArrayList("method1", "method2"));
-		// class2 has one test method
-		IResource class2Res = mock(IResource.class);
-		String class2Id = "class2";
-		testResources.put(class2Res, Lists.newArrayList("method1"));
-		
-		doNothing().when(mockedView).initializeConnection(any(ForceProject.class));
-		
-		ToolingStubExt toolingStub = mock(ToolingStubExt.class);
-		// Each suite has class1 to verify we check for duplicates
-		TestSuiteMembership tsm1 = mock(TestSuiteMembership.class);
-		when(tsm1.getApexTestSuiteId()).thenReturn(suite1);
-		when(tsm1.getApexClassId()).thenReturn(class1Id);
-		
-		TestSuiteMembership tsm2 = mock(TestSuiteMembership.class);
-		when(tsm2.getApexTestSuiteId()).thenReturn(suite2);
-		when(tsm2.getApexClassId()).thenReturn(class1Id);
-		
-		TestSuiteMembership tsm3 = mock(TestSuiteMembership.class);
-		when(tsm3.getApexTestSuiteId()).thenReturn(suite2);
-		when(tsm3.getApexClassId()).thenReturn(class2Id);
-		
-		QueryResult qr = mock(QueryResult.class);
-		when(qr.getSize()).thenReturn(3);
-		when(qr.getRecords()).thenReturn(new SObject[] { tsm1, tsm2, tsm3 });
-		when(toolingStub.query(RunTestsConstants.QUERY_TEST_SUITE_MEMBERSHIP)).thenReturn(qr);
-		mockedView.toolingStubExt = toolingStub;
-		
-		when(mockedView.getResourceFromId(testResources, class1Id)).thenReturn(class1Res);
-		when(mockedView.getResourceFromId(testResources, class2Id)).thenReturn(class2Res);
-		
-		// class1: method1, method2
-		// class2: method1
-		assertEquals(3, mockedView.countTotalTests(testsInJson, useSuites, testResources));
 	}
 }

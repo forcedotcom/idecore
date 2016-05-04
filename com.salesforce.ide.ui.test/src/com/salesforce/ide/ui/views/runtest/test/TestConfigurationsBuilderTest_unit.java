@@ -31,6 +31,7 @@ import com.salesforce.ide.core.internal.utils.QualifiedNames;
 import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder;
 import com.salesforce.ide.ui.views.runtest.Messages;
 import com.salesforce.ide.ui.views.runtest.TestConfigurationsBuilder;
+import com.sforce.soap.tooling.TestLevel;
 
 import junit.framework.TestCase;
 
@@ -101,9 +102,10 @@ public class TestConfigurationsBuilderTest_unit extends TestCase {
 				"testClassA",
 				"testMethodA1");
 		
-		assertEquals(1, result.getTests().size());
+		assertEquals(1, result.getTotalTests());
 		assertEquals("testClassA", result.getTests().get(0).getClassName());
 		assertTrue(result.getTests().get(0).getTestMethods().contains("testMethodA1"));
+		assertEquals(TestLevel.RunSpecifiedTests.toString(), result.getTestLevel());
 	}
 
 	@Test
@@ -121,7 +123,9 @@ public class TestConfigurationsBuilderTest_unit extends TestCase {
 				"testClassA",
 				Messages.Tab_AllMethods);
 		
+		assertEquals(1, result.getTotalTests());
 		assertNull(result.getTests().get(0).getTestMethods());
+		assertEquals(TestLevel.RunSpecifiedTests.toString(), result.getTestLevel());
 	}
 
 	@Test
@@ -139,8 +143,8 @@ public class TestConfigurationsBuilderTest_unit extends TestCase {
 				Messages.Tab_AllClasses,
 				Messages.Tab_AllMethods);
 		
-		assertEquals(2, result.getTests().size());
-		assertNull(result.getTests().get(0).getTestMethods());
-		assertNull(result.getTests().get(1).getTestMethods());
+		assertNull("If we're running all tests, we should not enumerate the test classes", result.getTests());
+		assertEquals(0, result.getTotalTests());
+		assertEquals(TestLevel.RunLocalTests.toString(), result.getTestLevel());
 	}
 }

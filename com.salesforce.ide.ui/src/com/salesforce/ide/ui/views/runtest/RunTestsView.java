@@ -14,10 +14,8 @@ package com.salesforce.ide.ui.views.runtest;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
@@ -55,7 +53,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.salesforce.ide.apex.internal.core.ApexSourceUtils;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
@@ -75,7 +72,6 @@ import com.salesforce.ide.core.remote.tooling.ApexCodeCoverageAggregate.*;
 import com.salesforce.ide.core.remote.tooling.ApexLog.*;
 import com.salesforce.ide.core.remote.tooling.Limits.*;
 import com.salesforce.ide.core.remote.tooling.RunTests.*;
-import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder.Test;
 import com.salesforce.ide.core.remote.tooling.ToolingQueryCommand;
 import com.salesforce.ide.core.remote.tooling.ToolingQueryTransport;
 import com.salesforce.ide.core.remote.tooling.TraceFlagUtil;
@@ -93,7 +89,6 @@ import com.sforce.soap.tooling.AsyncApexJobStatus;
 import com.sforce.soap.tooling.LogCategory;
 import com.sforce.soap.tooling.QueryResult;
 import com.sforce.soap.tooling.sobject.SObject;
-import com.sforce.soap.tooling.sobject.TestSuiteMembership;
 
 /**
  * Responsible for running tests, getting results, and updating the UI with the test results.
@@ -235,7 +230,6 @@ public class RunTestsView extends BaseViewPart {
             	String enqueueResult = enqueueTests(testsInJson, shouldUseSuites, isAsync, isDebugging);
             	
             	Map<IResource, List<String>> testResources = findTestClasses(project);
-            	int totalTestMethods = countTotalTests(testsInJson, shouldUseSuites, testResources);
             	
             	if (Utils.isNotEmpty(enqueueResult) && isAsync) {
             		// If it's an async run, the enqueue result is an async test run ID, so we poll for test results
@@ -253,7 +247,7 @@ public class RunTestsView extends BaseViewPart {
 					try {
 						testResults = mapper.readValue(enqueueResult, RunTestsSyncResponse.class);
 						// Test results are returned all at once
-						updateProgress(0, totalTestMethods, testResults.getNumTestsRun());
+						updateProgress(0, testResults.getNumTestsRun(), testResults.getNumTestsRun());
 						// Tests were submitted in alphabetical order. We're relying on the
 						// server to return test results in the same order to avoid sorting
 						// the results
@@ -370,92 +364,6 @@ public class RunTestsView extends BaseViewPart {
 		
 		return response;
 	}
-    
-    /**
-     * Count number of test methods from tests array or test suites.
-     * @param tests
-     * @param useSuites
-     * @param testResources
-     * @return Total number of test methods
-     */
-    @VisibleForTesting
-    public int countTotalTests(String tests, boolean useSuites, Map<IResource, List<String>> testResources) {
-    	int total = 0;
-    	if (Utils.isEmpty(tests)) return total;
-    	
-    	if (useSuites) {
-    		SuitesHolder sh = SuitesHolder.deserialize(tests);
-    		if (Utils.isEmpty(sh.getSuiteids())) {
-    			logger.error("No suite IDs. Suites: " + tests);
-    			return total;
-    		}
-    		
-    		String[] suiteIds = sh.getSuiteids().split(",");
-    		if (Utils.isEmpty(suiteIds)) {
-    			logger.error("No suite IDs. Suites: " + tests);
-    			return total;
-    		}
-    		
-    		// Key: Test suite ID, Value: Set of Apex class IDs
-    		Map<String, Set<String>> tsMembers = Maps.newHashMap();
-    		try {
-				initializeConnection(forceProject);
-				// Get TestSuiteMembership objects
-				QueryResult qr = toolingStubExt.query(RunTestsConstants.QUERY_TEST_SUITE_MEMBERSHIP);
-				if (Utils.isNotEmpty(qr) && qr.getSize() > 0) {
-					for (SObject sObj : qr.getRecords()) {
-						TestSuiteMembership tsMember = (TestSuiteMembership) sObj;
-						// Initialize set of classes for the suite
-						if (!tsMembers.containsKey(tsMember.getApexTestSuiteId())) {
-							tsMembers.put(tsMember.getApexTestSuiteId(), new HashSet<String>());
-						}
-						// Append the class ID to the suite
-						Set<String> classIds = tsMembers.get(tsMember.getApexTestSuiteId());
-						classIds.add(tsMember.getApexClassId());
-					}
-				}
-			} catch (ForceConnectionException | ForceRemoteException e) {
-				logger.error("Failed to get TestSuiteMembership", e);
-				return total;
-			}
-    		
-    		// Unique collection of Apex class IDs that are in test suites
-    		Set<String> uniqueTsMembers = Sets.newHashSet();
-    		// For each suite user wanted to run
-    		for (String suiteId : suiteIds) {
-    			// Get set of class IDs that belong to that suite
-    			Set<String> classIds = tsMembers.get(suiteId);
-    			if (Utils.isEmpty(classIds)) {
-    				logger.error("Unable to find Apex class IDs for suite ID " + suiteId);
-    				continue;
-    			}
-    			
-    			uniqueTsMembers.addAll(classIds);
-    		}
-    		
-    		for (String classId : uniqueTsMembers) {
-    			IResource theClass = getResourceFromId(testResources, classId);
-				if (Utils.isNotEmpty(theClass)) {
-					total += testResources.get(theClass).size();
-				}
-    		}
-    	} else {
-    		TestsHolder th = TestsHolder.deserialize(tests);
-    		if (Utils.isEmpty(th)) {
-    			logger.error("Failed deserializing test array. Test array: " + tests);
-    			return total;
-    		}
-    		
-    		for (Test test : th.getTests()) {
-    			List<String> testMethods = test.getTestMethods();
-    			if (testMethods != null && !testMethods.isEmpty()) {
-    				total += testMethods.size();
-    			}
-    		}
-    	}
-    	
-    	return total;
-    }
 	
 	/**
 	 * Get connection timeout value depending on

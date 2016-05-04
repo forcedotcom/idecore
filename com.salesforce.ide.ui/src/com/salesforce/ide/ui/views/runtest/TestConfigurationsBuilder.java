@@ -11,7 +11,6 @@
 
 package com.salesforce.ide.ui.views.runtest;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import com.salesforce.ide.core.internal.utils.ResourceProperties;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder;
 import com.salesforce.ide.core.remote.tooling.RunTests.TestsHolder.Test;
+import com.sforce.soap.tooling.TestLevel;
 
 /**
  * Builds the necessary data structures for test selection in the
@@ -100,7 +100,6 @@ public class TestConfigurationsBuilder {
 	 * Create the JSON object of tests to run. This is a pruning algorithm.
 	 * Based on the selection of everything that is possible, we prune down to a smaller set.
 	 * The algorithm is not necessarily optimal – we will arrive at a smaller set but not necessarily the smallest representation.
-	 * @param allTests 
 	 */
 	public TestsHolder buildTestsForConfig(
 			IProject selectedProject,
@@ -118,6 +117,12 @@ public class TestConfigurationsBuilder {
     	
     	boolean oneTestClass = !testClassName.equals(Messages.Tab_AllClasses);
     	boolean oneTestMethod = !testMethodName.equals(Messages.Tab_AllMethods);
+    	
+    	// Use the all tests enum if user wants to run all test classes
+    	if (!oneTestClass) {
+    		testsHolder.setTestLevel(TestLevel.RunLocalTests.toString());
+    		return testsHolder;
+    	}
 
 		// Iterate through the test classes
 		for (Iterator<Test> classIter = testsHolder.getTests().iterator(); classIter.hasNext();) {

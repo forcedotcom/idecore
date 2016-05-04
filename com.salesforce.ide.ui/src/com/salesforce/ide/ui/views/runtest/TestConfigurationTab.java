@@ -550,9 +550,17 @@ public class TestConfigurationTab extends RunTestsTab {
      */
     @VisibleForTesting
 	public boolean isAsyncTestRun(TestsHolder th, boolean shouldUseSuites) {
-    	if (shouldUseSuites) return true;
+    	if (shouldUseSuites) {
+    		return true;
+    	}
     	
-    	if (Utils.isNotEmpty(th) && th.getTests().size() > 1) return true;
+    	if (Utils.isNotEmpty(th) && th.getTotalTests() > 1) {
+    		return true;
+    	}
+    	
+    	if (Utils.isNotEmpty(th) && !th.isSpecificTests()) {
+    		return true;
+    	}
     	
     	return false;
     }
