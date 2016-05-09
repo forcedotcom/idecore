@@ -22,13 +22,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.salesforce.ide.core.internal.utils.Utils;
+import com.sforce.soap.tooling.TestLevel;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "tests" })
+@JsonPropertyOrder({ "tests", "testLevel" })
 public class TestsHolder {
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("tests")
 	private List<Test> tests = Lists.newArrayList();
+	@JsonProperty("testLevel")
+	private TestLevel testLevel = TestLevel.RunSpecifiedTests;
 
 	/**
 	 * 
@@ -37,6 +41,17 @@ public class TestsHolder {
 	@JsonProperty("tests")
 	public List<Test> getTests() {
 		return tests;
+	}
+	
+	/**
+	 * Get number of test classes
+	 */
+	public int getTotalTests() {
+		if (tests != null && !tests.isEmpty()) {
+			return tests.size();
+		}
+		
+		return 0;
 	}
 
 	/**
@@ -47,6 +62,36 @@ public class TestsHolder {
 	@JsonProperty("tests")
 	public void setTests(List<Test> tests) {
 		this.tests = tests;
+	}
+	
+	/**
+	 * 
+	 * @return The testLevel
+	 */
+	@JsonProperty("testLevel")
+	public String getTestLevel() {
+		return testLevel.toString();
+	}
+	
+	/**
+	 * 
+	 * @param testLevel
+	 *            Use com.sforce.soap.tooling.TestLevel
+	 */
+	@JsonProperty("testLevel")
+	public void setTestLevel(String testLevel) {
+		this.testLevel = TestLevel.valueOf(testLevel);
+		if (!isSpecificTests()) {
+			setTests(null);
+		}
+	}
+	
+	/**
+	 * True if the test level is RunSpecifiedTests. False otherwise.
+	 * @return
+	 */
+	public boolean isSpecificTests() {
+		return TestLevel.RunSpecifiedTests.equals(this.testLevel);
 	}
 	
 	/**
