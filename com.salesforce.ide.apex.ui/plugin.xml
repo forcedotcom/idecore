@@ -36,6 +36,7 @@
           commandId="com.salesforce.ide.apex.ui.command.removeJorje"/>
     </extension>
     <extension point="org.eclipse.ui.menus">
+    <!--
        <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any">
             <menu icon="icons/appExDevIco16.png"
               id="com.salesforce.ide.ui.menu.context"
@@ -75,6 +76,7 @@
 				</command>
         	</menu>
     	</menuContribution>
+    	-->
        <menuContribution locationURI="menu:navigate?before=open.ext">
 			<separator name="group7" visible="true"/>
 			<command commandId="com.salesforce.ide.apex.ui.command.openType"
