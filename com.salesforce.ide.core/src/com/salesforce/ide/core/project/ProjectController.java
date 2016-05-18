@@ -72,7 +72,7 @@ public class ProjectController extends Controller {
     private static final Logger logger = Logger.getLogger(ProjectController.class);
     
     public static final int ALL_CONTENT = 0;
-    public static final int ALL_APEX_CONTENT = 1;
+    public static final int ALL_DEV_CODE_CONTENT = 1;
     public static final int SPECIFIC_PACKAGE = 2;
     public static final int CUSTOM_COMPONENTS = 3;
     public static final int NONE = 4;
@@ -294,7 +294,7 @@ public class ProjectController extends Controller {
         switch (getProjectModel().getContentSelection()) {
         case ALL_CONTENT:
             break;
-        case ALL_APEX_CONTENT:
+        case ALL_DEV_CODE_CONTENT:
             if (!sourceFolder.exists()) {
                 break;
             }
@@ -368,7 +368,7 @@ public class ProjectController extends Controller {
         Package packageManifest = null;
         
         switch (getProjectModel().getContentSelection()) {
-        case ALL_APEX_CONTENT:
+        case ALL_DEV_CODE_CONTENT:
             packageManifest = ContainerDelegate.getInstance().getServiceLocator().getProjectService()
                 .getPackageManifestFactory().createDefaultPackageManifestForComponentTypes(getEnabledComponentTypes());
             break;
@@ -481,7 +481,7 @@ public class ProjectController extends Controller {
                     defaultPackageManifest,
                     monitor);
             break;
-        case ALL_APEX_CONTENT:
+        case ALL_DEV_CODE_CONTENT:
             savePackageManifest(monitor);
             retrieveResultHandler =
                 ContainerDelegate.getInstance().getServiceLocator().getPackageRetrieveService().retrieveSelective(

@@ -193,7 +193,7 @@ public class ForceProject extends Org {
 	}
 
 	private void initializeEnabledComponentTypes() {
-        Set<String> types = Sets.newHashSet(Constants.APEX_COMPONENT_TYPES);
+        Set<String> types = Sets.newHashSet(Constants.DEV_CODE_COMPONENT_TYPES);
         MetadataStubExt metadataStubExt;
         try {
             metadataStubExt =
