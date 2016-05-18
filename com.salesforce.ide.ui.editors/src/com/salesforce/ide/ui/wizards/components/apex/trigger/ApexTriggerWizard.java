@@ -19,7 +19,7 @@ import com.salesforce.ide.core.internal.components.apex.trigger.ApexTriggerCompo
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
-import com.salesforce.ide.ui.editors.templates.ApexTemplateContext;
+import com.salesforce.ide.ui.editors.templates.CodeTemplateContext;
 import com.salesforce.ide.ui.editors.templates.ApexTriggerTemplateContextType;
 import com.salesforce.ide.ui.wizards.components.AbstractTemplateSelectionPage;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
@@ -68,7 +68,7 @@ public class ApexTriggerWizard extends TemplateSelectionWizard {
             }
 
             TemplateContextType contextType = getTemplateContextRegistry().getContextType(ApexTriggerTemplateContextType.ID);
-            TemplateContext context = new ApexTemplateContext(contextType, getComponentWizardModel(), 0, 0);
+            TemplateContext context = new CodeTemplateContext(contextType, getComponentWizardModel(), 0, 0);
 
             final AbstractTemplateSelectionPage page = (AbstractTemplateSelectionPage) getPage(ApexTriggerTemplateSelectionPage.class.getSimpleName());
             final String body = page.getTemplateString(context);

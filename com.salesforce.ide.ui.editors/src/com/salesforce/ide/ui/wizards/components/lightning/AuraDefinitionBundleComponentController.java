@@ -28,7 +28,7 @@ import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.internal.components.lightning.AuraDefinitionBundleModel;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
-import com.salesforce.ide.ui.editors.templates.ApexTemplateContext;
+import com.salesforce.ide.ui.editors.templates.CodeTemplateContext;
 import com.salesforce.ide.ui.editors.templates.LightningTemplateContextType;
 
 /**
@@ -55,7 +55,7 @@ public class AuraDefinitionBundleComponentController extends ComponentController
         try {
             TemplateContextType contextType =
                 getTemplateContextRegistry().getContextType(LightningTemplateContextType.ID);
-            TemplateContext context = new ApexTemplateContext(contextType, getComponentWizardModel(), 0, 0);
+            TemplateContext context = new CodeTemplateContext(contextType, getComponentWizardModel(), 0, 0);
             return context.evaluate(template).getString();
         } catch (BadLocationException | TemplateException e) {
             final String msg = "Unable to create template for new component";
@@ -83,7 +83,7 @@ public class AuraDefinitionBundleComponentController extends ComponentController
             materializeTemplate(primaryElement.templateFn.get()));
             
         // Secondary components (nice to haves)
-        selectedBundleType.elementsToInclude.stream().forEach(el -> {
+        selectedBundleType.secondaryElementsToInclude.stream().forEach(el -> {
             String fileName_ = String.format("%s.%s", el.nameFn.apply(componentName), el.extension);
             componentWizardModel
                 .addSecondaryComponent(componentName, fileName_, el.extension, materializeTemplate(el.templateFn.get()));

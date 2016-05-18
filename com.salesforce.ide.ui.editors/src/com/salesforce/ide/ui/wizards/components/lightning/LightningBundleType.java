@@ -48,8 +48,8 @@ public enum LightningBundleType {
     
     final String humanReadableName;
     final LightningElement primaryElement;
-    final ImmutableList<LightningElement> elementsToInclude; // Usually you want a few other files by default.
-    final ImmutableList<LightningElement> allowableElements; // This is the full list of allowable elements, it excludes the primary element since that must already be added at inception time.
+    final ImmutableList<LightningElement> secondaryElementsToInclude; // Usually you want a few other files by default.
+    final ImmutableList<LightningElement> allowableSecondaryElements; // This is the full list of allowable elements, it excludes the primary element since that must already be added at inception time.
     
     LightningBundleType(
         String humanReadableName,
@@ -58,7 +58,7 @@ public enum LightningBundleType {
         ImmutableList<LightningElement> allowableElements) {
         this.primaryElement = primaryElement;
         this.humanReadableName = humanReadableName;
-        this.elementsToInclude = elementsToInclude;
-        this.allowableElements = allowableElements;
+        this.secondaryElementsToInclude = elementsToInclude;
+        this.allowableSecondaryElements = allowableElements;
     }
 }

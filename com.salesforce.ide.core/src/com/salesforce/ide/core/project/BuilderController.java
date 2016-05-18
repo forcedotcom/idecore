@@ -122,23 +122,22 @@ public class BuilderController extends Controller {
         }
     }
 
-    private void handleSaves(BuilderPayload savePayload, IProgressMonitor monitor) throws ForceRemoteException,
-    ForceConnectionException, ServiceException, InterruptedException, CoreException, IOException,
-    InvocationTargetException, Exception {
+    private void handleSaves(BuilderPayload savePayload, IProgressMonitor monitor)
+        throws ForceRemoteException, ForceConnectionException, ServiceException, InterruptedException, CoreException,
+        IOException, InvocationTargetException, Exception {
         if (savePayload == null || savePayload.isEmpty() || !savePayload.hasSaveableComponents()) {
-            if (logger.isInfoEnabled()) {
-            }
+            if (logger.isInfoEnabled()) {}
             return;
         }
         ProjectPackageList loadedProjectPackageList = savePayload.getLoadedProjectPackageList();
         final PackageDeployService packageDeployService =
-                ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService();
+            ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService();
         final DeployOptions deployOptions = makeDeployOptions(packageDeployService);
-
+        
         DeployResultExt deployResultHandler =
-                packageDeployService.deploy(loadedProjectPackageList, monitor, deployOptions);
+            packageDeployService.deploy(loadedProjectPackageList, monitor, deployOptions);
         ContainerDelegate.getInstance().getServiceLocator().getProjectService()
-        .handleDeployResult(loadedProjectPackageList, deployResultHandler, true, monitor);
+            .handleDeployResult(loadedProjectPackageList, deployResultHandler, true, monitor);
     }
 
     protected DeployOptions makeDeployOptions(PackageDeployService packageDeployService) {

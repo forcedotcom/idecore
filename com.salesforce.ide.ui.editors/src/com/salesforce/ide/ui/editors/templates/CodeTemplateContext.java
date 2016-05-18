@@ -17,15 +17,15 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 
 import com.salesforce.ide.core.internal.components.ComponentModel;
 
-public final class ApexTemplateContext extends DocumentTemplateContext {
+public final class CodeTemplateContext extends DocumentTemplateContext {
     private final ComponentModel componentModel;
 
-    public ApexTemplateContext(TemplateContextType type, ComponentModel componentModel, Position position) {
+    public CodeTemplateContext(TemplateContextType type, ComponentModel componentModel, Position position) {
         super(type, new Document(), position);
         this.componentModel= componentModel;
     }
 
-    public ApexTemplateContext(TemplateContextType type, ComponentModel componentModel, int offset, int length) {
+    public CodeTemplateContext(TemplateContextType type, ComponentModel componentModel, int offset, int length) {
         super(type, new Document(), offset, length);
         this.componentModel= componentModel;
     }

@@ -20,7 +20,7 @@ import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.templates.ApexComponentTemplateContextType;
-import com.salesforce.ide.ui.editors.templates.ApexTemplateContext;
+import com.salesforce.ide.ui.editors.templates.CodeTemplateContext;
 import com.salesforce.ide.ui.wizards.components.AbstractTemplateSelectionPage;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
 import com.salesforce.ide.ui.wizards.components.TemplateSelectionWizard;
@@ -69,7 +69,7 @@ public class ApexComponentWizard extends TemplateSelectionWizard {
             }
 
             TemplateContextType contextType = getTemplateContextRegistry().getContextType(ApexComponentTemplateContextType.ID);
-            TemplateContext context = new ApexTemplateContext(contextType, getComponentWizardModel(), 0, 0);
+            TemplateContext context = new CodeTemplateContext(contextType, getComponentWizardModel(), 0, 0);
 
             final AbstractTemplateSelectionPage page = (AbstractTemplateSelectionPage) getPage(ApexComponentTemplateSelectionPage.class.getSimpleName());
             final String body = page.getTemplateString(context);
