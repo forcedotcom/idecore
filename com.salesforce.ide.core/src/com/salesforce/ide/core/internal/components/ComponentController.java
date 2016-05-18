@@ -74,11 +74,11 @@ public abstract class ComponentController extends Controller {
 
     @Override
     public void init() throws ForceProjectException {
-        getComponentWizardModel().setComponentFactory(
-            ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory());
+        getComponentWizardModel()
+            .setComponentFactory(ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory());
         getComponentWizardModel().initComponent();
     }
-
+    
     public ComponentModel getComponentWizardModel() {
         return (ComponentModel) model;
     }
@@ -109,7 +109,7 @@ public abstract class ComponentController extends Controller {
 
     public Component getNewComponentByComponentType(String componentType) {
         return ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
-                .getComponentByComponentType(componentType);
+            .getComponentByComponentType(componentType);
     }
 
     public IFile getComponentResoruce() {
@@ -122,31 +122,32 @@ public abstract class ComponentController extends Controller {
 
     public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException {
         final ComponentModel componentWizardModel = getComponentWizardModel();
-
+        
         final IProject project = componentWizardModel.getProject();
         if (project == null) {
             return false;
         }
-
+        
         final Map<String, Boolean> cache = getComponentTypeEnablementCache(project);
-
+        
         final String componentType = componentWizardModel.getComponentType();
         final Boolean cachedResult = cache.get(componentType);
         if (null != cachedResult)
             return cachedResult.booleanValue();
-
+            
         final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
         ForceProject forceProject = serviceLocator.getProjectService().getForceProject(project);
-
+        
         Connection connection =
-                ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(forceProject);
+            ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(forceProject);
         boolean componentEnabled =
-                serviceLocator.getMetadataService().isComponentTypeEnabled(connection, componentType);
-        if (logger.isDebugEnabled()) {
-            logger.debug(componentWizardModel.getComponent().getDisplayName() + " "
-                    + (componentEnabled ? "are" : "are not") + " enabled");
-        }
-
+            serviceLocator.getMetadataService().isComponentTypeEnabled(connection, componentType);
+        logger.debug(
+            componentWizardModel.getComponent().getDisplayName() 
+            + " " 
+            + (componentEnabled ? "are" : "are not")
+            + " enabled");
+                
         cache.put(componentType, componentEnabled);
         return componentEnabled;
     }
@@ -175,24 +176,27 @@ public abstract class ComponentController extends Controller {
 
     public boolean isNameUniqueLocalCheck() {
         final Component componentToCheck = getComponent();
-        final String dirPath =
-                (componentToCheck != null) ? (new StringBuffer(Constants.SOURCE_FOLDER_NAME).append(File.separator)
-                        .append(componentToCheck.getDefaultFolder())).toString() : null;
-
-        final String fileName =
-                (componentToCheck != null) ? (new StringBuffer(componentToCheck.getName()).append(".")
-                        .append(componentToCheck.getFileExtension())).toString() : null;
-
+        final String dirPath = (componentToCheck != null)
+            ? (new StringBuffer(Constants.SOURCE_FOLDER_NAME).append(File.separator)
+                .append(componentToCheck.getDefaultFolder())).toString()
+            : null;
+            
+        final String fileName = (componentToCheck != null)
+            ? (new StringBuffer(componentToCheck.getName()).append(".").append(componentToCheck.getFileExtension()))
+                .toString()
+            : null;
+            
         final String componentName_Absolute =
-                (dirPath != null && fileName != null) ? (new StringBuffer(dirPath).append(fileName)).toString() : null;
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Ensure local uniqueness for '"
-                    + (null == componentName_Absolute ? "" : componentName_Absolute.toString()) + "'");
-        }
-
-        return (null != componentToCheck && !componentToCheck.isCaseSensitive()) ? checkInFolder(dirPath, fileName)
-                : true;
+            (dirPath != null && fileName != null) ? (new StringBuffer(dirPath).append(fileName)).toString() : null;
+            
+        logger.info(
+            "Ensure local uniqueness for '" 
+            + (null == componentName_Absolute ? "" : componentName_Absolute.toString())
+            + "'");
+                
+        return (null != componentToCheck && !componentToCheck.isCaseSensitive())
+            ? checkInFolder(dirPath, fileName)
+            : true;
     }
 
     protected boolean checkInFolder(final String dirPath, final String fileName) {
@@ -238,18 +242,20 @@ public abstract class ComponentController extends Controller {
             return true;
         }
 
-        StringBuffer strBuff = new StringBuffer();
         final Component component = getComponent();
-
-        strBuff.append(component.getDefaultFolder()).append("/").append(component.getName()).append(".")
+        if (Utils.isEmpty(component.getMetadataFilePath())) {
+            StringBuffer strBuff = new StringBuffer();
+            
+            strBuff.append(component.getDefaultFolder()).append("/").append(component.getName()).append(".")
                 .append(component.getFileExtension());
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Ensure remote uniqueness for '" + strBuff.toString() + "'");
+                
+            if (logger.isDebugEnabled()) {
+                logger.debug("Ensure remote uniqueness for '" + strBuff.toString() + "'");
+            }
+            
+            component.setFilePath(strBuff.toString());
         }
-
-        component.setFilePath(strBuff.toString());
-
+        
         return checkIfComponentExistsOnServer(monitor, component);
     }
 
@@ -297,13 +303,10 @@ public abstract class ComponentController extends Controller {
             ForceConnectionException, ForceRemoteException, FactoryException, CoreException, ServiceException,
             JAXBException, Exception {
         if (getComponentWizardModel() == null || getComponentWizardModel().getProject() == null) {
-            logger.error("Component model and/or project cannot be null");
             throw new IllegalArgumentException("Component model and/or project cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   C R E A T E   C O M P O N E N T   ***");
-        }
+        logger.debug("***   C R E A T E   C O M P O N E N T   ***");
 
         monitorWorkCheck(monitor, "Creating new " + getComponentWizardModel().getDisplayName() + "...");
 
@@ -381,9 +384,7 @@ public abstract class ComponentController extends Controller {
             logger.error("Unable to test remote uniqueness", e);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Saving newly created component(s)");
-        }
+        logger.debug("Saving newly created component(s)");
     }
 
     /**
@@ -416,11 +417,6 @@ public abstract class ComponentController extends Controller {
                                 "Unable to update cache with new component " + componentWizardModel.getDisplayName(), e);
                     }
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Added new component " + componentWizardModel.getDisplayName() + " to cache");
-                        logger.debug("Updated cache...");
-                        PackageManifestDocumentUtils.log(packageManifestCache);
-                    }
                 } else {
                     logger.warn("Unable to update cache with new component " + componentWizardModel.getDisplayName()
                             + " - cache is not found");
@@ -458,9 +454,8 @@ public abstract class ComponentController extends Controller {
 
         // compile and save new component
         try {
-            deployResultHandler =
-                    ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService()
-                            .deploy(projectPackageList, monitor);
+            deployResultHandler = ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService()
+                .deploy(projectPackageList, monitor);
         } catch (ServiceTimeoutException ex) {
             deployResultHandler =
                     ContainerDelegate
@@ -477,7 +472,7 @@ public abstract class ComponentController extends Controller {
         }
 
         ContainerDelegate.getInstance().getServiceLocator().getProjectService()
-                .handleDeployResult(projectPackageList, deployResultHandler, true, monitor);
+            .handleDeployResult(projectPackageList, deployResultHandler, true, monitor);
     }
 
     // get all object names
@@ -489,14 +484,12 @@ public abstract class ComponentController extends Controller {
         }
 
         Connection connection =
-                ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(project);
+            ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(project);
         DescribeObjectRegistry describeObjectRegistry =
-                ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getDescribeObjectRegistry();
+            ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getDescribeObjectRegistry();
         return describeObjectRegistry.getCachedDescribeSObjectNames(connection, project.getName(), refresh);
     }
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 }

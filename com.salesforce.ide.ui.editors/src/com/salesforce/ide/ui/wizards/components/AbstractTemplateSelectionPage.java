@@ -11,7 +11,7 @@
  * Original code copied from NewXMLTemplatesWizardPage from the
  * org.eclipse.wst.xml.ui bundle.
  *******************************************************************************/
-package com.salesforce.ide.ui.wizards.components.apex;
+package com.salesforce.ide.ui.wizards.components;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;

@@ -243,7 +243,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
 	<!-- AuraDefinitionBundle -->
-    <bean id="AuraDefinitionBundle" class="com.salesforce.ide.core.model.BundleComponent" parent="component" scope="prototype" lazy-init="true">
+    <bean id="AuraDefinitionBundle" class="com.salesforce.ide.core.model.AuraDefinitionBundleComponent" parent="component" scope="prototype" lazy-init="true">
 		<property name="supportedApiVersions" ref="supportedApiVersions" />
 		<property name="bundle" value="true" />
 		<property name="displayName" value="${AuraDefinitionBundle.displayName}" />

@@ -21,9 +21,9 @@ import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.templates.ApexTemplateContext;
 import com.salesforce.ide.ui.editors.templates.ApexTriggerTemplateContextType;
+import com.salesforce.ide.ui.wizards.components.AbstractTemplateSelectionPage;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
-import com.salesforce.ide.ui.wizards.components.apex.AbstractTemplateSelectionPage;
-import com.salesforce.ide.ui.wizards.components.apex.TemplateSelectionWizard;
+import com.salesforce.ide.ui.wizards.components.TemplateSelectionWizard;
 
 /**
  * Wizard to create new Apex Trigger.
@@ -49,7 +49,6 @@ public class ApexTriggerWizard extends TemplateSelectionWizard {
 
     @Override
     public boolean performFinish() {
-        // TODO: Refactor this since it completely overwrites the superclass behavior.
         if (!getComponentController().canComplete()) {
             return false;
         }
@@ -74,7 +73,7 @@ public class ApexTriggerWizard extends TemplateSelectionWizard {
             final AbstractTemplateSelectionPage page = (AbstractTemplateSelectionPage) getPage(ApexTriggerTemplateSelectionPage.class.getSimpleName());
             final String body = page.getTemplateString(context);
             if (null != body) {
-                getComponentController().getComponent().intiNewBody(body);
+                getComponentController().getComponent().initNewBody(body);
             }
 
             return executeCreateOperation();

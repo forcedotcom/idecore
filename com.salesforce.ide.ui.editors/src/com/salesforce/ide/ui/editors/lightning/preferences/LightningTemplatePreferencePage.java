@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Salesforce.com, inc..
+ * Copyright (c) 2016 Salesforce.com, inc..
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,10 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.editors.visualforce.preferences;
+package com.salesforce.ide.ui.editors.lightning.preferences;
 
-import static com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin.*;
+import static com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin.PLUGIN_ID;
+import static com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin.getDefault;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
@@ -26,15 +27,15 @@ import org.eclipse.wst.html.ui.internal.editor.IHelpContextIds;
 import org.eclipse.wst.html.ui.internal.preferences.ui.HTMLTemplatePreferencePage;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class VisualforceTemplatePreferencePage extends HTMLTemplatePreferencePage {
-    public static final String ID = "com.salesforce.ide.ui.editors.visualforce.TemplatesPreferencePage"; //$NON-NLS-1$
-
-    public VisualforceTemplatePreferencePage() {
+public class LightningTemplatePreferencePage extends HTMLTemplatePreferencePage {
+    public static final String ID = "com.salesforce.ide.ui.editors.lightning.TemplatesPreferencePage"; //$NON-NLS-1$
+    
+    public LightningTemplatePreferencePage() {
         setPreferenceStore(preferenceStore());
         setTemplateStore(templateStore());
         setContextTypeRegistry(templateContextRegistry());
     }
-
+    
     @Override
     public boolean performOk() {
         boolean ok = super.performOk();
@@ -45,41 +46,34 @@ public class VisualforceTemplatePreferencePage extends HTMLTemplatePreferencePag
             logger().log(new Status(IStatus.ERROR, PLUGIN_ID, msg, e));
         }
         return ok;
-      }
-
+    }
+    
     @Override
     protected Control createContents(Composite ancestor) {
         Control c = super.createContents(ancestor);
-        // TODO: Inject the help system.
-        // TODO: Set the help system's context for the template preference page
         PlatformUI.getWorkbench().getHelpSystem().setHelp(c, IHelpContextIds.HTML_PREFWEBX_TEMPLATES_HELPID);
         return c;
     }
-
+    
     @Override
     protected boolean isShowFormatterSetting() {
-        // Hide the formatter preference checkbox until the IDE supports code formatting
         return false;
     }
-
-    // TODO: Inject the editor's preference store.
+    
     private static IPreferenceStore preferenceStore() {
         return getDefault().getPreferenceStore();
     }
-
-    // TODO: Inject the Visualforce template store.
+    
     private static TemplateStore templateStore() {
-        return getDefault().getVisualforceTemplateStore();
+        return getDefault().getLightningTemplateStore();
     }
-
-    // TODO: Inject the Visualforce template context registry.
+    
     private static ContextTypeRegistry templateContextRegistry() {
-        return getDefault().getVisualforceTemplateContextRegistry();
+        return getDefault().getLightningTemplateContextRegistry();
     }
-
-    // TODO: Inject the editor's logger.
+    
     private static ILog logger() {
         return getDefault().getLog();
     }
-
+    
 }

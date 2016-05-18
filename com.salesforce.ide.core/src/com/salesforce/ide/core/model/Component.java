@@ -723,7 +723,7 @@ public class Component extends ComponentResource {
             logger.debug("Generate the following body from template:\n" + tmpTemplate);
         }
         
-        intiNewBody(tmpTemplate);
+        initNewBody(tmpTemplate);
     }
     
     public boolean isCodeBody() {
@@ -874,7 +874,7 @@ public class Component extends ComponentResource {
         return strBuff.toString();
     }
     
-    public final void intiNewBody(String body) {
+    public final void initNewBody(String body) {
         setBody(body);
     }
     

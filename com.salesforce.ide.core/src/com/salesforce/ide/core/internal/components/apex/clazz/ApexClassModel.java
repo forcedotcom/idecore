@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.core.internal.components.apex.clazz;
 
-import com.salesforce.ide.core.internal.components.apex.ApexCodeModel;
+import com.salesforce.ide.core.internal.components.apex.ForceCodeModel;
 import com.salesforce.ide.core.internal.utils.Constants;
 
 /**
@@ -18,7 +18,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
  * 
  * @author cwall
  */
-public class ApexClassModel extends ApexCodeModel {
+public class ApexClassModel extends ForceCodeModel {
 
     //   C O N S T R U C T O R
     public ApexClassModel() {

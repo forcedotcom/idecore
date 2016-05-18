@@ -27,7 +27,5 @@ public class ApexClassComponentController extends ComponentController {
     @Override
     protected void preSaveProcess(ComponentModel componentWizardModel, IProgressMonitor monitor)
             throws InterruptedException, InvocationTargetException {
-        // TODO Auto-generated method stub
-        
     }
 }

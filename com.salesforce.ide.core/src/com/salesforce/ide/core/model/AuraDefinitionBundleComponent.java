@@ -16,17 +16,18 @@ import org.eclipse.core.runtime.Path;
 
 import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
+import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.services.ProjectService;
 
 /**
- * This is a way to encapsulate functionality for dealing with bundles, which is a weird kind of metadata type. Bundles
+ * This is a way to encapsulate functionality for dealing with aura definition bundles, which is a weird kind of metadata type. Bundles
  * have items under them and these items need to be transported as a unit during retrieve()/deploy() operations. So the
  * gist is that we any time we add an individual bundle item, we need to transform those items to a "faux" top-level
  * component that represents the whole bundle.
  * 
  * @author nchen
  */
-public class BundleComponent extends Component {
+public class AuraDefinitionBundleComponent extends Component {
     
     @Override
     public Component preComponentListAddition() {

@@ -17,18 +17,15 @@ import com.salesforce.ide.core.internal.components.ComponentModel;
 import com.salesforce.ide.core.model.Component;
 
 /**
- * Encapsulates common methods for new Apex Code generation.
+ * Encapsulates common methods for new Force.com code generation.
  * 
  * @author cwall
  */
-public abstract class ApexCodeModel extends ComponentModel {
+public abstract class ForceCodeModel extends ComponentModel {
 
-    //   C O N S T R U C T O R
-    public ApexCodeModel() {
+    public ForceCodeModel() {
         super();
     }
-
-    //   M E T H O D S
 
     @Override
     public void loadAdditionalComponentAttributes() throws FactoryException, JAXBException {
