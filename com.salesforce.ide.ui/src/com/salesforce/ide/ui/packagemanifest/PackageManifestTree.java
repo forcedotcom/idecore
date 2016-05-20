@@ -884,8 +884,15 @@ public class PackageManifestTree extends FilteredTree {
                             + customObjectComponentNode.getName();
             PackageManifestDocumentUtils.addMemberNode(typeNode, memberName);
         } else if (parentTreeNode instanceof CustomObjectTypeNode) {
-            Node typeNode = addParentNode(customObjectComponentNode.getComponent().getComponentType());
-            String memberName = customObjectComponentNode.getName();
+        	Node typeNode;
+        	String memberName;
+        	if (customObjectComponentNode.getComponent() == null) {
+        		typeNode = addParentNode(((CustomObjectTypeNode) parentTreeNode).getValue().toString());
+        		memberName = ((CustomObjectTypeNode ) parentTreeNode).getName();
+        	} else {
+        		typeNode = addParentNode(customObjectComponentNode.getComponent().getComponentType());
+        		memberName = customObjectComponentNode.getName();
+        	}
             PackageManifestDocumentUtils.addMemberNode(typeNode, memberName);
         }
     }
@@ -1082,8 +1089,11 @@ public class PackageManifestTree extends FilteredTree {
             memberName =
                     ((PackageTreeNode) customObjectComponentNode.getParent().getParent()).getName() + Constants.DOT
                             + customObjectComponentNode.getName();
+        } else if (parentTreeNode instanceof CustomObjectTypeNode) {
+        	nodeName = ((CustomObjectTypeNode) parentTreeNode).getValue().toString();
+            memberName = customObjectComponentNode.getName();
         } else {
-            nodeName = ((ComponentTypeNode) parentTreeNode).getComponent().getComponentType();
+        	nodeName = ((ComponentTypeNode) parentTreeNode).getComponent().getComponentType();
             memberName = customObjectComponentNode.getName();
         }
 
