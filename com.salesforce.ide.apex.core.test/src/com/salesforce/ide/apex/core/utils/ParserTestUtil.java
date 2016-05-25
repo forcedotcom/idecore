@@ -24,6 +24,7 @@ import com.salesforce.ide.test.common.utils.IdeTestUtil;
  */
 public class ParserTestUtil {
     public static String readFromFile(String path) throws IOException {
-        return new String(Files.readAllBytes(Paths.get(IdeTestUtil.getFullUrlEntry(path).getFile())));
+    	String filePath = IdeTestUtil.getFullUrlEntry(path).getFile().replaceFirst("^/(.:/)", "$1");
+        return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 }

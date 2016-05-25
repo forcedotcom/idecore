@@ -53,8 +53,8 @@ public interface IdeTestConstants {
     //other constants
     String DEFAULT_PASSWORD = "123456";
     String TEST_FRAGMENT = "com.salesforce.toolkit.test";
-    String FILEMETADATA_ROOT = File.separatorChar + "filemetadata" + File.separatorChar;
-    String FILEMETADATA_BASIC_SUPPORT_DIR = "basic_support" + File.separatorChar;
+    String FILEMETADATA_ROOT = "/filemetadata/";
+    String FILEMETADATA_BASIC_SUPPORT_DIR = "basic_support/";
     String FILEMETADATA_ALL_UNPACKAGED_DESTRUCTIVE_RELPATH =FILEMETADATA_ROOT + "delete/EvertyhingUnpackaged";
     String FILEMETADATA_COMPLETE = "complete";
     String FILEMETADATA_SIMPLE = "simple";

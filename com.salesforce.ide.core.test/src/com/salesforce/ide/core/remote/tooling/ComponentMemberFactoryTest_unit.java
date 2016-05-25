@@ -12,6 +12,16 @@ package com.salesforce.ide.core.remote.tooling;
 
 import junit.framework.TestCase;
 
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
+
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.services.ToolingService;
@@ -243,7 +253,16 @@ public class ComponentMemberFactoryTest_unit extends TestCase {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><RootElement xmlns=\"urn:com.salesforce.com.test\">\n"
                         + "<Child>\n" + "Just some values\n" + "</Child>\n" + "</RootElement>";
         String replacedXml = cmf.replaceNamespace(originalXml, "urn:com.salesforce.com.test");
-        assertEquals("Replacement of namespace has failed", expectedXml, replacedXml);
+        assertEquals("Replacement of namespace has failed", stringToDocumentToString(expectedXml), stringToDocumentToString(replacedXml));
+    }
+    
+    private String stringToDocumentToString(String input) throws Exception {
+    	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    	DocumentBuilder builder = factory.newDocumentBuilder();
+    	Document doc = builder.parse(new InputSource(new StringReader(input)));
+    	DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
+        LSSerializer lsSerializer = domImplementation.createLSSerializer();
+        return lsSerializer.writeToString(doc);
     }
 
     public void testGetCorrespondingMetadataComponent() throws Exception {
