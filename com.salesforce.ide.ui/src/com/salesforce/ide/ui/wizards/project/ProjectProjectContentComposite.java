@@ -47,7 +47,7 @@ public class ProjectProjectContentComposite extends BaseComposite {
     protected Composite parent = null;
     protected Group grpComponentTypes = null;
     protected Button btnAll = null;
-    protected Button btnAllApex = null;
+    protected Button btnAllDevCode = null;
     protected Button btnCustomComponents = null;
     protected Button btnCustomComponentsOpen = null;
     protected Button btnSpecificPackage = null;
@@ -123,14 +123,14 @@ public class ProjectProjectContentComposite extends BaseComposite {
         lblIndent1.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
         // REVIEWME: extra spaces are for better pixel indent; there might be a better way
         lblIndent1.setText(" ");
-        btnAllApex = new Button(this, SWT.RADIO | SWT.WRAP);
-        btnAllApex.setText(UIMessages.getString("ProjectCreateWizard.ProjectContent.AllApexContent.label"));
-        btnAllApex.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 5, 0));
-        btnAllApex.setData(ProjectController.ALL_APEX_CONTENT);
-        btnAllApex.addSelectionListener(new SelectionListener() {
+        btnAllDevCode = new Button(this, SWT.RADIO | SWT.WRAP);
+        btnAllDevCode.setText(UIMessages.getString("ProjectCreateWizard.ProjectContent.AllApexContent.label"));
+        btnAllDevCode.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 5, 0));
+        btnAllDevCode.setData(ProjectController.ALL_DEV_CODE_CONTENT);
+        btnAllDevCode.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-                if (btnAllApex.getSelection()) {
+                if (btnAllDevCode.getSelection()) {
                     toggleButtons();
                     showContentSummary(false);
                     projectProjectContentPage.setContentSummaryText();
@@ -344,15 +344,15 @@ public class ProjectProjectContentComposite extends BaseComposite {
     }
 
     public Button getBtnAllApex() {
-        return btnAllApex;
+        return btnAllDevCode;
     }
 
     public boolean isAll() {
         return btnAll != null ? btnAll.getSelection() : false;
     }
 
-    public boolean isAllApex() {
-        return btnAllApex != null ? btnAllApex.getSelection() : false;
+    public boolean isAllDevCode() {
+        return btnAllDevCode != null ? btnAllDevCode.getSelection() : false;
     }
 
     public Button getBtnSpecificPackage() {
@@ -429,8 +429,8 @@ public class ProjectProjectContentComposite extends BaseComposite {
     }
 
     public int getContentSelection() {
-        if (isAllApex()) {
-            return Integer.parseInt(btnAllApex.getData().toString());
+        if (isAllDevCode()) {
+            return Integer.parseInt(btnAllDevCode.getData().toString());
         } else if (isSpecificPackage()) {
             return Integer.parseInt(btnSpecificPackage.getData().toString());
         } else if (isCustomComponents()) {
@@ -440,14 +440,14 @@ public class ProjectProjectContentComposite extends BaseComposite {
         } else if (isAll()) {
             return Integer.parseInt(btnAll.getData().toString());
         } else {
-            return ProjectController.ALL_APEX_CONTENT;
+            return ProjectController.ALL_DEV_CODE_CONTENT;
         }
     }
 
     public void disableServerContentOptions() {
-        if (btnAllApex != null) {
-            btnAllApex.setSelection(false);
-            btnAllApex.setEnabled(false);
+        if (btnAllDevCode != null) {
+            btnAllDevCode.setSelection(false);
+            btnAllDevCode.setEnabled(false);
         }
 
         if (btnSpecificPackage != null) {
@@ -467,9 +467,9 @@ public class ProjectProjectContentComposite extends BaseComposite {
     }
 
     public void defaultServerContentOptions() {
-        if (btnAllApex != null) {
-            btnAllApex.setEnabled(true);
-            btnAllApex.setSelection(true);
+        if (btnAllDevCode != null) {
+            btnAllDevCode.setEnabled(true);
+            btnAllDevCode.setSelection(true);
         }
 
         if (btnSpecificPackage != null) {

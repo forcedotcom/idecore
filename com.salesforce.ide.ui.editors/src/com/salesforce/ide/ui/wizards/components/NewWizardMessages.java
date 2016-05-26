@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.wizards.components.apex;
+package com.salesforce.ide.ui.wizards.components;
 
 import org.eclipse.osgi.util.NLS;
 

@@ -23,11 +23,11 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardComposite;
 
-public abstract class ApexCodeWizardComposite extends ComponentWizardComposite {
+public abstract class CodeWizardComposite extends ComponentWizardComposite {
 
     protected Combo cmbApiVersions = null;
 
-    public ApexCodeWizardComposite(Composite parent, int style, String componentTypeDisplayName) {
+    public CodeWizardComposite(Composite parent, int style, String componentTypeDisplayName) {
         super(parent, style, componentTypeDisplayName);
     }
 
@@ -41,9 +41,9 @@ public abstract class ApexCodeWizardComposite extends ComponentWizardComposite {
     }
 
     protected String getApiVersion() {
-		return Utils.isEmpty(getText(cmbApiVersions))?Constants.EMPTY_STRING:getText(cmbApiVersions);
+        return Utils.isEmpty(getText(cmbApiVersions)) ? Constants.EMPTY_STRING : getText(cmbApiVersions);
     }
-
+    
     protected Combo getApiVersionCombo() {
         return cmbApiVersions;
     }

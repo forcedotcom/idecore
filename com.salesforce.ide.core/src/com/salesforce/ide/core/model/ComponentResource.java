@@ -55,14 +55,13 @@ public abstract class ComponentResource implements IComponent {
 
     private String metadataFilePath;
     private IFile resource;
+    private IFolder bundleFolder;
     private byte[] file;
 
-    //   C O N S T R U C T O R S
     protected ComponentResource() {
         super();
     }
 
-    //   M E T H O D S
     // metadata filepath and filepath are the same for non-installed packages;
     // for installed packages filepath is prefixed with the package name
     @Override
@@ -83,6 +82,14 @@ public abstract class ComponentResource implements IComponent {
             return resource.getProjectRelativePath().toPortableString();
         }
         return null;
+    }
+
+    public IFolder getBundleFolder() {
+        return bundleFolder;
+    }
+
+    public void setBundleFolder(IFolder parentFolder) {
+        this.bundleFolder = parentFolder;
     }
 
     @Override
@@ -228,16 +235,7 @@ public abstract class ComponentResource implements IComponent {
         ResourceProperties.setProperty(file, QualifiedNames.QN_LAST_MODIFIED_BY_ID, getLastModifiedById());
         ResourceProperties.setLong(file, QualifiedNames.QN_LAST_MODIFIED_DATE, (getLastModifiedDate() != null
                 ? getLastModifiedDate().getTimeInMillis() : 0));
-
-        saveAdditionalFileProperties(file);
     }
-
-    /**
-     * Implement if you want to define object specific properties
-     * 
-     * @param file
-     */
-    protected abstract void saveAdditionalFileProperties(IFile file);
 
     IFile saveToFile(IProject project, ProjectPackage projectPackage, IProgressMonitor monitor)
             throws CoreException, InterruptedException, ForceProjectException {

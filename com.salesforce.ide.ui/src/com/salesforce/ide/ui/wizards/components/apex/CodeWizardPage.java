@@ -21,11 +21,11 @@ import com.salesforce.ide.ui.wizards.components.ComponentWizard;
 import com.salesforce.ide.ui.wizards.components.IComponentWizardPage;
 import com.salesforce.ide.ui.wizards.components.generic.GenericComponentWizardPage;
 
-public abstract class ApexCodeWizardPage extends GenericComponentWizardPage {
+public abstract class CodeWizardPage extends GenericComponentWizardPage {
 
-    private static final Logger logger = Logger.getLogger(ApexCodeWizardPage.class);
+    private static final Logger logger = Logger.getLogger(CodeWizardPage.class);
 
-    public ApexCodeWizardPage(ComponentWizard baseComponentWizard) {
+    public CodeWizardPage(ComponentWizard baseComponentWizard) {
         super(baseComponentWizard);
     }
 

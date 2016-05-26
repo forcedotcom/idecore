@@ -14,8 +14,8 @@ import org.eclipse.jface.text.templates.persistence.TemplateStore;
 
 import com.salesforce.ide.ui.editors.templates.ApexPageTemplateContextType;
 import com.salesforce.ide.ui.editors.visualforce.preferences.VisualforceTemplatePreferencePage;
-import com.salesforce.ide.ui.wizards.components.apex.NewWizardMessages;
-import com.salesforce.ide.ui.wizards.components.apex.VisualforceTemplateSelectionPage;
+import com.salesforce.ide.ui.wizards.components.NewWizardMessages;
+import com.salesforce.ide.ui.wizards.components.VisualforceTemplateSelectionPage;
 
 /**
  * Templates page in new file wizard. Allows users to select a new file

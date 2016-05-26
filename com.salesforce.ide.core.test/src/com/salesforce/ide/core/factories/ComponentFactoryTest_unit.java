@@ -389,8 +389,9 @@ public class ComponentFactoryTest_unit extends TestCase {
 
     private boolean shouldCheckForFileExtension(String componentType, Component component) {
         return !(Constants.DOCUMENT.equals(component.getComponentType())
-                || Constants.UNKNOWN_COMPONENT_TYPE.equals(component.getComponentType()) || Constants.FOLDER
-                .equals(componentType));
+            || Constants.UNKNOWN_COMPONENT_TYPE.equals(component.getComponentType())
+            || Constants.FOLDER.equals(componentType) 
+            || Constants.AURA_DEFINITION_BUNDLE.equals(componentType));
     }
 
     private void apexComponents(Component component) {
@@ -402,9 +403,11 @@ public class ComponentFactoryTest_unit extends TestCase {
 
     public void testComponentFactory_getComponentsByExtension() throws Exception {
         for (Component component : componentFactory.getRegisteredComponents()) {
-        	String componentType = component.getComponentType();
-            if (Constants.DOCUMENT.equals(componentType) || Constants.FOLDER.equals(componentType)
-                    || Constants.UNKNOWN_COMPONENT_TYPE.equals(componentType)) {
+            String componentType = component.getComponentType();
+            if (Constants.DOCUMENT.equals(componentType) 
+                || Constants.FOLDER.equals(componentType)
+                || Constants.UNKNOWN_COMPONENT_TYPE.equals(componentType)
+                || Constants.AURA_DEFINITION_BUNDLE.equals(componentType)) {
                 continue;
             }
             extensionTestWork(componentType);

@@ -122,9 +122,9 @@ public class ProjectProjectContentPage extends BaseProjectCreatePage {
                 summary = (String) stylizedText[0];
                 ranges = (StyleRange[]) stylizedText[1];
             }
-        } else if (projectProjectContentComposite.isAllApex()) { /* all apex content */
-            projectProjectContentComposite.setLblIntroContentSummaryTxt(UIMessages
-                    .getString("ProjectCreateWizard.ProjectContent.IntroContentSummary.label"));
+        } else if (projectProjectContentComposite.isAllDevCode()) { /* all developer code content */
+            projectProjectContentComposite.setLblIntroContentSummaryTxt(
+                UIMessages.getString("ProjectCreateWizard.ProjectContent.IntroContentSummary.label"));
             projectProjectContentComposite.showContentSummary(true);
             summaryContent = summaryAssembler.generateSummaryText(fileMetadata, getProjectModel().getForceProject().getEnabledComponentTypes(), true);
             if (Utils.isNotEmpty(summaryContent)) {

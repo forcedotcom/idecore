@@ -25,9 +25,9 @@ import org.eclipse.swt.widgets.Group;
 
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.ApexTrigger;
-import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardComposite;
+import com.salesforce.ide.ui.wizards.components.apex.CodeWizardComposite;
 
-public class ApexTriggerWizardComposite extends ApexCodeWizardComposite {
+public class ApexTriggerWizardComposite extends CodeWizardComposite {
 
     private Group grpTriggerOperations = null;
     private List<Button> checkboxOperationButtons = new ArrayList<>();

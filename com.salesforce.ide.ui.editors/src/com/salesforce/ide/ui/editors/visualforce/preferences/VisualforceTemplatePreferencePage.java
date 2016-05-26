@@ -26,7 +26,6 @@ import org.eclipse.wst.html.ui.internal.editor.IHelpContextIds;
 import org.eclipse.wst.html.ui.internal.preferences.ui.HTMLTemplatePreferencePage;
 import org.osgi.service.prefs.BackingStoreException;
 
-@SuppressWarnings("restriction")
 public class VisualforceTemplatePreferencePage extends HTMLTemplatePreferencePage {
     public static final String ID = "com.salesforce.ide.ui.editors.visualforce.TemplatesPreferencePage"; //$NON-NLS-1$
 

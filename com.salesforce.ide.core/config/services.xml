@@ -58,6 +58,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
                 <ref bean="AppMenu" />
                 <ref bean="ApprovalProcess" />
                 <ref bean="AuthProvider" />
+                <ref bean="AuraDefinitionBundle" />
                 <ref bean="CallCenter" />
                 <ref bean="Community" />
                 <ref bean="ConnectedApp" />

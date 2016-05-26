@@ -8,15 +8,22 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.wizards.components.apex;
+package com.salesforce.ide.ui.editors.templates;
 
-import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
-import com.salesforce.ide.ui.wizards.components.ComponentWizard;
+public final class LightningTemplateContextType extends ForceTemplateContextType {
 
-public abstract class TemplateSelectionWizard extends ComponentWizard {
+    public static final String ID = "com.salesforce.ide.ui.editors.templates.contextType.lightning"; //$NON-NLS-1$
 
-    public TemplateSelectionWizard() {
-        setDialogSettings(ForceIdeEditorsPlugin.getDefault().getDialogSettings());
+    public LightningTemplateContextType() {
+        super();
+    }
+
+    public LightningTemplateContextType(String id) {
+        super(id);
+    }
+
+    public LightningTemplateContextType(String id, String name) {
+        super(id, name);
     }
 
 }

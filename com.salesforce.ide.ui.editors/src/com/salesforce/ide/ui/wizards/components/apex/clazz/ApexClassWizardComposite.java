@@ -18,9 +18,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardComposite;
+import com.salesforce.ide.ui.wizards.components.apex.CodeWizardComposite;
 
-public class ApexClassWizardComposite extends ApexCodeWizardComposite {
+public class ApexClassWizardComposite extends CodeWizardComposite {
 
     public ApexClassWizardComposite(Composite parent, int style, String displayName, Set<String> supportedApiVesions) {
         super(parent, style, displayName);

@@ -21,7 +21,7 @@ public class ProjectModel extends OrgModel {
 
     protected Connection connection = null;
     protected boolean silentUpdate = false;
-    protected int contentSelection = ProjectController.ALL_APEX_CONTENT;
+    protected int contentSelection = ProjectController.ALL_DEV_CODE_CONTENT;
     protected String selectedPackageName = null;
     protected Set<String> packageNames = null;
     protected PackageManifestModel packageManifestModel = null;

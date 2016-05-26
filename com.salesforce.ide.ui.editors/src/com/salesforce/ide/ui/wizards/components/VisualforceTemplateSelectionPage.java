@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.wizards.components.apex;
+package com.salesforce.ide.ui.wizards.components;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IDocument;
@@ -30,7 +30,6 @@ import org.eclipse.wst.sse.ui.internal.provisional.style.LineStyleProvider;
  * Templates page in new file wizard. Allows users to select a new file
  * template to be applied in new file.
  */
-@SuppressWarnings("restriction")
 public abstract class VisualforceTemplateSelectionPage extends AbstractTemplateSelectionPage {
 
     public VisualforceTemplateSelectionPage(final String contextTypeId, final TemplateStore templateStore, final String pageName, final String description) {

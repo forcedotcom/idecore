@@ -62,8 +62,10 @@ public final class SaveToServerHandler extends BaseHandler {
         }
     }
 
-    private static void fetchRemoteComponents(final IWorkbench workbench,
-            final SaveToServerActionController actionController) {
+    private static void fetchRemoteComponents(
+        final IWorkbench workbench,
+        final SaveToServerActionController actionController
+    ) {
         final WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
             @Override
             protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,

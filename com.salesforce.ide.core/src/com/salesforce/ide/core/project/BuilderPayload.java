@@ -191,14 +191,6 @@ public class BuilderPayload {
         setComponentList(componentList);
         initProjectPackageList();
 
-        // log initial gatherings
-        if (logger.isInfoEnabled()) {
-            logger.info("Initially gathered [" + projectPackageList.getComponentCount(false) + "] components in ["
-                    + projectPackageList.size() + "] project packages to saved");
-            ComponentList tmpComponentList = projectPackageList.getAllComponents();
-            logger.info(tmpComponentList != null ? tmpComponentList.toStringLite() : "No components found");
-        }
-
         // check for conflicts
         if (checkForConflicts) {
             try {
@@ -207,12 +199,6 @@ public class BuilderPayload {
                 logger.error("Unable to perform conflict check", e);
                 throw new BuilderException("Unable to perform conflict check", e);
             }
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Gathered [" + projectPackageList.getComponentCount(false) + "] components in ["
-                    + projectPackageList.size() + "] project packages to saved");
-            logger.debug(projectPackageList);
         }
     }
 
@@ -224,13 +210,10 @@ public class BuilderPayload {
         for (Component component : componentList) {
             // ignore install package components
             if (component.isInstalled()) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Skipping referenced package component, " + component.getFullDisplayName());
-                }
+                logger.info("Skipping referenced package component, " + component.getFullDisplayName());
                 continue;
             }
 
-            // if not conflict, add to save list
             projectPackageList.addComponent(component);
         }
     }
@@ -238,10 +221,6 @@ public class BuilderPayload {
     private void filterComponentsInConflict(ProjectPackageList projectPackageList, IProgressMonitor monitor)
             throws ForceConnectionException, InterruptedException, IOException, ForceRemoteException,
             ServiceException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Filtering components in conflict...");
-        }
-
         Connection connection = null;
         if (project != null) {
             connection = factoryLocator.getConnectionFactory().getConnection(project);
@@ -307,14 +286,7 @@ public class BuilderPayload {
             IProgressMonitor monitor) {
         // skip package.xml
         if (component.isPackageManifest()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Skipping " + component.getFullDisplayName() + " from conflict check");
-            }
             return;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Checking " + component.getFullDisplayName() + " for conflict");
         }
 
         // find corresponding component in remote project package
@@ -337,11 +309,6 @@ public class BuilderPayload {
         // if conflict found, handle by removing from deploy list and log and add appropriate markers
         if (hasConflict) {
             handleConflict(component, componentList);
-        } else {
-            if (logger.isInfoEnabled()) {
-                logger.info("Local has been updated and/or no change detect on remote. Including '"
-                        + component.getMetadataFilePath() + "' has to-be-saved component.");
-            }
         }
     }
 
@@ -353,14 +320,6 @@ public class BuilderPayload {
         boolean remove = false;
         if (componentList.contains(component)) {
             remove = componentList.remove(component);
-            if (logger.isDebugEnabled()) {
-                logger.debug((remove ? "Successfully" : "Failed") + " removed " + component.getFullDisplayName()
-                    + " from to-be-saved list");
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug(component.getFullDisplayName() + " not found in component list");
-            }
         }
 
         // if composite component, remove corresponding composite component from list too
@@ -369,14 +328,6 @@ public class BuilderPayload {
             Component componentComposite = componentList.getComponentByFilePath(componentCompositeFilePath);
             if (componentComposite != null) {
                 remove = componentList.remove(componentComposite);
-                if (logger.isDebugEnabled()) {
-                    logger.debug((remove ? "Successfully" : "Failed") + " removed composite "
-                            + componentComposite.getFullDisplayName() + " from to-be-saved list");
-                }
-            } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(component.getFullDisplayName() + " not found in component list");
-                }
             }
         }
 
@@ -390,7 +341,6 @@ public class BuilderPayload {
         markerUtils.clearAll(file);
         markerUtils.applyDirty(file);
         markerUtils.applySaveErrorMarker(file, 1, 1, 0, strBuff.toString());
-        logger.warn(strBuff.toString());
     }
 
     public IFile[] getFiles() {

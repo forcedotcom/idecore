@@ -26,7 +26,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.lf5.util.StreamUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -70,12 +69,10 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     private transient ProjectService projectService = null;
     private transient IProject project = null;
 
-    //   C O N S T R U C T O R
     public ProjectPackageList() {
         super();
     }
 
-    //   M E T H O D S
     public ProjectService getProjectService() {
         return projectService;
     }
@@ -123,10 +120,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     @Override
     public boolean add(ProjectPackage projectPackage) {
         boolean success = super.add(projectPackage);
-        if (logger.isDebugEnabled()) {
-            logger.debug((success ? "Added" : "Did NOT add") + " the following project package to list:\n"
-                    + projectPackage.toString());
-        }
         return success;
     }
 
@@ -172,13 +165,13 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 foundProjectPackage = getProjectPackageFactory().getProjectPackage(getProject(), true);
                 foundProjectPackage.setName(tmpPackageName);
                 add(foundProjectPackage);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Added new project package, '" + foundProjectPackage.getName() + "', for '"
-                            + packageName + "' package name");
-                }
             } catch (FactoryException e) {
-                logger.error("Unable to get project package for project '" + getProject().getName() + "' and package '"
-                        + packageName + "'", e);
+                logger.error(
+                    "Unable to get project package for project '" 
+                    + getProject().getName() 
+                    + "' and package '"
+                    + packageName 
+                    + "'", e);
             }
 
         }
@@ -378,12 +371,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 }
 
                 if (projectPackage == null) {
-                    logger.warn("Unable to add '" + name + "' file connect to null project package.");
                     continue;
-                }
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("'" + name + "' body size [" + fileContent.length + "]");
                 }
 
                 projectPackage.addFilePathZipMapping(name, fileContent);
@@ -414,7 +402,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                     }
                 }
             }
-            return true;
+            return false;
         }
 
         return false;
@@ -454,17 +442,13 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         generateComponents(fileMetadataHandler, componentTypes, monitor);
     }
 
-    private void generateComponents(FileMetadataExt fileMetadataHandler, String[] componentTypes,
-            IProgressMonitor monitor) throws InterruptedException {
+    private void generateComponents(
+        FileMetadataExt fileMetadataHandler,
+        String[] componentTypes,
+        IProgressMonitor monitor) throws InterruptedException {
 
         if (fileMetadataHandler == null) {
             throw new IllegalArgumentException("ProjectPackageList and/or fileMetadataHandler cannot be null");
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("");
-            logger.debug("***   G E N E R A T E   C O M P O N E N T S   ***");
-            logger.debug("Generating estimated [" + getFilePathZipMappingCount() + "] components");
         }
 
         List<String> desiredComponentTypes = null;
@@ -480,13 +464,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             // get filepath to zip file mapping
             filePathZipMapping = projectPackage.getFilePathZipMapping();
             if (Utils.isEmpty(filePathZipMapping)) {
-                logger.error("Filepath-zip mapping is null or empty for package '" + projectPackage.getName() + "' ["
-                        + projectPackage.getId() + "] - skipping component generation");
                 continue;
-            }
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Creating components object for package '" + projectPackage.getName() + "'");
             }
 
             // sort by name
@@ -494,25 +472,21 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
             // for each file in zip, create component object
             if (Utils.isEmpty(filePaths)) {
-                logger.warn("Filepaths are null or empty for package '" + projectPackage.getName() + "' ["
-                        + projectPackage.getId() + "] - skipping component generation");
                 continue;
             }
 
             for (String filePath : filePaths) {
                 monitorCheck(monitor);
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Inspecting '" + filePath + "'...");
-                }
-
                 byte[] fileBytes = filePathZipMapping.get(filePath);
                 // using associated factory, create component and set file properties
                 Component component = null;
                 try {
-                    component =
-                            getComponentFactory().createComponent(projectPackage, filePath, fileBytes,
-                                fileMetadataHandler);
+                    component = getComponentFactory().createComponent(
+                        projectPackage,
+                        filePath,
+                        fileBytes,
+                        fileMetadataHandler);
                 } catch (Exception e) {
                     logger.error("Unable to create component for file path '" + filePath + "'", e);
                     continue;
@@ -520,10 +494,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
                 // filter out undesirable objects, if applicable
                 if (!isDesiredComponentType(desiredComponentTypes, component)) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Excluding filepath '" + filePath
-                                + "' - not designated as generated component type");
-                    }
                     continue;
                 }
 
@@ -531,17 +501,17 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 if (component != null) {
                     projectPackage.addComponent(component);
                 } else {
-                    logger.warn("Unable to add '" + filePath + "' has an component to '" + projectPackage.getName()
-                            + "' project package, component is null");
+                    logger.warn(
+                        "Unable to add '" 
+                        + filePath 
+                        + "' has an component to '" 
+                        + projectPackage.getName()
+                        + "' project package, component is null");
                 }
             }
         }
 
         monitorWorkCheck(monitor);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(this);
-        }
     }
 
     // if component is not package.xml, check if the type exists in designate list.  if folder, check sub type
@@ -551,8 +521,8 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         }
 
         return designatedSaveComponentTypes.contains(component.getComponentType())
-                || (Utils.isNotEmpty(component.getSecondaryComponentType()) && designatedSaveComponentTypes
-                        .contains(component.getSecondaryComponentType()));
+            || (Utils.isNotEmpty(component.getSecondaryComponentType())
+                && designatedSaveComponentTypes.contains(component.getSecondaryComponentType()));
     }
 
     public int getFilePathZipMappingCount() {
@@ -608,7 +578,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
     public void addAllComponents(ComponentList components) {
         if (Utils.isEmpty(components)) {
-            logger.warn("No components found to add - component list is null or empty");
             return;
         }
 
@@ -618,17 +587,19 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public void addComponents(ComponentList components, boolean includeComposite) {
-        addComponents(components, includeComposite, false);
+        addComponents(components, 
+            PackageConfiguration.builder()
+            .setIncludeComposite(includeComposite)
+            .build());
     }
 
-    public void addComponents(ComponentList components, boolean includeComposite, boolean replace) {
+    public void addComponents(ComponentList components, PackageConfiguration configuration) {
         if (Utils.isEmpty(components)) {
-            logger.warn("No components found to add - component list is null or empty");
             return;
         }
 
         for (Component component : components) {
-            addComponent(component, includeComposite, replace);
+            addComponent(component, configuration);
         }
     }
 
@@ -637,81 +608,35 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     public void addComponent(Component component, boolean includeComposite) {
-        addComponent(component, includeComposite, false);
+        addComponent(
+            component,
+            PackageConfiguration.builder()
+            .setIncludeComposite(includeComposite)
+            .build());
     }
 
-    public void addComponent(Component component, boolean includeComposite, boolean replace) {
+    public void addComponent(Component component, PackageConfiguration configuration) {
         if (component == null) {
-            logger.warn("Unable to add component to project package - component null");
             throw new IllegalArgumentException("Component cannot be null");
         }
 
         ProjectPackage projectPackage = getProjectPackageForComponent(component);
 
         if (projectPackage == null) {
-            logger.warn("Unable to add " + component.getFullDisplayName()
-                    + " to project package - project package null");
             return;
         }
 
-        projectPackage.addComponent(component, replace);
-
-        if (includeComposite && component.isMetadataComposite()) {
-            // load component composite
-            String compositeComponentFilePath = component.getCompositeMetadataFilePath();
-            if (getProject() == null || Utils.isEmpty(compositeComponentFilePath)) {
-                logger.warn("Project is null or component metadata path is null for " + component.getFullDisplayName());
-                return;
-            }
-
-            try {
-                Component compositeComponent = null;
-
-                // get handle on file
-                IFile compositeComponentFile =
-                        projectService.getComponentFileForFilePath(getProject(), compositeComponentFilePath);
-                if (compositeComponentFile == null || !compositeComponentFile.exists()) {
-                    logger.warn("Component composite file not found at filepath '" + compositeComponentFilePath
-                            + "' for component " + component.getFullDisplayName());
-
-                    compositeComponent = getComponentFactory().getCompositeComponentFromComponent(component);
-                } else {
-                    // create composite instance for object type
-                    compositeComponent = getComponentFactory().getComponentFromFile(compositeComponentFile);
-                }
-
-                if (compositeComponent == null) {
-                    final String path = null == compositeComponentFile ? "" : compositeComponentFile.getProjectRelativePath().toPortableString();
-                    logger.warn("Component metadata not created for '"
-                            + path + "' for component "
-                            + component.getFullDisplayName());
-                    return;
-                }
-
-                // set component composite props
-                compositeComponent.setFilePath(compositeComponentFilePath);
-
-                // save to component list
-                projectPackage.addComponent(compositeComponent, replace);
-
-            } catch (FactoryException e) {
-                logger.error("Unable to get composite component from filepath '" + compositeComponentFilePath + "'"
-                        + e.getMessage());
-            }
-        }
+        projectPackage.addComponent(component, configuration);
     }
 
     public void addDeleteComponent(Component component) throws ForceProjectException, FactoryException {
         if (component == null) {
-            logger.warn("Unable to add component to project package - component null");
             throw new IllegalArgumentException("Component cannot be null");
         }
 
         ProjectPackage projectPackage = getProjectPackageForComponent(component);
 
         if (projectPackage == null) {
-            logger.warn("Unable to add " + component.getFullDisplayName()
-                    + " to project package - project package null");
             return;
         }
 
@@ -722,7 +647,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     // for installed packages filepath is prefixed with the package name
     public Component getComponentByFilePath(String filePath) {
         if (isEmpty() || Utils.isEmpty(filePath)) {
-            logger.warn("Component not found - component list is null or empty or file path is null");
             return null;
         }
 
@@ -731,10 +655,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             for (Component component : componentList) {
                 if (Utils.isNotEmpty(component.getMetadataFilePath())
                         && isEqualStripSourcePrefix(filePath, component.getMetadataFilePath())) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Found " + component.getFullDisplayName() + " for '" + filePath
-                                + "' in component list for package '" + projectPackage.getName() + "'");
-                    }
                     return component;
                 }
             }
@@ -746,7 +666,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
     public Component getComponentByNameType(String name, String componentType) {
         if (isEmpty() || Utils.isEmpty(name) || Utils.isEmpty(componentType)) {
-            logger.warn("Component not found - component list is null or empty or name and/or component type is null");
             return null;
         }
 
@@ -754,10 +673,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             ComponentList componentList = projectPackage.getComponentsByComponentType(componentType);
             for (Component component : componentList) {
                 if (Utils.isNotEmpty(component.getName()) && component.getName().equals(name)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Found " + component.getFullDisplayName() + " for '" + name
-                                + "' in component list for package '" + projectPackage.getName() + "'");
-                    }
                     return component;
                 }
             }
@@ -769,7 +684,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
     public Component getApexCodeComponent(String name, String message) {
         if (Utils.isEmpty(name)) {
-            logger.warn("Unable to find Apex Code component for name '" + name + "'");
             return null;
         }
 
@@ -788,7 +702,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
 
     public Component getComponentByFileName(String fileName) {
         if (isEmpty() || Utils.isEmpty(fileName)) {
-            logger.warn("Component not found - component list is null or empty or fileName is null");
             return null;
         }
 
@@ -796,10 +709,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             ComponentList componentList = projectPackage.getComponentList();
             for (Component component : componentList) {
                 if (Utils.isNotEmpty(component.getFileName()) && fileName.equals(component.getFileName())) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Found " + component.getFullDisplayName() + " for '" + fileName
-                                + "' in component list for package '" + projectPackage.getName() + "'");
-                    }
                     return component;
                 }
             }
@@ -813,7 +722,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     // for installed packages filepath is prefixed with the package name
     public Component getComponentByMetadataFilePath(String fileName) {
         if (isEmpty() || Utils.isEmpty(fileName)) {
-            logger.warn("Component not found - component list is null or empty or fileName is null");
             return null;
         }
 
@@ -822,10 +730,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             for (Component component : componentList) {
                 if (Utils.isNotEmpty(component.getMetadataFilePath())
                         && fileName.equals(component.getMetadataFilePath())) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Found " + component.getFullDisplayName() + " for '" + fileName
-                                + "' in component list for package '" + projectPackage.getName() + "'");
-                    }
                     return component;
                 }
             }
@@ -861,23 +765,9 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             }
         }
 
-        if (logger.isInfoEnabled()) {
-            if (component != null) {
-                logger.info("Found " + component.getFullDisplayName() + " for id '" + id + "'");
-            } else {
-                logger.info("Did not find component for '" + id + "'");
-            }
-        }
-
         return component;
     }
 
-    /**
-     * Id is not unique identifier to find component.
-     * 
-     * @param id
-     * @return
-     */
     public List<Component> getComponentsById(String id) {
         List<Component> components = new ArrayList<>();
         if (!isEmpty() && Utils.isNotEmpty(id)) {
@@ -888,16 +778,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                         components.add(tmpComponent);
                     }
                 }
-            }
-        }
-
-        if (logger.isInfoEnabled()) {
-            if (Utils.isNotEmpty(components)) {
-                for (Component component : components) {
-                    logger.info("Found " + component.getFullDisplayName() + " for id '" + id + "'");
-                }
-            } else {
-                logger.info("Did not find component for '" + id + "'");
             }
         }
 
@@ -942,15 +822,10 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             component = componentList.getComponentByFilePath(filePath);
             boolean result = componentList.remove(component);
             if (result && component != null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Removed " + filePath + " from component list");
-                }
-
                 // delete from manifest
                 if (includeDeleteManifest && projectPackage.getDeletePackageManifest() != null) {
-                    result =
-                            getPackageManifestFactory().removeFromDeleteManifest(
-                                projectPackage.getDeletePackageManifest(), component);
+                    result = getPackageManifestFactory()
+                        .removeFromDeleteManifest(projectPackage.getDeletePackageManifest(), component);
                     if (result) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Removed " + filePath + " from delete manifest");
@@ -996,9 +871,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             List<String> filepaths = componentList.getFilePaths();
             for (String filepath : filepaths) {
                 boolean tmpResult = projectPackage.removeComponentByFilePath(filepath);
-                if (logger.isDebugEnabled()) {
-                    logger.debug((result ? "Removed '" : "Failed to remove '") + filepath + "' from component list");
-                }
 
                 if (!tmpResult) {
                     result = false;
@@ -1139,15 +1011,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             logger.warn("Project package list is empty.  No resources to save.");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   S A V E   R E S O U R C E S   ***");
-            logger.debug("Saving [" + size() + "] project packages");
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Saving resources for project " + project.getName() + " to filesystem");
-        }
-
         List<String> designatedSaveComponentTypes = null;
         if (Utils.isNotEmpty(componentTypes)) {
             designatedSaveComponentTypes = Arrays.asList(componentTypes);
@@ -1158,14 +1021,7 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             monitorCheck(monitor);
             ComponentList componentList = projectPackage.getComponentList();
             if (Utils.isEmpty(componentList)) {
-                logger.warn("Component list in project package '" + projectPackage.getName()
-                        + "' is empty.  No resources to save.");
                 continue;
-            }
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Potentially saving [" + componentList.size() + "] resources to project "
-                        + project.getName());
             }
 
             int savedCount = 0;
@@ -1173,27 +1029,30 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
             monitor.beginTask(Messages.getString("Components.Generating"), totalCount);
             for (Component component : componentList) {
                 monitorCheck(monitor);
-                // if provided, only save selected object types
+
+                // If provided, only save selected object types
                 if (Utils.isNotEmpty(componentTypes)
-                        && !isDesignatedSaveComponentType(designatedSaveComponentTypes, component)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Component " + component.getFullDisplayName()
-                                + " is not part of selective save.  Skipping.");
-                    }
+                    && !isDesignatedSaveComponentType(designatedSaveComponentTypes, component)) {
                     continue;
                 }
 
+                // Do not save the packageManifest response since that is only for this particular deploy
+                if(component.getComponentType().equals(Constants.PACKAGE_MANIFEST)) {
+                    if (Utils.isEmpty(componentTypes)
+                        || !isDesignatedSaveComponentType(designatedSaveComponentTypes, component)) {
+                        continue;
+                    }
+                }
+                
                 try {
-                    monitor.setTaskName(Messages.getString("Components.Generating.Updating", new Object[] {
-                            savedCount++, totalCount }));
+                    monitor.setTaskName(
+                        Messages.getString("Components.Generating.Updating",
+                        new Object[] { savedCount++, totalCount }));
                     monitor.worked(1);
                     component.saveToFile(project, projectPackage, new SubProgressMonitor(monitor, 1));
                 } catch (OperationCanceledException e) {
-                    logger.warn("Save " + component.getFullDisplayName() + " to file cancelled");
                     break;
                 } catch (CoreException e) {
-                    String logMessage = Utils.generateCoreExceptionLog(e);
-                    logger.warn("Unable to save component '" + component.getFullDisplayName() + "' to " + logMessage);
                     if (ForceExceptionUtils.isReadOnlyException(e)) {
                         if (!skipAllReadOnlyExceptions) {
                             skipAllReadOnlyExceptions = handleReadOnlyException(e, component);
@@ -1205,10 +1064,6 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
                 }
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Saved [" + savedCount + "] components to project " + project.getName());
-            }
-
             SyncServiceListenerBroadcaster.broadcast(componentList);
         }
         
@@ -1218,14 +1073,20 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         boolean skipAllReadOnlyExceptions = false;
         if (ForceExceptionUtils.isReadOnlyException(coreException) && !skipAllReadOnlyExceptions) {
             String message = ForceExceptionUtils.getStrippedExceptionMessage(coreException.getMessage());
-            logger.warn("Unable to save " + component.getFullDisplayName() + " to file - " + message);
             StringBuffer strBuff = new StringBuffer(Messages.getString("Components.SaveResourceError.message"));
-            strBuff.append(":\n\n").append(message).append("\n\n")
-                    .append(Messages.getString("Components.SaveResourceError.SkipAllReadOnly.message"));
+            strBuff
+                .append(":\n\n")
+                .append(message)
+                .append("\n\n")
+                .append(Messages.getString("Components.SaveResourceError.SkipAllReadOnly.message"));
 
-            MessageDialogRunnable messageDialogRunnable =
-                    new MessageDialogRunnable("Cannot Write to File", null, strBuff.toString(), MessageDialog.WARNING,
-                            new String[] { IDialogConstants.NO_LABEL, IDialogConstants.YES_TO_ALL_LABEL }, 0);
+            MessageDialogRunnable messageDialogRunnable = new MessageDialogRunnable(
+                "Cannot Write to File",
+                null,
+                strBuff.toString(),
+                MessageDialog.WARNING,
+                new String[] { IDialogConstants.NO_LABEL, IDialogConstants.YES_TO_ALL_LABEL },
+                0);
             Display.getDefault().syncExec(messageDialogRunnable);
 
             if (messageDialogRunnable.getAction() == 1) {
@@ -1253,12 +1114,14 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
         }
     }
 
-    private static boolean isDesignatedSaveComponentType(List<String> designatedSaveComponentTypes, Component component) {
+    private static boolean isDesignatedSaveComponentType(
+        List<String> designatedSaveComponentTypes,
+        Component component) {
         return designatedSaveComponentTypes.contains(component.getComponentType())
-                || (Utils.isNotEmpty(component.getSecondaryComponentType()) && designatedSaveComponentTypes
-                        .contains(component.getSecondaryComponentType()));
+            || (Utils.isNotEmpty(component.getSecondaryComponentType())
+                && designatedSaveComponentTypes.contains(component.getSecondaryComponentType()));
     }
-
+    
     public String[] getComponentTypes(boolean includeManifest) {
         if (isEmpty()) {
             return null;

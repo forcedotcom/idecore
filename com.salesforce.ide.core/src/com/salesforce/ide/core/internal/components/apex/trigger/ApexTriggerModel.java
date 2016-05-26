@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 
 import com.salesforce.ide.core.factories.FactoryException;
-import com.salesforce.ide.core.internal.components.apex.ApexCodeModel;
+import com.salesforce.ide.core.internal.components.apex.ForceCodeModel;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.model.ApexTrigger;
 import com.salesforce.ide.core.model.Component;
@@ -28,7 +28,7 @@ import com.salesforce.ide.core.model.Component;
  * 
  * @author cwall
  */
-public class ApexTriggerModel extends ApexCodeModel {
+public class ApexTriggerModel extends ForceCodeModel {
 
     private String objectName = null;
     private Set<String> operations = null;

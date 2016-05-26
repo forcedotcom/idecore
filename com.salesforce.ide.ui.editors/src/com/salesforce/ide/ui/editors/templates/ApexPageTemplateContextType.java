@@ -10,7 +10,7 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.templates;
 
-public final class ApexPageTemplateContextType extends ApexTemplateContextType {
+public final class ApexPageTemplateContextType extends ForceTemplateContextType {
 
     public static final String ID = "com.salesforce.ide.ui.editors.templates.contextType.apexPage"; //$NON-NLS-1$
 

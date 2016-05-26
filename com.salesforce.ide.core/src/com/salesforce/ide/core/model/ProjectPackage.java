@@ -63,15 +63,13 @@ public class ProjectPackage {
     private IFolder packageRootFolder = null;
     private Map<String, byte[]> filePathZipMapping = null;
     protected ProjectService projectService = null;
-
-    //   C O N S T R U C T O R S
+    
     public ProjectPackage() {}
 
     public ProjectPackage(String name) {
         this.name = name;
     }
 
-    //   M E T H O D S
     public void parseInput(SObject sobject) {
         Iterator<XmlObject> iter = sobject.getChildren();
         while (iter.hasNext()) {
@@ -91,10 +89,6 @@ public class ProjectPackage {
                 setInstalled(true); // version name is required field when upload package
                 setVersionName(fieldValue);
             }
-        }
-
-        if (logger.isDebugEnabled() && Utils.isNotEmpty(getOrgId())) {
-            logger.debug("Packaged '" + getName() + "' " + (isInstalled() ? "is" : "is not") + " installed");
         }
     }
 
@@ -485,8 +479,14 @@ public class ProjectPackage {
             String filePath = Utils.stripSourceFolder(component.getMetadataFilePath());
             // retrieve component content from file first instead of component body, see bug
             // W-576656
-            if (component.getFileResource() != null) {
-                File file = component.getFileResource().getRawLocation().toFile();
+            if (component.getFileResource() != null || component.getBundleFolder() != null) {
+                File file;
+                if(component.getFileResource() != null) {
+                file = component.getFileResource().getRawLocation().toFile();
+                }
+                else {
+                file = component.getBundleFolder().getRawLocation().toFile();
+                }
                 if (!file.exists()) {
                     logger.warn("File '" + file.getAbsolutePath() + "' does not exist");
                     continue;
@@ -514,17 +514,17 @@ public class ProjectPackage {
                 // get zip and add to zip stats
                 tmpStats = ZipUtils.zipFile(filePath, component.getFile(), zos, Integer.MAX_VALUE);
             } else {
-                logger.warn("Unable to zip '" + filePath + "': File and body or file bytes for component "
-                        + component.getFullDisplayName() + " is null");
+                logger.warn(
+                    "Unable to zip '" 
+                    + filePath 
+                    + "': File and body or file bytes for component "
+                    + component.getFullDisplayName() + " is null");
                 continue;
             }
 
             if (stats != null) {
                 stats.addStats(tmpStats);
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Updated zip stats:\n" + stats.toString());
-                }
+                logger.debug("Updated zip stats:\n" + stats.toString());
             }
         }
 
@@ -551,34 +551,36 @@ public class ProjectPackage {
         }
 
         // get zip and add to zip stats
-        ZipStats tmpStats =
-                ZipUtils.zipFile(Constants.DESTRUCTIVE_MANIFEST_FILE_NAME, deleteManifestStr, zos, Integer.MAX_VALUE);
+        ZipStats tmpStats = ZipUtils.zipFile(Constants.DESTRUCTIVE_MANIFEST_FILE_NAME, deleteManifestStr, zos, Integer.MAX_VALUE);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Added  '" + Constants.DESTRUCTIVE_MANIFEST_FILE_NAME + "' to zip with zip stats:\n "
-                    + tmpStats.toString());
-        }
+        logger.debug(
+            "Added  '" 
+            + Constants.DESTRUCTIVE_MANIFEST_FILE_NAME 
+            + "' to zip with zip stats:\n "
+            + tmpStats.toString());
 
         if (stats != null) {
             stats.addStats(tmpStats);
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Updated zip stats:\n" + stats.toString());
-            }
+            logger.debug("Updated zip stats:\n" + stats.toString());
         }
     }
 
     public void addComponent(Component component) {
-        addComponent(component, false);
+        addComponent(
+            component,
+            PackageConfiguration.builder().build());
     }
 
     public void addComponent(Component component, boolean includeComposite) {
-        addComponent(component, includeComposite, false);
+        addComponent(
+            component,
+            PackageConfiguration.builder()
+            .setIncludeComposite(includeComposite)
+            .build());
     }
 
-    public void addComponent(Component component, boolean includeComposite, boolean replace) {
+    public void addComponent(Component component, PackageConfiguration configuration) {
         if (component == null) {
-            logger.warn("Unable to add component to project package - component null");
             throw new IllegalArgumentException("Component cannot be null");
         }
 
@@ -592,59 +594,11 @@ public class ProjectPackage {
             }
         }
 
-        componentList.add(component, replace);
-
-        if (includeComposite && component.isMetadataComposite() && component.getProject() != null) {
-            // load component composite
-            String compositeComponentFilePath = component.getCompositeMetadataFilePath();
-            if (Utils.isEmpty(compositeComponentFilePath)) {
-                logger.warn("Component metadata path is null for " + component.getFullDisplayName());
-                return;
-            }
-
-            try {
-                Component compositeComponent = null;
-
-                // get handle on file
-                IFile compositeComponentFile =
-                        projectService.getComponentFileForFilePath(component.getProject(), compositeComponentFilePath);
-                if (compositeComponentFile == null || !compositeComponentFile.exists()) {
-                    logger.warn("Component composite file not found at filepath '" + compositeComponentFilePath
-                            + "' for component " + component.getFullDisplayName());
-
-                    compositeComponent = getComponentFactory().getCompositeComponentFromComponent(component);
-                } else {
-                    // create composite instance for object type
-                    compositeComponent = getComponentFactory().getComponentFromFile(compositeComponentFile);
-                }
-
-                if (compositeComponent == null) {
-                    final String path = null == compositeComponentFile ? "" : compositeComponentFile.getProjectRelativePath().toPortableString();
-                    logger.warn("Component metadata not created for '" + path + "' for component "
-                            + component.getFullDisplayName());
-                    return;
-                }
-
-                // set component composite props
-                compositeComponent.setFilePath(compositeComponentFilePath);
-
-                // save to component list
-                componentList.add(compositeComponent);
-                if (logger.isInfoEnabled()) {
-                    logger.info("Added component metadata " + compositeComponent.getFullDisplayName()
-                            + " to project package");
-                }
-
-            } catch (FactoryException e) {
-                logger.error("Unable to get composite component from filepath '" + compositeComponentFilePath + "'"
-                        + e.getMessage());
-            }
-        }
+        componentList.add(component, configuration);
     }
 
     public void addComponents(ComponentList componentList) {
         if (componentList == null) {
-            logger.warn("Unable to add component to project package - component null");
             throw new IllegalArgumentException("Component cannot be null");
         }
 
@@ -657,14 +611,10 @@ public class ProjectPackage {
 
     public void addDeleteComponent(Component component) throws ForceProjectException, FactoryException {
         if (component == null) {
-            logger.warn("Unable to add component to project package - component null");
             throw new IllegalArgumentException("Component cannot be null");
         }
 
         if (component.isPackageManifest()) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Package manifest found - will not add to delete manifest");
-            }
             return;
         }
 
@@ -673,20 +623,15 @@ public class ProjectPackage {
 
             // and if it's STILL null, abort
             if (getDeleteManifest() == null) {
-                logger
-                        .error("Unable to add component to delete manifest - destructive manifest is missing or cannot be "
-                                + "generated for package '" + getName() + "'");
                 throw new ForceProjectException(
                         "Unable to add component to delete manifest - destructive manifest is missing or cannot be "
-                                + "generated for package '" + getName() + "'");
+                        + "generated for package '" 
+                        + getName() + "'");
             }
         }
 
         getPackageManifestFactory().addComponentToManifest(getDeletePackageManifest(), component);
-        boolean removed = componentList.remove(component);
-        if (!removed) {
-            logger.warn("Unable to clear component " + component.getFullDisplayName() + " from list");
-        }
+        componentList.remove(component);
     }
 
     public void loadComponents(boolean includeManifest) throws CoreException, FactoryException {
@@ -694,18 +639,11 @@ public class ProjectPackage {
             throw new IllegalArgumentException("Folder cannot be null");
         }
 
-        ComponentList tmpComponentList =
-                projectService.getComponentsForFolder(packageRootFolder, true, includeManifest);
+        ComponentList tmpComponentList = projectService.getComponentsForFolder(packageRootFolder, true, includeManifest);
         if (Utils.isEmpty(componentList)) {
             componentList = tmpComponentList;
         } else if (Utils.isNotEmpty(tmpComponentList)) {
             componentList.addAll(tmpComponentList);
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Added " + (Utils.isNotEmpty(tmpComponentList) ? tmpComponentList.size() : 0)
-                    + " components to '" + getName() + "' project package component list; total now is "
-                    + (Utils.isNotEmpty(componentList) ? componentList.size() : 0));
         }
     }
 
@@ -743,9 +681,6 @@ public class ProjectPackage {
 
     public void removeDeleteManifest() {
         deleteManifest = null;
-        if (logger.isDebugEnabled()) {
-            logger.debug("Removed delete manifest from package '" + getName() + "'");
-        }
     }
 
     public boolean hasChanged(Object obj) throws InterruptedException {

@@ -48,7 +48,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <!-- signifies that the body of the non-metadata file is code -->
         <property name="codeBody" value="true" />
     </bean>
-
+    
     <bean id="baseFolderComponent" parent="component" scope="prototype" lazy-init="true">
         <property name="wildCardSupported" value="false" />
         <property name="withinFolder" value="true" />
@@ -239,6 +239,20 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </bean>
 
     <bean id="apexTriggerMetadata" class="${xmlComponentType.package.name}.${ApexTrigger.componentType}" lazy-init="true">
+        <property name="apiVersion" ref="lastSupportedApiVersion" />
+    </bean>
+
+	<!-- AuraDefinitionBundle -->
+    <bean id="AuraDefinitionBundle" class="com.salesforce.ide.core.model.AuraDefinitionBundleComponent" parent="component" scope="prototype" lazy-init="true">
+		<property name="supportedApiVersions" ref="supportedApiVersions" />
+		<property name="bundle" value="true" />
+		<property name="displayName" value="${AuraDefinitionBundle.displayName}" />
+		<property name="componentType" value="${AuraDefinitionBundle.componentType}" />
+		<property name="defaultFolder" value="${AuraDefinitionBundle.defaultFolder}" />
+		<lookup-method name="getDefaultMetadataExtInstance" bean="auraDefinitionBundleMetadata" />
+	</bean>
+
+    <bean id="auraDefinitionBundleMetadata" class="${xmlComponentType.package.name}.${AuraDefinitionBundle.componentType}" lazy-init="true">
         <property name="apiVersion" ref="lastSupportedApiVersion" />
     </bean>
 

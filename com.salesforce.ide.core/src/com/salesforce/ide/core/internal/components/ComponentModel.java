@@ -52,7 +52,7 @@ public abstract class ComponentModel implements IModel {
 
         component.setName(getDefaultName());
         component.setPackageName(Constants.DEFAULT_PACKAGED_NAME);
-        component.intiNewBody(component.getDefaultTemplateString());
+        component.initNewBody(component.getDefaultTemplateString());
 
         metadataExt = component.getDefaultMetadataExtInstance();
 
@@ -149,10 +149,6 @@ public abstract class ComponentModel implements IModel {
 
         loadAdditionalComponentAttributes();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Prepared the following components for saving:\n " + componentList.toString());
-        }
-
         return componentList;
     }
 
@@ -171,13 +167,17 @@ public abstract class ComponentModel implements IModel {
             throw new IllegalArgumentException("Component and/or metadata object cannot be null");
         }
 
-        component.intiNewBody(metadataExt.getXMLString());
+        component.initNewBody(metadataExt.getXMLString());
         return componentList.add(component);
     }
 
     protected String getDefaultName() {
         StringBuffer strBuff = new StringBuffer();
-        return strBuff.append("Default_").append(component.getComponentType()).append("_Name_").append(
-            Calendar.getInstance().getTimeInMillis()).toString();
+        return strBuff
+            .append("Default_")
+            .append(component.getComponentType())
+            .append("_Name_")
+            .append(Calendar.getInstance().getTimeInMillis())
+            .toString();
     }
 }

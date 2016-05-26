@@ -27,60 +27,31 @@ public class OnlineBuilder extends BaseBuilder {
 
     public static final String BUILDER_ID = Constants.FORCE_PLUGIN_PREFIX + ".builder.online";
 
-    //   C O N S T R U C T O R
     public OnlineBuilder() {
         super();
     }
 
-    //   M E T H O D S
     @Override
     protected IProject[] build(int kind, Map<String,String> args, IProgressMonitor monitor) throws CoreException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("");
-            logger.debug("***   B U I L D E R   ( s t a r t )  ***");
-        }
-
         // after a project is created, auto-build notices a resource change and kicks-off a full build.
         // we want to postpone the first full build until the user explicitly asks for a full build
         if (checkSkipBuilder()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Discontinue online builder flag found.  Skipping build.");
-            }
             return null;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting project deltas");
         }
 
         IResourceDelta delta = getDelta(getProject());
         if (delta != null) {
             incrementalBuild(delta, monitor);
-        } else {
-            if (logger.isInfoEnabled()) {
-                logger.info("Online builder discontinued - not resource deltas found");
-            }
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   B U I L D E R   ( e n d )  ***");
-        }
+        } 
 
         return null;
     }
 
     protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Incremental online build kicked-off");
-        }
-
         DeltaComponentSynchronizer componentDeltas = builderController.getDeltaSynchronizer();
         delta.accept(componentDeltas);
 
         if (componentDeltas.isSaveEmpty()) {
-            if (logger.isInfoEnabled()) {
-                logger.info("No delta resources found to build for project '" + getProject().getName() + "'");
-            }
             return;
         }
 
