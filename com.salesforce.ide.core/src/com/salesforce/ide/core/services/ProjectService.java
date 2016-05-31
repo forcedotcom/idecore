@@ -1760,7 +1760,6 @@ public class ProjectService extends BaseService {
         setString(project, Constants.PROP_USERNAME, forceProject.getUserName());
         setString(project, Constants.PROP_NAMESPACE_PREFIX, forceProject.getNamespacePrefix());
         
-        //DRB ISV DEBUG
         setString(project, Constants.PROP_SESSION_ID, forceProject.getSessionId());
         
         setString(project, Constants.PROP_PACKAGE_NAME, forceProject.getPackageName());

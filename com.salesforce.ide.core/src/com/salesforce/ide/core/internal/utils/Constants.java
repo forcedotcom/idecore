@@ -345,7 +345,6 @@ public interface Constants {
     String STANDARD_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     // REVIEWME: replace w/ ProjectExplorer.VIEW_ID once 3.2 support is deprecated
     String PROJECT_EXPLORER_ID = "org.eclipse.ui.navigator.ProjectExplorer";
-    String PACKAGE_EXPLORER_ID = "org.eclipse.jdt.ui.PackageExplorer";
     String SVN_DIR = ".svn";
 
     // J V M A R G U M E N T S
