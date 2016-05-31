@@ -1619,7 +1619,6 @@ public class ProjectService extends BaseService {
 
         forceProject.setUserName(preferences.get(Constants.PROP_USERNAME, null));
         forceProject.setNamespacePrefix(preferences.get(Constants.PROP_NAMESPACE_PREFIX, null));
-        // DRB ISV Debugging
         forceProject.setSessionId(preferences.get(Constants.PROP_SESSION_ID, null));
 
         // previous versions (<154) stored the full endpoint

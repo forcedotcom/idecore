@@ -229,9 +229,7 @@ public interface Constants {
     String PROP_USERNAME = "username";
     String PROP_PASSWORD = "password";
     
-    //DRB ISV DEBUG
-    String PROP_SESSION_ID ="sessionId";
-    
+    String PROP_SESSION_ID ="sessionId";    
     String PROP_TOKEN = "token";
     String PROP_NAMESPACE_PREFIX = "namespacePrefix";
     String PROP_KEEP_ENDPOINT = "keependpoint";
