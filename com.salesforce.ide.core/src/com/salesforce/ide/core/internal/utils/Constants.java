@@ -228,6 +228,10 @@ public interface Constants {
     // P R O P E R T I E S
     String PROP_USERNAME = "username";
     String PROP_PASSWORD = "password";
+    
+    //DRB ISV DEBUG
+    String PROP_SESSION_ID ="sessionId";
+    
     String PROP_TOKEN = "token";
     String PROP_NAMESPACE_PREFIX = "namespacePrefix";
     String PROP_KEEP_ENDPOINT = "keependpoint";
@@ -343,6 +347,7 @@ public interface Constants {
     String STANDARD_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     // REVIEWME: replace w/ ProjectExplorer.VIEW_ID once 3.2 support is deprecated
     String PROJECT_EXPLORER_ID = "org.eclipse.ui.navigator.ProjectExplorer";
+    String PACKAGE_EXPLORER_ID = "org.eclipse.jdt.ui.PackageExplorer";
     String SVN_DIR = ".svn";
 
     // J V M A R G U M E N T S

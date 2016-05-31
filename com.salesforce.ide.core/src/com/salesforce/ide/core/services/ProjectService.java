@@ -1619,6 +1619,8 @@ public class ProjectService extends BaseService {
 
         forceProject.setUserName(preferences.get(Constants.PROP_USERNAME, null));
         forceProject.setNamespacePrefix(preferences.get(Constants.PROP_NAMESPACE_PREFIX, null));
+        // DRB ISV Debugging
+        forceProject.setSessionId(preferences.get(Constants.PROP_SESSION_ID, null));
 
         // previous versions (<154) stored the full endpoint
         String endpoint = preferences.get(Constants.PROP_ENDPOINT, null);
@@ -1758,7 +1760,10 @@ public class ProjectService extends BaseService {
     public void saveForceProject(IProject project, ForceProject forceProject) {
         setString(project, Constants.PROP_USERNAME, forceProject.getUserName());
         setString(project, Constants.PROP_NAMESPACE_PREFIX, forceProject.getNamespacePrefix());
-
+        
+        //DRB ISV DEBUG
+        setString(project, Constants.PROP_SESSION_ID, forceProject.getSessionId());
+        
         setString(project, Constants.PROP_PACKAGE_NAME, forceProject.getPackageName());
         setString(project, Constants.PROP_ENDPOINT_SERVER, forceProject.getEndpointServer());
         setString(project, Constants.PROP_ENDPOINT_ENVIRONMENT, forceProject.getEndpointEnvironment());
@@ -1784,6 +1789,10 @@ public class ProjectService extends BaseService {
 
     public int getReadTimeoutInMilliSeconds(IProject project) {
         return (getInt(project, Constants.PROP_READ_TIMEOUT, Constants.READ_TIMEOUT_IN_SECONDS_DEFAULT) * Constants.SECONDS_TO_MILISECONDS);
+    }
+    
+    public String getSessionId(IProject project){
+    	return getString(project, Constants.PROP_SESSION_ID, Constants.EMPTY_STRING);
     }
 
     public String getUsername(IProject project) {
