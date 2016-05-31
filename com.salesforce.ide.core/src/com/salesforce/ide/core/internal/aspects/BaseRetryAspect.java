@@ -90,6 +90,10 @@ public abstract class BaseRetryAspect implements Ordered {
 
     public void evaluateLoginException(ForceConnectionException ex, JoinPoint joinPoint) throws InvalidLoginException,
             ForceConnectionException {
+    	
+        if (!ex.getConnection().getForceProject().getSessionId().isEmpty())
+        	return;
+
         if (isLoginExceptionRetryable(ex, joinPoint) || isConnectionExceptionRetryable(ex, joinPoint)) {
             return;
         }
@@ -102,7 +106,7 @@ public abstract class BaseRetryAspect implements Ordered {
         String message = Utils.isNotEmpty(th.getMessage()) ? th.getMessage() : ex.getMessage();
 
         logThrowable(th, message);
-
+        
         if (th instanceof java.net.SocketException) {
             if (Utils.isNotEmpty(message) && message.contains("Connection reset")) {
                 if (logger.isInfoEnabled()) {
