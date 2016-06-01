@@ -45,8 +45,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 
-import com.salesforce.ide.core.project.ForceIdeUrlActionHandler;
-
 public class ForceIdeUrlDropHandler implements IStartup {
 
 	private static final int[] PREFERRED_DROP_OPERATIONS = { DND.DROP_DEFAULT, DND.DROP_COPY, DND.DROP_MOVE,
@@ -69,7 +67,7 @@ public class ForceIdeUrlDropHandler implements IStartup {
 	private Transfer[] transferAgents;
 
 	public void earlyStartup() {
-		UIJob registerJob = new UIJob(Display.getDefault(), "ForceProjectDrop") {
+		UIJob registerJob = new UIJob(PlatformUI.getWorkbench().getDisplay(), "ForceProjectDrop") {
 			{
 				setPriority(Job.SHORT);
 				setSystem(true);
@@ -138,20 +136,16 @@ public class ForceIdeUrlDropHandler implements IStartup {
 
 	private void registerWithExistingTarget(DropTarget target) {
 		Transfer[] transfers = target.getTransfer();
-		boolean exists = false;
 		if (transfers != null) {
 			for (Transfer transfer : transfers) {
-				if (transfer instanceof URLTransfer) {
-					exists = true;
-					break;
-				}
+				if (transfer instanceof URLTransfer) 
+					return;
 			}
-			if (!exists) {
-				Transfer[] newTransfers = new Transfer[transfers.length + 1];
-				System.arraycopy(transfers, 0, newTransfers, 0, transfers.length);
-				newTransfers[transfers.length] = URLTransfer.getInstance();
-				target.setTransfer(newTransfers);
-			}
+
+			Transfer[] newTransfers = new Transfer[transfers.length + 1];
+			System.arraycopy(transfers, 0, newTransfers, 0, transfers.length);
+			newTransfers[transfers.length] = URLTransfer.getInstance();
+			target.setTransfer(newTransfers);
 		}
 	}
 

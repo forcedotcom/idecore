@@ -1,4 +1,4 @@
-package com.salesforce.ide.core.project;
+package com.salesforce.ide.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -8,6 +8,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
 import com.salesforce.ide.core.internal.utils.ForceIdeUrlParser;
+import com.salesforce.ide.core.project.BaseNature;
+import com.salesforce.ide.core.project.DebugProjectCreateOperation;
+import com.salesforce.ide.core.project.ForceProject;
+import com.salesforce.ide.core.project.ProjectController;
+import com.salesforce.ide.core.project.ProjectModel;
+import com.salesforce.ide.ui.properties.ProjectUpdateOperation;
 import com.salesforce.ide.ui.wizards.project.ProjectCreateOperation;
 
 @SuppressWarnings("restriction")
@@ -108,7 +114,7 @@ public class ForceIdeUrlActionHandler {
         ProjectController projController = new ProjectController(null);
         projController.setModel(projModel);
         
-        ProjectCreateOperation createOperation = new ProjectCreateOperation(projController);        
+        DebugProjectCreateOperation createOperation = new DebugProjectCreateOperation(projController);        
         try {
         	createOperation.create();
         } catch (InvocationTargetException | InterruptedException e) {
