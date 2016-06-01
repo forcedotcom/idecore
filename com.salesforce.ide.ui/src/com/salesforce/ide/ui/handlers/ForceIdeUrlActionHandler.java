@@ -16,7 +16,6 @@ import com.salesforce.ide.core.project.ProjectModel;
 import com.salesforce.ide.ui.properties.ProjectUpdateOperation;
 import com.salesforce.ide.ui.wizards.project.ProjectCreateOperation;
 
-@SuppressWarnings("restriction")
 public class ForceIdeUrlActionHandler {
 	
     private static final Logger logger = Logger.getLogger(BaseNature.class);
