@@ -91,8 +91,7 @@ public abstract class BaseRetryAspect implements Ordered {
     public void evaluateLoginException(ForceConnectionException ex, JoinPoint joinPoint) throws InvalidLoginException,
             ForceConnectionException {
     	
-        if (null != ex.getConnection() && null != ex.getConnection().getForceProject() && null != ex.getConnection().getForceProject().getSessionId() &&
-        	!ex.getConnection().getForceProject().getSessionId().isEmpty())
+        if (connectsViaSessionId(ex))
         	return;
 
         if (isLoginExceptionRetryable(ex, joinPoint) || isConnectionExceptionRetryable(ex, joinPoint)) {
@@ -100,6 +99,11 @@ public abstract class BaseRetryAspect implements Ordered {
         }
 
         throw ex;
+    }
+    
+    private boolean connectsViaSessionId(final ForceConnectionException fe){
+    	return 	null != fe.getConnection() &&
+    			fe.getConnection().connectsViaSessionId();
     }
 
     private boolean isLoginExceptionRetryable(ForceConnectionException ex, JoinPoint joinPoint) {
