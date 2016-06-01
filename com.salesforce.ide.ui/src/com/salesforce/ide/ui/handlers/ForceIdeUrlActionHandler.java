@@ -9,11 +9,9 @@ import org.eclipse.swt.widgets.Display;
 
 import com.salesforce.ide.core.internal.utils.ForceIdeUrlParser;
 import com.salesforce.ide.core.project.BaseNature;
-import com.salesforce.ide.core.project.DebugProjectCreateOperation;
 import com.salesforce.ide.core.project.ForceProject;
 import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.core.project.ProjectModel;
-import com.salesforce.ide.ui.properties.ProjectUpdateOperation;
 import com.salesforce.ide.ui.wizards.project.ProjectCreateOperation;
 
 public class ForceIdeUrlActionHandler {
@@ -113,7 +111,7 @@ public class ForceIdeUrlActionHandler {
         ProjectController projController = new ProjectController(null);
         projController.setModel(projModel);
         
-        DebugProjectCreateOperation createOperation = new DebugProjectCreateOperation(projController);        
+        ProjectCreateOperation createOperation = new ProjectCreateOperation(projController);        
         try {
         	createOperation.create();
         } catch (InvocationTargetException | InterruptedException e) {
