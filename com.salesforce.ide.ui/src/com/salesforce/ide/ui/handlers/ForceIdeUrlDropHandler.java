@@ -205,14 +205,12 @@ public class ForceIdeUrlDropHandler implements IStartup {
 		}
 
 		private boolean dropTargetIsValid(DropTargetEvent e, boolean isDrop) {
-			if (URLTransfer.getInstance().isSupportedType(e.currentDataType)){//&& e.data != null && getUrl(e.data).toString().toLowerCase().startsWith(FORCEIDE_URL_TYPE.toLowerCase())) {
+			if (URLTransfer.getInstance().isSupportedType(e.currentDataType)){
 				//on Windows, we get the URL already during drag operations...
 				//FIXME find a way to check the URL early on other platforms, too...
 				if (isDrop || Util.isWindows()) {
 					if (e.data == null && !extractEventData(e)) {
 						traceMissingEventData(e);
-						//... but if we don't, it's no problem, unless this is already
-						//the final drop event
 						return !isDrop;
 					}
 				}
