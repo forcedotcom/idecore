@@ -167,9 +167,7 @@ public class PackageManifestController extends Controller {
 
         map.clear();
         cache = Utils.loadDocument(Utils.getCacheUrl(getProject()));
-        if (cache == null) {
-            loadAll();
-        }
+        loadAll();
         createModel();
         initModel();
     }
