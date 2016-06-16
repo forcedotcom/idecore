@@ -38,8 +38,8 @@ import com.salesforce.ide.ui.editors.internal.apex.completions.ApexSystemInstanc
 import com.salesforce.ide.ui.internal.ForceImages;
 import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
 
-import apex.jorje.data.Loc;
-import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.data.Location;
+import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 import apex.jorje.semantic.ast.member.Method;
@@ -247,17 +247,11 @@ public class ApexSystemInstanceMembersProcessorForLocals extends ApexCompletionP
          */
         @Override
         public boolean visit(Method node, AdditionalPassScope scope) {
-            node.getLoc()._switch(new Loc.SwitchBlockWithDefault() {
-
-                @Override
-                public void _case(RealLoc x) {
-                    currentScopeLocalsCollector = Lists.newArrayList();
-                    currentMethodPosition = x.line;
-                }
-
-                @Override
-                protected void _default(Loc x) {}
-            });
+        	Location loc = node.getLoc();
+        	if (Locations.isReal(loc)) {
+        		currentScopeLocalsCollector = Lists.newArrayList();
+        		currentMethodPosition = loc.line;
+        	}
             return true;
         }
 

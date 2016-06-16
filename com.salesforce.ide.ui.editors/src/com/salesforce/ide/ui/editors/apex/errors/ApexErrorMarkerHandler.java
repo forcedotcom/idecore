@@ -21,9 +21,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 
-import apex.jorje.data.Loc;
-import apex.jorje.data.Loc.RealLoc;
-import apex.jorje.data.Loc.SyntheticLoc;
+import apex.jorje.data.Location;
+import apex.jorje.data.Locations;
 import apex.jorje.data.errors.UserError;
 import apex.jorje.services.exception.CompilationException;
 import apex.jorje.services.exception.ParseException;
@@ -67,45 +66,39 @@ public class ApexErrorMarkerHandler {
     }
 
     private Map<String, Object> createSyntacticMarkerIfApplicable(final ParseException parseException) {
-        Loc loc = parseException.getLoc();
-        return loc.match(new Loc.MatchBlock<Map<String, Object>>() {
-
-            @Override
-            public Map<String, Object> _case(RealLoc x) {
-                try {
-                    UserError userError = parseException.getUserError();
-                    Map<String, Object> config = new HashMap<>();
-
-                    // There is the option to set the line number as well. However, that config is ignored if
-                    // we set the CharStart and CharEnd. So, we only set the latter.
-                    MarkerUtilities.setCharStart(config, getStartOffset(x));
-                    MarkerUtilities.setCharEnd(config, getEndOffset(x));
-
-                    MarkerUtilities.setMessage(config,
-                        printerUtil.getFactory().userErrorPrinter().print(userError, printContext));
-
-                    // Not sure why there aren't any utilities methods for these fields in MarkerUtilities
-                    // So set them directly instead.
-                    config.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-                    config.put(IMarker.LOCATION, fFile.getFullPath().toString());
-                    return config;
-                } catch (BadLocationException ble) {
-                    logger.warn("Error calculating offset to document using parser position", ble);
-                    return null;
-                }
-            }
-
-            @Override
-            public Map<String, Object> _case(SyntheticLoc x) {
-                return null;
-            }
-        });
+        Location loc = parseException.getLoc();
+        if (Locations.isReal(loc)) {
+        	try {
+        		UserError userError = parseException.getUserError();
+        		Map<String, Object> config = new HashMap<>();
+        		
+        		// There is the option to set the line number as well. However, that config is ignored if
+        		// we set the CharStart and CharEnd. So, we only set the latter.
+        		MarkerUtilities.setCharStart(config, getStartOffset(loc));
+        		MarkerUtilities.setCharEnd(config, getEndOffset(loc));
+        		
+        		MarkerUtilities.setMessage(config,
+        				printerUtil.getFactory().userErrorPrinter().print(userError, printContext));
+        		
+        		// Not sure why there aren't any utilities methods for these fields in MarkerUtilities
+        		// So set them directly instead.
+        		config.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+        		config.put(IMarker.LOCATION, fFile.getFullPath().toString());
+        		return config;
+        	} catch (BadLocationException ble) {
+        		logger.warn("Error calculating offset to document using parser position", ble);
+        		return null;
+        	}
+        } else {
+        	return null;
+        }
     }
 
     /*
      * Translates to offset-based start location that IDocument uses.
      */
-    private int getStartOffset(RealLoc rl) throws BadLocationException {
+    private int getStartOffset(Location rl) throws BadLocationException {
+    	assert Locations.isReal(rl) : "Must be a real location";
         int line = rl.line;
         int column = rl.column;
         int lineStart;
@@ -118,7 +111,8 @@ public class ApexErrorMarkerHandler {
      * Tries to find the length of the token. If it cannot find one, then we set the end to be (start + 1)
      * so we still get the squiggly line.
      */
-    private int getEndOffset(RealLoc rl) throws BadLocationException {
+    private int getEndOffset(Location rl) throws BadLocationException {
+    	assert Locations.isReal(rl) : "Must be a real location";
         int offset = rl.startIndex - rl.endIndex;
         return getStartOffset(rl) + offset;
     }

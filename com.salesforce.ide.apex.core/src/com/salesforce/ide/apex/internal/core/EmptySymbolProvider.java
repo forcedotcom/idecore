@@ -16,7 +16,6 @@
 
 package com.salesforce.ide.apex.internal.core;
 
-import apex.jorje.semantic.compiler.CodeUnit;
 import apex.jorje.semantic.compiler.Namespace;
 import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
 import apex.jorje.semantic.symbol.resolver.SymbolResolver;
@@ -34,10 +33,6 @@ public class EmptySymbolProvider implements SymbolProvider {
 
 	public static EmptySymbolProvider get() {
 		return INSTANCE;
-	}
-
-	@Override
-	public void reportParsed(final CodeUnit codeUnit) {
 	}
 
 	@Override
@@ -70,5 +65,10 @@ public class EmptySymbolProvider implements SymbolProvider {
 	@Override
 	public boolean hasLabelField(final TypeInfo referencingType, final Namespace namespace, final String name) {
 		return false;
+	}
+
+	@Override
+	public String getQuickAction(TypeInfo arg0, String arg1, String arg2) {
+		return null;
 	}
 }

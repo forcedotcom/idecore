@@ -32,6 +32,8 @@ import com.salesforce.ide.core.internal.utils.QualifiedNames;
 
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
+import apex.jorje.semantic.common.TestAccessEvaluator;
+import apex.jorje.semantic.common.TestQueryValidators;
 import apex.jorje.semantic.compiler.ApexCompiler;
 import apex.jorje.semantic.compiler.CodeUnit;
 import apex.jorje.semantic.compiler.CompilationInput;
@@ -44,8 +46,6 @@ import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
 import apex.jorje.semantic.compiler.sfdc.QueryValidator;
 import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
-import apex.jorje.semantic.tester.TestAccessEvaluator;
-import apex.jorje.semantic.tester.TestQueryValidators;
 
 /**
  * Central point for interfacing with the compiler.
@@ -187,7 +187,7 @@ public class CompilerService {
                     CompilerStage.ADDITIONAL_VALIDATE.getDeclaringClass().getDeclaredMethod("getOperation");
                 getOperation.setAccessible(true);
                 CompilerOperation operation =
-                    (CompilerOperation) getOperation.invoke(CompilerStage.ADDITIONAL_VALIDATE);
+                        (CompilerOperation) getOperation.invoke(CompilerStage.ADDITIONAL_VALIDATE);
                 operation.invoke(compilerContext, unit);
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

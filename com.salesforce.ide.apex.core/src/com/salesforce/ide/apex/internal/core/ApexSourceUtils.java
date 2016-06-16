@@ -34,7 +34,8 @@ import com.salesforce.ide.core.model.ApexCodeLocation;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.services.ProjectService;
 
-import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.data.Locations;
+import apex.jorje.data.Location;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.member.Method;
 import apex.jorje.semantic.ast.modifier.ModifierGroup;
@@ -144,9 +145,11 @@ public class ApexSourceUtils {
                 @Override
                 public boolean visit(Method method, AdditionalPassScope scope) {
                     if (isTestMethod(method.getModifiers())) {
-                        RealLoc realLoc = (RealLoc) method.getLoc();
-                        ApexCodeLocation loc = new ApexCodeLocation((IFile) resource, realLoc.line, realLoc.column);
-                        testMethods.put(method.getMethodInfo().getCanonicalName(), loc);
+                    	Location realLoc = method.getLoc();
+                    	if (Locations.isReal(realLoc)) {
+                    		ApexCodeLocation loc = new ApexCodeLocation((IFile) resource, realLoc.line, realLoc.column);
+                    		testMethods.put(method.getMethodInfo().getCanonicalName(), loc);
+                    	}
                     }
                     return super.visit(method, scope);
                 }
@@ -173,9 +176,13 @@ public class ApexSourceUtils {
                 
                 @Override
                 public boolean visit(UserClass userClass, AdditionalPassScope scope) {
-                    RealLoc realLoc = (RealLoc) userClass.getLoc();
-                    returnValue[0] = new ApexCodeLocation((IFile) resource, realLoc.line, realLoc.column);
-                    return super.visit(userClass, scope);
+                	Location realLoc = userClass.getLoc();
+                	if (Locations.isReal(realLoc)) {
+                		returnValue[0] = new ApexCodeLocation((IFile) resource, realLoc.line, realLoc.column);
+                		return super.visit(userClass, scope);
+                	} else {
+                		return false;
+                	}
                 }
                 
             });

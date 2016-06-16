@@ -14,9 +14,8 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import apex.jorje.data.Loc;
-import apex.jorje.data.Loc.RealLoc;
-import apex.jorje.data.Loc.SyntheticLoc;
+import apex.jorje.data.Location;
+import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -41,25 +40,18 @@ public class OpenTypeVisitor extends AstVisitor<AdditionalPassScope> {
 	}
 	
 	void addNumberLineMappingEntryIfPossible(final AstNode node) {
-		Loc loc = node.getLoc();
-		loc._switch(new Loc.SwitchBlock() {
-			
-			@Override
-			public void _case(SyntheticLoc arg0) {
+		Location loc = node.getLoc();
+		if (Locations.isReal(loc)) {
+			String apexName = node.getDefiningType().getApexName();
+			int index = apexName.lastIndexOf('.'); 
+			if (index == -1) {
+				numberLineMapping.put(apexName, loc.line);
+			} else {
+				apexName = apexName.substring(index+1, apexName.length());
+				numberLineMapping.put(apexName, loc.line);
 			}
 			
-			@Override
-			public void _case(RealLoc x) {
-				String apexName = node.getDefiningType().getApexName();
-				int index = apexName.lastIndexOf('.'); 
-				if (index == -1) {
-					numberLineMapping.put(apexName, x.line);
-				} else {
-					apexName = apexName.substring(index+1, apexName.length());
-					numberLineMapping.put(apexName, x.line);
-				}
-			}
-		});
+		}
 	}
 	
 	@Override

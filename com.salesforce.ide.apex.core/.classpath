@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/blueprints-core-2.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gremlin-groovy-2.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gremlin-java-2.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/groovy-1.8.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/orientdb-core-2.1.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/orientdb-graphdb-2.1.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-ide-1.0-sfdc-224-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-data-1.0-sfdc-224-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-parser-1.0-sfdc-224-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-semantic-1.0-sfdc-224-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-services-1.0-sfdc-224-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-tools-1.0-sfdc-224-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-3.5.2-complete.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/javax.xml.rpc-3.1.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar" sourcepath="/Users/nchen/Development/IdeaProjects/apex-jorje/apex-jorje-ide/target/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/apex-jorje-semantic-1.0-sfdc-187-SNAPSHOT-tests.jar" sourcepath="/Users/nchen/Development/IdeaProjects/apex-jorje/apex-jorje-ide/target/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="src" path="src/"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

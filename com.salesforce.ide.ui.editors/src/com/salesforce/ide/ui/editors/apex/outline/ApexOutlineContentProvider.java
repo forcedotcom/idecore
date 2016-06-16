@@ -19,11 +19,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 import com.google.common.collect.Lists;
 
-import apex.jorje.data.Loc;
-import apex.jorje.data.Loc.MatchBlock;
-import apex.jorje.data.Loc.RealLoc;
-import apex.jorje.data.Loc.SyntheticLoc;
-import apex.jorje.semantic.ast.Locatable;
+import apex.jorje.data.Locatable;
+import apex.jorje.data.Location;
+import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserClassMembers;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -39,55 +37,21 @@ import apex.jorje.semantic.ast.compilation.UserTriggerMembers;
  */
 public class ApexOutlineContentProvider implements ITreeContentProvider {
     /**
-     * Filters out only real locations. 
-     */
-    private static final MatchBlock<Boolean> REAL_LOC_FILTER_FN = new Loc.MatchBlock<Boolean>() {
-        @Override
-        public Boolean _case(RealLoc x) {
-            return true;
-        }
-        
-        @Override
-        public Boolean _case(SyntheticLoc x) {
-            return false;
-        }
-    };
-    
-    /**
      * Compares two Loc for ordering. Only RealLocs have an ordering defined. SyntheticLocs have no ordering.
      */
     public static final Comparator<Locatable> LOCATABLE_COMPARATOR = new Comparator<Locatable>() {
         @Override
         public int compare(Locatable left, Locatable right) {
-            Loc leftLoc = left.getLoc();
-            Loc rightLoc = right.getLoc();
-            return leftLoc.match(new Loc.MatchBlock<Integer>() {
-                
-                @Override
-                public Integer _case(RealLoc realLeftLoc) {
-                    return rightLoc.match(new Loc.MatchBlock<Integer>() {
-                        
-                        @Override
-                        public Integer _case(RealLoc realRightLoc) {
-                            if (realLeftLoc.line != realRightLoc.line) {
-                                return Integer.compare(realLeftLoc.line, realRightLoc.line);
-                            } else {
-                                return Integer.compare(realLeftLoc.column, realRightLoc.column);
-                            }
-                        }
-                        
-                        @Override
-                        public Integer _case(SyntheticLoc x) {
-                            return 0;
-                        }
-                    });
+            Location leftLoc = left.getLoc();
+            Location rightLoc = right.getLoc();
+            if (Locations.isReal(leftLoc) && Locations.isReal(rightLoc)) {
+                if (leftLoc.line != rightLoc.line) {
+                    return Integer.compare(leftLoc.line, rightLoc.line);
+                } else {
+                    return Integer.compare(leftLoc.column, rightLoc.column);
                 }
-                
-                @Override
-                public Integer _case(SyntheticLoc synthetic) {
-                    return 0;
-                }
-            });
+            }
+            return 0;
         }
     };
     
@@ -161,7 +125,7 @@ public class ApexOutlineContentProvider implements ITreeContentProvider {
     
     private List<Locatable> filterNonSyntheticMembers(List<Locatable> locatables) {
         return locatables.stream()
-            .filter(l -> l.getLoc().match(REAL_LOC_FILTER_FN))
+            .filter(l -> Locations.isReal(l.getLoc()))
             .sorted(LOCATABLE_COMPARATOR)
             .collect(Collectors.toList());
     }

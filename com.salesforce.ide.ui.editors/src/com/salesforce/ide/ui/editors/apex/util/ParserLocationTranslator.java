@@ -14,7 +14,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 import antlr.Token;
-import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.data.Location;
 
 /**
  * Utilities for translating between the locations that the parser uses (based on Antlr's (@see {@link Token}) and
@@ -54,7 +54,7 @@ public class ParserLocationTranslator {
      * @return The HighlighRange, or null if we cannot compute the range to highlight
      * @throws BadLocationException 
      */
-    public static HighlightRange computeHighlightRange(RealLoc loc, IDocument doc) throws BadLocationException {
+    public static HighlightRange computeHighlightRange(Location loc, IDocument doc) throws BadLocationException {
         int startOffset = getStartOffset(loc, doc);
         int length = getLength(loc);
         return new HighlightRange(startOffset, length);
@@ -70,29 +70,10 @@ public class ParserLocationTranslator {
      * @return The starting offset
      * @throws BadLocationException
      */
-    public static int getStartOffset(RealLoc loc, IDocument doc) throws BadLocationException {
+    public static int getStartOffset(Location loc, IDocument doc) throws BadLocationException {
         int lineStart = doc.getLineOffset(loc.line - 1);
         return lineStart + loc.column - 1;
 
-    }
-
-    /**
-     * Given a loc, determine the ending offset in the doc. Relies on getStartOffset.
-     * 
-     * @param loc
-     *            The {@link RealLoc} of the token we are interested in
-     * @param doc
-     *            The IDocument that we want to translate the offsets to
-     * @return The ending offset
-     * @throws BadLocationException
-     */
-    public static int getEndOffset(RealLoc loc, IDocument doc) throws BadLocationException {
-        int endOffset = getLength(loc);
-        if (endOffset >= 0) {
-            return getStartOffset(loc, doc) + endOffset;
-        }
-        // Fallback: We don't have an end position, so just use the current line and column
-        return getStartOffset(loc, doc);
     }
 
     /**
@@ -100,7 +81,7 @@ public class ParserLocationTranslator {
      *            The {@link RealLoc} of the token we are interested in
      * @return The length of the location
      */
-    public static int getLength(RealLoc loc) {
+    public static int getLength(Location loc) {
         return loc.endIndex - loc.startIndex;
     }
 }

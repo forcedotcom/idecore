@@ -30,7 +30,7 @@ import com.salesforce.ide.ui.editors.apex.outline.icon.AccessorFlags;
 import com.salesforce.ide.ui.editors.apex.outline.icon.ModifierFlagsBitFlipper;
 import com.salesforce.ide.ui.internal.editor.imagesupport.ApexElementImageDescriptor;
 
-import apex.jorje.data.Loc;
+import apex.jorje.data.Locations;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.Modifier.Annotation;
 import apex.jorje.semantic.ast.modifier.ModifierGroup;
@@ -66,7 +66,7 @@ public class ModifierFlagsBitFlipperTest_unit extends TestCase {
 
     public void testIsTestAnnotation() {
         ModifierGroup modifiers = ModifierGroup.builder()
-            .addAnnotationAndResolve(new Annotation(new Loc.SyntheticLoc(), new Identifier(new Loc.SyntheticLoc(), "isTest"), null)) 
+            .addAnnotationAndResolve(new Annotation(Locations.NONE, new Identifier(Locations.NONE, "isTest"), null)) 
             .build()
             .resolve();
         AccessorFlags twiddled = ModifierFlagsBitFlipper.flipBits(modifiers);

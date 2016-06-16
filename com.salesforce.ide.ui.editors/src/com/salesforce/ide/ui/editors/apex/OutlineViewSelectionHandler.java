@@ -16,7 +16,7 @@ import com.salesforce.ide.ui.editors.apex.outline.IOutlineViewElementHandler;
 import com.salesforce.ide.ui.editors.apex.util.ParserLocationTranslator;
 import com.salesforce.ide.ui.editors.apex.util.ParserLocationTranslator.HighlightRange;
 
-import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.data.Location;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
 import apex.jorje.semantic.ast.compilation.UserInterface;
@@ -41,24 +41,10 @@ public class OutlineViewSelectionHandler implements IOutlineViewElementHandler<H
     /*
      * Tries to highlight in the editor if we have a valid location
      */
-    protected HighlightRange highlightTokenInEditorIfPossible(RealLoc loc) {
+    private HighlightRange highlightTokenInEditorIfPossible(Location loc) {
         HighlightRange range;
         try {
             range = ParserLocationTranslator.computeHighlightRange(loc, fEditor.getDocument());
-            fEditor.setSelection(range, true);
-            return range;
-        } catch (BadLocationException e) {
-            return null;
-        }
-    }
-    
-    /*
-     * Tries to place the cursor on the token (0-length selection) if we have a valid location
-     */
-    protected HighlightRange placeCursorOnLineIfPossible(RealLoc loc) {
-        try {
-            int startOffset = ParserLocationTranslator.getStartOffset(loc, fEditor.getDocument());
-            HighlightRange range = new HighlightRange(startOffset, 0);
             fEditor.setSelection(range, true);
             return range;
         } catch (BadLocationException e) {
@@ -72,43 +58,43 @@ public class OutlineViewSelectionHandler implements IOutlineViewElementHandler<H
     
     @Override
     public HighlightRange handle(UserClass userClass) {
-        RealLoc loc = (RealLoc) userClass.getLoc();
+    	Location loc = userClass.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
     
     @Override
     public HighlightRange handle(UserInterface userInterface) {
-        RealLoc loc = (RealLoc) userInterface.getLoc();
+    	Location loc = userInterface.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
     
     @Override
     public HighlightRange handle(UserTrigger userTrigger) {
-        RealLoc loc = (RealLoc) userTrigger.getLoc();
+    	Location loc = userTrigger.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
     
     @Override
     public HighlightRange handle(UserEnum userEnum) {
-        RealLoc loc = (RealLoc) userEnum.getLoc();
+    	Location loc = userEnum.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
     
     @Override
     public HighlightRange handle(Method method) {
-        RealLoc loc = (RealLoc) method.getLoc();
+    	Location loc = method.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
     
     @Override
     public HighlightRange handle(Property property) {
-        RealLoc loc = (RealLoc) property.getLoc();
+    	Location loc = property.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
     
     @Override
     public HighlightRange handle(Field field) {
-        RealLoc loc = (RealLoc) field.getLoc();
+    	Location loc = field.getLoc();
         return highlightTokenInEditorIfPossible(loc);
     }
 }
