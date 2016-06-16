@@ -37,10 +37,16 @@ public class LoginRetryAspect extends BaseRetryAspect {
                 evaluateLoginException(ex, proceedingJoinPoint);
                 forceConnectionException = ex;
             }
-        } while (numAttempts <= this.maxRetries);
+        } while (numAttempts <= this.maxRetries && !connectsViaSessionId(forceConnectionException));
 
         logger.warn("Max retries reached");
 
         throw forceConnectionException;
+    }
+    
+    private boolean connectsViaSessionId(final ForceConnectionException fe){
+    	return null != fe &&
+    		   null != fe.getConnection() &&
+    		   fe.getConnection().connectsViaSessionId();
     }
 }

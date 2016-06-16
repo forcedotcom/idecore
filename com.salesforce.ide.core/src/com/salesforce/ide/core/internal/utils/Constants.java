@@ -228,6 +228,8 @@ public interface Constants {
     // P R O P E R T I E S
     String PROP_USERNAME = "username";
     String PROP_PASSWORD = "password";
+    
+    String PROP_SESSION_ID ="sessionId";    
     String PROP_TOKEN = "token";
     String PROP_NAMESPACE_PREFIX = "namespacePrefix";
     String PROP_KEEP_ENDPOINT = "keependpoint";

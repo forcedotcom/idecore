@@ -941,4 +941,10 @@ public class Connection {
         toolingConnectorConfig.setServiceEndpoint(toolingServerUrl);
         toolingConnectorConfig.setAuthEndpoint(toolingServerUrl);
     }
+    
+    public boolean connectsViaSessionId(){
+    	return  getForceProject() != null &&
+    		    getForceProject().getSessionId() != null &&
+    		   !getForceProject().getSessionId().isEmpty();
+    }
 }

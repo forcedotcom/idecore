@@ -11,6 +11,9 @@
     <extension point="org.eclipse.ui.startup">
         <startup class="com.salesforce.ide.ui.internal.startup.ForceStartup"/>
     </extension>
+    <extension point="org.eclipse.ui.startup">
+        <startup class="com.salesforce.ide.ui.handlers.ForceIdeUrlDropHandler"/>
+    </extension>
     
     <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
