@@ -61,6 +61,7 @@ import com.salesforce.ide.core.services.PackageRetrieveService;
 import com.salesforce.ide.core.services.ProjectService;
 import com.salesforce.ide.core.services.ServiceLocator;
 import com.salesforce.ide.test.common.utils.ConfigProps;
+import com.salesforce.ide.test.common.utils.IdeTestUtil;
 import com.salesforce.ide.test.common.utils.OrgTestingUtil;
 import com.sforce.soap.metadata.FileProperties;
 import com.sforce.soap.metadata.ManageableState;
@@ -200,7 +201,7 @@ public abstract class BaseIDETestCase extends BaseTestCase {
 
     private ForceProject getDefaultForceProjectInstance() throws ForceProjectException {
         ForceProject forceProject = new ForceProject();
-        forceProject.setEndpointServer(_props.getProperty("default.endpoint"));
+        forceProject.setEndpointServer(IdeTestUtil.getAppServerToHitForTests(false));
         forceProject.setPassword(_props.getProperty("default.password"));
         if (Utils.isNotEmpty(_props.getProperty("default.junit.use-https"))) {
             forceProject.setHttpsProtocol(Boolean.valueOf(_props.getProperty("default.junit.use-https")));
