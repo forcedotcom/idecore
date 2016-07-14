@@ -482,21 +482,15 @@ public class ProjectPackage {
             if (component.getFileResource() != null || component.getBundleFolder() != null) {
                 File file;
                 if(component.getFileResource() != null) {
-                file = component.getFileResource().getRawLocation().toFile();
+                    file = component.getFileResource().getRawLocation().toFile();
                 }
                 else {
-                file = component.getBundleFolder().getRawLocation().toFile();
+                    file = component.getBundleFolder().getRawLocation().toFile();
                 }
                 if (!file.exists()) {
                     logger.warn("File '" + file.getAbsolutePath() + "' does not exist");
                     continue;
                 }
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Zipping content from component's file '"
-                            + component.getFileResource().getProjectRelativePath().toPortableString());
-                }
-
                 // get zip and add to zip stats
                 tmpStats = ZipUtils.zipFile(filePath, file, zos, Integer.MAX_VALUE);
             } else if (component.getBody() != null) {
