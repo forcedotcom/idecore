@@ -53,6 +53,8 @@ import com.google.common.base.Preconditions;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.compatibility.auth.IAuthorizationService;
 import com.salesforce.ide.core.factories.FactoryException;
+import com.salesforce.ide.core.internal.components.lightning.AuraDefinitionBundleUtils;
+import com.salesforce.ide.core.internal.components.lightning.AuraDefinitionBundleUtils.DeployErrorHandler;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DeployMessageExtractor;
@@ -64,6 +66,7 @@ import com.salesforce.ide.core.model.ApexCodeLocation;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
 import com.salesforce.ide.core.model.IComponent;
+import com.salesforce.ide.core.model.PackageConfiguration;
 import com.salesforce.ide.core.model.ProjectPackage;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.BaseNature;
@@ -238,8 +241,11 @@ public class ProjectService extends BaseService {
         return getProjectContents(resources, false, monitor);
     }
 
-    public ProjectPackageList getProjectContents(List<IResource> resources, boolean includeAssociated,
-            IProgressMonitor monitor) throws CoreException, InterruptedException, FactoryException {
+    public ProjectPackageList getProjectContents(
+        List<IResource> resources,
+        boolean includeAssociated,
+        IProgressMonitor monitor) 
+            throws CoreException, InterruptedException, FactoryException {
         if (Utils.isEmpty(resources)) {
             throw new IllegalArgumentException("Resources cannot be null");
         }
@@ -450,9 +456,10 @@ public class ProjectService extends BaseService {
                             && ((IFile) subFolderResource).getName().equalsIgnoreCase(fullName)) {
                         if (logger.isInfoEnabled()) {
                             StringBuilder stringBuilder = new StringBuilder("File '");
-                            stringBuilder.append(subFolderResource.getProjectRelativePath().toPortableString())
-                                    .append(" found for component type '").append(componentType)
-                                    .append("', component '").append(componentName).append("'");
+                            stringBuilder
+                                .append(subFolderResource.getProjectRelativePath().toPortableString())
+                                .append(" found for component type '").append(componentType)
+                                .append("', component '").append(componentName).append("'");
                             logger.info(stringBuilder.toString());
                         }
                         return (IFile) subFolderResource;
@@ -688,14 +695,15 @@ public class ProjectService extends BaseService {
                 IFile componentFile = (IFile) componentFolderResource;
                 try {
                     Component tmpComponent = getComponentFactory().getComponentFromFile(componentFile);
-                    componentList.add(tmpComponent, false, true);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Added component '"
-                                + componentFolderResource.getProjectRelativePath().toPortableString() + "' to list");
-                    }
+
+                    componentList.add(tmpComponent, 
+                        PackageConfiguration.builder()
+                        .setIncludeComposite(false)
+                        .setReplaceComposite(true)
+                        .build());
+
                 } catch (FactoryException e) {
-                    logger.error("Unable to create component from filepath "
-                            + componentFile.getProjectRelativePath().toPortableString());
+                    logger.error("Unable to create component from filepath " + componentFile.getProjectRelativePath().toPortableString());
                 }
             }
         }
@@ -1673,7 +1681,6 @@ public class ProjectService extends BaseService {
     @SuppressWarnings("deprecation")
     private Map<String, String> migrateOldAuthInfoAndGetNewCredentials(URL url, IProject project, String authType) {
         //get the existing password and security token
-        @SuppressWarnings("unchecked")
         Map<String, String> authorizationInfo = Platform.getAuthorizationInfo(url, project.getName(), authType);
         //This adds the authorization information to new migrated project using default mechanism
         if (authorizationInfo != null) {
@@ -1959,56 +1966,63 @@ public class ProjectService extends BaseService {
         }
     }
 
-    public void handleDeployErrorMessages(ProjectPackageList projectPackageList,
-            Collection<DeployMessage> errorMessages, IProgressMonitor monitor) throws InterruptedException {
+    public void handleDeployErrorMessages(
+        ProjectPackageList projectPackageList,
+        Collection<DeployMessage> errorMessages,
+        IProgressMonitor monitor) throws InterruptedException {
         if (Utils.isEmpty(projectPackageList)) {
             throw new IllegalArgumentException("Project package list and/or message handler cannot be null");
         }
-
+        
+        DeployErrorHandler.clearAuraMarkers(getSourceFolder(projectPackageList.getProject()));
+        
         if (errorMessages.size() == 0) {
-            if (logger.isInfoEnabled()) {
-                logger.info("No deploy errors found");
-            }
+            logger.info("No deploy errors found");
         } else {
             monitorSubTask(monitor, "Evaluating error messages...");
 
+            DeployErrorHandler auraHandler = new DeployErrorHandler();
             for (DeployMessage deployMessage : errorMessages) {
                 monitorCheck(monitor);
-
-                // get resource (file, usually) to associate a message/project/failure/warning and displayed in problems
-                // view
-                Component component = projectPackageList.getComponentByMetadataFilePath(deployMessage.getFileName());
-                if (component == null) {
-                    handleMessageForNullComponent(projectPackageList, deployMessage);
+                
+                if (DeployErrorHandler.shouldHandle(deployMessage)) {
+                    auraHandler.applySaveErrorMarker(deployMessage, getSourceFolder(projectPackageList.getProject()));
                 } else {
-                    applySaveErrorMarker(component.getFileResource(), deployMessage);
-                    applyWarningsToAssociatedComponents(projectPackageList, component);
+                    Component component =
+                        projectPackageList.getComponentByMetadataFilePath(deployMessage.getFileName());
+                    if (component == null) {
+                        handleMessageForNullComponent(projectPackageList, deployMessage);
+                    } else {
+                        applySaveErrorMarker(component.getFileResource(), deployMessage);
+                        applyWarningsToAssociatedComponents(projectPackageList, component);
+                    }
                 }
             }
             monitorWork(monitor);
         }
     }
-
+    
     private void handleMessageForNullComponent(ProjectPackageList projectPackageList, DeployMessage deployMessage) {
-        if (logger.isInfoEnabled()) {
-            logger.warn("Unable to handle deploy message - could not find component '" + deployMessage.getFileName()
-                    + "' in list.  Will attempt to find w/in project");
-        }
-
+        logger.warn(
+            "Unable to handle deploy message - could not find component '" 
+            + deployMessage.getFileName()
+            + "' in list.  Will attempt to find w/in project");
+                
         IFile file = getComponentFileForFilePath(projectPackageList.getProject(), deployMessage.getFileName());
         if (file != null) {
             if (deployMessage.isSuccess()) {
-                if (logger.isInfoEnabled()) {
-                    logger.info(deployMessage.getFileName() + " successfully saved");
-                }
+                logger.info(deployMessage.getFileName() + " successfully saved");
                 MarkerUtils.getInstance().clearSaveMarkers(file);
             } else {
                 applySaveErrorMarker(file, deployMessage);
             }
         } else {
             // didn't find associated resource
-            logger.warn("Unable to get file resource for '" + deployMessage.getFileName() + "' for message "
-                    + deployMessage.getProblem());
+            logger.warn(
+                "Unable to get file resource for '" 
+                + deployMessage.getFileName() 
+                + "' for message "
+                + deployMessage.getProblem());
         }
     }
 
@@ -2021,20 +2035,24 @@ public class ProjectService extends BaseService {
         MarkerUtils.getInstance().applyDirty(resource);
         boolean componentHasSubType = false;
         try {
-            componentHasSubType =
-                    (resource instanceof IFile) ? getComponentFactory().getComponentFromFile((IFile) resource)
-                            .hasSubComponentTypes() : false;
+            componentHasSubType = (resource instanceof IFile)
+                ? getComponentFactory().getComponentFromFile((IFile) resource).hasSubComponentTypes()
+                : false;
         } catch (FactoryException e) {
             logger.debug("Unable to determine whether component " + resource.getName() + " has a subtype", e);
         }
 
         // Bug #221065: display fullname info only for components that have subtypes:
-        String problemStr =
-                (componentHasSubType) ? deployMessage.getFullName() + " : " + deployMessage.getProblem()
-                        : deployMessage.getProblem();
-
-        MarkerUtils.getInstance().applySaveErrorMarker(resource, deployMessage.getLineNumber(),
-            deployMessage.getColumnNumber(), deployMessage.getColumnNumber(), problemStr);
+        String problemStr = (componentHasSubType)
+            ? deployMessage.getFullName() + " : " + deployMessage.getProblem()
+            : deployMessage.getProblem();
+            
+        MarkerUtils.getInstance().applySaveErrorMarker(
+            resource,
+            deployMessage.getLineNumber(),
+            deployMessage.getColumnNumber(),
+            deployMessage.getColumnNumber(),
+            problemStr);
     }
 
     private void applySaveWarningMarker(IResource resource, DeployMessage deployMessage) {
@@ -2042,38 +2060,44 @@ public class ProjectService extends BaseService {
 
         boolean componentHasSubType = false;
         try {
-            componentHasSubType =
-                    (resource instanceof IFile) ? getComponentFactory().getComponentFromFile((IFile) resource)
-                            .hasSubComponentTypes() : false;
+            componentHasSubType = (resource instanceof IFile)
+                ? getComponentFactory().getComponentFromFile((IFile) resource).hasSubComponentTypes()
+                : false;
         } catch (FactoryException e) {
             logger.debug("Unable to determine whether component " + resource.getName() + " has a subtype", e);
         }
 
         // Bug #221065: display fullname info only for components that have subtypes:
-        String problemStr =
-                (componentHasSubType) ? deployMessage.getFullName() + " : " + deployMessage.getProblem()
-                        : deployMessage.getProblem();
-
+        String problemStr = (componentHasSubType)
+            ? deployMessage.getFullName() + " : " + deployMessage.getProblem()
+            : deployMessage.getProblem();
+            
         MarkerUtils.getInstance().applySaveWarningMarker(resource, deployMessage.getLineNumber(),
             deployMessage.getColumnNumber(), deployMessage.getColumnNumber(), problemStr);
     }
 
     public boolean handleRetrieveResult(RetrieveResultExt retrieveResultHandler, boolean save, IProgressMonitor monitor)
-            throws InterruptedException, CoreException, IOException, Exception {
+        throws InterruptedException, CoreException, IOException, Exception {
         if (retrieveResultHandler == null) {
             throw new IllegalArgumentException("Retrieve result cannot be null");
         }
         return handleRetrieveResult(retrieveResultHandler.getProjectPackageList(), retrieveResultHandler, save, monitor);
     }
 
-    public boolean handleRetrieveResult(ProjectPackageList projectPackageList, RetrieveResultExt retrieveResultHandler,
-            boolean save, IProgressMonitor monitor) throws InterruptedException, CoreException, IOException {
+    public boolean handleRetrieveResult(
+        ProjectPackageList projectPackageList,
+        RetrieveResultExt retrieveResultHandler,
+        boolean save,
+        IProgressMonitor monitor) throws InterruptedException, CoreException, IOException {
         return handleRetrieveResult(projectPackageList, retrieveResultHandler, save, null, monitor);
     }
 
-    public boolean handleRetrieveResult(final ProjectPackageList projectPackageList,
-            RetrieveResultExt retrieveResultHandler, boolean save, final String[] toSaveComponentTypes,
-            IProgressMonitor monitor) throws InterruptedException, CoreException, IOException {
+    public boolean handleRetrieveResult(
+        final ProjectPackageList projectPackageList,
+        RetrieveResultExt retrieveResultHandler,
+        boolean save,
+        final String[] toSaveComponentTypes,
+        IProgressMonitor monitor) throws InterruptedException, CoreException, IOException {
         if (projectPackageList == null) {
             throw new IllegalArgumentException("Project package list cannot be null");
         }
@@ -2090,16 +2114,15 @@ public class ProjectService extends BaseService {
                 return true;
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Saving returned content to project");
-            }
-
             monitorCheckSubTask(monitor, Messages.getString("Components.Generating"));
 
             // clean then load clean project package list to be saved to project
             projectPackageList.removeAllComponents();
-            projectPackageList.generateComponentsForComponentTypes(retrieveResultHandler.getZipFile(),
-                retrieveResultHandler.getFileMetadataHandler(), toSaveComponentTypes, monitor);
+            projectPackageList.generateComponentsForComponentTypes(
+                retrieveResultHandler.getZipFile(),
+                retrieveResultHandler.getFileMetadataHandler(),
+                toSaveComponentTypes,
+                monitor);
             retrieveResultHandler.setProjectPackageList(projectPackageList);
             monitorWork(monitor);
 
@@ -2113,8 +2136,8 @@ public class ProjectService extends BaseService {
                     try {
                         projectPackageList.saveResources(toSaveComponentTypes, monitor);
                     } catch (Exception e) {
-                        throw new CoreException(new Status(IStatus.ERROR, Constants.FORCE_PLUGIN_PREFIX, 0,
-                                e.getMessage(), e));
+                        throw new CoreException(
+                            new Status(IStatus.ERROR, Constants.FORCE_PLUGIN_PREFIX, 0, e.getMessage(), e));
                     }
                 }
             }, null, IResource.NONE, monitor);
@@ -2126,7 +2149,10 @@ public class ProjectService extends BaseService {
 
         if (retrieveResultHandler.getMessageHandler() != null) {
             monitorSubTask(monitor, "Applying retrieve result messages to components...");
-            handleRetrieveMessages(projectPackageList, retrieveResultHandler.getMessageHandler(), toSaveComponentTypes,
+            handleRetrieveMessages(
+                projectPackageList,
+                retrieveResultHandler.getMessageHandler(),
+                toSaveComponentTypes,
                 monitor);
             monitorWork(monitor);
         }

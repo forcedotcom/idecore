@@ -23,11 +23,11 @@ import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.ForceProjectException;
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
 import com.salesforce.ide.ui.editors.templates.ApexClassTemplateContextType;
-import com.salesforce.ide.ui.editors.templates.ApexTemplateContext;
+import com.salesforce.ide.ui.editors.templates.CodeTemplateContext;
+import com.salesforce.ide.ui.wizards.components.AbstractTemplateSelectionPage;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardComposite;
 import com.salesforce.ide.ui.wizards.components.ComponentWizardPage;
-import com.salesforce.ide.ui.wizards.components.apex.AbstractTemplateSelectionPage;
-import com.salesforce.ide.ui.wizards.components.apex.TemplateSelectionWizard;
+import com.salesforce.ide.ui.wizards.components.TemplateSelectionWizard;
 
 /**
  * Wizard to create new Apex Class.
@@ -61,7 +61,6 @@ public class ApexClassWizard extends TemplateSelectionWizard {
 
     @Override
     public boolean performFinish() {
-        // TODO: Refactor this since it completely overwrites the superclass behavior.
         if (!getComponentController().canComplete()) {
             return false;
         }
@@ -82,12 +81,12 @@ public class ApexClassWizard extends TemplateSelectionWizard {
             }
 
             TemplateContextType contextType = getTemplateContextRegistry().getContextType(ApexClassTemplateContextType.ID);
-            TemplateContext context = new ApexTemplateContext(contextType, getComponentWizardModel(), 0, 0);
+            TemplateContext context = new CodeTemplateContext(contextType, getComponentWizardModel(), 0, 0);
 
             final AbstractTemplateSelectionPage page = (AbstractTemplateSelectionPage) getPage(ApexClassTemplateSelectionPage.class.getSimpleName());
             final String body = page.getTemplateString(context);
             if (null != body) {
-                getComponentController().getComponent().intiNewBody(body);
+                getComponentController().getComponent().initNewBody(body);
             }
 
             return executeCreateOperation();
@@ -97,14 +96,13 @@ public class ApexClassWizard extends TemplateSelectionWizard {
         }
     }
 
-    private static ContextTypeRegistry getTemplateContextRegistry() {
+    private ContextTypeRegistry getTemplateContextRegistry() {
         // TODO: Inject the Apex template context registry.
         return ForceIdeEditorsPlugin.getDefault().getApexTemplateContextRegistry();
     }
 
-    private static TemplateStore getTemplateStore() {
+    private TemplateStore getTemplateStore() {
         // TODO: Inject the Apex template store.
         return ForceIdeEditorsPlugin.getDefault().getApexTemplateStore();
     }
-
 }

@@ -16,9 +16,9 @@ import org.eclipse.swt.widgets.Composite;
 import com.salesforce.ide.core.internal.components.apex.clazz.ApexClassModel;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
-import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardPage;
+import com.salesforce.ide.ui.wizards.components.apex.CodeWizardPage;
 
-public class ApexClassWizardPage extends ApexCodeWizardPage {
+public class ApexClassWizardPage extends CodeWizardPage {
 
     public ApexClassWizardPage(ComponentWizard componentWizard) {
         super(componentWizard);

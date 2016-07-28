@@ -28,9 +28,9 @@ import com.salesforce.ide.core.model.ApexTrigger;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
 import com.salesforce.ide.ui.wizards.components.IComponentWizardPage;
-import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardPage;
+import com.salesforce.ide.ui.wizards.components.apex.CodeWizardPage;
 
-public class ApexTriggerWizardPage extends ApexCodeWizardPage {
+public class ApexTriggerWizardPage extends CodeWizardPage {
 
     private static final Logger logger = Logger.getLogger(ApexTriggerWizardPage.class);
 

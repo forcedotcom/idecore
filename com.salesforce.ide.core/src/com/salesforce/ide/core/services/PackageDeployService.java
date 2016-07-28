@@ -107,7 +107,7 @@ public class PackageDeployService extends BasePackageService {
     }
 
     public DeployResultExt deploy(ProjectPackageList projectPackageList, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException, ForceConnectionException {
+        throws ServiceException, ForceRemoteException, InterruptedException, ForceConnectionException {
         if (Utils.isEmpty(projectPackageList) || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Project and/or project package list cannot be null");
         }
@@ -115,7 +115,10 @@ public class PackageDeployService extends BasePackageService {
         return deploy(connection, projectPackageList, monitor);
     }
 
-    public DeployResultExt deploy(ProjectPackageList projectPackageList, IProgressMonitor monitor, DeployOptions options)
+    public DeployResultExt deploy(
+        ProjectPackageList projectPackageList,
+        IProgressMonitor monitor,
+        DeployOptions options)
             throws ServiceException, ForceRemoteException, InterruptedException, ForceConnectionException {
         if (Utils.isEmpty(projectPackageList) || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Project and/or project package list cannot be null");
@@ -124,8 +127,10 @@ public class PackageDeployService extends BasePackageService {
         return deploy(connection, projectPackageList, options, monitor);
     }
 
-    public DeployResultExt deploy(Connection connection, ProjectPackageList projectPackageList, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException {
+    public DeployResultExt deploy(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(projectPackageList)) {
             throw new IllegalArgumentException("Connection and/or project package list cannot be null");
         }
@@ -134,13 +139,16 @@ public class PackageDeployService extends BasePackageService {
         return deploy(connection, projectPackageList, deployOptions, monitor);
     }
 
-    DeployResultExt deploy(Connection connection, ProjectPackageList projectPackageList, DeployOptions deployOptions,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
+    DeployResultExt deploy(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        DeployOptions deployOptions,
+        IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         return deploy(connection, projectPackageList, deployOptions, null, true, monitor);
     }
 
     public DeployResultExt deploy(Connection connection, byte[] zipFile, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException {
+        throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(zipFile)) {
             throw new IllegalArgumentException("Connection and/or file zip cannot be null");
         }
@@ -149,9 +157,13 @@ public class PackageDeployService extends BasePackageService {
         return deploy(connection, zipFile, deployOptions, null, monitor);
     }
 
-    public DeployResultExt deploy(Connection connection, ProjectPackageList projectPackageList,
-            DeployOptions deployOptions, LogInfo[] logInfos, boolean adjust, IProgressMonitor monitor)
-            throws ServiceException, ForceRemoteException, InterruptedException {
+    public DeployResultExt deploy(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        DeployOptions deployOptions,
+        LogInfo[] logInfos,
+        boolean adjust,
+        IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         DeployResultExt deployResultExt =
                 deployWork(connection, getZip(projectPackageList), deployOptions, logInfos, adjust, monitor);
 
@@ -159,9 +171,11 @@ public class PackageDeployService extends BasePackageService {
         return deployResultExt;
     }
 
-    public DeployResultExt deployDelete(ProjectPackageList projectPackageList, boolean checkOnly,
-            IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException,
-            ForceConnectionException {
+    public DeployResultExt deployDelete(
+        ProjectPackageList projectPackageList,
+        boolean checkOnly,
+        IProgressMonitor monitor)
+            throws ServiceException, ForceRemoteException, InterruptedException, ForceConnectionException {
         if (Utils.isEmpty(projectPackageList) || projectPackageList.getProject() == null) {
             throw new IllegalArgumentException("Project and/or project package list cannot be null");
         }
@@ -169,29 +183,41 @@ public class PackageDeployService extends BasePackageService {
         return deployDelete(connection, projectPackageList, checkOnly, monitor);
     }
 
-    public DeployResultExt deployDelete(Connection connection, ProjectPackageList projectPackageList,
-            boolean checkOnly, IProgressMonitor monitor) throws ServiceException, ForceRemoteException,
-            InterruptedException {
+    public DeployResultExt deployDelete(
+        Connection connection,
+        ProjectPackageList projectPackageList,
+        boolean checkOnly,
+        IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         DeployOptions deployOptions = makeDefaultDeployOptions(checkOnly);
         // set autoUpdatePackage and PerformRetrieve to true for retreiving updated package.xml
         // W-632267
         deployOptions.setAutoUpdatePackage(true);
         deployOptions.setPerformRetrieve(true);
-        DeployResultExt deployResultExt =
-                deploy(connection, getZip(projectPackageList, true), deployOptions, null, monitor);
+        DeployResultExt deployResultExt = deploy(
+            connection,
+            getZip(projectPackageList, true),
+            deployOptions,
+            null,
+            monitor);
         deployResultExt.getRetrieveResultHandler().setProjectPackageList(projectPackageList);
         return deployResultExt;
     }
 
-    public DeployResultExt deploy(Connection connection, byte[] zipFile, DeployOptions deployOptions,
-            LogInfo[] logInfos, IProgressMonitor monitor) throws ServiceException, ForceRemoteException,
-            InterruptedException {
+    public DeployResultExt deploy(
+        Connection connection,
+        byte[] zipFile,
+        DeployOptions deployOptions,
+        LogInfo[] logInfos,
+        IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         return deployWork(connection, zipFile, deployOptions, logInfos, true, monitor);
     }
 
-    public DeployResultExt getDeployResult(DeployResultExt deployResultExt, AsyncResult asyncResult,
-            MetadataStubExt metadataStubExt, IProgressMonitor monitor) throws ServiceTimeoutException,
-            ServiceException, ForceRemoteException, ForceRemoteException, InterruptedException {
+    public DeployResultExt getDeployResult(
+        DeployResultExt deployResultExt,
+        AsyncResult asyncResult,
+        MetadataStubExt metadataStubExt,
+        IProgressMonitor monitor) throws ServiceTimeoutException, ServiceException, ForceRemoteException,
+            ForceRemoteException, InterruptedException {
         if (metadataStubExt == null) {
             throw new IllegalArgumentException("MetadataStubExt cannot be null");
         }
@@ -209,10 +235,6 @@ public class PackageDeployService extends BasePackageService {
 
         monitorCheckSubTask(monitor, "Preparing results...");
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Received deploy() result at " + (new Date()).toString());
-        }
-
         // REVIEWME: should we create an empty wrapper?
         if (deployResultExt == null) {
             deployResultExt = new DeployResultExt();
@@ -229,35 +251,39 @@ public class PackageDeployService extends BasePackageService {
         return deployResultExt;
     }
 
-    public DeployResultExt handleDeployServiceTimeoutException(ServiceTimeoutException ex, String operation,
-            IProgressMonitor monitor) throws InterruptedException, ServiceException, ForceRemoteException,
-            InsufficientPermissionsException {
-
+    public DeployResultExt handleDeployServiceTimeoutException(
+        ServiceTimeoutException ex,
+        String operation,
+        IProgressMonitor monitor)
+            throws InterruptedException, ServiceException, ForceRemoteException, InsufficientPermissionsException {
+            
         // REVIEW: ui-stuff (dialog to continue) should be handled outside of services  -cwall 09/2//09
         boolean proceed = DialogUtils.getInstance().presentCycleLimitExceptionDialog(ex, monitor);
         if (proceed) {
             try {
-                return getPackageDeployService().getDeployResult((DeployResultExt) ex.getMetadataResultExt(),
-                    ex.getAsyncResult(), ex.getMetadataStubExt(), monitor);
+                return getPackageDeployService().getDeployResult(
+                    (DeployResultExt) ex.getMetadataResultExt(),
+                    ex.getAsyncResult(),
+                    ex.getMetadataStubExt(),
+                    monitor);
             } catch (ServiceTimeoutException e) {
                 return handleDeployServiceTimeoutException(e, operation, monitor);
             }
         }
-        throw new InterruptedException("User canceled " + operation + " due to cycle polling limits reached: "
-                + ex.getMessage());
+        throw new InterruptedException(
+            "User canceled " + operation + " due to cycle polling limits reached: " + ex.getMessage());
     }
 
     // workhorse for deploying
-    private DeployResultExt deployWork(Connection connection, byte[] zipFile, DeployOptions deployOptions,
-            LogInfo[] logInfos, boolean adjust, IProgressMonitor monitor) throws ServiceException,
-            ForceRemoteException, InterruptedException {
+    private DeployResultExt deployWork(
+        Connection connection,
+        byte[] zipFile,
+        DeployOptions deployOptions,
+        LogInfo[] logInfos,
+        boolean adjust,
+        IProgressMonitor monitor) throws ServiceException, ForceRemoteException, InterruptedException {
         if (connection == null || Utils.isEmpty(zipFile)) {
             throw new IllegalArgumentException("Connection and/or zip file name cannot be null");
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("");
-            logger.debug("***   D E P L O Y   P A C K A G E ( S )   ***");
         }
 
         monitorCheck(monitor);

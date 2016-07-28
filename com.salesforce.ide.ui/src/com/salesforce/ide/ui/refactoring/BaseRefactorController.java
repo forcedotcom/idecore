@@ -122,38 +122,42 @@ public abstract class BaseRefactorController extends Controller {
         return false;
     }
 
-    protected void testDeploy(IProgressMonitor monitor) throws OperationCanceledException, InterruptedException,
-            ServiceException, ForceRemoteException {
+    protected void testDeploy(IProgressMonitor monitor)
+        throws OperationCanceledException, InterruptedException, ServiceException, ForceRemoteException {
         DeployResultExt deployResultExt = null;
         ProjectPackageList projectPackageList = refactorModel.getProjectPackageList();
-
+        
         monitorCheck(monitor);
-
+        
         try {
             try {
-                deployResultExt = ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService().deployDelete(projectPackageList, true, monitor);
+                deployResultExt = ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService()
+                    .deployDelete(projectPackageList, true, monitor);
             } catch (ServiceTimeoutException ex) {
-                deployResultExt =
-                        ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService().handleDeployServiceTimeoutException(ex, "test deploy",
-                            monitor);
+                deployResultExt = ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService()
+                    .handleDeployServiceTimeoutException(ex, "test deploy", monitor);
             }
-
+            
             if (!deployResultExt.isSuccess()) {
                 deployResultExt.getMessageHandler().sort(DeployMessageExt.SORT_RESULT);
                 DeployMessage[] deployMessages = deployResultExt.getMessageHandler().getMessages();
                 for (DeployMessage deployMessage : deployMessages) {
                     if (!deployMessage.isSuccess()) {
-                        logger.warn("Component '" + deployMessage.getFullName() + "' failed test delete: '"
+                        logger.warn(
+                            "Component '" + deployMessage.getFullName() + "' failed test delete: '"
                                 + deployMessage.getProblem() + "'. will be deleted locally only.");
-
+                                
                         projectPackageList.removeComponentByFilePath(deployMessage.getFileName(), true, true);
                         monitorCheck(monitor);
-                        MessageDialogRunnable messageDialogRunnable =
-                                new MessageDialogRunnable("Remote Delete Error", null, UIMessages.getString(
-                                    "Refactor.Delete.Complete.CannotDelete.message", new String[] {
-                                            deployMessage.getFileName(), deployMessage.getProblem() }),
-                                        MessageDialog.WARNING, new String[] { IDialogConstants.OK_LABEL,
-                                                IDialogConstants.CANCEL_LABEL }, 0);
+                        MessageDialogRunnable messageDialogRunnable = new MessageDialogRunnable(
+                            "Remote Delete Error",
+                            null,
+                            UIMessages.getString(
+                                "Refactor.Delete.Complete.CannotDelete.message",
+                                new String[] { deployMessage.getFileName(), deployMessage.getProblem() }),
+                            MessageDialog.WARNING,
+                            new String[] { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL },
+                            0);
                         Display.getDefault().syncExec(messageDialogRunnable);
 
                         if (messageDialogRunnable.getAction() == 1) {
@@ -171,7 +175,7 @@ public abstract class BaseRefactorController extends Controller {
             logger.warn("Unable to perform server delete", e);
         }
     }
-
+    
     /**
      * Creates a RefactoringStatus of type INFO.
      *

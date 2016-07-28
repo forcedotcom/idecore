@@ -161,6 +161,11 @@
              id="com.salesforce.ide.ui.editors.apex.preferences.VisualforceEditorPreferencePage"
              name="%preferences.page.Visualforce"/>
        <page
+             category="com.salesforce.ide.ui.preferences.GeneralPreferencePage"
+             class="org.eclipse.ui.internal.dialogs.EmptyPreferencePage"
+             id="com.salesforce.ide.ui.editors.apex.preferences.LightningEditorPreferencePage"
+             name="Lightning"/>
+       <page
              name="Templates"
              category="com.salesforce.ide.ui.editors.apex.preferences.ApexEditorPreferencePage"
              class="com.salesforce.ide.ui.editors.apex.preferences.ApexTemplatePreferencePage"
@@ -173,6 +178,13 @@
              class="com.salesforce.ide.ui.editors.visualforce.preferences.VisualforceTemplatePreferencePage"
              id="com.salesforce.ide.ui.editors.visualforce.TemplatesPreferencePage">
              <keywordReference id="com.salesforce.ide.ui.editors.templates.visualforceTemplateKeywords"/>
+       </page>
+       <page
+             name="Templates"
+             category="com.salesforce.ide.ui.editors.apex.preferences.LightningEditorPreferencePage"
+             class="com.salesforce.ide.ui.editors.lightning.preferences.LightningTemplatePreferencePage"
+             id="com.salesforce.ide.ui.editors.lightning.TemplatesPreferencePage">
+             <keywordReference id="com.salesforce.ide.ui.editors.templates.lightningTemplateKeywords"/>
        </page>
     </extension>
 
@@ -198,15 +210,24 @@
       <keyword
             id="com.salesforce.ide.ui.editors.templates.visualforceTemplateKeywords"
             label="visualforce pages components templates"/>
+      <keyword
+            id="com.salesforce.ide.ui.editors.templates.lightningTemplateKeywords"
+            label="lightning bundle templates"/>
    </extension>
 
    <extension point="org.eclipse.ui.editors.templates">
       <contextTypeRegistry id="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
       <contextTypeRegistry id="com.salesforce.ide.ui.editors.templates.visualforceContextTypes"/>
+      <contextTypeRegistry id="com.salesforce.ide.ui.editors.templates.lightningContextTypes"/>
       <contextType
             class="com.salesforce.ide.ui.editors.templates.ApexClassTemplateContextType"
             id="com.salesforce.ide.ui.editors.templates.contextType.apexClass"
             name="New Class"
+            registryId="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
+      <contextType
+            class="com.salesforce.ide.ui.editors.templates.ApexTriggerTemplateContextType"
+            id="com.salesforce.ide.ui.editors.templates.contextType.apexTrigger"
+            name="New Trigger"
             registryId="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
       <contextType
             class="com.salesforce.ide.ui.editors.templates.ApexComponentTemplateContextType"
@@ -219,10 +240,10 @@
             name="New Page"
             registryId="com.salesforce.ide.ui.editors.templates.visualforceContextTypes"/>
       <contextType
-            class="com.salesforce.ide.ui.editors.templates.ApexTriggerTemplateContextType"
-            id="com.salesforce.ide.ui.editors.templates.contextType.apexTrigger"
-            name="New Trigger"
-            registryId="com.salesforce.ide.ui.editors.templates.apexContextTypes"/>
+            class="com.salesforce.ide.ui.editors.templates.LightningTemplateContextType"
+            id="com.salesforce.ide.ui.editors.templates.contextType.lightning"
+            name="New Lightning Element"
+            registryId="com.salesforce.ide.ui.editors.templates.lightningContextTypes"/>
       <include file="templates/default-templates.xml"/>
    </extension>
 
@@ -266,6 +287,14 @@
     	class="com.salesforce.ide.ui.wizards.components.apex.trigger.ApexTriggerWizard" 
     	icon="icons/appExDevIco16.png" 
     	name="Apex Trigger" 
+    	preferredPerspectives="com.salesforce.ide.perspective" 
+    	project="false" />
+
+    <wizard id="com.salesforce.ide.ui.wizards.createLightningElement" 
+    	category="com.salesforce.ide.ui.wizards" 
+    	class="com.salesforce.ide.ui.wizards.components.lightning.AuraDefinitionBundleWizard" 
+    	icon="icons/appExDevIco16.png" 
+    	name="Lightning Bundle" 
     	preferredPerspectives="com.salesforce.ide.perspective" 
     	project="false" />
     

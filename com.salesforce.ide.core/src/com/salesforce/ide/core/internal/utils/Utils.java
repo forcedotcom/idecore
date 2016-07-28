@@ -30,6 +30,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -39,7 +40,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -83,6 +86,7 @@ import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import com.google.common.collect.ImmutableList;
 import com.salesforce.ide.api.metadata.types.MetadataExt;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.internal.utils.TestContext.TestContextEnum;
@@ -98,6 +102,8 @@ import com.sforce.soap.partner.fault.wsc.ApiFault;
  */
 @SuppressWarnings("restriction")
 public class Utils {
+    private static final ImmutableList<String> SPECIAL_NOUNS = ImmutableList.of("Apex", "Visualforce", "Lightning", "Salesforce", "Salesforce.com");
+
 	private static final Logger logger = Logger.getLogger(Utils.class);
 
 	public static final String DIALOG_TITLE_ERROR = "Error";
@@ -1206,11 +1212,12 @@ public class Utils {
 		return p.matcher(str).matches();
 	}
 
-	public static String capitalizeFirstLetter(String name) {
-		return isNotEmpty(name) ? Character.toUpperCase(name.charAt(0))
-				+ name.toLowerCase().substring(1) : name;
-	}
-
+    public static String capitalizeFirstLetter(String name) {
+        return isNotEmpty(name) 
+            ? Character.toUpperCase(name.charAt(0)) + name.toLowerCase().substring(1) 
+            : name;
+    }
+    
 	/**
 	 *
 	 * @param name
@@ -1366,4 +1373,17 @@ public class Utils {
 		}
 		return replaced;
 	}
+
+	// Lower cases everything except special nouns (e.g, Apex, Lightning, VisualForce)
+    public static String sentenceCase(String plural) {
+        // Type inference has problems with this so explicitly specify the function parameters
+        return Arrays.stream(plural.split("\\s+")).map(new Function<String, String>() {
+            @Override
+            public String apply(String w) {
+                return SPECIAL_NOUNS.contains(w) 
+                    ? w
+                    : w.toLowerCase();
+            }
+        }).collect(Collectors.joining(" "));
+    }
 }

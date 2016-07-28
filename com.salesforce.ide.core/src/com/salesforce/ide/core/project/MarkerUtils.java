@@ -38,46 +38,46 @@ import com.salesforce.ide.core.internal.utils.Utils;
  * @author cwall
  */
 public class MarkerUtils {
-
+    
     private static final Logger logger = Logger.getLogger(MarkerUtils.class);
-
+    
     private static final String MARKER_ATTR_OBJECT_TYPE = "ComponentType";
-
+    
     // Superclass for all apex markers
     public static final String MARKER_PROBLEM = ForceIdeCorePlugin.getPluginId() + ".problem";
-
+    
     // Dirty sync marker
     public static final String MARKER_DIRTY = ForceIdeCorePlugin.getPluginId() + ".dirty";
-
+    
     // apex code compile error marker
     public static final String MARKER_COMPILE_ERROR = ForceIdeCorePlugin.getPluginId() + ".compileError";
-
+    
     // save error marker
     public static final String MARKER_SAVE_ERROR = ForceIdeCorePlugin.getPluginId() + ".saveError";
-
+    
     // retrieve error marker
     public static final String MARKER_RETRIEVE_ERROR = ForceIdeCorePlugin.getPluginId() + ".retrieveError";
-
+    
     // run test failure marker
     public static final String MARKER_RUN_TEST_FAILURE = ForceIdeCorePlugin.getPluginId() + ".runTestFailure";
-
+    
     // code coverage warning marker
     public static final String MARKER_CODE_COVERAGE_WARNING = ForceIdeCorePlugin.getPluginId() + ".codeCoverageWarning";
-
+    
     // inactive marker
     public static final String MARKER_INACTIVE = ForceIdeCorePlugin.getPluginId() + ".inactive";
-
+    
     private static MarkerUtils instance = null;
-
+    
     protected MarkerUtils() {}
-
+    
     public static MarkerUtils getInstance() {
         if (instance == null) {
             instance = new MarkerUtils();
         }
         return instance;
     }
-
+    
     /**
      * Set a dirty resource marker on the resource
      * 
@@ -88,21 +88,21 @@ public class MarkerUtils {
             logger.warn("Unable to apply dirty marker to resources - resources is null or empty");
             return;
         }
-
+        
         for (IResource resource : resources) {
             applyDirty(resource);
         }
     }
-
+    
     public void applyDirty(IResource resource) {
         if (resource == null) {
             logger.warn("Unable to apply dirty marker to resource - resource is null");
             return;
         }
-
+        
         applyDirty(resource, Messages.getString("Markers.OnlySavedLocally.message"));
     }
-
+    
     /**
      * Set a dirty resource marker on the resource
      * 
@@ -111,7 +111,7 @@ public class MarkerUtils {
     public void applyDirty(IResource resource, String msg) {
         applyDirty(resource, MarkerUtils.MARKER_DIRTY, msg);
     }
-
+    
     /**
      * Set a dirty resource marker on the resource
      * 
@@ -122,16 +122,16 @@ public class MarkerUtils {
             return;
         }
         Map<String, Object> attributes = new HashMap<>(4);
-
+        
         attributes.put(IMarker.MESSAGE, msg);
         // marker line numbers are 1-based: we set the marker arbitrarily on the first line
         attributes.put(IMarker.LINE_NUMBER, new Integer(1));
         attributes.put(IMarker.SEVERITY, Integer.valueOf(IMarker.SEVERITY_WARNING));
         attributes.put(IMarker.PRIORITY, Integer.valueOf(IMarker.PRIORITY_HIGH));
-
+        
         createMarker(resource, attributes, markerId);
     }
-
+    
     /**
      * 
      * @param resource
@@ -140,7 +140,7 @@ public class MarkerUtils {
     public boolean isDirty(IResource resource) {
         return isDirty(resource, MARKER_DIRTY);
     }
-
+    
     public boolean isDirty(IResource resource, String markerId) {
         IMarker[] markers = getMarkers(resource, markerId);
         if (markers.length == 0) {
@@ -148,7 +148,7 @@ public class MarkerUtils {
         }
         return true;
     }
-
+    
     public boolean hasMarker(IResource resource, String markerId) {
         IMarker[] markers = getMarkers(resource, markerId);
         if (Utils.isEmpty(markers)) {
@@ -161,123 +161,174 @@ public class MarkerUtils {
         }
         return true;
     }
-
+    
     public void applyCompileErrorMarker(IResource resource, String msg) {
         applyCompileMarker(resource, 1, 1, 2, msg, IMarker.SEVERITY_ERROR);
     }
-
-    public void applyCompileErrorMarker(IResource resource, int line, int charStart, int charEnd,
-            String msg) {
+    
+    public void applyCompileErrorMarker(IResource resource, int line, int charStart, int charEnd, String msg) {
         applyCompileMarker(resource, line, charStart, charEnd, msg, IMarker.SEVERITY_ERROR);
     }
-
-    public void applyCompileWarningMarker(IResource resource, int line, int charStart, int charEnd,
-            String msg) {
+    
+    public void applyCompileWarningMarker(IResource resource, int line, int charStart, int charEnd, String msg) {
         applyCompileMarker(resource, line, charStart, charEnd, msg, IMarker.SEVERITY_WARNING);
     }
-
-    public void applyCompileMarker(IResource resource, int line, int charStart, int charEnd, String msg,
-            int severity) {
+    
+    public void applyCompileMarker(IResource resource, int line, int charStart, int charEnd, String msg, int severity) {
         if (resource == null) {
-            logger.warn("Unable to apply compile " + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning")
-                + " marker to resource - resource is null");
+            logger.warn(
+                "Unable to apply compile " 
+                    + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning")
+                    + " marker to resource - resource is null");
             return;
         }
-
+        
         String message = Messages.getString("Markers.CompilationPrefix.message") + " " + msg;
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, message);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, severity);
         attributes.put(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-
+        
         createMarker(resource, attributes, MarkerUtils.MARKER_COMPILE_ERROR);
     }
-
+    
     public void applySaveErrorMarker(IResource resource, String msg) {
         applySaveErrorMarker(resource, 1, 1, 2, msg);
     }
-
-    public void applySaveErrorMarker(IResource resource, Integer line, Integer charStart, Integer charEnd,
-            String msg) {
-        applySaveMarker(resource, (line != null ? line : 0), (charStart != null ? charStart : 0), (charEnd != null
-                ? charEnd : 0), msg, IMarker.SEVERITY_ERROR);
+    
+    public void applySaveErrorMarker(IResource resource, Integer line, Integer charStart, Integer charEnd, String msg) {
+        applySaveMarker(
+            resource,
+            (line != null ? line : 0),
+            (charStart != null ? charStart : 0),
+            (charEnd != null ? charEnd : 0),
+            msg,
+            IMarker.SEVERITY_ERROR);
     }
-
+    
     public void applySaveWarningMarker(IResource resource, String msg) {
         applySaveWarningMarker(resource, 1, 1, 2, msg);
     }
-
-    public void applySaveWarningMarker(IResource resource, Integer line, Integer charStart,
-            Integer charEnd, String msg) {
-        applySaveMarker(resource, (line != null ? line : 0), (charStart != null ? charStart : 0), (charEnd != null
-                ? charEnd : 0), msg, IMarker.SEVERITY_WARNING);
+    
+    public void applySaveWarningMarker(
+        IResource resource,
+        Integer line,
+        Integer charStart,
+        Integer charEnd,
+        String msg) {
+        applySaveMarker(
+            resource,
+            (line != null ? line : 0),
+            (charStart != null ? charStart : 0),
+            (charEnd != null ? charEnd : 0),
+            msg,
+            IMarker.SEVERITY_WARNING);
     }
-
-    private void applySaveMarker(IResource resource, int line, int charStart, int charEnd, String msg,
-            int severity) {
+    
+    private void applySaveMarker(IResource resource, int line, int charStart, int charEnd, String msg, int severity) {
         if (resource == null) {
-            logger.warn("Unable to apply save " + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning")
+            logger.warn(
+                "Unable to apply save " 
+                + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning")
                 + " marker to resource - resource is null");
             return;
         }
-
-        String message =
-                Messages.getString(severity == IMarker.SEVERITY_ERROR ? "Markers.SavePrefix.Error.message"
-                        : "Markers.SavePrefix.Warning.message") + " " + msg;
+        
+        String message = Messages.getString(
+            severity == IMarker.SEVERITY_ERROR
+                ? "Markers.SavePrefix.Error.message"
+                : "Markers.SavePrefix.Warning.message")
+            + " " + msg;
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, message);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, severity);
         attributes.put(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-
+        
         if (logger.isInfoEnabled()) {
-            logger.info("Applying save " + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning") + " marker: '"
-                    + resource.getProjectRelativePath().toPortableString() + "': '" + message + "'");
+            logger.info(
+                "Applying save " 
+                + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning") 
+                + " marker: '"
+                + resource.getProjectRelativePath().toPortableString() 
+                + "': '" 
+                + message 
+                + "'");
         }
         createMarker(resource, attributes, MarkerUtils.MARKER_SAVE_ERROR);
     }
-
+    
     public void applyRetrieveErrorMarker(IResource resource, String[] componentTypes, String msg) {
         for (String componentType : componentTypes) {
             applyRetrieveErrorMarker(resource, 1, 1, 2, componentType, msg);
         }
     }
-
+    
     public void applyRetrieveErrorMarker(IResource resource, String msg) {
         applyRetrieveErrorMarker(resource, 1, 1, 2, null, msg);
     }
-
-    public void applyRetrieveErrorMarker(IResource resource, Integer line, Integer charStart,
-            Integer charEnd, String componentType, String msg) {
-        applyRetrieveMarker(resource, (line != null ? line : 0), (charStart != null ? charStart : 0), (charEnd != null
-                ? charEnd : 0), componentType, msg, IMarker.SEVERITY_ERROR);
+    
+    public void applyRetrieveErrorMarker(
+        IResource resource,
+        Integer line,
+        Integer charStart,
+        Integer charEnd,
+        String componentType,
+        String msg) {
+        applyRetrieveMarker(
+            resource,
+            (line != null ? line : 0),
+            (charStart != null ? charStart : 0),
+            (charEnd != null ? charEnd : 0),
+            componentType,
+            msg,
+            IMarker.SEVERITY_ERROR);
     }
-
+    
     public void applyRetrieveWarningMarker(IResource resource, String[] componentTypes, String msg) {
         for (String componentType : componentTypes) {
             applyRetrieveWarningMarker(resource, 1, 1, 2, componentType, msg);
         }
     }
-
+    
     public void applyRetrieveWarningMarker(IResource resource, String msg) {
         applyRetrieveWarningMarker(resource, 1, 1, 2, null, msg);
     }
-
-    public void applyRetrieveWarningMarker(IResource resource, Integer line, Integer charStart,
-            Integer charEnd, String componentType, String msg) {
-        applyRetrieveMarker(resource, (line != null ? line : 0), (charStart != null ? charStart : 0), (charEnd != null
-                ? charEnd : 0), componentType, msg, IMarker.SEVERITY_WARNING);
+    
+    public void applyRetrieveWarningMarker(
+        IResource resource,
+        Integer line,
+        Integer charStart,
+        Integer charEnd,
+        String componentType,
+        String msg) {
+        applyRetrieveMarker(
+            resource,
+            (line != null ? line : 0),
+            (charStart != null ? charStart : 0),
+            (charEnd != null ? charEnd : 0),
+            componentType,
+            msg,
+            IMarker.SEVERITY_WARNING);
     }
-
-    private void applyRetrieveMarker(IResource resource, int line, int charStart, int charEnd,
-            String componentType, String msg, int severity) {
+    
+    private void applyRetrieveMarker(
+        IResource resource,
+        int line,
+        int charStart,
+        int charEnd,
+        String componentType,
+        String msg,
+        int severity) {
         if (resource == null) {
-            logger.warn("Unable to apply retrieve " + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning")
+            logger.warn(
+                "Unable to apply retrieve " 
+                + (severity == IMarker.SEVERITY_ERROR ? "error" : "warning")
                 + " marker to resource - resource is null");
             return;
         }
-
+        
         String message = Messages.getString("Markers.RetrievePrefix.message") + " " + msg;
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, message);
@@ -290,67 +341,74 @@ public class MarkerUtils {
             // server on package, src, project levels, invocation will not associated with any object type
             // consequently, when we refresh from server on component folder level afterwards, the markers won't get
             // removed properly base on object type attribute on marker.
-
+            
             // FIXME - Too much assumption on this solution
             int firstSingleQuote = msg.indexOf("'");
             int secondSingleQuote = msg.indexOf("'", firstSingleQuote + 1);
             componentType = msg.substring(firstSingleQuote + 1, secondSingleQuote);
         }
-
+        
         if (Utils.isNotEmpty(componentType)) {
             attributes.put(MARKER_ATTR_OBJECT_TYPE, componentType);
         }
-
+        
         createMarker(resource, attributes, MarkerUtils.MARKER_RETRIEVE_ERROR);
     }
-
+    
     public void applyRunTestFailureMarker(IResource resource, String msg) {
         applyRunTestFailureMarker(resource, 1, 1, 2, msg);
     }
-
-    public void applyRunTestFailureMarker(IResource resource, int line, int charStart, int charEnd,
-            String msg) {
+    
+    public void applyRunTestFailureMarker(IResource resource, int line, int charStart, int charEnd, String msg) {
         if (resource == null) {
             logger.warn("Unable to apply run test failure marker to resource - resource is null");
             return;
         }
-
+        
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, msg);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
         attributes.put(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-
+        
         if (logger.isInfoEnabled()) {
-            logger.info("Run test failure marker on resource '" + resource.getProjectRelativePath().toPortableString()
-                + "': '" + msg + "'");
+            logger.info(
+                "Run test failure marker on resource '" 
+                + resource.getProjectRelativePath().toPortableString() 
+                + "': '"
+                + msg 
+                + "'");
         }
         createMarker(resource, attributes, MarkerUtils.MARKER_RUN_TEST_FAILURE);
     }
-
+    
     public void applyCodeCoverageWarningMarker(IResource resource, String msg) {
         applyCodeCoverageWarningMarker(resource, 1, 1, 2, msg);
     }
-
+    
     public void applyCodeCoverageWarningMarker(IResource resource, int line, int charStart, int charEnd, String msg) {
         if (resource == null) {
             logger.warn("Unable to apply code coverage warning marker to resource - resource is null");
             return;
         }
-
+        
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(IMarker.MESSAGE, msg);
         attributes.put(IMarker.LINE_NUMBER, line);
         attributes.put(IMarker.CHAR_START, charStart);
         attributes.put(IMarker.CHAR_END, charEnd);
-
+        
         if (logger.isInfoEnabled()) {
-            logger.info("Code coverage warning marker on resource '"
-                    + resource.getProjectRelativePath().toPortableString() + "': '" + msg + "'");
+            logger.info(
+                "Code coverage warning marker on resource '" 
+                + resource.getProjectRelativePath().toPortableString()
+                + "': '" 
+                + msg 
+                + "'");
         }
         createMarker(resource, attributes, MarkerUtils.MARKER_CODE_COVERAGE_WARNING);
     }
-
+    
     /*
      * All apex markers
      */
@@ -361,7 +419,7 @@ public class MarkerUtils {
             }
         }
     }
-
+    
     public void clearAll(List<IResource> resources) {
         if (Utils.isNotEmpty(resources)) {
             for (IResource resource : resources) {
@@ -369,7 +427,7 @@ public class MarkerUtils {
             }
         }
     }
-
+    
     /**
      * Clear all apex resource markers on the resource
      * 
@@ -378,26 +436,26 @@ public class MarkerUtils {
     public void clearAll(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_PROBLEM);
     }
-
+    
     public void clearAllRecursively(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_PROBLEM, IResource.DEPTH_INFINITE);
     }
-
+    
     public void clearDirty(IResource[] resources) {
         if (Utils.isEmpty(resources)) {
             logger.warn("Unable to clear dirty markers on resources - resources is null or empty");
             return;
         }
-
+        
         for (IResource resource : resources) {
             clearDirty(resource);
         }
     }
-
+    
     public void clearDirty(List<IResource> resources) {
         clearDirty(resources.toArray(new IResource[0]));
     }
-
+    
     /**
      * Clear dirty resource markers on the resource
      * 
@@ -406,19 +464,17 @@ public class MarkerUtils {
     public void clearDirty(IResource resource) {
         clearDirty(resource, MarkerUtils.MARKER_DIRTY);
     }
-
+    
     public void clearDirty(IResource resource, String markerId) {
         clearMarkers(resource, null, markerId);
     }
-
-    public void createMarker(final IResource resource, final Map<String, Object> attributes,
-            final String markerType) {
+    
+    public void createMarker(final IResource resource, final Map<String, Object> attributes, final String markerType) {
         if (resource == null || !resource.exists()) {
             return;
         }
-
+        
         try {
-
             IWorkspaceRunnable r = new IWorkspaceRunnable() {
                 @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
@@ -429,40 +485,29 @@ public class MarkerUtils {
             };
             ISchedulingRule sr = getRule(resource);
             resource.getWorkspace().run(r, sr, IWorkspace.AVOID_UPDATE, null);
-
-            if (logger.isInfoEnabled()) {
-                logger.info("Applied '"
-                        + markerType
-                        + "' "
-                        + (attributes.get(IMarker.SEVERITY) != null
-                        && (Integer) attributes.get(IMarker.SEVERITY) == IMarker.SEVERITY_ERROR ? "error"
-                                : "warning") + " marker on resource '" + resource.getName() + "': '"
-                                + attributes.get(IMarker.MESSAGE) + "'");
-            }
-
         } catch (CoreException e) {
             String logMessage = Utils.generateCoreExceptionLog(e);
             logger.warn("Unable to apply marker to resource: " + logMessage);
         }
     }
-
+    
     private static ISchedulingRule getRule(IResource resource) {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = ruleFactory.markerRule(resource.getProject());
         return rule;
     }
-
+    
     public IMarker[] getMarkers(IResource resource, String marker) {
         return getMarkers(resource, marker, IResource.DEPTH_ZERO);
     }
-
+    
     protected IMarker[] getMarkers(IResource resource, String marker, int depth) {
         IMarker[] markers = new IMarker[0];
         if (resource == null || !resource.exists()) {
             return markers;
         }
-
+        
         try {
             markers = resource.findMarkers(marker, true, depth);
         } catch (CoreException e) {
@@ -471,61 +516,55 @@ public class MarkerUtils {
         }
         return markers;
     }
-
+    
     public void clearMarkers(IResource resource, String componentType, String marker) {
         clearMarkers(resource, componentType, marker, IResource.DEPTH_ZERO);
     }
-
+    
     public void clearMarkers(IResource resource, String componentType, String marker, int depth) {
         if (resource == null || !resource.exists()) {
             return;
         }
-
+        
         IMarker[] markers = getMarkers(resource, marker, depth);
         try {
             for (IMarker element : markers) {
-                if (Utils.isEmpty(componentType) || componentType.equals(element.getAttribute(MARKER_ATTR_OBJECT_TYPE))) {
+                if (Utils.isEmpty(componentType)
+                    || componentType.equals(element.getAttribute(MARKER_ATTR_OBJECT_TYPE))) {
                     element.delete();
-
-                    if (logger.isDebugEnabled()) {
-                        String filepath = resource.getProjectRelativePath().toPortableString();
-                        logger.debug("Cleared '" + element.getId() + "' marker for '"
-                                + (Utils.isNotEmpty(filepath) ? filepath : "/" + resource.getName()) + "'");
-                    }
                 }
-
+                
             }
         } catch (CoreException e) {
             String logMessage = Utils.generateCoreExceptionLog(e);
             logger.warn("Unable to clear marker: " + logMessage);
         }
     }
-
+    
     /*
      * Compile errors
      */
-
     public void clearCompileMarkers(IResource[] resources) {
         if (Utils.isEmpty(resources)) {
             logger.warn("Unable to clear compile markers on resources - resources is null or empty");
             return;
         }
-
+        
         for (IResource resource : resources) {
             clearCompileMarkers(resource);
         }
     }
-
+    
     public void clearCompileMarkers(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_COMPILE_ERROR);
     }
-
+    
     public void clearSaveMarkers(IResource[] resources) {
         if (Utils.isEmpty(resources)) {
             logger.warn("Unable to clear save markers on resources - resources is null or empty ");
             return;
         }
-
+        
         for (IResource resource : resources) {
             clearSaveMarkers(resource);
         }
@@ -534,18 +573,18 @@ public class MarkerUtils {
     public void clearSaveMarkers(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_SAVE_ERROR);
     }
-
+    
     public void clearRetrieveMarkers(List<IResource> resources) {
         if (Utils.isEmpty(resources)) {
             logger.warn("Unable to clear retrieve markers on resources - resources is null or empty ");
             return;
         }
-
+        
         for (IResource resource : resources) {
             clearRetrieveMarkers(resource, null);
         }
     }
-
+    
     public void clearRetrieveMarkers(IResource resource, String[] componentTypes) {
         if (Utils.isNotEmpty(componentTypes)) {
             for (String componentType : componentTypes) {
@@ -553,7 +592,7 @@ public class MarkerUtils {
             }
         }
     }
-
+    
     public void clearRunTestFailureMarkers(List<IResource> resources) {
         if (Utils.isEmpty(resources)) {
             if (logger.isInfoEnabled()) {
@@ -561,16 +600,16 @@ public class MarkerUtils {
             }
             return;
         }
-
+        
         for (IResource resource : resources) {
             clearRunTestFailureMarkers(resource);
         }
     }
-
+    
     public void clearRunTestFailureMarkers(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_RUN_TEST_FAILURE);
     }
-
+    
     public void clearCodeCoverageWarningMarkers(List<IResource> resources) {
         if (Utils.isEmpty(resources)) {
             if (logger.isInfoEnabled()) {
@@ -578,17 +617,17 @@ public class MarkerUtils {
             }
             return;
         }
-
+        
         for (IResource resource : resources) {
             clearRunTestFailureMarkers(resource);
         }
     }
-
+    
     public void clearCodeCoverageWarningMarkers(IResource resource) {
         clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING, IResource.DEPTH_INFINITE);
     }
-
+    
     public void clearCodeCoverageWarningMarkersFor(IResource resource) {
-    	clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING, IResource.DEPTH_ZERO);
+        clearMarkers(resource, null, MarkerUtils.MARKER_CODE_COVERAGE_WARNING, IResource.DEPTH_ZERO);
     }
 }

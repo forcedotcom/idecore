@@ -69,8 +69,10 @@ public final class RefreshResourceHandler extends BaseHandler {
         }
     }
 
-    private static void fetchRemoteComponents(final IWorkbench workbench,
-            final RefreshResourceActionController actionController) {
+    private static void fetchRemoteComponents(
+        final IWorkbench workbench,
+        final RefreshResourceActionController actionController
+    ) {
         final WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
             @Override
             protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,

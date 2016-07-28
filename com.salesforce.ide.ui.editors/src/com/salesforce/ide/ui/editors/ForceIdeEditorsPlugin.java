@@ -60,8 +60,10 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
 
     private ContextTypeRegistry apexContextTypeRegistry;
     private ContextTypeRegistry visualforceContextTypeRegistry;
+    private ContextTypeRegistry lightningContextTypeRegistry;
     private TemplateStore apexTemplateStore;
     private TemplateStore visualforceTemplateStore;
+    private TemplateStore lightningTemplateStore;
 
     // C O N S T R U C T O R
     public ForceIdeEditorsPlugin() {
@@ -386,6 +388,24 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
         return visualforceTemplateStore;
     }
 
+    public TemplateStore getLightningTemplateStore() {
+        if (null == lightningTemplateStore) {
+            lightningTemplateStore = new ContributionTemplateStore(
+                getLightningTemplateContextRegistry(),
+                getPreferenceStore(),
+                CUSTOM_TEMPLATES_KEY
+            );
+            try {
+                lightningTemplateStore.load();
+            } catch (IOException e) {
+                final String msg = "Unable to load Lightning template store";
+                final IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, msg, e);
+                getLog().log(status);
+            }
+        }
+        return lightningTemplateStore;
+    }
+
     /**
      * Returns the template context type registry for the Apex editor.
      * 
@@ -408,6 +428,13 @@ public class ForceIdeEditorsPlugin extends AbstractUIPlugin {
             visualforceContextTypeRegistry = new ContributionContextTypeRegistry("com.salesforce.ide.ui.editors.templates.visualforceContextTypes");
         }
         return visualforceContextTypeRegistry;
+    }
+
+    public ContextTypeRegistry getLightningTemplateContextRegistry() {
+        if (null == lightningContextTypeRegistry) {
+            lightningContextTypeRegistry = new ContributionContextTypeRegistry("com.salesforce.ide.ui.editors.templates.lightningContextTypes");
+        }
+        return lightningContextTypeRegistry;
     }
 
 }

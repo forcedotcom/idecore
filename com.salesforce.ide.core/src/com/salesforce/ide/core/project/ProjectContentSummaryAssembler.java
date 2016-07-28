@@ -452,8 +452,9 @@ public class ProjectContentSummaryAssembler {
             for (String member : members) {
                 if (Constants.SUBSCRIBE_TO_ALL.equals(member)) {
                     summary.append(" ").append(
-                        Messages.getString("ProjectCreateWizard.ProjectContent.ContentSummary.Subscribe.message",
-                            new String[] { Utils.getPlural(typeName) }));
+                        Messages.getString(
+                            "ProjectCreateWizard.ProjectContent.ContentSummary.Subscribe.message",
+                            new String[] { Utils.sentenceCase(Utils.getPlural(typeName)) }));
                 } else {
                     summary.append(Constants.NEW_LINE).append(SUMMARY_INDENTION).append(member);
                 }
@@ -461,7 +462,7 @@ public class ProjectContentSummaryAssembler {
         }
         return summary.toString();
     }
-
+    
     /*
      * Method generates the following structure: Objects - Custom candidate__c
      * (Partial) Custom Fields City Country jobapplication__c Custom Fields
@@ -606,25 +607,21 @@ public class ProjectContentSummaryAssembler {
     private static String getDisplayName(Component component, boolean appendSubscribeText) {
         String displayName = null;
         final String type = component.getComponentType();
-        if (Constants.CUSTOM_OBJECT.equals(type)
-                || Constants.STANDARD_OBJECT.equals(type)) {
-            displayName =
-                    "Objects - "
-                            + type.substring(0, type.indexOf("Object"));
+        if (Constants.CUSTOM_OBJECT.equals(type) || Constants.STANDARD_OBJECT.equals(type)) {
+            displayName = "Objects - " + type.substring(0, type.indexOf("Object"));
         } else {
             displayName = component.getDisplayName();
         }
-
+        
         if (appendSubscribeText) {
-            displayName +=
-                    " "
-                            + Messages.getString("ProjectCreateWizard.ProjectContent.ContentSummary.Subscribe.message",
-                                new String[] { Utils.getPlural(component.getDisplayName()) });
+            displayName += " " + Messages.getString(
+                "ProjectCreateWizard.ProjectContent.ContentSummary.Subscribe.message",
+                new String[] { Utils.getPlural(component.getDisplayName()) });
         }
-
+        
         return displayName;
     }
-
+    
     private static PackageTypeMembers getPackageTypeMembers(Package packageManifest, String typeName) {
         List<PackageTypeMembers> types = packageManifest.getTypes();
         for (PackageTypeMembers type : types) {

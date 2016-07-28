@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 import com.salesforce.ide.core.model.ApexCodeLocation;
 import com.salesforce.ide.core.model.ProjectPackageList;
@@ -76,7 +77,7 @@ public class ProjectServiceTest_unit extends TestCase {
 
     public void testhandleDeployResult() throws Exception {
         ProjectService service = spy(new ProjectService());
-        ProjectPackageList projectPackageList = mock(ProjectPackageList.class);
+        ProjectPackageList projectPackageList = mock(ProjectPackageList.class, Mockito.RETURNS_DEEP_STUBS);
         DeployResultExt deployResult = mock(DeployResultExt.class);
         service.handleDeployResult(projectPackageList, deployResult, false, new NullProgressMonitor());
 

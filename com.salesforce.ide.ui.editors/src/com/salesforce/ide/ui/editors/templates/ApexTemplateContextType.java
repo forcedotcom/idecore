@@ -70,8 +70,8 @@ public abstract class ApexTemplateContextType extends TemplateContextType {
 
         @Override
         protected String resolve(TemplateContext context) {
-            if (context instanceof ApexTemplateContext) {
-                final ComponentModel model = ((ApexTemplateContext) context).getComponentModel();
+            if (context instanceof CodeTemplateContext) {
+                final ComponentModel model = ((CodeTemplateContext) context).getComponentModel();
                 if (null == model) return null;
 
                 return model.getName();
@@ -92,8 +92,8 @@ public abstract class ApexTemplateContextType extends TemplateContextType {
 
         @Override
         protected String resolve(TemplateContext context) {
-            if (context instanceof ApexTemplateContext) {
-                final ComponentModel model = ((ApexTemplateContext) context).getComponentModel();
+            if (context instanceof CodeTemplateContext) {
+                final ComponentModel model = ((CodeTemplateContext) context).getComponentModel();
                 if (model instanceof ApexTriggerModel) {
                     return ((ApexTriggerModel) model).getObjectName();
                 }
@@ -114,8 +114,8 @@ public abstract class ApexTemplateContextType extends TemplateContextType {
 
         @Override
         protected String resolve(TemplateContext context) {
-            if (context instanceof ApexTemplateContext) {
-                final ComponentModel model = ((ApexTemplateContext) context).getComponentModel();
+            if (context instanceof CodeTemplateContext) {
+                final ComponentModel model = ((CodeTemplateContext) context).getComponentModel();
                 if (model instanceof ApexTriggerModel) {
                     final Set<String> operations = ((ApexTriggerModel) model).getOperations();
                     return StringUtils.join(operations, ", ");

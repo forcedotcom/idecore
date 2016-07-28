@@ -78,7 +78,7 @@ public class LayoutComponentController extends ComponentController {
         if (body != null) {
             // TODO: add notification window: The template from default layout is not found, apply blank template to +
             // layout.getName()
-            layout.intiNewBody(body);
+            layout.initNewBody(body);
         }
     }
 

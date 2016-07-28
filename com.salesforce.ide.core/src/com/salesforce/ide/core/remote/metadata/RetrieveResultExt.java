@@ -29,11 +29,9 @@ public class RetrieveResultExt implements IMetadataResultExt {
 	private RetrieveMessageExt messageHandler = null;
 	private FileMetadataExt fileMetadataHandler = null;
 
-	//   C O N S T R U C T O R S
 	public RetrieveResultExt() {
 	}
 
-	//   M E T H O D S
 	public RetrieveResultExt(RetrieveResult retrieveResult) {
 		this.retrieveResult = retrieveResult;
 	}

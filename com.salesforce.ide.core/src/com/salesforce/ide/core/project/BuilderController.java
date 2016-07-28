@@ -100,27 +100,15 @@ public class BuilderController extends Controller {
 
     private static void buildThroughTooling(ComponentList saveComponentList, IProject project, ForceProject forceProject,
             IProgressMonitor monitor) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   B U I L D I N G (Tooling API)  ***");
-        }
-
         if (saveComponentList.isNotEmpty()) {
             //TODO: Check for conflicts
             ContainerDelegate.getInstance().getServiceLocator().getToolingDeployService()
             .deploy(forceProject, saveComponentList, monitor);
         }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Finished building");
-        }
     }
 
     public void buildThroughMetadata(ComponentList saveComponentList, IProject project, ForceProject forceProject,
             IProgressMonitor monitor) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("***   B U I L D I N G (Metadata Deploy)  ***");
-        }
-
         if (saveComponentList.isNotEmpty()) {
             // set files to-be-saved in payload and filter out conflicts
             BuilderPayload savePayload = getBuilderPayloadInstance();
@@ -132,29 +120,24 @@ public class BuilderController extends Controller {
                 handleException(savePayload, "Unable to perform saves", e);
             }
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Finished building");
-        }
     }
 
-    private void handleSaves(BuilderPayload savePayload, IProgressMonitor monitor) throws ForceRemoteException,
-    ForceConnectionException, ServiceException, InterruptedException, CoreException, IOException,
-    InvocationTargetException, Exception {
+    private void handleSaves(BuilderPayload savePayload, IProgressMonitor monitor)
+        throws ForceRemoteException, ForceConnectionException, ServiceException, InterruptedException, CoreException,
+        IOException, InvocationTargetException, Exception {
         if (savePayload == null || savePayload.isEmpty() || !savePayload.hasSaveableComponents()) {
-            if (logger.isInfoEnabled()) {
-                logger.info("Save payload is null or empty.  Nothing to save.");
-            }
+            if (logger.isInfoEnabled()) {}
             return;
         }
         ProjectPackageList loadedProjectPackageList = savePayload.getLoadedProjectPackageList();
         final PackageDeployService packageDeployService =
-                ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService();
+            ContainerDelegate.getInstance().getServiceLocator().getPackageDeployService();
         final DeployOptions deployOptions = makeDeployOptions(packageDeployService);
-
+        
         DeployResultExt deployResultHandler =
-                packageDeployService.deploy(loadedProjectPackageList, monitor, deployOptions);
+            packageDeployService.deploy(loadedProjectPackageList, monitor, deployOptions);
         ContainerDelegate.getInstance().getServiceLocator().getProjectService()
-        .handleDeployResult(loadedProjectPackageList, deployResultHandler, true, monitor);
+            .handleDeployResult(loadedProjectPackageList, deployResultHandler, true, monitor);
     }
 
     protected DeployOptions makeDeployOptions(PackageDeployService packageDeployService) {
@@ -163,7 +146,6 @@ public class BuilderController extends Controller {
         return deployOptions;
     }
 
-    //   U T I L I T I E S
     private static void markAllDirty(IFile[] files, String msg) {
         if (Utils.isNotEmpty(files)) {
             for (IFile file : files) {
@@ -176,8 +158,8 @@ public class BuilderController extends Controller {
     }
 
     private void handleException(BuilderPayload payload, String message, Exception e) throws Exception {
-        logger.error("Unable to perform save on all files.", e);
-        markAllDirty(payload.getFiles(),
+        markAllDirty(
+            payload.getFiles(),
             "Unable to perform save on all files: " + ForceExceptionUtils.getStrippedRootCauseMessage(e));
         if (bubbleExceptions) {
             throw e;
@@ -188,18 +170,13 @@ public class BuilderController extends Controller {
     public void finish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {}
 
     @Override
-    public void init() {
-
-    }
-
+    public void init() {}
+    
     @Override
-    public void dispose() {
-
-    }
-
+    public void dispose() {}
+    
     public class DeltaComponentSynchronizer implements IResourceDeltaVisitor {
-        ComponentList saveComponentList = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory()
-                .getComponentListInstance();
+        ComponentList saveComponentList = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory().getComponentListInstance();
 
         public DeltaComponentSynchronizer() {}
 
@@ -208,10 +185,12 @@ public class BuilderController extends Controller {
             IResource resource = delta.getResource();
 
             if (delta.getKind() != IResourceDelta.ADDED && delta.getKind() != IResourceDelta.CHANGED) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Build does not support '" + delta.getKind() + "' delta on '"
-                            + resource.getProjectRelativePath().toPortableString() + "'");
-                }
+                logger.debug(
+                    "Build does not support '" 
+                    + delta.getKind() 
+                    + "' delta on '"
+                    + resource.getProjectRelativePath().toPortableString() 
+                    + "'");
                 return true;
             }
             
@@ -220,22 +199,21 @@ public class BuilderController extends Controller {
                     && resource.getParent() instanceof IProject
                     && !resource.getName().equals(Constants.SOURCE_FOLDER_NAME)
                     ) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Resource '"
-                            + resource.getProjectRelativePath().toPortableString()
-                            + "' and children excluded from build.");
-                }
+                logger.debug(
+                    "Resource '"
+                    + resource.getProjectRelativePath().toPortableString()
+                    + "' and children excluded from build.");
                 // Skip children
                 return false;
             }
 
             if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().isBuildableResource(resource)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Resource '"
-                            + (resource.getType() == IResource.PROJECT ? resource.getName() : resource.getFullPath()
-                                    .toPortableString()) + "' is not a " + Constants.PLUGIN_NAME
-                                    + " managed file.  Excluding from build.");
-                }
+                logger.debug(
+                    "Resource '"
+                    + (resource.getType() == IResource.PROJECT ? resource.getName() : resource.getFullPath().toPortableString()) 
+                    + "' is not a " 
+                    + Constants.PLUGIN_NAME
+                    + " managed file.  Excluding from build.");
                 return true;
             }
 
@@ -243,33 +221,44 @@ public class BuilderController extends Controller {
             try {
                 switch (delta.getKind()) {
                 case IResourceDelta.ADDED:
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Resource '" + file.getFullPath().toPortableString() + "' was added to project '"
-                                + file.getProject().getName() + "'");
-                    }
+                    logger.info(
+                        "Resource '" 
+                        + file.getFullPath().toPortableString() 
+                        + "' was added to project '"
+                        + file.getProject().getName() 
+                        + "'");
                     add(saveComponentList, file);
                     break;
                 case IResourceDelta.CHANGED:
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Resource '" + file.getFullPath().toPortableString() + "' changed");
-                    }
+                    logger.info(
+                        "Resource '" 
+                        + file.getFullPath().toPortableString() 
+                        + "' changed");
                     add(saveComponentList, file);
                     break;
                 case IResourceDelta.REMOVED:
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Resource '" + file.getFullPath().toPortableString()
-                            + "' was removed from project '" + file.getProject().getName() + "'");
-                    }
+                    logger.info(
+                        "Resource '" 
+                        + file.getFullPath().toPortableString()
+                        + "' was removed from project '" 
+                        + file.getProject().getName() 
+                        + "'");
                     logger.warn("Deletes not handled by builder");
                     break;
                 default:
-                    logger.warn("Delta '" + delta.getKind() + "' not handled for resource '"
-                            + file.getProjectRelativePath().toPortableString());
+                    logger.warn(
+                        "Delta '" 
+                        + delta.getKind() 
+                        + "' not handled for resource '"
+                        + file.getProjectRelativePath().toPortableString());
                     break;
                 }
             } catch (FactoryException e) {
-                logger.error("Unable to handle file '" + file.getProjectRelativePath().toPortableString() + "': "
-                        + e.getMessage());
+                logger.error(
+                    "Unable to handle file '" 
+                    + file.getProjectRelativePath().toPortableString() 
+                    + "': "
+                    + e.getMessage());
                 return false;
             }
             return true;
@@ -281,15 +270,10 @@ public class BuilderController extends Controller {
                     .getComponentFromFile(file);
 
             if (component.isInstalled()) {
-                logger.warn("Skipping '" + component.getFullDisplayName() + "' - component is managed");
                 return;
             }
 
-            componentList.add(component, true);
-
-            if (logger.isInfoEnabled()) {
-                logger.info("Component '" + component.getFullDisplayName() + "' addded to to-be-built list");
-            }
+            componentList.add(component);
         }
 
         public ComponentList getSaveComponentList() {

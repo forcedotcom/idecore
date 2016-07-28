@@ -69,7 +69,6 @@ public class SyncController extends Controller {
     private ProjectPackageList remoteProjectPackageList;
     private final List<IResource> syncResources;
 
-    //   C O N S T R U C T O R S
     public SyncController(IProject project, List<IResource> syncResources) {
         super();
         this.model = new OrgModel(project);
@@ -82,20 +81,12 @@ public class SyncController extends Controller {
             throw new IllegalArgumentException("Resources and/or project cannot be null");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger
-                    .debug("Getting remote components for selected resources in project '" + getProject().getName()
-                            + "'");
-        }
-
         // initial store for remote components
         remoteProjectPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
         remoteProjectPackageList.setProject(getProject());
 
         if (Utils.isEmpty(syncResources)) {
-            if (logger.isInfoEnabled()) {
-                logger.info("No remote components to fetch - sync resources provided");
-            }
+            logger.info("No remote components to fetch - sync resources provided");
             return;
         }
 
@@ -231,13 +222,8 @@ public class SyncController extends Controller {
         }
     }
 
-    /**
+    /*
      * Assemble variant data to be compared for local and remote differences.
-     * 
-     * @param resource
-     * @return
-     * @throws FactoryException
-     * @throws TeamException
      */
     SyncInfo getSyncInfo(IResource resource) throws TeamException {
         if (!ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(resource)) {
@@ -302,10 +288,7 @@ public class SyncController extends Controller {
         if (remoteComponent != null) {
             remoteVariant = new ComponentVariant(remoteComponent);
         } else {
-            if (logger.isInfoEnabled()) {
-                logger
-                        .info("Remote component not found.  Assuming component was created locally and not saved remotely");
-            }
+            logger.info("Remote component not found.  Assuming component was created locally and not saved remotely");
             // REVIEWME: temp workaround to trick compare algorithm that change is a new outgoing addition
             baseVariant = null;
         }
@@ -317,12 +300,8 @@ public class SyncController extends Controller {
         return syncInfo;
     }
 
-    /**
+    /*
      * Aggregates resources contained in a given resource.
-     * 
-     * @param resource
-     * @return
-     * @throws CoreException
      */
     IResource[] members(IResource resource) throws CoreException {
         if (logger.isDebugEnabled()) {
@@ -489,27 +468,10 @@ public class SyncController extends Controller {
                     IResource resource = component.getFileResource(projectPackageList.getProject());
                     if (resource == null || ContainerDelegate.getInstance().getServiceLocator().getProjectService().isDefaultPackageManifestFile(resource)
                             || !ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(resource)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Excluding '" + (resource != null ? resource.getName() : component.getMetadataFilePath())
-                                    + "' resource - resource is null and/or resource is not a "
-                                    + Constants.PLUGIN_NAME
-                                    + " managed resource");
-                        }
                         continue;
                     }
 
-                    boolean addSuccess = syncCandidates.add(resource);
-                    if (addSuccess) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Added resource '" + resource.getProjectRelativePath().toPortableString()
-                                    + "' as a remote sync candidate");
-                        }
-                    } else {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Resource '" + resource.getProjectRelativePath().toPortableString()
-                                    + "' already exists as sync candidate");
-                        }
-                    }
+                    syncCandidates.add(resource);
                 }
             }
         }
@@ -521,9 +483,6 @@ public class SyncController extends Controller {
         // we're only interested in files that pertain to given org - not installed packages & package manifest
         if (syncCandidates == null || ContainerDelegate.getInstance().getServiceLocator().getProjectService().isDefaultPackageManifestFile(file)
                 || !ContainerDelegate.getInstance().getServiceLocator().getProjectService().isManagedFile(file)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Skipping resource '" + file.getName() + "' as managed resource");
-            }
             return;
         }
 
@@ -533,16 +492,7 @@ public class SyncController extends Controller {
 
     private static void addResource(Set<IResource> syncCandidates, IResource resource) {
         // add resource to candidates
-        boolean exits = syncCandidates.add(resource);
-        if (exits) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Added resource '" + resource.getName() + "' as a local sync candidate");
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Resource '" + resource.getName() + "' already exists as sync candidate");
-            }
-        }
+        syncCandidates.add(resource);
     }
 
     private Component getComponentFromRemoteList(Component localComponent) {
@@ -607,20 +557,13 @@ public class SyncController extends Controller {
         return result;
     }
 
-    /**
+    /*
      * Apply selected remote synchronize conflict to local project.
      * 
-     * @param syncInfos
-     * @return
-     * @throws InvocationTargetException
-     * @throws InterruptedException
-     * @throws IOException
-     * @throws CoreException
-     * @throws ForceProjectException
      */
     private boolean saveToProject(final List<SyncInfo> syncInfos, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, CoreException, IOException, ForceProjectException,
-            Exception {
+        throws InvocationTargetException, InterruptedException, CoreException, IOException, ForceProjectException,
+        Exception {
         if (Utils.isEmpty(syncInfos)) {
             throw new IllegalArgumentException("Sync array and/or subscriber cannot be null");
         }
@@ -739,26 +682,12 @@ public class SyncController extends Controller {
         }
     }
 
-    /**
+    /*
      * Apply selected local synchronize conflict to server.
-     * 
-     * @param subscriber
-     * @param infos
-     * @return
-     * @throws SyncException
-     * @throws InterruptedException
-     * @throws InterruptedException
-     * @throws IOException
-     * @throws CoreException
-     * @throws ServiceException
-     * @throws FactoryException
-     * @throws ForceRemoteException
-     * @throws ForceConnectionException
-     * @throws InvocationTargetException
      */
     boolean applyToServer(ComponentSubscriber subscriber, SyncInfo[] syncInfos, IProgressMonitor monitor)
-            throws SyncException, InterruptedException, ForceConnectionException, ForceRemoteException,
-            FactoryException, ServiceException, CoreException, IOException, InvocationTargetException, Exception {
+        throws SyncException, InterruptedException, ForceConnectionException, ForceRemoteException, FactoryException,
+        ServiceException, CoreException, IOException, InvocationTargetException, Exception {
         if (Utils.isEmpty(syncInfos)) {
             throw new IllegalArgumentException("Sync array and/or subscriber cannot be null");
         }
@@ -945,14 +874,10 @@ public class SyncController extends Controller {
     }
 
     @Override
-    public void init() {
-
-    }
+    public void init() {}
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 
     private static List<IResource> getResourcesByType(List<IResource> resources, int type) {
         if (Utils.isEmpty(resources)) {

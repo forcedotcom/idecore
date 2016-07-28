@@ -106,4 +106,14 @@ public interface IComponent {
     String toStringLite();
 
     boolean isWildCardSupported();
+    
+    // Deployment
+    /////////////
+
+    /*
+     * Allows this component to transform itself before being added to ComponentList.
+     * Why do we need this? Because bundle components need a way to send their top-level container instead of themselves for deployment.
+     */
+    Component preComponentListAddition();
+    
 }

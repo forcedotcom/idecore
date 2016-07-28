@@ -18,9 +18,9 @@ import com.salesforce.ide.core.internal.components.apex.component.ApexComponentM
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 import com.salesforce.ide.ui.wizards.components.ComponentWizard;
-import com.salesforce.ide.ui.wizards.components.apex.ApexCodeWizardPage;
+import com.salesforce.ide.ui.wizards.components.apex.CodeWizardPage;
 
-public class ApexComponentWizardPage extends ApexCodeWizardPage {
+public class ApexComponentWizardPage extends CodeWizardPage {
 
     private static final Logger logger = Logger.getLogger(ApexComponentWizardPage.class);
 
