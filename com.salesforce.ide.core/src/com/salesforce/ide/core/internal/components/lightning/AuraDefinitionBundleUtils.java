@@ -52,9 +52,11 @@ public class AuraDefinitionBundleUtils {
          * the errors for that resource/bundle, so I have to clear it for that project on each deploy.
          */
         public static void clearAuraMarkers(IFolder srcFolder) {
-            IFolder auraFolder = srcFolder.getFolder(Constants.AURA);
-            if (auraFolder.exists()) {
-                MarkerUtils.getInstance().clearAll(auraFolder);
+            if (srcFolder != null) {
+                IFolder auraFolder = srcFolder.getFolder(Constants.AURA);
+                if (auraFolder.exists()) {
+                    MarkerUtils.getInstance().clearAll(auraFolder);
+                }
             }
         }
         
