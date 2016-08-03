@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -326,7 +327,7 @@ public class PackageManifestController extends Controller {
      */
     protected void updateCacheWork(URL cacheUrl, IProgressMonitor monitor) throws ParserConfigurationException,
     TransformerException, IOException, ForceConnectionException, ForceRemoteException,
-    InterruptedException {
+    InterruptedException, URISyntaxException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         cache = builder.newDocument();
@@ -425,7 +426,7 @@ public class PackageManifestController extends Controller {
             monitor.worked(1);
         }
 
-        Utils.saveDocument(cache, cacheUrl.getPath());
+        Utils.saveDocument(cache, cacheUrl.toURI().getPath());
     }
 
     /**
