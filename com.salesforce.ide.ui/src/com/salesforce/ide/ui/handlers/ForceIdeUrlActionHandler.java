@@ -26,6 +26,15 @@ public class ForceIdeUrlActionHandler {
 
     private ForceIdeUrlParser urlParser;
 	private Display display;
+	private ProjectModel projModel = null;
+	private ProjectController projController = null;
+
+	public ProjectModel getProjModel() {
+		return projModel;
+	}
+	public ProjectController getProjController() {
+		return projController;
+	}	
 	
 	@SuppressWarnings("unused")
 	private ForceIdeUrlActionHandler(){}
@@ -33,6 +42,8 @@ public class ForceIdeUrlActionHandler {
 		this.urlParser = urlParser;
 		this.display = display;
 	}
+
+	
 	
 	/**
 	 * Actions that can be taken upon a project by this handler
@@ -88,7 +99,7 @@ public class ForceIdeUrlActionHandler {
     /**
      * Invoke createOrUpdateJob in display thread so user see dialog with progress
      */
-    private ProjectAction runCreateOrUpdate(){
+    public ProjectAction runCreateOrUpdate(){
  
 		if (Thread.currentThread() == display.getThread()) {
 			return createOrUpdateJob(urlParser.asForceProject());
@@ -122,10 +133,16 @@ public class ForceIdeUrlActionHandler {
         IProgressMonitor monitor = null;
         monitor = new NullProgressMonitor();
 
-        ProjectModel projModel = new ProjectModel(forceProject);
+        this.projModel = new ProjectModel(forceProject);
         projModel.setProjectName(projectName);
-        projModel.setEnvironment("other");
-        ProjectController projController = new ProjectController(null);
+        if (forceProject.getEndpointServer().equals("test.salesforce.com"))
+        	projModel.setEnvironment("Sandbox");
+        else if (forceProject.getEndpointServer().equals("login.salesforce.com"))
+        	projModel.setEnvironment("Production/Developer Edition");
+        else{
+        	projModel.setEnvironment("other");
+        }
+        this.projController = new ProjectController(null);
         projController.setModel(projModel);
         
         // No source code is down-loaded automatically, IDE users must select source to be down-loaded
