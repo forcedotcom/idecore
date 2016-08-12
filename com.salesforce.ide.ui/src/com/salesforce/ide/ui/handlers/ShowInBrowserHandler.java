@@ -379,7 +379,7 @@ public final class ShowInBrowserHandler extends BaseHandler {
     }
 
     private static String getInstalledPackagesPart() {
-        return "033?setupid=ImportedPackage&inst=1";
+        return "0A3?setupid=ImportedPackage&inst=1";
     }
 
     private static String getPackagesPart() {
