@@ -1,16 +1,15 @@
 package com.salesforce.ide.core.internal.utils;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import com.salesforce.ide.core.internal.utils.ForceIdeUrlParser;
 
-public class ForceIdeUrlParser_unit {
+import junit.framework.TestCase;
+
+public class ForceIdeUrlParserTest_unit extends TestCase {
 
 	@Test
 	public void testUnwihtPackage2() {
-		ForceIdeUrlParser parserUnPwSecure;
-		parserUnPwSecure = new ForceIdeUrlParser("forceide://subscriberDebugProject/?url=dbaker-wsm%3A6109&cmd=createproject&un=me@you.com&package=foo&pw=123456");
+		ForceIdeUrlParser parserUnPwSecure = new ForceIdeUrlParser("forceide://subscriberDebugProject/?url=dbaker-wsm%3A6109&cmd=createproject&un=me@you.com&package=foo&pw=123456");
 		assertEquals( parserUnPwSecure.getUsernamne(), "me@you.com");
 		assertEquals(parserUnPwSecure.getPassword(), "123456");
 		assertEquals("subscriberDebugProject", parserUnPwSecure.getOrgName());
@@ -148,6 +147,7 @@ public class ForceIdeUrlParser_unit {
 		assertEquals(parserSessIdUpper.isValid(), true);
 	}
 
+	@Test
 	public void testUnSuccess() {
 		ForceIdeUrlParser parserUnPw = new ForceIdeUrlParser("forceide://subscriberDebugProject/?url=dbaker-wsm%3A6109&cmd=createproject&secure=0&un=me@you.com&pw=123456");
 		assertEquals( parserUnPw.getUsernamne(), "me@you.com");
