@@ -168,6 +168,7 @@ public class ForceIdeUrlParser{
         forceProject.setHttpsProtocol(getIsSecure());
         forceProject.setEndpointApiVersion(sfEndpoints.getDefaultApiVersion());
         forceProject.setMetadataFormatVersion(sfEndpoints.getDefaultApiVersion());
+        forceProject.setEndpointEnvironment("Other (Specify)");
         
         return forceProject;
 	}

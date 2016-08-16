@@ -144,13 +144,7 @@ public class ForceIdeUrlActionHandler {
 
         this.projModel = new ProjectModel(forceProject);
         projModel.setProjectName(projectName);
-        if (forceProject.getEndpointServer().equals("test.salesforce.com"))
-        	projModel.setEnvironment("Sandbox");
-        else if (forceProject.getEndpointServer().equals("login.salesforce.com"))
-        	projModel.setEnvironment("Production/Developer Edition");
-        else{
-        	projModel.setEnvironment("other");
-        }
+       	projModel.setEnvironment(forceProject.getEndpointEnvironment());
         this.projController = new ProjectController(null);
         projController.setModel(projModel);
         
