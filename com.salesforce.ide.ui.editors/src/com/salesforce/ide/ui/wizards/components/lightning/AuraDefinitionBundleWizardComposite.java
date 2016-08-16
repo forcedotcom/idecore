@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
-import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.ui.wizards.components.apex.CodeWizardComposite;
 
 /**
