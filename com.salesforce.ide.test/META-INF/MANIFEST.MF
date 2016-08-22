@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-SymbolicName: com.salesforce.ide.test;singleton:=true
-Bundle-Version: 37.0.0.qualifier
+Bundle-Version: 38.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.test.ForceIdeTest
 Bundle-Vendor: %providerName
 Bundle-ClassPath: .
@@ -10,15 +10,15 @@ Require-Bundle: org.junit,
  org.apache.log4j,
  org.eclipse.ui,
  org.eclipse.core.runtime,
- com.salesforce.ide.core;bundle-version="37.0.0",
- com.salesforce.ide.ui;bundle-version="37.0.0",
- com.salesforce.ide.deployment;bundle-version="37.0.0",
- com.salesforce.ide.schemabrowser;bundle-version="37.0.0",
- com.salesforce.ide.ui.editors;bundle-version="37.0.0",
- com.salesforce.ide.upgrade;bundle-version="37.0.0",
+ com.salesforce.ide.core;bundle-version="38.0.0",
+ com.salesforce.ide.ui;bundle-version="38.0.0",
+ com.salesforce.ide.deployment;bundle-version="38.0.0",
+ com.salesforce.ide.schemabrowser;bundle-version="38.0.0",
+ com.salesforce.ide.ui.editors;bundle-version="38.0.0",
+ com.salesforce.ide.upgrade;bundle-version="38.0.0",
  org.eclipse.core.resources,
- com.salesforce.ide.apex.core;bundle-version="37.0.0",
- com.salesforce.ide.apex.core.test;bundle-version="37.0.0"
+ com.salesforce.ide.apex.core;bundle-version="38.0.0",
+ com.salesforce.ide.apex.core.test;bundle-version="38.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy

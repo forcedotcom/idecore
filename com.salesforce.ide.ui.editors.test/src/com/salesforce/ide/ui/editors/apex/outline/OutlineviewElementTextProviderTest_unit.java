@@ -68,7 +68,7 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
         CompilerService.INSTANCE.visitAstFromString(userClass, visitor);
         Object fieldMember = contentProvider.getChildren(visitor.getTopLevel())[0];
         String text = labelProvider.getText(fieldMember);
-        assertEquals("classMember : Map<String, String>", text);
+        assertEquals("classMember : Map<String,String>", text);
     }
 
     public void testConstructorMemberWithoutParam() throws Exception {
@@ -108,7 +108,7 @@ public class OutlineviewElementTextProviderTest_unit extends TestCase {
         CompilerService.INSTANCE.visitAstFromString(userClass, visitor);
         Object methodMember = contentProvider.getChildren(visitor.getTopLevel())[0];
         String text = labelProvider.getText(methodMember);
-        assertEquals("methodClassMember(List<String>, Integer) : Map<String, String>", text);
+        assertEquals("methodClassMember(List<String>, Integer) : Map<String,String>", text);
     }
     
     public void testPropertyMember() throws Exception {

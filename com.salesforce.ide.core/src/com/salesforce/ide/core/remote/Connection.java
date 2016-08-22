@@ -412,7 +412,7 @@ public class Connection {
             getPlatform(),
             getApplication(),
             null,
-            false);
+            null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set IDE call options");
         }
@@ -433,7 +433,7 @@ public class Connection {
             getPlatform(),
             getApplication(),
             null,
-            false);
+            null);
         if (logger.isDebugEnabled()) {
             logger.debug("Set non-IDE call options");
         }
@@ -534,7 +534,7 @@ public class Connection {
     }
 
     public void setCallOptions(SoapConnection apexConnection, String clientId) throws ForceConnectionException {
-        apexConnection.setCallOptions(clientId, null);
+        apexConnection.setCallOptions(clientId, null, null);
     }
 
     public void setTimeoutMillis(int timeoutMillis) {
