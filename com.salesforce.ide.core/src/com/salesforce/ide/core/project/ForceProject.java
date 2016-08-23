@@ -40,7 +40,7 @@ public class ForceProject extends Org {
     private IProject project = null;
     private String ideVersion = null;
     private String projectIdentifier = null;
-    private boolean preferToolingDeployment = true;
+    private boolean preferToolingDeployment = false;
     private boolean disableSaveToServerDirtyResourceCheck = false;
     private String[] enabledComponentTypes;
 
