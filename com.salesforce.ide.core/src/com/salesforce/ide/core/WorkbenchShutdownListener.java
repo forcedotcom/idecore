@@ -1,7 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Salesforce.com, inc..
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Salesforce.com, inc. - initial API and implementation
+ ******************************************************************************/
 package com.salesforce.ide.core;
 
 import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -9,23 +18,28 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IStartup;
-//import org.eclipse.swt.widgets.MessageBox;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.project.ForceProject;
 import org.eclipse.core.resources.IResource;
 
 
-
+/**
+ * Listener class to be notified when the Force,.comIDE is closed or a workspace is changed to prompt user to delete in potential 
+ * ISV Debug projects in the current workspace
+ * @author dbaker
+ *
+ */
 public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourceChangeListener {
 
-	
+	/**
+	 * Utility method to install listener for Workspace change and workbench shutdown
+	 * @return
+	 */
 	public static WorkbenchShutdownListener installWorkbenchShutdownListener(){
 		WorkbenchShutdownListener shutDownListener = new WorkbenchShutdownListener();
 		PlatformUI.getWorkbench().addWorkbenchListener(shutDownListener);
@@ -33,8 +47,9 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 		installWorkspaceChangeListener(shutDownListener);		
 		return shutDownListener;
 	}
+	
 	/**
-	 * @param shutDownListener
+	 * Utility method to be called on startup to install listener to current workspace
 	 */
 	private static void installWorkspaceChangeListener(WorkbenchShutdownListener shutDownListener) {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(shutDownListener, IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.POST_CHANGE);
@@ -46,26 +61,32 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
         promptRemoveDebugProjects(workbench);	
 		return true;
 	}
-	
+
+	/**
+	 * Called when changes are made to workspace
+	 */
 	@Override 
 	public void resourceChanged(IResourceChangeEvent rcEvent){
+		// If project is being removed from workspace prompt to delete (
 		if (rcEvent.getType() == IResourceChangeEvent.PRE_CLOSE){
 			if (rcEvent.getResource().getType() == IResource.PROJECT){
-				promptRemoveDebugProject(PlatformUI.getWorkbench(), (IProject)rcEvent.getResource());				
+				promptRemoveIfIsvDebugProject(PlatformUI.getWorkbench(), (IProject)rcEvent.getResource());				
 			}
+	    // Install listener in new workspace
 		}else if (rcEvent.getType() == IResourceChangeEvent.POST_CHANGE){
 			if (rcEvent.getDelta().getKind() == IResourceDelta.CHANGED){
 				installWorkspaceChangeListener(this);
 			}
 		}
 	}
+	
 	/**
 	 * @param workbench
 	 */
 	private void promptRemoveDebugProjects(IWorkbench workbench) {
 		List<IProject> projects = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProjects();
         for(IProject proj: projects){
-				promptRemoveDebugProject(workbench, proj);
+				promptRemoveIfIsvDebugProject(workbench, proj);
         }
 	}
 	
@@ -74,33 +95,23 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 	 * @param proj
 	 * @throws CoreException
 	 */
-	private void promptRemoveDebugProject(IWorkbench workbench, IProject proj) {
+	private void promptRemoveIfIsvDebugProject(IWorkbench workbench, IProject proj) {
 		try {
 			if (proj.hasNature(DefaultNature.NATURE_ID)){
 				ForceProject fProj = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProject(proj);
 				if (!fProj.getSessionId().isEmpty()){
-			        // The file already exists; asks for confirmation
-					org.eclipse.swt.widgets.MessageBox mb = new org.eclipse.swt.widgets.MessageBox(workbench.getDisplay().getActiveShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+					MessageDialog md = new MessageDialog(workbench.getDisplay().getActiveShell(), null, null, 
+							"The project \""+ fProj.getProject().getName() + "\" contains a subscriber's code, and should be removed from your local file system when you're done debugging. Delete now?", 
+							MessageDialog.WARNING, 
+							new String[] {"I'll Delete Later", "Delete Now"}, 1);
 
-			        // We really should read this string from a resource bundle
-			        mb.setMessage(fProj.getProject().getName() + " exists in the local file system. Do you wish to remove it?");
-
-			        // If they click Yes, we're done and we drop out. If they click No, we redisplay the File Dialog
-			        if(mb.open() == SWT.YES)
+					// If user selected "Delete Now"
+					if(md.open() == 1)
 			        	fProj.getProject().delete(true,  true, new NullProgressMonitor());
 				}
 			}
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public void postShutdown(IWorkbench workbench) {
-		// TODO Auto-generated method stub
-
-	}
-
-
 }
