@@ -9,7 +9,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
     <!-- A P I   V E R S I O N   S U P P O R T -->
     <util:set id="supportedApiVersions" set-class="java.util.TreeSet">
-		<value>37.0</value>
+		<value>38.0</value>
     </util:set>
 
     <bean id="lastSupportedApiVersion" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">

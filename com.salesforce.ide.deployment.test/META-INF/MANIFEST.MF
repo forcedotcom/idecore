@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-SymbolicName: com.salesforce.ide.deployment.test
-Bundle-Version: 37.0.0.qualifier
+Bundle-Version: 38.0.0.qualifier
 Fragment-Host: com.salesforce.ide.deployment
 Bundle-Vendor: %providerName
 Require-Bundle: org.junit,

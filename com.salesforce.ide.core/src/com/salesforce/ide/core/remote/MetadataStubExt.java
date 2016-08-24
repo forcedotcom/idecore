@@ -115,7 +115,7 @@ public class MetadataStubExt {
         }
 
         updateSessionId(connection.getSessionId());
-        metadataConnection.setCallOptions(connection.getApplication(), null);
+        metadataConnection.setCallOptions(connection.getApplication(), null, null);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Set client id on metadata stub '" + connection.getApplication() + "'");

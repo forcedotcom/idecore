@@ -124,37 +124,13 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
                 getComponentWizardPage().validateUserInput();
             }
         });
-        Label filler31 = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
-        filler31.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
+
+        Label filler = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
+        filler.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
     }
 
     protected final void createLabelText(Composite composite, Group containingGroup) {
-        if (composite == null && containingGroup == null) {
-            throw new IllegalArgumentException("Composite and group cannot both be null");
-        }
-
-        Label lblLabel = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
-        lblLabel.setText("Label:");
-        lblLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
-        txtLabel = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
-        txtLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
-        txtLabel.addModifyListener(new ModifyListener() {
-            @Override
-            public final void modifyText(ModifyEvent e) {
-                getComponentWizardPage().setComponentNameChanged(true);
-                getComponentWizardPage().validateUserInput();
-            }
-        });
-        @SuppressWarnings("unused")
-        Label filler31 = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
-    }
-
-    protected final void createLabelAndNameText(Composite composite, Group containingGroup) {
-        createLabelAndNameText(composite, containingGroup, false);
-    }
-
-    protected final void createLabelAndNameText(Composite composite, Group containingGroup, boolean includePlural) {
-        if (composite == null && containingGroup == null) {
+    	if (composite == null && containingGroup == null) {
             throw new IllegalArgumentException("Composite and group cannot both be null");
         }
 
@@ -188,6 +164,14 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
                 getComponentWizardPage().setComponentNameChanged(true);
             }
         });
+    }
+
+    protected final void createLabelAndNameText(Composite composite, Group containingGroup) {
+        createLabelAndNameText(composite, containingGroup, false);
+    }
+
+    protected final void createLabelAndNameText(Composite composite, Group containingGroup, boolean includePlural) {
+        createLabelText(composite, containingGroup);
 
         Label filler1 = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
         filler1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
@@ -220,21 +204,7 @@ public abstract class ComponentWizardComposite extends BaseComposite implements 
         }
 
         // this is the file name
-        Label lblName = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
-        lblName.setText("Name:");
-        lblName.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 0));
-        txtName = new Text(containingGroup != null ? containingGroup : composite, SWT.BORDER);
-        txtName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 0));
-        txtName.addModifyListener(new ModifyListener() {
-            @Override
-            public final void modifyText(ModifyEvent e) {
-                getComponentWizardPage().setComponentNameChanged(true);
-                getComponentWizardPage().validateUserInput();
-            }
-        });
-
-        Label filler = new Label(containingGroup != null ? containingGroup : composite, SWT.NONE);
-        filler.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 0));
+        createNameText(composite, containingGroup);
     }
 
     protected final void createObjectTextAndRefreshButton(Composite composite, Group containingGroup) {

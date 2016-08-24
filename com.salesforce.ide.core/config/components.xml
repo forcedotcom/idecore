@@ -203,6 +203,17 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <property name="description" value="" />
         <property name="apiVersion" ref="lastSupportedApiVersion" />
     </bean>
+    
+    <bean id="ApexTestSuite" parent="component" scope="prototype" lazy-init="true">
+        <property name="displayName" value="${ApexTestSuite.displayName}" />
+        <property name="componentType" value="${ApexTestSuite.componentType}" />
+        <property name="defaultFolder" value="${ApexTestSuite.defaultFolder}" />
+        <property name="fileExtension" value="${ApexTestSuite.fileExtension}" />
+        <property name="maxLabelLength" value="${ApexTestSuite.maxLabelLength}" />
+        <lookup-method name="getDefaultMetadataExtInstance" bean="apexTestSuiteMetadata" />
+    </bean>
+    
+    <bean id="apexTestSuiteMetadata" class="${xmlComponentType.package.name}.${ApexTestSuite.componentType}"  lazy-init="true" />
 
     <!-- apex trigger -->
     <bean id="ApexTrigger" class="com.salesforce.ide.core.model.ApexTrigger" parent="baseApexComponent" scope="prototype"

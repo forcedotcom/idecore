@@ -17,6 +17,7 @@ import com.salesforce.ide.core.internal.components.ComponentController;
 import com.salesforce.ide.core.internal.components.apex.clazz.ApexClassComponentController;
 import com.salesforce.ide.core.internal.components.apex.component.ApexComponentComponentController;
 import com.salesforce.ide.core.internal.components.apex.page.ApexPageComponentController;
+import com.salesforce.ide.core.internal.components.apex.test.ApexTestSuiteComponentController;
 import com.salesforce.ide.core.internal.components.apex.trigger.ApexTriggerComponentController;
 import com.salesforce.ide.core.internal.components.application.CustomApplicationComponentController;
 import com.salesforce.ide.core.internal.components.homepage.component.HomePageComponentComponentController;
@@ -71,6 +72,9 @@ public enum ComponentTypeEnum {
         true,
         new ComponentTypeEnum.ComponentTypeTestInfo("Visualforce Page", "pages", ".page", "ApexPage", true)),
         
+    ApexTestSuite("ApexTestSuite", ApexTestSuiteComponentController.class, true, true, true, true,
+    		new ComponentTypeEnum.ComponentTypeTestInfo("Apex Test Suite", "testSuites", ".testSuite", "ApexTestSuite", true)),
+    
     ApexTrigger(
         "ApexTrigger",
         ApexTriggerComponentController.class,
@@ -284,18 +288,19 @@ public enum ComponentTypeEnum {
         new ComponentTypeEnum.ComponentTypeTestInfo(null, "tabs", ".tab", "CustomTab", true)),
         
     DataCategoryGroup(
-        "DataCategoryGroup",
-        false,
-        true,
-        false,
-        new ComponentTypeEnum.ComponentTypeTestInfo(
-            null,
-            "datacategorygroups",
-            ".datacategorygroup",
-            Constants.DATACATEGORYGROUP,
+            "DataCategoryGroup",
+            false,
             true,
-            new ComponentTypeWebUrlPart("/category/datacategorysetup.apexp"),
-            new ComponentWebUrlPart("/category/datacategorysetup.apexp?"))),
+            false,
+            new ComponentTypeEnum.ComponentTypeTestInfo(
+                null,
+                "datacategorygroups",
+                ".datacategorygroup",
+                Constants.DATACATEGORYGROUP,
+                true,
+                new ComponentTypeWebUrlPart("/category/datacategorysetup.apexp"),
+                new ComponentWebUrlPart("/category/datacategorysetup.apexp?"),
+                new DisplayName("Data Category Group"))),
             
     Dashboard("Dashboard", false, false, true),
     
