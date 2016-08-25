@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Force.com IDE Eclipse 4.5.1. (Mars)" sequenceNumber="31">
+<?pde version="3.8"?><target name="Force.com IDE Eclipse 4.5.1. (Mars)" sequenceNumber="33">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rcp.sdk.id" version="4.5.1.M20150904-0015"/>
@@ -26,10 +26,6 @@
 <repository location="http://download.eclipse.org/webtools/repository/mars"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="mega.lightning.feature.feature.group" version="0.0.0"/>
-<repository location="http://clabrosse-wsl3.internal.salesforce.com:8080/mega-lightning-dependencies/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.hamcrest.library.source" version="1.3.0.v201505072020"/>
 <unit id="org.hamcrest.core.source" version="1.3.0.v201303031735"/>
 <unit id="org.hamcrest" version="1.1.0.v20090501071000"/>
@@ -38,6 +34,19 @@
 <unit id="org.hamcrest.text.source" version="1.1.0.v20090501071000"/>
 <unit id="org.hamcrest.library" version="1.3.0.v201505072020"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.jodd.log" version="3.6.7"/>
+<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
+<unit id="org.jodd.props" version="3.6.7"/>
+<unit id="org.jodd.bean" version="3.6.7"/>
+<unit id="org.jodd.core" version="3.6.7"/>
+<unit id="com.google.guava" version="19.0.0"/>
+<unit id="org.jodd.proxetta" version="3.6.7"/>
+<unit id="org.jodd.jtx" version="3.6.7"/>
+<unit id="org.jodd.db" version="3.6.7"/>
+<unit id="org.h2" version="1.4.191"/>
+<repository location="http://clabrosse-wsl3.internal.salesforce.com:8080/mega-lightning-dependencies/10/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
