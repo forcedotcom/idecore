@@ -20,7 +20,6 @@ import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.activities.IWorkbenchActivitySupport;
 
 import com.salesforce.ide.ui.editors.ForceIdeEditorsPlugin;
-import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
 
 /**
  * @author ataylor

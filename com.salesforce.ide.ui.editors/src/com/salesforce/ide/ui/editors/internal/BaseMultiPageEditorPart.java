@@ -8,7 +8,7 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.internal.editor;
+package com.salesforce.ide.ui.editors.internal;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;

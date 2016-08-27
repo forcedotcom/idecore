@@ -44,7 +44,7 @@ import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.DialogUtils;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.services.ServiceLocator;
-import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
+import com.salesforce.ide.ui.editors.internal.BaseMultiPageEditorPart;
 import com.salesforce.ide.ui.internal.utils.UIUtils;
 import com.salesforce.ide.upgrade.internal.utils.UpgradeMessages;
 import com.salesforce.ide.upgrade.project.UpgradeNature;
