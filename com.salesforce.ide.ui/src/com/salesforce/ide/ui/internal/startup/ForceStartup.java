@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 import com.salesforce.ide.api.metadata.types.Package;
+import com.salesforce.ide.core.WorkbenchShutdownListener;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.MessageDialogRunnable;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -47,6 +48,7 @@ public class ForceStartup implements IStartup {
 
     private static Map<IResource, Package> manifestCache = new HashMap<>();
     public static boolean PACKAGE_MANIFEST_LISTENER_FLAG = Utils.isManifestListenerEnabled();
+    private WorkbenchShutdownListener shutdownListener = null;
 
     @Override
     public void earlyStartup() {
@@ -79,6 +81,7 @@ public class ForceStartup implements IStartup {
 
                 }
             }
+            shutdownListener = WorkbenchShutdownListener.installWorkbenchShutdownListener();
         }
 
         Display.getDefault().asyncExec(new Runnable() {

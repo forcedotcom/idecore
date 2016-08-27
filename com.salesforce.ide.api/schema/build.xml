@@ -2,7 +2,7 @@
 <project name="metadata-objects-jaxb" default="all" basedir=".">
 
 	<property name="tmp.dir" value="${basedir}/_tmp" />
-	<property name="ide.bin" value="${basedir}/../bin" />
+	<property name="ide.bin" value="${basedir}/../target/classes" />
 	<property name="ide.lib" value="${basedir}/../lib" />
 	<property name="jaxb.lib.dir" value="${basedir}/jaxb-lib" />
 	<property name="schema.file" value="${basedir}/metadata.xsd" />

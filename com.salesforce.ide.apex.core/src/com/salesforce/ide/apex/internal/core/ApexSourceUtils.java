@@ -52,6 +52,8 @@ public class ApexSourceUtils {
     private static final Logger logger = Logger.getLogger(ApexSourceUtils.class);
 
     public static final ApexSourceUtils INSTANCE = new ApexSourceUtils();
+    public static String CLS_SUFFIX = ".cls";
+    public static String TRG_SUFFIX = ".trigger";
 
     private ApexSourceUtils() {}
 
@@ -62,7 +64,7 @@ public class ApexSourceUtils {
      * @return Map of test resources whose key is the resource ID and values are test method names
      */
     public Map<IResource, List<String>> findTestClassesInProject(IProject project) {
-        final Map<IResource, List<String>> allTests = Maps.newHashMap();
+        final Map<IResource, List<String>> allTests = Maps.newLinkedHashMap();
 
         List<IResource> projectResources = findLocalSourcesInProject(project);
         List<IResource> projectClasses = filterSourcesByClass(projectResources);
@@ -271,9 +273,9 @@ public class ApexSourceUtils {
             return Lists.newArrayList();
         } else {
             ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory(); Component classComponent = componentFactory.getComponentByComponentType("ApexClass");
-            String classExt = classComponent == null ? ".cls" : classComponent.getFileExtension();
+            String classExt = classComponent == null ? CLS_SUFFIX : classComponent.getFileExtension();
             Component trgComponent = componentFactory.getComponentByComponentType("ApexTrigger");
-            String trgExt = trgComponent == null ? ".trigger" : trgComponent.getFileExtension();
+            String trgExt = trgComponent == null ? TRG_SUFFIX : trgComponent.getFileExtension();
             
             return projectResources.stream()
                 .filter(r -> !StringUtils.isEmpty(r.getFileExtension()) && (r.getFileExtension().equals(classExt) || r.getFileExtension().equals(trgExt)))
