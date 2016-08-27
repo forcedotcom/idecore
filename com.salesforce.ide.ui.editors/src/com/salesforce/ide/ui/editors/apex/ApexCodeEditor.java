@@ -430,44 +430,6 @@ public class ApexCodeEditor extends TextEditor implements IShowInSource {
         }
     }
 
-    protected static int selectWord(ITextViewer fText, final int caretPos) {
-        IDocument doc = fText.getDocument();
-        int startPos, endPos;
-        try {
-            int pos = caretPos;
-            char c;
-
-            while (pos >= 0) {
-                c = doc.getChar(pos);
-                if (!Character.isJavaIdentifierPart(c)) {
-                    break;
-                }
-                --pos;
-            }
-
-            startPos = pos;
-            pos = caretPos;
-            int length = doc.getLength();
-
-            while (pos < length) {
-                c = doc.getChar(pos);
-                if (!Character.isJavaIdentifierPart(c)) {
-                    break;
-                }
-                ++pos;
-            }
-
-            endPos = pos;
-            selectRange(startPos, endPos, fText);
-            return endPos;
-
-        } catch (BadLocationException x) {
-            // do nothing return a -1
-        }
-
-        return -1;
-    }
-
     private static void selectRange(int startPos, int stopPos, ITextViewer fText) {
         int offset = startPos + 1;
         int length = stopPos - offset;
