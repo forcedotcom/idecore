@@ -104,8 +104,8 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 			if (proj.hasNature(DefaultNature.NATURE_ID)){
 				ForceProject fProj = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProject(proj);
 				if (!fProj.getSessionId().isEmpty()){
-					MessageDialog md = new MessageDialog(workbench.getDisplay().getActiveShell(), null, null, 
-							"The project \""+ fProj.getProject().getName() + "\" contains a subscriber's code, and should be removed from your local file system when you're done debugging. Delete now?", 
+					MessageDialog md = new MessageDialog(workbench.getDisplay().getActiveShell(), "Delete subscriber's code?", null, 
+							"The project <"+ fProj.getProject().getName() + "> contains a subscriber's code. Be sure to delete it when you've finished debugging. Do you want to delete it now?", 
 							MessageDialog.WARNING, 
 							new String[] {"I'll Delete Later", "Delete Now"}, 1);
 
