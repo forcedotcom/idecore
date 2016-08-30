@@ -61,6 +61,10 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
         promptRemoveDebugProjects(workbench);	
 		return true;
 	}
+	
+	@Override
+	public void postShutdown(IWorkbench workbench){		
+	}
 
 	/**
 	 * Called when changes are made to workspace
