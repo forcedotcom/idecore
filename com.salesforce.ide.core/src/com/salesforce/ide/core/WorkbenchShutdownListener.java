@@ -19,6 +19,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
@@ -38,7 +39,6 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 
 	/**
 	 * Utility method to install listener for Workspace change and workbench shutdown
-	 * @return
 	 */
 	public static WorkbenchShutdownListener installWorkbenchShutdownListener(){
 		WorkbenchShutdownListener shutDownListener = new WorkbenchShutdownListener();
@@ -71,47 +71,40 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 	 */
 	@Override 
 	public void resourceChanged(IResourceChangeEvent rcEvent){
-		// If project is being removed from workspace prompt to delete (
-		if (rcEvent.getType() == IResourceChangeEvent.PRE_CLOSE){
-			if (rcEvent.getResource().getType() == IResource.PROJECT){
-				promptRemoveIfIsvDebugProject(PlatformUI.getWorkbench(), (IProject)rcEvent.getResource());				
+		// If project is being removed from workspace, prompt to delete
+		if (rcEvent.getType() == IResourceChangeEvent.PRE_CLOSE) {
+			if (rcEvent.getResource().getType() == IResource.PROJECT) {
+				promptRemoveIfIsvDebugProject(PlatformUI.getWorkbench(), (IProject) rcEvent.getResource());
 			}
-	    // Install listener in new workspace
-		}else if (rcEvent.getType() == IResourceChangeEvent.POST_CHANGE){
-			if (rcEvent.getDelta().getKind() == IResourceDelta.CHANGED){
+			// Install listener in new workspace
+		} else if (rcEvent.getType() == IResourceChangeEvent.POST_CHANGE) {
+			if (rcEvent.getDelta().getKind() == IResourceDelta.CHANGED) {
 				installWorkspaceChangeListener(this);
 			}
 		}
 	}
 	
-	/**
-	 * @param workbench
-	 */
 	private void promptRemoveDebugProjects(IWorkbench workbench) {
 		List<IProject> projects = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProjects();
-        for(IProject proj: projects){
-				promptRemoveIfIsvDebugProject(workbench, proj);
-        }
+		for (IProject proj : projects) {
+			promptRemoveIfIsvDebugProject(workbench, proj);
+		}
 	}
 	
-	/**
-	 * @param workbench
-	 * @param proj
-	 * @throws CoreException
-	 */
 	private void promptRemoveIfIsvDebugProject(IWorkbench workbench, IProject proj) {
 		try {
-			if (proj.hasNature(DefaultNature.NATURE_ID)){
+			if (proj.hasNature(DefaultNature.NATURE_ID)) {
 				ForceProject fProj = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProject(proj);
-				if (!fProj.getSessionId().isEmpty()){
-					MessageDialog md = new MessageDialog(workbench.getDisplay().getActiveShell(), "Delete subscriber's code?", null, 
-							"The project <"+ fProj.getProject().getName() + "> contains a subscriber's code. Be sure to delete it when you've finished debugging. Do you want to delete it now?", 
-							MessageDialog.WARNING, 
-							new String[] {"I'll Delete Later", "Delete Now"}, 1);
+				if (!fProj.getSessionId().isEmpty()) {
+					String message = NLS.bind(Messages.RemoveSubscriberCode_Question, fProj.getProject().getName());
+					MessageDialog md = new MessageDialog(workbench.getDisplay().getActiveShell(),
+							Messages.RemoveSubscriberCode_Title, null, message, MessageDialog.WARNING,
+							new String[] { Messages.RemoveSubscriberCode_Later, Messages.RemoveSubscriberCode_Now }, 1);
 
 					// If user selected "Delete Now"
-					if(md.open() == 1)
-			        	fProj.getProject().delete(true,  true, new NullProgressMonitor());
+					if (md.open() == 1) {
+						fProj.getProject().delete(true, true, new NullProgressMonitor());
+					}
 				}
 			}
 		} catch (CoreException e) {

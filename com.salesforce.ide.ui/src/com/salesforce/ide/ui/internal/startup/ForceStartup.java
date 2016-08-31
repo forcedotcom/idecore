@@ -48,7 +48,6 @@ public class ForceStartup implements IStartup {
 
     private static Map<IResource, Package> manifestCache = new HashMap<>();
     public static boolean PACKAGE_MANIFEST_LISTENER_FLAG = Utils.isManifestListenerEnabled();
-    private WorkbenchShutdownListener shutdownListener = null;
 
     @Override
     public void earlyStartup() {
@@ -81,7 +80,7 @@ public class ForceStartup implements IStartup {
 
                 }
             }
-            shutdownListener = WorkbenchShutdownListener.installWorkbenchShutdownListener();
+            WorkbenchShutdownListener.installWorkbenchShutdownListener();
         }
 
         Display.getDefault().asyncExec(new Runnable() {
