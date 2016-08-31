@@ -252,7 +252,8 @@ public class ForceIdeUrlDropHandler implements IStartup {
 				return;
 			}
 			final String url = getUrl(event.data);
-			ForceIdeUrlActionHandler.ProjectAction result = ForceIdeUrlActionHandler.processCommand(url, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay());
+			ForceIdeUrlActionHandler urlActionHandler = new ForceIdeUrlActionHandler(url, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay());
+			ForceIdeUrlActionHandler.ProjectAction result = urlActionHandler.processCommand();
 			if (result == ForceIdeUrlActionHandler.ProjectAction.IGNORE || result == ForceIdeUrlActionHandler.ProjectAction.INVALID)
 				traceInvalidEventData(event);
 		}
