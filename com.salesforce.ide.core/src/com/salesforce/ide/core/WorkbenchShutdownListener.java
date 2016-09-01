@@ -30,12 +30,23 @@ import org.eclipse.core.resources.IResource;
 
 
 /**
- * Listener class to be notified when the Force,.comIDE is closed or a workspace is changed to prompt user to delete in potential 
- * ISV Debug projects in the current workspace
+ * Listener class to be notified when the Force.comIDE is closed or a workspace
+ * is changed to prompt user to delete in potential ISV Debug projects in the
+ * current workspace. <br/><br/>
+ * 
+ * It checks for the existence of session ID in the project which is only
+ * available when the project is created using drag-n-drop (which is only used
+ * for ISV Debugger). <br/><br/>
+ * 
+ * The difference between this listener and DebuggerWorkbenchListener is that
+ * the former gets executed whenever the IDE is opened/closed or workspace was changed, 
+ * so this will remind the user plenty of times to remove the subscriber code. The
+ * latter is only executed after ForceProjectRefreshJob runs, so something like re-opening the
+ * workbench won't trigger the listener.
+ * 
  * @author dbaker
- *
  */
-public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourceChangeListener {
+public class WorkbenchShutdownListener implements IWorkbenchListener, IResourceChangeListener {
 
 	/**
 	 * Utility method to install listener for Workspace change and workbench shutdown
@@ -71,13 +82,13 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 	 */
 	@Override 
 	public void resourceChanged(IResourceChangeEvent rcEvent){
-		// If project is being removed from workspace, prompt to delete
 		if (rcEvent.getType() == IResourceChangeEvent.PRE_CLOSE) {
+			// If project is being removed from workspace, prompt to delete
 			if (rcEvent.getResource().getType() == IResource.PROJECT) {
 				promptRemoveIfIsvDebugProject(PlatformUI.getWorkbench(), (IProject) rcEvent.getResource());
 			}
-			// Install listener in new workspace
 		} else if (rcEvent.getType() == IResourceChangeEvent.POST_CHANGE) {
+			// Install listener in new workspace
 			if (rcEvent.getDelta().getKind() == IResourceDelta.CHANGED) {
 				installWorkspaceChangeListener(this);
 			}
@@ -90,6 +101,7 @@ public class WorkbenchShutdownListener implements  IWorkbenchListener,  IResourc
 			promptRemoveIfIsvDebugProject(workbench, proj);
 		}
 	}
+	
 	
 	private void promptRemoveIfIsvDebugProject(IWorkbench workbench, IProject proj) {
 		try {
