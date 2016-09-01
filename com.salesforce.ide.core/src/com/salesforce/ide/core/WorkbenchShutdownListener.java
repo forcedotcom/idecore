@@ -12,10 +12,6 @@ package com.salesforce.ide.core;
 
 import java.util.List;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,7 +22,6 @@ import org.eclipse.ui.PlatformUI;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.project.DefaultNature;
 import com.salesforce.ide.core.project.ForceProject;
-import org.eclipse.core.resources.IResource;
 
 
 /**
@@ -39,60 +34,33 @@ import org.eclipse.core.resources.IResource;
  * for ISV Debugger). <br/><br/>
  * 
  * The difference between this listener and DebuggerWorkbenchListener is that
- * the former gets executed whenever the IDE is opened/closed or workspace was changed, 
+ * the former gets registered whenever the IDE is opened/closed or workspace was changed, 
  * so this will remind the user plenty of times to remove the subscriber code. The
- * latter is only executed after ForceProjectRefreshJob runs, so something like re-opening the
+ * latter is only registered after ForceProjectRefreshJob runs, so something like re-opening the
  * workbench won't trigger the listener.
  * 
  * @author dbaker
  */
-public class WorkbenchShutdownListener implements IWorkbenchListener, IResourceChangeListener {
+public class WorkbenchShutdownListener implements IWorkbenchListener {
 
 	/**
 	 * Utility method to install listener for Workspace change and workbench shutdown
 	 */
-	public static WorkbenchShutdownListener installWorkbenchShutdownListener(){
+	public static WorkbenchShutdownListener installWorkbenchShutdownListener() {
 		WorkbenchShutdownListener shutDownListener = new WorkbenchShutdownListener();
 		PlatformUI.getWorkbench().addWorkbenchListener(shutDownListener);
-		
-		installWorkspaceChangeListener(shutDownListener);		
+			
 		return shutDownListener;
 	}
 	
-	/**
-	 * Utility method to be called on startup to install listener to current workspace
-	 */
-	private static void installWorkspaceChangeListener(WorkbenchShutdownListener shutDownListener) {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(shutDownListener, IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.POST_CHANGE);
-	}
-			
 	@Override
-	public boolean preShutdown(IWorkbench workbench, boolean forced){
-		
+	public boolean preShutdown(IWorkbench workbench, boolean forced) {
         promptRemoveDebugProjects(workbench);	
 		return true;
 	}
 	
 	@Override
 	public void postShutdown(IWorkbench workbench){		
-	}
-
-	/**
-	 * Called when changes are made to workspace
-	 */
-	@Override 
-	public void resourceChanged(IResourceChangeEvent rcEvent){
-		if (rcEvent.getType() == IResourceChangeEvent.PRE_CLOSE) {
-			// If project is being removed from workspace, prompt to delete
-			if (rcEvent.getResource().getType() == IResource.PROJECT) {
-				promptRemoveIfIsvDebugProject(PlatformUI.getWorkbench(), (IProject) rcEvent.getResource());
-			}
-		} else if (rcEvent.getType() == IResourceChangeEvent.POST_CHANGE) {
-			// Install listener in new workspace
-			if (rcEvent.getDelta().getKind() == IResourceDelta.CHANGED) {
-				installWorkspaceChangeListener(this);
-			}
-		}
 	}
 	
 	private void promptRemoveDebugProjects(IWorkbench workbench) {
