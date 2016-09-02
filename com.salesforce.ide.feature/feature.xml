@@ -17,52 +17,48 @@
    </copyright>
 
    <license url="about.html">
-      End User License Agreement
-Force.com IDE version 37.0
-Except as described below, com.salesforce.ide,
-com.salesforce.ide.api,
-com.salesforce.ide.branding,
-com.salesforce.ide.core,
-com.salesforce.ide.deployment,
-com.salesforce.ide.documentation,
-com.salesforce.ide.ui,
-com.salesforce.ide.ui.editors,
-com.salesforce.ide.ui.editors.intro,
-com.salesforce.ide.schemabrowser,
-com.salesforce.ide.core.compatibility,
-and com.salesforce.ide.upgrade jar files are Copyright (c) 2005-2014,
-salesforce.com, inc. All rights reserved.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-* Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer
-in the documentation and/or other materials provided with the
-distribution.
-* Neither the name of salesforce.com, inc. nor the names of its
-contributors may be used to endorse or promote products derived
-from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-BUT
-NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-OF THE POSSIBILITY OF SUCH DAMAGE.
-The following Third Party components are licensed as follows:
+      Copyright 2016 salesforce.com, inc. All rights reserved.
+
+Use of this software is subject to the salesforce.com Developerforce Terms of
+Use and other applicable terms that salesforce.com may make available, as may be
+amended from time to time. Except as and only to the extent permitted by
+applicable law, or by licensing terms governing use of open-sourced components
+included with the software, You may not decompile, reverse engineer,
+disassemble, attempt to derive the source code of, decrypt, modify, or create
+derivative works of this software, updates thereto, or any part thereof. You may
+not use the software to engage in any development activity that infringes the
+rights of a third party, including that which interferes with, damages, or
+accesses in an unauthorized manner the servers, networks, or other properties or
+services of salesforce.com or any third party.
+
+WITHOUT LIMITING THE GENERALITY OF THE FOREGOING, THE SOFTWARE IS PROVIDED &quot;AS
+IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL
+SALESFORCE.COM HAVE ANY LIABILITY FOR ANY DAMAGES, INCLUDING BUT NOT LIMITED TO,
+DIRECT, INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES, OR
+DAMAGES BASED ON LOST PROFITS, DATA OR USE, IN CONNECTION WITH THE SOFTWARE,
+HOWEVER CAUSED AND, WHETHER IN CONTRACT, TORT OR UNDER ANY OTHER THEORY OF
+LIABILITY, WHETHER OR NOT YOU HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES
+
+Use of any software licensed under the Eclipse Public License (“the Eclipse
+Libraries”) are also governed by the terms below:
+
+All persons or entities that have distributed the Eclipse Libraries disclaim all
+warranties and conditions, express and implied, including warranties or
+conditions of  title and non-infringement, and implied warranties or conditions
+of merchantability and fitness for a particular purpose. In addition, such
+persons or entities are not liable for any damages, including direct, indirect,
+special, incidental and consequential damages, such as lost profits.
+
+Any provisions of this license agreement that differ from the Eclipse Public
+License are offered by Salesforce.com alone and not by any other party.
+
 AspectJ 1.5.4
 aspectjrt.jar
 aspectjweaver.jar
 Your use of the AspectJ code is subject to the terms and conditions
 of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+
 Axis 1.1
 axis.jar
 jaxrpc.jar
@@ -71,6 +67,7 @@ This product includes software developed by the Apache Software
 Foundation (http://www.apache.org)
 Your use of the Axis code is subject to the terms and conditions
 of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
 Commons Discovery 0.2
 commons-discovery.jar
 This product includes software developed by the Apache Software
@@ -78,12 +75,14 @@ Foundation (http://www.apache.org)
 Your use of the Commons Discovery code is subject to the terms
 and conditions of the Apache License, Version 1.1, available
 at http://www.apache.org/licenses/LICENSE-1.1.
+
 Commons Lang 2.3
 commons-lang.jar
 This product includes software developed by the Apache Software
 Foundation (http://www.apache.org)
 Your use of the Axis code is subject to the terms and conditions
 of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
 Commons Logging 1.0.3
 commons-logging.jar
 This product includes software developed by the Apache Software
@@ -91,13 +90,16 @@ Foundation (http://www.apache.org)
 Your use of the Commons Logging code is subject to the terms
 and conditions of the Apache License, Version 1.1, available
 at http://www.apache.org/licenses/LICENSE-1.1.
+
+Google Guava 19.0
 Google-Collections 1.0
 google-collect-1.0-rc4.jar
 This product includes software developed by Google Inc.
 (http://code.google.com/p/google-collections)
 Your use of the collections code is subject to the terms and
-conditions of the Apache License, Version 2.0, available at 
+conditions of the Apache License, Version 2.0, available at
 http://www.apache.org/licenses/LICENSE-2.0
+
 Sun JAXB 1.0.4 and SAAJ 1.2.1
 activation.jar
 mail.jar
@@ -109,6 +111,7 @@ Sun Microsystems Inc. JAVA WEB SERVICES DEVELOPER PACK, VERSION
 1.5 Software License Agreement available at http://java.sun.com/webservices/docs/1.5/LICENSE.
 Additional information regarding redistribution of Java WSDP
 components can be found in the release notes available at http://java.sun.com/webservices/docs/1.5/ReleaseNotes.html
+
 Spring Framework 2.5.2
 spring-aop.jar
 spring-beans.jar
@@ -119,29 +122,38 @@ Project (http://www.springframework.org).
 Your use of the Spring Framework code is subject to the terms
 and conditions of the Apache License, Version 2.0, available
 at http://www.apache.org/licenses/LICENSE-2.0.html.
-Woodstox 3.9.2
-stax-api-1.0.1.jar
-This copy of Woodstox XML processor is licensed under the Apache
-(Software) License, version 2.0 (&quot;the License&quot;). See
-the License
-for details about distribution rights, and the specific rights
-regarding derivate works.
-You may obtain a copy of the License at:
-http://www.apache.org/licenses/
-A copy is also included in the downloadable source code package
-containing Woodstox, in file &quot;ASL2.0&quot;, under the same
-directory
-as this file.
+
 Xerces 2.5.0
 xercesImpl.jar
 This product includes software developed by the Apache Software
 Foundation (http://www.apache.org)
 Your use of the Xerces code is subject to the terms and conditions
 of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+j2v8
+Your use of the j2v8 code is subject to the terms and conditions
+of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+
+OrientDB
+Your use of the OrientDB code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+h2
+Your use of the h2 code is subject to the terms and conditions
+of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+
+jodd
+Your use of the jodd code is subject to the terms and conditions
+of the Simplified BSD License, available at http://jodd.org/license.html.
+
+minimatch
+Your use of the minimatch code is subject to the terms and conditions
+of the MIT License, available at
+https://github.com/angelozerr/minimatch.java/blob/minimatch.java-1.1.0/LICENSE.
    </license>
 
    <url>
-      <update label="Force.com IDE Update Site" url="http://media.developerforce.com/force-ide/eclipse42"/>
+      <update label="Force.com IDE Update Site" url="http://media.developerforce.com/force-ide/eclipse45"/>
    </url>
 
    <requires>
