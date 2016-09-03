@@ -35,21 +35,21 @@ public enum LightningBundleType {
     APPLICATION(
         "Lightning Application",
         APP,
-        ImmutableList.of(CONTROLLER, HELPER),
+        ImmutableList.of(CONTROLLER, HELPER, RENDERER, CSS),
         ImmutableList.of(CONTROLLER, HELPER, RENDERER, CSS, DESIGN, SVG, AURADOC)),
     COMPONENT(
         "Lightning Component",
         CMP,
-        ImmutableList.of(CONTROLLER, HELPER),
+        ImmutableList.of(CONTROLLER, HELPER, RENDERER, CSS),
         ImmutableList.of(CONTROLLER, HELPER, RENDERER, CSS, DESIGN, SVG, AURADOC)),
     INTERFACE("Lightning Interface", INTF, ImmutableList.of(), ImmutableList.of()),
     EVENT("Lightning Event", EVT, ImmutableList.of(), ImmutableList.of()),
     TOKENS("Lightning Tokens", LightningElement.TOKENS, ImmutableList.of(), ImmutableList.of());
     
-    final String humanReadableName;
-    final LightningElement primaryElement;
-    final ImmutableList<LightningElement> secondaryElementsToInclude; // Usually you want a few other files by default.
-    final ImmutableList<LightningElement> allowableSecondaryElements; // This is the full list of allowable elements, it excludes the primary element since that must already be added at inception time.
+    public final String humanReadableName;
+    public final LightningElement primaryElement;
+    public final ImmutableList<LightningElement> secondaryElementsToInclude; // Usually you want a few other files by default.
+    public final ImmutableList<LightningElement> allowableSecondaryElements; // This is the full list of allowable elements, it excludes the primary element since that must already be added at inception time.
     
     LightningBundleType(
         String humanReadableName,

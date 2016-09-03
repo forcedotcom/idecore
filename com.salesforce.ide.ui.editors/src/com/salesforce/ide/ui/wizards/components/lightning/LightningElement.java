@@ -37,7 +37,7 @@ public enum LightningElement {
     HELPER("Helper", "js", generateTemplate("helper"), s -> s + "Helper"),
     TOKENS("Tokens", "tokens", generateTemplate("tokens")),
     RENDERER("Renderer", "js", generateTemplate("renderer"), s -> s + "Renderer"),
-    CSS("Style", "css", generateTemplate("css"));
+    CSS("Style", "css", generateTemplate("style"));
     
     final String extension;
     final String label;
