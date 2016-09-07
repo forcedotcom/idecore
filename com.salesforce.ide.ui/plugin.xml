@@ -422,66 +422,6 @@
     </extension>
 
     <!--   R E F A C T O R I N G   -->
-    <extension point="org.eclipse.ltk.core.refactoring.moveParticipants">
-        <moveParticipant
-            id="com.salesforce.ide.ui.refactoring.moveParticipant"
-            class="com.salesforce.ide.ui.refactoring.ResourceMoveParticipant"
-            name="%move.resource.participant">
-            <enablement>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-                <or>
-                    <instanceof value="org.eclipse.core.resources.IFile"/>
-                    <instanceof value="org.eclipse.core.resources.IFolder"/>
-                </or>
-                <with variable="affectedNatures">
-                    <iterate operator="or">
-                        <equals value="com.salesforce.ide.nature.online"/>
-                    </iterate>
-                </with>
-            </enablement>
-        </moveParticipant>
-    </extension>
-
-    <extension point="org.eclipse.ltk.core.refactoring.renameParticipants">
-        <renameParticipant
-            id="com.salesforce.ide.ui.refactoring.renameParticipant"
-            class="com.salesforce.ide.ui.refactoring.ResourceRenameParticipant"
-            name="%rename.resource.participant">
-            <enablement>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-                <or>
-                    <instanceof value="org.eclipse.core.resources.IFile"/>
-                    <instanceof value="org.eclipse.core.resources.IFolder"/>
-                </or>
-                <with variable="affectedNatures">
-                    <iterate operator="or">
-                        <equals value="com.salesforce.ide.nature.online"/>
-                    </iterate>
-                </with>
-            </enablement>
-        </renameParticipant>
-    </extension>
-
-    <extension point="org.eclipse.ltk.core.refactoring.copyParticipants">
-        <copyParticipant
-            id="com.salesforce.ide.ui.refactoring.copyParticipant"
-            class="com.salesforce.ide.ui.refactoring.ResourceCopyParticipant"
-            name="%copy.resource.participant">
-            <enablement>
-                <test forcePluginActivation="true" property="com.salesforce.ide.core.expressions.isSourceResource"/>
-                <or>
-                    <instanceof value="org.eclipse.core.resources.IFile"/>
-                    <instanceof value="org.eclipse.core.resources.IFolder"/>
-                </or>
-                <with variable="affectedNatures">
-                    <iterate operator="or">
-                        <equals value="com.salesforce.ide.nature.online"/>
-                    </iterate>
-                </with>
-            </enablement>
-        </copyParticipant>
-    </extension>
-
     <extension point="org.eclipse.ltk.core.refactoring.deleteParticipants">
         <deleteParticipant
             id="com.salesforce.ide.ui.refactoring.deleteParticipant"
