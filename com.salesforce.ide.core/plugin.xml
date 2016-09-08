@@ -276,7 +276,7 @@
             priority="normal"
             default-charset="UTF-8">
             <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-                <parameter name="element" value="{http://soap.sforce.com/2006/04/metadataa}CustomApplication"/>
+                <parameter name="element" value="{http://soap.sforce.com/2006/04/metadata}CustomApplication"/>
             </describer>
         </content-type>
 

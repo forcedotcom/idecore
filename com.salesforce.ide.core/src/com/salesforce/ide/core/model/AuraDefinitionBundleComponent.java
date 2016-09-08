@@ -12,18 +12,18 @@ package com.salesforce.ide.core.model;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
-import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.services.ProjectService;
 
 /**
- * This is a way to encapsulate functionality for dealing with aura definition bundles, which is a weird kind of metadata type. Bundles
- * have items under them and these items need to be transported as a unit during retrieve()/deploy() operations. So the
- * gist is that we any time we add an individual bundle item, we need to transform those items to a "faux" top-level
- * component that represents the whole bundle.
+ * This is a way to encapsulate functionality for dealing with aura definition bundles, which is a weird kind of
+ * metadata type. Bundles have items under them and these items need to be transported as a unit during
+ * retrieve()/deploy() operations. So the gist is that we any time we add an individual bundle item, we need to
+ * transform those items to a "faux" top-level component that represents the whole bundle.
  * 
  * @author nchen
  */
@@ -33,7 +33,7 @@ public class AuraDefinitionBundleComponent extends Component {
     public Component preComponentListAddition() {
         ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
         ProjectService projectService = ContainerDelegate.getInstance().getServiceLocator().getProjectService();
-
+        
         if (needsConversion(this)) {
             Component replacement = componentFactory.getComponentByComponentType(this.getComponentType());
             
@@ -41,7 +41,7 @@ public class AuraDefinitionBundleComponent extends Component {
             IPath sourcePath = sourceFolder.getLocation();
             IPath fileResourcePath = this.getFileResource().getLocation();
             IPath relativeTo = fileResourcePath.makeRelativeTo(sourcePath);
-
+            
             String type = relativeTo.segment(0);
             String bundleName = relativeTo.segment(1);
             String filePath = type + Path.SEPARATOR + bundleName;
@@ -51,6 +51,7 @@ public class AuraDefinitionBundleComponent extends Component {
             replacement.setFilePath(filePath);
             replacement.setPackageName(this.getPackageName());
             replacement.setBundleFolder(sourceFolder.getFolder(filePath));
+            replacement.setBundle(true);
             
             return replacement;
         }
@@ -63,4 +64,10 @@ public class AuraDefinitionBundleComponent extends Component {
         return getFileResource() != null;
     }
     
+    @Override
+    public boolean hasRemoteBundleChanged(ProjectPackage pkg, IProgressMonitor monitor) throws InterruptedException {
+        // The deploy path for AuraDefinitionBundle is so different that giving an accurate account of what has changed is
+        // difficult. So, instead of providing a false negative/false positive, just turn off checking for now.
+        return false;
+    }
 }
