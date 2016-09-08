@@ -483,8 +483,7 @@ public class ProjectPackage {
                 File file;
                 if(component.getFileResource() != null) {
                     file = component.getFileResource().getRawLocation().toFile();
-                }
-                else {
+                } else {
                     file = component.getBundleFolder().getRawLocation().toFile();
                 }
                 if (!file.exists()) {

@@ -1131,7 +1131,7 @@ public class Component extends ComponentResource {
     }
 
     @Override
-    public Component preComponentListAddition() {
+    public Component preComponentListAddition(PackageConfiguration config) {
         return this;
     }
 }

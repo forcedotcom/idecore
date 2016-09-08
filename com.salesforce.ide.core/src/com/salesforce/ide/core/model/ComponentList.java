@@ -311,12 +311,17 @@ public class ComponentList extends ArrayList<Component> {
         
         if(component.isBundle) {
             remove(component);
-            Component replacement = component.preComponentListAddition();
-            return super.add(replacement);
+            // If already inside a folder, don't add it anymore
+            if (component.getComponentType().equals(Constants.FOLDER)) {
+                return false;
+            } else {
+                Component replacement = component.preComponentListAddition(configuration);
+                return super.add(replacement);
+            }
         }
-
+        
         if (contains(component)) {
-            if (configuration.replaceComponent) {
+            if (configuration.removeComponent) {
                 remove(component);
             } else {
                 return false;

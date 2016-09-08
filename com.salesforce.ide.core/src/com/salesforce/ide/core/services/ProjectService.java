@@ -699,7 +699,7 @@ public class ProjectService extends BaseService {
                     componentList.add(tmpComponent, 
                         PackageConfiguration.builder()
                         .setIncludeComposite(false)
-                        .setReplaceComposite(true)
+                        .setRemoveComposite(true)
                         .build());
 
                 } catch (FactoryException e) {
