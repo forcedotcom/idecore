@@ -25,10 +25,10 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.google.common.collect.Lists;
@@ -127,8 +127,8 @@ public final class RefreshResourceHandler extends BaseHandler {
     }
 
     private static RefreshResourceActionController buildController(ISelection selection, final IEditorInput editorInput) {
-        if (editorInput instanceof FileEditorInput) {
-            FileEditorInput input = (FileEditorInput) editorInput;
+        if (editorInput instanceof IFileEditorInput) {
+            IFileEditorInput input = (IFileEditorInput) editorInput;
             IResource file = input.getFile();
             IProject project = file.getProject();
             return buildController(selection, Lists.newArrayList(file), project);

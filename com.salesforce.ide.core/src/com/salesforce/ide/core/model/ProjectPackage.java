@@ -678,7 +678,7 @@ public class ProjectPackage {
     }
 
     public boolean hasChanged(Object obj) throws InterruptedException {
-        return hasChanged(obj, true, new NullProgressMonitor());
+        return hasChanged(obj, false, new NullProgressMonitor());
     }
 
     public boolean hasChanged(Object obj, boolean includeManifest, IProgressMonitor monitor)
@@ -724,9 +724,16 @@ public class ProjectPackage {
                     }
                     continue;
                 }
-                Component otherComponent = other.getComponentList().getComponentByFilePath(component.getMetadataFilePath());
-                if (component.hasRemoteChanged(otherComponent, monitor)) {
-                    return false;
+                
+                if (component.isBundle()) {
+                    if(component.hasRemoteBundleChanged(other, monitor)) {
+                        return false;
+                    }
+                } else {
+                    Component otherComponent = other.getComponentList().getComponentByFilePath(component.getMetadataFilePath());
+                    if (component.hasRemoteChanged(otherComponent, monitor)) {
+                        return false;
+                    }
                 }
             }
         }

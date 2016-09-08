@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 
@@ -31,7 +32,6 @@ import com.salesforce.ide.ui.internal.Messages;
 
 /**
  *
- * 
  * Note: Catch exception because exceptions cause the participant to become deactivated for future refactorings
  * 
  * @author cwall
@@ -172,6 +172,6 @@ public class DeleteChange extends BaseChange {
             setSuccess(overallSuccess);
         }
 
-        return new DeleteUndoChange((DeleteRefactorController) refactorController);
+        return new NullChange();
     }
 }

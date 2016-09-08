@@ -27,6 +27,7 @@ import javax.xml.bind.ValidationEventHandler;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.google.common.collect.Lists;
@@ -968,6 +969,10 @@ public class Component extends ComponentResource {
         }
         logger.warn("Conflict found! Attribute compare of local and remote " + getFullDisplayName() + " are NOT equal");
         return true;
+    }
+    
+    public boolean hasRemoteBundleChanged(ProjectPackage pkg, IProgressMonitor monitor) throws InterruptedException {
+        throw new UnsupportedOperationException();
     }
     
     private final Predicate<Component> somethingChangedPredicate =
