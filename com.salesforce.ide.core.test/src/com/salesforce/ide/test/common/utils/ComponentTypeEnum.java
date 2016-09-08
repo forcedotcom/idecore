@@ -295,7 +295,8 @@ public enum ComponentTypeEnum {
             Constants.DATACATEGORYGROUP,
             true,
             new ComponentTypeWebUrlPart("/category/datacategorysetup.apexp"),
-            new ComponentWebUrlPart("/category/datacategorysetup.apexp?"))),
+            new ComponentWebUrlPart("/category/datacategorysetup.apexp?"),
+            new DisplayName("Data Category Group"))),
             
     Dashboard("Dashboard", false, false, true),
     
