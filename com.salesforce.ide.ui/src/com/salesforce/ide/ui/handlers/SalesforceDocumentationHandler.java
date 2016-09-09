@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SalesforceDocumentationHandler extends Action implements IHandler2 {
 
-	private static final String ECLIPSE_DOCS = "https://developer.salesforce.com/docs/atlas.en-us.eclipse.meta/eclipse/";
+	private static final String ECLIPSE_DOCS = "https://developer.salesforce.com/docs/atlas.en-us.eclipse.meta/eclipse";
 
 	public void run() {
 		try {
