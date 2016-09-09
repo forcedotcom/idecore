@@ -380,6 +380,16 @@
         </command>
       </toolbar>
     </menuContribution>
+    <menuContribution
+          allPopups="false"
+          locationURI="menu:help?after=helpContents">
+       <command
+             commandId="com.salesforce.ide.ui.command.openSalesforceDocumentation"
+             icon="icons/appExDevIco16.png"
+             label="Salesforce Documentation"
+             style="push">
+       </command>
+    </menuContribution>
   </extension>
 
     <!--   V I E W S   -->
@@ -558,6 +568,11 @@
       id="com.salesforce.ide.ui.command.showInBrowser"
       name="Show in Salesforce Web"
       />
+    <command
+          defaultHandler="com.salesforce.ide.ui.handlers.SalesforceDocumentationHandler"
+          id="com.salesforce.ide.ui.command.openSalesforceDocumentation"
+          name="Salesforce Documentation">
+    </command>
   </extension>
 
   <extension point="org.eclipse.ui.handlers">
