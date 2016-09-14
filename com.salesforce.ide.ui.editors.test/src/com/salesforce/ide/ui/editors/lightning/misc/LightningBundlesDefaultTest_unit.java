@@ -10,25 +10,6 @@
  ******************************************************************************/
 package com.salesforce.ide.ui.editors.lightning.misc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.spy;
-import junit.framework.TestCase;
-
-import org.eclipse.core.resources.IProject;
-import org.hamcrest.collection.IsEmptyCollection;
-
-import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
-import com.salesforce.ide.ui.editors.apex.assistance.ApexCodeScanner;
-import com.salesforce.ide.ui.wizards.components.lightning.LightningBundleType;
-import com.salesforce.ide.ui.wizards.components.lightning.LightningElement;
-
 import static com.salesforce.ide.ui.wizards.components.lightning.LightningElement.APP;
 import static com.salesforce.ide.ui.wizards.components.lightning.LightningElement.AURADOC;
 import static com.salesforce.ide.ui.wizards.components.lightning.LightningElement.CMP;
@@ -40,6 +21,15 @@ import static com.salesforce.ide.ui.wizards.components.lightning.LightningElemen
 import static com.salesforce.ide.ui.wizards.components.lightning.LightningElement.INTF;
 import static com.salesforce.ide.ui.wizards.components.lightning.LightningElement.RENDERER;
 import static com.salesforce.ide.ui.wizards.components.lightning.LightningElement.SVG;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+
+import com.salesforce.ide.ui.wizards.components.lightning.LightningBundleType;
+import com.salesforce.ide.ui.wizards.components.lightning.LightningElement;
+
+import junit.framework.TestCase;
 
 /**
  * Tests for the specifications of what is included by default and allowe in a lightning bundle.

@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.salesforce.ide.core.factories.ComponentFactory;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -30,15 +31,44 @@ import com.salesforce.ide.core.services.ProjectService;
  */
 public class AuraDefinitionBundleComponent extends Component {
     
+    private ComponentFactory componentFactory;
+    private ProjectService projectService;
+    
+    public AuraDefinitionBundleComponent() {
+        // Empty constructor for Spring
+    }
+    
+    @VisibleForTesting
+    public AuraDefinitionBundleComponent(ComponentFactory componentFactory, ProjectService projectService) {
+        this.componentFactory = componentFactory;
+        this.projectService = projectService;
+    }
+
     @Override
     public Component preComponentListAddition(PackageConfiguration config) {
-        ComponentFactory componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
-        ProjectService projectService = ContainerDelegate.getInstance().getServiceLocator().getProjectService();
+        componentFactory = getComponentFactory();
+        projectService = getProjectService();
         
         if (needsConversion(this) || config.replaceComponent) {
             return replaceComponent(componentFactory, projectService);
         }
         return this;
+    }
+    
+    @VisibleForTesting
+    public ProjectService getProjectService() {
+        if (projectService == null) {
+            projectService = ContainerDelegate.getInstance().getServiceLocator().getProjectService();
+        }
+        return projectService;
+    }
+    
+    @VisibleForTesting
+    public ComponentFactory getComponentFactory() {
+        if (componentFactory == null) {
+            componentFactory = ContainerDelegate.getInstance().getFactoryLocator().getComponentFactory();
+        }
+        return componentFactory;
     }
     
     public Component replaceComponent(ComponentFactory componentFactory, ProjectService projectService) {
@@ -54,6 +84,7 @@ public class AuraDefinitionBundleComponent extends Component {
         replacement.setFilePath(filePath);
         replacement.setPackageName(this.getPackageName());
         if (getProject() != null) {
+            // getProject is null when we materialize a project remotely for deployment purposes
             IFolder sourceFolder = projectService.getSourceFolder(this.getProject());
             replacement.setBundleFolder(sourceFolder.getFolder(filePath));
         }
