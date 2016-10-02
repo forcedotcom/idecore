@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.salesforce.ide</groupId>
 	<artifactId>com.salesforce.ide.parent</artifactId>
-	<version>37.0.0-SNAPSHOT</version>
+	<version>38.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Salesforce.com</name>
@@ -116,7 +116,7 @@
 					<artifact>
 						<groupId>com.salesforce.ide</groupId>
 						<artifactId>com.salesforce.ide.targetdefinition</artifactId>
-						<version>37.0.0-SNAPSHOT</version>
+						<version>38.0.0-SNAPSHOT</version>
 					</artifact>
 				</target>
 				<environments>

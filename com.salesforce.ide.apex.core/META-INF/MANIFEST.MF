@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.salesforce.ide.apex.core;singleton:=true
-Bundle-Version: 37.0.0.qualifier
+Bundle-Version: 38.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.apex.core.ApexCore
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",

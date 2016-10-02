@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apex Core Tests
 Bundle-SymbolicName: com.salesforce.ide.apex.core.test
-Bundle-Version: 37.0.0.qualifier
+Bundle-Version: 38.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.apex.core.test.Activator
 Bundle-Vendor: salesforce.com
 Require-Bundle: org.junit,
