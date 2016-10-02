@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Partner Web Services API Version 37.0
+Salesforce.com Partner Web Services API Version 38.0
 Generated on (Used notimestamp option).
 
 Copyright 1999-2016 salesforce.com, inc.
@@ -266,6 +266,7 @@ All Rights Reserved
                     <element name="isValidValue" type="xsd:boolean" />
                     <element name="label" type="xsd:string" />
                     <element name="name" type="xsd:string" />
+                    <element name="triggersUpdate" type="xsd:boolean" />
                     <element name="value" type="xsd:anyType" />
                 </sequence>
             </complexType>
@@ -404,6 +405,7 @@ All Rights Reserved
                     <element name="currencySymbol"             type="xsd:string" nillable="true"/>
                     <element name="orgAttachmentFileSizeLimit" type="xsd:int"/>
                     <element name="orgDefaultCurrencyIsoCode"  type="xsd:string" nillable="true"/>
+                    <element name="orgDefaultCurrencyLocale"   type="xsd:string" nillable="true"/>
                     <element name="orgDisallowHtmlAttachments" type="xsd:boolean"/>
                     <element name="orgHasPersonAccounts"       type="xsd:boolean"/>
                     <element name="organizationId"             type="tns:ID"/>
@@ -583,6 +585,7 @@ All Rights Reserved
                     <enumeration value="INVALID_EMPTY_KEY_OWNER"/>
                     <enumeration value="INVALID_ENTITY_FOR_MATCH_ENGINE_ERROR"/>
                     <enumeration value="INVALID_ENTITY_FOR_MATCH_OPERATION_ERROR"/>
+                    <enumeration value="INVALID_ENTITY_FOR_UPSERT"/>
                     <enumeration value="INVALID_ENVIRONMENT_HUB_MEMBER"/>
                     <enumeration value="INVALID_EVENT_DELIVERY"/>
                     <enumeration value="INVALID_EVENT_SUBSCRIPTION"/>
@@ -653,11 +656,13 @@ All Rights Reserved
                     <enumeration value="MAXIMUM_DASHBOARD_COMPONENTS_EXCEEDED"/>
                     <enumeration value="MAXIMUM_HIERARCHY_CHILDREN_REACHED"/>
                     <enumeration value="MAXIMUM_HIERARCHY_LEVELS_REACHED"/>
+                    <enumeration value="MAXIMUM_HIERARCHY_TREE_SIZE_REACHED"/>
                     <enumeration value="MAXIMUM_SIZE_OF_ATTACHMENT"/>
                     <enumeration value="MAXIMUM_SIZE_OF_DOCUMENT"/>
                     <enumeration value="MAX_ACTIONS_PER_RULE_EXCEEDED"/>
                     <enumeration value="MAX_ACTIVE_RULES_EXCEEDED"/>
                     <enumeration value="MAX_APPROVAL_STEPS_EXCEEDED"/>
+                    <enumeration value="MAX_DEPTH_IN_FLOW_EXECUTION"/>
                     <enumeration value="MAX_FORMULAS_PER_RULE_EXCEEDED"/>
                     <enumeration value="MAX_RULES_EXCEEDED"/>
                     <enumeration value="MAX_RULE_ENTRIES_EXCEEDED"/>
@@ -686,6 +691,7 @@ All Rights Reserved
                     <enumeration value="PALI_INVALID_ACTION_ID"/>
                     <enumeration value="PALI_INVALID_ACTION_NAME"/>
                     <enumeration value="PALI_INVALID_ACTION_TYPE"/>
+                    <enumeration value="PAL_INVALID_ASSISTANT_RECOMMENDATION_TYPE_ID"/>
                     <enumeration value="PAL_INVALID_ENTITY_ID"/>
                     <enumeration value="PAL_INVALID_FLEXIPAGE_ID"/>
                     <enumeration value="PAL_INVALID_LAYOUT_ID"/>
@@ -701,9 +707,11 @@ All Rights Reserved
                     <enumeration value="PORTAL_USER_ALREADY_EXISTS_FOR_CONTACT"/>
                     <enumeration value="PORTAL_USER_CREATION_RESTRICTED_WITH_ENCRYPTION"/>
                     <enumeration value="PRIVATE_CONTACT_ON_ASSET"/>
+                    <enumeration value="PROCESSING_HALTED"/>
                     <enumeration value="QA_INVALID_CREATE_FEED_ITEM"/>
                     <enumeration value="QA_INVALID_SUCCESS_MESSAGE"/>
                     <enumeration value="QUERY_TIMEOUT"/>
+                    <enumeration value="QUICK_ACTION_LIST_ITEM_NOT_ALLOWED"/>
                     <enumeration value="QUICK_ACTION_LIST_NOT_ALLOWED"/>
                     <enumeration value="RECORD_IN_USE_BY_WORKFLOW"/>
                     <enumeration value="REL_FIELD_BAD_ACCESSIBILITY"/>
@@ -714,10 +722,17 @@ All Rights Reserved
                     <enumeration value="RETRIEVE_EXCHANGE_ATTACHMENT_FAILED"/>
                     <enumeration value="RETRIEVE_EXCHANGE_EMAIL_FAILED"/>
                     <enumeration value="RETRIEVE_EXCHANGE_EVENT_FAILED"/>
+                    <enumeration value="SALESFORCE_INBOX_TRANSPORT_CONNECTION_ERROR"/>
+                    <enumeration value="SALESFORCE_INBOX_TRANSPORT_TOKEN_ERROR"/>
+                    <enumeration value="SALESFORCE_INBOX_TRANSPORT_UNKNOWN_ERROR"/>
                     <enumeration value="SELF_REFERENCE_FROM_FLOW"/>
                     <enumeration value="SELF_REFERENCE_FROM_TRIGGER"/>
                     <enumeration value="SHARE_NEEDED_FOR_CHILD_OWNER"/>
                     <enumeration value="SINGLE_EMAIL_LIMIT_EXCEEDED"/>
+                    <enumeration value="SOCIAL_ACCOUNT_NOT_FOUND"/>
+                    <enumeration value="SOCIAL_ACTION_INVALID"/>
+                    <enumeration value="SOCIAL_POST_INVALID"/>
+                    <enumeration value="SOCIAL_POST_NOT_FOUND"/>
                     <enumeration value="STANDARD_PRICE_NOT_DEFINED"/>
                     <enumeration value="STORAGE_LIMIT_EXCEEDED"/>
                     <enumeration value="STRING_TOO_LONG"/>
@@ -733,6 +748,7 @@ All Rights Reserved
                     <enumeration value="TRANSFER_REQUIRES_READ"/>
                     <enumeration value="UNABLE_TO_LOCK_ROW"/>
                     <enumeration value="UNAVAILABLE_RECORDTYPE_EXCEPTION"/>
+                    <enumeration value="UNAVAILABLE_REF"/>
                     <enumeration value="UNDELETE_FAILED"/>
                     <enumeration value="UNKNOWN_EXCEPTION"/>
                     <enumeration value="UNSAFE_HTML_CONTENT"/>
@@ -751,7 +767,9 @@ All Rights Reserved
             <!-- These are the extension code to provide additional error information -->
             <simpleType name="ExtendedErrorCode">
                 <restriction base="xsd:string">
-                    <enumeration value="FTEST_EXTENSION_CODE_FOR_TEST"/>
+                    <enumeration value="FTEST_EXTENSION_CODE_FOR_TEST">
+                        <documentation>Errors with this extended error code have the following properties: FTestName, ftestClass</documentation>
+                    </enumeration>
                 </restriction>
             </simpleType>
 
@@ -912,8 +930,12 @@ All Rights Reserved
                     <element name="icons"            type="tns:DescribeIcon" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="label"        type="xsd:string"/>
                     <element name="layout"          type="tns:DescribeLayoutSection" nillable="true"/>
+                    <element name="lightningComponentBundleId" type="tns:ID" nillable="true"/>
+                    <element name="lightningComponentBundleName" type="xsd:string" nillable="true"/>
+                    <element name="lightningComponentQualifiedName" type="xsd:string" nillable="true"/>
                     <element name="miniIconUrl"      type="xsd:string" nillable="true"/>
                     <element name="name"         type="xsd:string"/>
+                    <element name="showQuickActionLcHeader" type="xsd:boolean"/> 
                     <element name="showQuickActionVfHeader" type="xsd:boolean"/> 
                                         <element name="targetParentField"    type="xsd:string" nillable="true"/>
                     <element name="targetRecordTypeId"   type="tns:ID" nillable="true"/>
@@ -1046,6 +1068,27 @@ All Rights Reserved
                     <element name="success"       type="xsd:boolean"/>
                 </sequence>
             </complexType>
+            
+
+            <complexType name="AddCampaignMemberOptions">
+                <sequence>
+                    <element name="campaignId"              type="tns:ID" nillable="true"/>
+                    <element name="leadOrContactIds"	    type="tns:ID" minOccurs="1" maxOccurs="2000"/>
+                    <element name="newStatus"		        type="xsd:string"/>
+                    <element name="keepExistingStatus"		type="xsd:boolean"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="AddCampaignMemberResult">
+                <sequence>
+                	<element name="errors"        type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="numInserts"    type="xsd:int"/>
+                    <element name="numUpdates"    type="xsd:int"/>
+                    <element name="saveError"     type="xsd:string"/>
+                    <element name="success"       type="xsd:boolean"/>
+                </sequence>
+            </complexType>
+
 
             <complexType name="DescribeSObjectResult">
                 <sequence>
@@ -1060,6 +1103,7 @@ All Rights Reserved
                     <element name="deprecatedAndHidden" type="xsd:boolean"/>
                     <element name="feedEnabled"         type="xsd:boolean"/>
                     <element name="fields"              type="tns:Field" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="hasSubtypes"         type="xsd:boolean"/>
                     <element name="idEnabled"           type="xsd:boolean"/>
                     <element name="keyPrefix"           type="xsd:string" nillable="true"/>
                     <element name="label"               type="xsd:string"/>
@@ -1071,7 +1115,6 @@ All Rights Reserved
                     <element name="mruEnabled"          type="xsd:boolean"/>
                     <element name="name"                type="xsd:string"/>
                     <element name="namedLayoutInfos"    type="tns:NamedLayoutInfo" minOccurs="0" maxOccurs="unbounded"/>
-
                     <element name="networkScopeFieldName"                type="xsd:string" nillable="true"/>
                     <element name="queryable"           type="xsd:boolean"/>
                     <element name="recordTypeInfos"     type="tns:RecordTypeInfo" minOccurs="0" maxOccurs="unbounded"/>
@@ -1117,6 +1160,7 @@ All Rights Reserved
                     <element name="deletable"           type="xsd:boolean"/>
                     <element name="deprecatedAndHidden" type="xsd:boolean"/>
                     <element name="feedEnabled"         type="xsd:boolean"/>
+                    <element name="hasSubtypes"         type="xsd:boolean"/>
                     <element name="idEnabled"           type="xsd:boolean"/>
                     <element name="keyPrefix"           type="xsd:string" nillable="true"/>
                     <element name="label"               type="xsd:string"/>
@@ -1177,6 +1221,13 @@ All Rights Reserved
             <complexType name="DurableIdList">
                 <sequence>
                     <element name="ids" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+
+
+            <complexType name="StringList">
+                <sequence>
+                    <element name="values" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
@@ -1256,6 +1307,9 @@ All Rights Reserved
                     <enumeration value="tns:DurableIdList" />
 
 
+                    <enumeration value="tns:StringList" />
+
+
                 </restriction>
             </simpleType>
 
@@ -1277,6 +1331,7 @@ All Rights Reserved
                     <element name="calculatedFormula"          type="xsd:string" minOccurs="0"/>
                     <element name="cascadeDelete"              type="xsd:boolean" minOccurs="0"/>
                     <element name="caseSensitive"              type="xsd:boolean"/>
+                    <element name="compoundFieldName"          type="xsd:string" minOccurs="0"/>
                     <element name="controllerName"             type="xsd:string" minOccurs="0"/>
                     <element name="createable"                 type="xsd:boolean"/>
                     <element name="custom"                     type="xsd:boolean"/>
@@ -1423,8 +1478,8 @@ All Rights Reserved
 
             <complexType name="MatchResult">
                    <sequence>
-                       <element name="errors"    type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                        <element name="entityType" type="xsd:string" />
+                       <element name="errors"    type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                        <element name="matchEngine" type="xsd:string" />
                        <element name="matchRecords" minOccurs="0" maxOccurs="unbounded" type="tns:MatchRecord"/>
                        <element name="rule" type="xsd:string" />
@@ -1625,18 +1680,11 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-            <complexType name="FindDuplicatesOptions">
-                <sequence>
-                    <element name="resultFields" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="duplicateRules" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
 
             <element name="findDuplicates">
                 <complexType>
                     <sequence>
                         <element name="sObjects" type="ens:sObject" minOccurs="0" maxOccurs="unbounded"/>
-                        <element name="options" type="tns:FindDuplicatesOptions"/>
                     </sequence>
                 </complexType>
             </element>
@@ -1651,9 +1699,9 @@ All Rights Reserved
 
             <complexType name="FindDuplicatesResult">
                 <sequence>
-                    <element name="success"   type="xsd:boolean"/>
-                    <element name="errors"    type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="duplicateResults" type="tns:DuplicateResult" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="errors"    type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="success"   type="xsd:boolean"/>
                 </sequence>
             </complexType>
 
@@ -1690,10 +1738,17 @@ All Rights Reserved
                 <sequence>
                     <element name="name"   			type="xsd:string"/>
                     <element name="region"          type="tns:DescribeFlexiPageRegion" nillable="true" minOccurs="0" />
+                    <element name="type"            type="tns:ComponentInstancePropertyTypeEnum"  nillable="true" />
                     <element name="value"   		type="xsd:string" nillable="true" />
                 </sequence>
             </complexType>
-
+            
+            <simpleType name="ComponentInstancePropertyTypeEnum">
+                <restriction base="xsd:string">
+                    <enumeration value="decorator"/>
+                </restriction>
+            </simpleType>
+            
      
             <complexType name="FlexipageContext">
                 <sequence>
@@ -1977,9 +2032,11 @@ All Rights Reserved
 
             <complexType name="DescribeLayoutSection">
                 <sequence>
+                    <element name="collapsed"  	    	    type="xsd:boolean"/>
                     <element name="columns"                 type="xsd:int"/>
                     <element name="heading"                 type="xsd:string" nillable="true"/>
                     <element name="layoutRows"              type="tns:DescribeLayoutRow" maxOccurs="unbounded"/>
+                    <element name="layoutSectionId"         type="tns:ID"/>
                     <element name="parentLayoutId"          type="tns:ID"/>
                     <element name="rows"                    type="xsd:int"/>
                     <element name="tabOrder"                type="tns:TabOrderType"/>
@@ -2316,6 +2373,7 @@ All Rights Reserved
             <complexType name="RelatedListColumn">
                 <sequence>
                     <element name="field"           type="xsd:string" nillable="true"/>
+                    <element name="fieldApiName"    type="xsd:string"/>
                     <element name="format"          type="xsd:string" nillable="true"/>
                     <element name="label"           type="xsd:string"/>
                     <element name="lookupId"        type="xsd:string"  nillable="true" minOccurs="0"/>
@@ -2715,7 +2773,9 @@ All Rights Reserved
 
             <complexType name="DescribeSearchableEntityResult">
                 <sequence>
+                    <element name="label"           type="xsd:string"/>
                     <element name="name"            type="xsd:string"/>
+                    <element name="pluralLabel"     type="xsd:string"/>
                 </sequence>
             </complexType>
 
@@ -4088,6 +4148,22 @@ All Rights Reserved
                     </sequence>
                 </complexType>
             </element>
+            
+            <!-- Add Campaign Member Message Types -->
+            <element name="addCampaignMember">
+                <complexType>
+                    <sequence>
+                    	<element name="AddCampaignMemberOptions" type="tns:AddCampaignMemberOptions"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="addCampaignMemberResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:AddCampaignMemberResult"/>
+                    </sequence>
+                </complexType>
+            </element>
 
             <!-- Get Updated Message Types -->
             <element name="getUpdated">
@@ -4455,11 +4531,20 @@ All Rights Reserved
 
 
 
-                        <element name="returnAPIPerformanceInfo" type="xsd:boolean"/>
+                        <xsd:element name="perfOption" type="tns:PerfOption" />
 
                     </sequence>
                 </complexType>
             </element>
+ 
+            <xsd:simpleType name="PerfOption">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="NONE" />
+                    <xsd:enumeration value="BASIC" />
+                    <xsd:enumeration value="DETAILED" />
+                </xsd:restriction>
+            </xsd:simpleType> 
+ 
 
 
             <element name="QueryOptions">
@@ -4871,10 +4956,12 @@ All Rights Reserved
                     <enumeration value="EMAIL_TO_CASE_INVALID_ROUTING"/>
                     <enumeration value="EMAIL_TO_CASE_LIMIT_EXCEEDED"/>
                     <enumeration value="EMAIL_TO_CASE_NOT_ENABLED"/>
+                    <enumeration value="ENTITY_NOT_QUERYABLE"/>
                     <enumeration value="ENVIRONMENT_HUB_MEMBERSHIP_CONFLICT"/>
                     <enumeration value="EXCEEDED_ID_LIMIT"/>
                     <enumeration value="EXCEEDED_LEAD_CONVERT_LIMIT"/>
                     <enumeration value="EXCEEDED_MAX_SIZE_REQUEST"/>
+                    <enumeration value="EXCEEDED_MAX_SOBJECTS"/>
                     <enumeration value="EXCEEDED_MAX_TYPES_LIMIT"/>
                     <enumeration value="EXCEEDED_QUOTA"/>
                     <enumeration value="EXTERNAL_OBJECT_AUTHENTICATION_EXCEPTION"/>
@@ -4945,6 +5032,7 @@ All Rights Reserved
                     <enumeration value="MUTUAL_AUTHENTICATION_FAILED"/>
                     <enumeration value="NOT_ACCEPTABLE"/>
                     <enumeration value="NOT_MODIFIED"/>
+                    <enumeration value="NO_ACTIVE_DUPLICATE_RULE"/>
                     <enumeration value="NO_SOFTPHONE_LAYOUT"/>
                     <enumeration value="NUMBER_OUTSIDE_VALID_RANGE"/>
                     <enumeration value="OPERATION_TOO_LARGE"/>
@@ -5032,10 +5120,12 @@ All Rights Reserved
                     <enumeration value="fns:EMAIL_TO_CASE_INVALID_ROUTING"/>
                     <enumeration value="fns:EMAIL_TO_CASE_LIMIT_EXCEEDED"/>
                     <enumeration value="fns:EMAIL_TO_CASE_NOT_ENABLED"/>
+                    <enumeration value="fns:ENTITY_NOT_QUERYABLE"/>
                     <enumeration value="fns:ENVIRONMENT_HUB_MEMBERSHIP_CONFLICT"/>
                     <enumeration value="fns:EXCEEDED_ID_LIMIT"/>
                     <enumeration value="fns:EXCEEDED_LEAD_CONVERT_LIMIT"/>
                     <enumeration value="fns:EXCEEDED_MAX_SIZE_REQUEST"/>
+                    <enumeration value="fns:EXCEEDED_MAX_SOBJECTS"/>
                     <enumeration value="fns:EXCEEDED_MAX_TYPES_LIMIT"/>
                     <enumeration value="fns:EXCEEDED_QUOTA"/>
                     <enumeration value="fns:EXTERNAL_OBJECT_AUTHENTICATION_EXCEPTION"/>
@@ -5106,6 +5196,7 @@ All Rights Reserved
                     <enumeration value="fns:MUTUAL_AUTHENTICATION_FAILED"/>
                     <enumeration value="fns:NOT_ACCEPTABLE"/>
                     <enumeration value="fns:NOT_MODIFIED"/>
+                    <enumeration value="fns:NO_ACTIVE_DUPLICATE_RULE"/>
                     <enumeration value="fns:NO_SOFTPHONE_LAYOUT"/>
                     <enumeration value="fns:NUMBER_OUTSIDE_VALID_RANGE"/>
                     <enumeration value="fns:OPERATION_TOO_LARGE"/>
@@ -5724,6 +5815,13 @@ All Rights Reserved
     </message>
     <message name="getUserInfoResponse">
         <part element="tns:getUserInfoResponse" name="parameters"/>
+    </message>
+
+    <message name="addCampaignMemberRequest">
+        <part element="tns:addCampaignMember" name="parameters"/>
+    </message>
+    <message name="addCampaignMemberResponse">
+        <part element="tns:addCampaignMemberResponse" name="parameters"/>
     </message>
 
     <message name="activateRequest">
@@ -6382,6 +6480,15 @@ All Rights Reserved
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
+        <operation name="addCampaignMember">
+            <documentation>Add or update campaign member</documentation>
+            <input  message="tns:addCampaignMemberRequest"/>
+            <output message="tns:addCampaignMemberResponse"/>
+            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
+            <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
+        </operation>
+
         <operation name="activate">
             <documentation>Activate a set of sObjects</documentation>
             <input  message="tns:activateRequest"/>
@@ -6536,7 +6643,7 @@ All Rights Reserved
         </operation>
 
         <operation name="findDuplicates">
-            <documentation>Find duplicates for a set of sObjects using the duplicate rules specified or across all duplicate rules configured for this object type</documentation>
+            <documentation>Find duplicates for a set of sObjects</documentation>
             <input  message="tns:findDuplicatesRequest"/>
             <output message="tns:findDuplicatesResponse"/>
             <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
@@ -6627,6 +6734,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6649,6 +6757,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6670,6 +6779,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6687,6 +6797,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6707,6 +6818,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6727,6 +6839,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6743,6 +6856,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6762,6 +6876,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6778,6 +6893,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6794,6 +6910,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6811,6 +6928,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6834,6 +6952,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6853,6 +6972,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6870,6 +6990,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6890,6 +7011,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6910,6 +7032,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6929,6 +7052,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -6942,6 +7066,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -6956,6 +7081,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -6970,6 +7096,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -6984,6 +7111,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -6998,6 +7126,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7017,6 +7146,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7031,6 +7161,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7050,6 +7181,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7066,6 +7198,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7083,6 +7216,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7096,6 +7230,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7123,6 +7258,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7164,6 +7300,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7204,6 +7341,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7240,6 +7378,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7277,6 +7416,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7301,6 +7441,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7316,6 +7457,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7336,6 +7478,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7363,6 +7506,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7392,6 +7536,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7418,6 +7563,7 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7433,6 +7579,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7448,6 +7595,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7463,6 +7611,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7479,6 +7628,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7498,6 +7648,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7521,6 +7672,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7553,6 +7705,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7585,6 +7738,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidQueryLocatorFault">
@@ -7609,6 +7763,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7626,6 +7781,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7652,6 +7808,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7677,6 +7834,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7692,6 +7850,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7707,6 +7866,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidIdFault">
@@ -7729,6 +7889,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidIdFault">
@@ -7747,10 +7908,33 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="addCampaignMember">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="InvalidSObjectFault">
+                <soap:fault name="InvalidSObjectFault" use="literal"/>
+            </fault>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+            <fault name="InvalidFieldFault">
+                <soap:fault name="InvalidFieldFault" use="literal"/>
             </fault>
         </operation>
         <operation name="activate">
@@ -7763,6 +7947,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7780,6 +7965,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7795,6 +7981,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7810,6 +7997,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7825,6 +8013,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7840,6 +8029,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7855,6 +8045,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7873,6 +8064,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7888,6 +8080,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7904,6 +8097,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7919,6 +8113,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7935,6 +8130,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7950,6 +8146,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7965,6 +8162,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7980,6 +8178,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -8012,6 +8211,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8027,6 +8227,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8042,6 +8243,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8057,6 +8259,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8070,6 +8273,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8083,6 +8287,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -8105,6 +8310,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -8117,10 +8323,12 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -8143,6 +8351,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8156,6 +8365,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8171,6 +8381,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8187,6 +8398,7 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -8239,7 +8451,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="http://localhost:8080/services/Soap/u/37.0"/>
+            <soap:address location="http://localhost:8080/services/Soap/u/38.0"/>
         </port>
     </service>
 </definitions>

@@ -16,14 +16,11 @@ import com.salesforce.ide.core.internal.utils.Utils;
 
 
 /**
- *
- *
  * @author cwall
  */
 public class ApexCodeLocation {
 
     private IFile file = null;
-    private Component component = null;
     private Integer line = null;
     private Integer col = null;
     private String name = null;
@@ -59,14 +56,6 @@ public class ApexCodeLocation {
 
     public Integer getColumn() {
         return col;
-    }
-
-    public Component getComponent() {
-        return component;
-    }
-
-    public void setComponent(Component component) {
-        this.component = component;
     }
 
     public IFile getFile() {

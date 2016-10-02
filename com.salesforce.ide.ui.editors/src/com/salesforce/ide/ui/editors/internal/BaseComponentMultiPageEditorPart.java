@@ -31,7 +31,6 @@ import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.ui.editors.properysheets.MetadataFormPage;
 import com.salesforce.ide.ui.editors.properysheets.PropertySheetsFactory;
-import com.salesforce.ide.ui.internal.editor.BaseMultiPageEditorPart;
 
 public abstract class BaseComponentMultiPageEditorPart extends BaseMultiPageEditorPart {
 

@@ -30,7 +30,7 @@ Require-Bundle: com.salesforce.ide.core;bundle-version="[38.0.0,39.0.0)",
  org.eclipse.jface;bundle-version="3.11.0",
  org.eclipse.swt;bundle-version="3.104.1",
  org.eclipse.ui.workbench;bundle-version="3.107.0",
- com.salesforce.ide.apex.core;bundle-version="37.0.0"
+ com.salesforce.ide.apex.core;bundle-version="38.0.0"
 Import-Package: org.apache.log4j
 Bundle-ClassPath: .
 Eclipse-LazyStart: true
@@ -40,7 +40,6 @@ Export-Package: com.salesforce.ide.ui,
  com.salesforce.ide.ui.handlers,
  com.salesforce.ide.ui.internal,
  com.salesforce.ide.ui.internal.composite,
- com.salesforce.ide.ui.internal.editor,
  com.salesforce.ide.ui.internal.editor.imagesupport,
  com.salesforce.ide.ui.internal.startup,
  com.salesforce.ide.ui.internal.utils,
@@ -57,6 +56,7 @@ Export-Package: com.salesforce.ide.ui,
  com.salesforce.ide.ui.widgets,
  com.salesforce.ide.ui.wizards.components,
  com.salesforce.ide.ui.wizards.components.apex,
+ com.salesforce.ide.ui.wizards.components.apex.test,
  com.salesforce.ide.ui.wizards.components.application,
  com.salesforce.ide.ui.wizards.components.generic,
  com.salesforce.ide.ui.wizards.components.homepage.component,

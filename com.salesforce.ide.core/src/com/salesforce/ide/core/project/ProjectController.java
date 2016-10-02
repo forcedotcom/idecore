@@ -74,9 +74,10 @@ public class ProjectController extends Controller {
     public static final int ALL_CONTENT = 0;
     public static final int ALL_DEV_CODE_CONTENT = 1;
     public static final int SPECIFIC_PACKAGE = 2;
-    public static final int CUSTOM_COMPONENTS = 3;
-    public static final int NONE = 4;
-    public static final int REFRESH = 5;
+    public static final int ALL_PACKAGES = 3;
+    public static final int CUSTOM_COMPONENTS = 4;
+    public static final int NONE = 5;
+    public static final int REFRESH = 6;
     
     private int retryMax = 2;
     
@@ -499,6 +500,15 @@ public class ProjectController extends Controller {
                     getProjectModel().getSelectedPackageName(),
                     monitor);
             break;
+        case ALL_PACKAGES:
+        	savePackageManifest(monitor);
+        	IFolder referencePkgFolder = ContainerDelegate.getInstance().getServiceLocator()
+        			.getProjectService().getReferencedPackagesFolder(theproject);
+            Utils.adjustResourceReadOnly(referencePkgFolder, false, true);
+        	// fetchManagedInstalledPackages(monitor) is called at the bottom
+        	// of this method. This is a separate case so we don't
+        	// fetch the unpackaged code.
+        	break;
         case CUSTOM_COMPONENTS:
             savePackageManifest(monitor);
             retrieveResultHandler =

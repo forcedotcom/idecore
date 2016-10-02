@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Force.com IDE" id="com.salesforce.ide.product" application="org.eclipse.ui.ide.workbench" version="37.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Force.com IDE" id="com.salesforce.ide.product" application="org.eclipse.ui.ide.workbench" version="38.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/com.salesforce.ide/images/about.png"/>
       <text>
          End User License Agreement
-Force.com IDE version 37.0
+Force.com IDE version 38.0
 Except as described below, com.salesforce.ide,
 com.salesforce.ide.api,
 com.salesforce.ide.branding,

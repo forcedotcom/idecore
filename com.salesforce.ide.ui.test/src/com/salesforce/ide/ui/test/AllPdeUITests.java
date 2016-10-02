@@ -16,5 +16,6 @@ public class AllPdeUITests extends SimpleTestSuite {
 	
 	public AllPdeUITests() {
 		addTest(new com.salesforce.ide.ui.views.runtest.test.AllPdeUITests());
+		addTest(new com.salesforce.ide.ui.wizard.components.apex.test.AllPdeUITests());
 	}
 }

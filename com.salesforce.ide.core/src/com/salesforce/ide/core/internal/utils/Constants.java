@@ -50,6 +50,7 @@ public interface Constants {
     String ANALYTIC_SNAPSHOT = "AnalyticSnapshot";
     String APEX_CLASS = "ApexClass";
     String APEX_COMPONENT = "ApexComponent";
+    String APEX_TEST_SUITE = "ApexTestSuite";
     String APEX_TRIGGER = "ApexTrigger";
     String APEX_TRIGGER_COUPLING = "ApexTriggerCoupling";
     String APEX_PAGE = "ApexPage";
@@ -179,7 +180,7 @@ public interface Constants {
 
     String RECORD_TYPE = "RecordType";
     // O B J E C T T Y P E S G R O U P S
-    String[] DEV_CODE_COMPONENT_TYPES = { APEX_CLASS, APEX_COMPONENT, APEX_TRIGGER, APEX_PAGE, AURA_DEFINITION_BUNDLE, STATIC_RESOURCE };
+    String[] DEV_CODE_COMPONENT_TYPES = { APEX_CLASS, APEX_COMPONENT, APEX_TRIGGER, APEX_TEST_SUITE, APEX_PAGE, AURA_DEFINITION_BUNDLE, STATIC_RESOURCE };
 
     List<String> RULE_TYPES = Collections.unmodifiableList(
         Arrays.asList(

@@ -289,6 +289,14 @@
     	name="Apex Trigger" 
     	preferredPerspectives="com.salesforce.ide.perspective" 
     	project="false" />
+    	
+    <wizard id="com.salesforce.ide.ui.wizards.createApexTestSuite" 
+        category="com.salesforce.ide.ui.wizards" 
+        class="com.salesforce.ide.ui.wizards.components.apex.test.ApexTestSuiteWizard" 
+        icon="icons/appExDevIco16.png" 
+        name="Apex Test Suite" 
+        preferredPerspectives="com.salesforce.ide.perspective" 
+        project="false" />
 
     <wizard id="com.salesforce.ide.ui.wizards.createLightningElement" 
     	category="com.salesforce.ide.ui.wizards" 

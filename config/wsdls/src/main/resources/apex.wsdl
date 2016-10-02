@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 37.0
+Salesforce.com Apex API version 38.0
 
 Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
 -->
@@ -179,10 +179,18 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:complexType>
      <xsd:sequence>
       <xsd:element name="client" type="xsd:string"/>
+      <xsd:element name="perfOption" type="tns:PerfOption"/>
       <xsd:element name="uiRequestId" type="xsd:string"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
+   <xsd:simpleType name="PerfOption">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="NONE"/>
+     <xsd:enumeration value="BASIC"/>
+     <xsd:enumeration value="DETAILED"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:element name="DebuggingHeader">
     <xsd:complexType>
      <xsd:sequence>
@@ -522,7 +530,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/37.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/38.0"/>
   </port>
  </service>
 </definitions>

@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 import com.salesforce.ide.api.metadata.types.Package;
+import com.salesforce.ide.core.WorkbenchShutdownListener;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.MessageDialogRunnable;
 import com.salesforce.ide.core.internal.utils.Utils;
@@ -79,6 +80,7 @@ public class ForceStartup implements IStartup {
 
                 }
             }
+            WorkbenchShutdownListener.installWorkbenchShutdownListener();
         }
 
         Display.getDefault().asyncExec(new Runnable() {

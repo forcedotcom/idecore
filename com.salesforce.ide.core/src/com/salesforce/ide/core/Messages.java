@@ -21,6 +21,12 @@ public class Messages extends NLS {
     public static String HTTPAdapter_GenericInvokeRequestError;
     public static String HTTPAdapter_NoResponseErrorMessage;
     public static String PromiseableJob_GenericError;
+    
+    public static String RemoveSubscriberCode_Title;
+    public static String RemoveSubscriberCode_Question;
+    public static String RemoveSubscriberCode_Later;
+    public static String RemoveSubscriberCode_Now;
+    
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
