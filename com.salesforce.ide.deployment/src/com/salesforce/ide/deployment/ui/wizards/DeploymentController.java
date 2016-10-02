@@ -41,6 +41,7 @@ import com.salesforce.ide.core.internal.utils.Messages;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.model.Component;
 import com.salesforce.ide.core.model.ComponentList;
+import com.salesforce.ide.core.model.PackageConfiguration;
 import com.salesforce.ide.core.model.ProjectPackage;
 import com.salesforce.ide.core.model.ProjectPackageList;
 import com.salesforce.ide.core.project.ForceProject;
@@ -402,8 +403,20 @@ public class DeploymentController extends Controller {
         
         // for package content, see if unpackaged instance exists
         handlePackageRetrieve(connection, deployResources, monitor);
+        
+        remoteProjectPackageList = flattenBundleComponents();
     }
     
+    /*
+     * Bundle elements that have been retrieved need to be flattened before we can do an effective comparison
+     */
+    private ProjectPackageList flattenBundleComponents() {
+        ProjectPackageList flattenedPackageList = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getProjectPackageListInstance();
+        flattenedPackageList.setProject(model.getProject());
+        flattenedPackageList.addComponents(remoteProjectPackageList.getAllComponents(), PackageConfiguration.builder().setReplaceComponent(true).build());
+        return flattenedPackageList;
+    }
+
     protected void handleSourceRetrieve(
         Connection connection,
         List<IResource> deployResources,
@@ -684,13 +697,13 @@ public class DeploymentController extends Controller {
             || !remoteEnabledComponentTypes.contains(component.getComponentType())) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.NOT_PERMISSIBLE);
             deploymentComponent.setDeploy(false);
-        } else if (component.getFileResource() == null || !component.getFileResource().exists()) {
+        } else if (!component.isBundle() && (component.getFileResource() == null || !component.getFileResource().exists())) {
+            // We usually do not deploy any component without a file resource except for the case of a bundle since we hoist its internals up
             deploymentComponent.setDestinationSummary(DeploymentSummary.RESOURCE_NOT_FOUND);
             deploymentComponent.setDeploy(false);
         } else if (component.isRemoteAdd()) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.NEW);
-        } else if (CustomObjectNameResolver.getCheckerForStandardObject()
-            .check(component.getName(), component.getComponentType())) {
+        } else if (CustomObjectNameResolver.getCheckerForStandardObject().check(component.getName(), component.getComponentType())) {
             deploymentComponent.setDestinationSummary(DeploymentSummary.UPDATED);
         } else {
             deploymentComponent.setDestinationSummary(DeploymentSummary.NEW_NOT_SUPPORTED);

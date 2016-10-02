@@ -8,18 +8,16 @@
  * Contributors:
  *     Salesforce.com, inc. - initial API and implementation
  ******************************************************************************/
-package com.salesforce.ide.ui.editors.test;
+package com.salesforce.ide.ui.editors.lightning.misc;
 
 import junit.framework.Test;
 
-import com.salesforce.ide.core.internal.utils.Utils;
-import com.salesforce.ide.test.common.utils.SimpleTestSuite;
+import com.salesforce.ide.test.common.BaseAllUnitTests;
 
-public class AllUnitTests extends SimpleTestSuite {
+public class AllUnitTests extends BaseAllUnitTests {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(suite());
-        Utils.logStats();
     }
 
     public static Test suite() {
@@ -27,11 +25,20 @@ public class AllUnitTests extends SimpleTestSuite {
     }
 
     public AllUnitTests() {
-        logStart(getClass().getName());
-        addTest(new com.salesforce.ide.ui.editors.apex.outline.AllUnitTests());
-        addTest(new com.salesforce.ide.ui.editors.apex.misc.AllUnitTests());
-        addTest(new com.salesforce.ide.ui.editors.lightning.misc.AllUnitTests());
-        addTest(new com.salesforce.ide.ui.editors.propertysheets.AllUnitTests());
-        addTest(new com.salesforce.ide.ui.editors.internal.apex.completions.AllUnitTests());
+        super();
+    }
+
+    @Override
+    protected String getPackageName() {
+        return getClass().getPackage().getName();
+    }
+
+    @Override
+    protected Class<?> getTestClass() {
+        return this.getClass();
+    }
+    @Override
+    protected ClassLoader getClassLoader() {
+        return getClass().getClassLoader();
     }
 }

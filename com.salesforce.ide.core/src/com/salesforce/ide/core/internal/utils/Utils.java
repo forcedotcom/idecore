@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -772,7 +773,7 @@ public class Utils {
 
 	public static void saveDocument(Document doc, String fullPath)
 			throws IOException, TransformerException {
-		File f = new File(fullPath);
+		File f = new File(URLDecoder.decode(fullPath, "UTF-8"));
 		f.createNewFile();
 
 		TransformerFactory tfactory = TransformerFactory.newInstance();

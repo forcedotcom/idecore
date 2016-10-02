@@ -11,26 +11,34 @@
 package com.salesforce.ide.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.google.common.collect.Lists;
-import com.salesforce.ide.core.internal.utils.*;
+import com.salesforce.ide.core.internal.utils.DialogUtils;
+import com.salesforce.ide.core.internal.utils.ForceExceptionUtils;
+import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.remote.InsufficientPermissionsException;
 import com.salesforce.ide.core.remote.InvalidLoginException;
 import com.salesforce.ide.ui.actions.SaveToServerActionController;
@@ -118,8 +126,8 @@ public final class SaveToServerHandler extends BaseHandler {
     }
 
     private static SaveToServerActionController buildController(ISelection selection, IEditorInput editorInput) {
-        if (editorInput instanceof FileEditorInput) {
-            FileEditorInput input = (FileEditorInput) editorInput;
+        if (editorInput instanceof IFileEditorInput) {
+            IFileEditorInput input = (IFileEditorInput) editorInput;
             IResource file = input.getFile();
             IProject project = file.getProject();
             return buildController(selection, Lists.newArrayList(file), project);

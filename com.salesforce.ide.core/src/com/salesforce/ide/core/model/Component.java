@@ -27,6 +27,7 @@ import javax.xml.bind.ValidationEventHandler;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.google.common.collect.Lists;
@@ -970,6 +971,10 @@ public class Component extends ComponentResource {
         return true;
     }
     
+    public boolean hasRemoteBundleChanged(ProjectPackage pkg, IProgressMonitor monitor) throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
+    
     private final Predicate<Component> somethingChangedPredicate =
         remoteComponent -> getBodyChecksum() != remoteComponent.getBodyChecksum();
     private final Predicate<Component> remoteChangedPredicate =
@@ -1126,7 +1131,7 @@ public class Component extends ComponentResource {
     }
 
     @Override
-    public Component preComponentListAddition() {
+    public Component preComponentListAddition(PackageConfiguration config) {
         return this;
     }
 }

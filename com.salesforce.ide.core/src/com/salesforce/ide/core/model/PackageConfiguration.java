@@ -17,10 +17,12 @@ package com.salesforce.ide.core.model;
  */
 public class PackageConfiguration {
     final boolean includeComposite;
+    final boolean removeComponent;
     final boolean replaceComponent;
     
     private PackageConfiguration(final Builder builder) {
         includeComposite = builder.includeComposite;
+        removeComponent = builder.removeComposite;
         replaceComponent = builder.replaceComponent;
     }
     
@@ -30,10 +32,12 @@ public class PackageConfiguration {
     
     public static class Builder {
         private boolean includeComposite;
+        private boolean removeComposite;
         private boolean replaceComponent;
         
         private Builder() {
             includeComposite = false;
+            removeComposite = false;
             replaceComponent = false;
         }
         
@@ -42,7 +46,12 @@ public class PackageConfiguration {
             return this;
         }
         
-        public Builder setReplaceComposite(boolean replaceComponent) {
+        public Builder setRemoveComposite(boolean removeComposite) {
+            this.removeComposite = removeComposite;
+            return this;
+        }
+
+        public Builder setReplaceComponent(boolean replaceComponent) {
             this.replaceComponent = replaceComponent;
             return this;
         }

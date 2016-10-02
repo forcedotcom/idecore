@@ -77,10 +77,10 @@ public class SaveToServerActionController extends ActionController {
         }
 
         // proactively sync check against org to avoid overwriting updated content; true to cancel on sync error
-        //        boolean syncResult = syncCheck(false);
-        //        if (!syncResult) {
-        //            return false;
-        //        }
+        boolean syncResult = syncCheck(false);
+        if (!syncResult) {
+            return false;
+        }
 
         boolean response = getUserConfirmation();
 

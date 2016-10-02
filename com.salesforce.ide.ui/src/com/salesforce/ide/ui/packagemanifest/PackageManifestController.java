@@ -166,10 +166,10 @@ public class PackageManifestController extends Controller {
     public void updateManifest() {
 
         map.clear();
-        cache = Utils.loadDocument(Utils.getCacheUrl(getProject()));
         if (cache == null) {
-            loadAll();
+        	cache = Utils.loadDocument(Utils.getCacheUrl(getProject()));
         }
+        loadAll();
         createModel();
         initModel();
     }

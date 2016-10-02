@@ -29,9 +29,9 @@ import org.eclipse.team.ui.synchronize.ISynchronizeManager;
 import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
 import org.eclipse.team.ui.synchronize.ISynchronizeView;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.FileEditorInput;
 
 import com.google.common.collect.Lists;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -58,8 +58,8 @@ public final class SynchronizeHandler extends BaseHandler {
     }
 
     private void execute(IWorkbench workbench, IEditorInput editorInput) {
-        if (editorInput instanceof FileEditorInput) {
-            FileEditorInput input = (FileEditorInput) editorInput;
+        if (editorInput instanceof IFileEditorInput) {
+            IFileEditorInput input = (IFileEditorInput) editorInput;
             IResource file = input.getFile();
             IProject project = file.getProject();
             sync(workbench, Lists.newArrayList(file), project);

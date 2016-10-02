@@ -482,21 +482,14 @@ public class ProjectPackage {
             if (component.getFileResource() != null || component.getBundleFolder() != null) {
                 File file;
                 if(component.getFileResource() != null) {
-                file = component.getFileResource().getRawLocation().toFile();
-                }
-                else {
-                file = component.getBundleFolder().getRawLocation().toFile();
+                    file = component.getFileResource().getRawLocation().toFile();
+                } else {
+                    file = component.getBundleFolder().getRawLocation().toFile();
                 }
                 if (!file.exists()) {
                     logger.warn("File '" + file.getAbsolutePath() + "' does not exist");
                     continue;
                 }
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Zipping content from component's file '"
-                            + component.getFileResource().getProjectRelativePath().toPortableString());
-                }
-
                 // get zip and add to zip stats
                 tmpStats = ZipUtils.zipFile(filePath, file, zos, Integer.MAX_VALUE);
             } else if (component.getBody() != null) {
@@ -684,7 +677,7 @@ public class ProjectPackage {
     }
 
     public boolean hasChanged(Object obj) throws InterruptedException {
-        return hasChanged(obj, true, new NullProgressMonitor());
+        return hasChanged(obj, false, new NullProgressMonitor());
     }
 
     public boolean hasChanged(Object obj, boolean includeManifest, IProgressMonitor monitor)
@@ -730,9 +723,16 @@ public class ProjectPackage {
                     }
                     continue;
                 }
-                Component otherComponent = other.getComponentList().getComponentByFilePath(component.getMetadataFilePath());
-                if (component.hasRemoteChanged(otherComponent, monitor)) {
-                    return false;
+                
+                if (component.isBundle()) {
+                    if(component.hasRemoteBundleChanged(other, monitor)) {
+                        return false;
+                    }
+                } else {
+                    Component otherComponent = other.getComponentList().getComponentByFilePath(component.getMetadataFilePath());
+                    if (component.hasRemoteChanged(otherComponent, monitor)) {
+                        return false;
+                    }
                 }
             }
         }
