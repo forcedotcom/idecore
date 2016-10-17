@@ -49,9 +49,6 @@ public class ApexClassWizardPage extends ApexCodeWizardPage {
     }
 
     @Override
-    protected void disableAllApexControls() {}
-
-    @Override
     public void saveUserInput() throws InstantiationException, IllegalAccessException {
         if (componentWizardComposite == null) {
             throw new IllegalArgumentException("Component composite cannot be null");

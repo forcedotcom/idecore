@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
 
 import javax.xml.bind.JAXBException;
@@ -26,6 +29,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.w3c.dom.Document;
@@ -53,6 +57,7 @@ import com.salesforce.ide.core.remote.metadata.DeployResultExt;
 import com.salesforce.ide.core.remote.metadata.FileMetadataExt;
 import com.salesforce.ide.core.remote.registries.DescribeObjectRegistry;
 import com.salesforce.ide.core.services.ServiceException;
+import com.salesforce.ide.core.services.ServiceLocator;
 import com.salesforce.ide.core.services.ServiceTimeoutException;
 import com.sforce.soap.metadata.FileProperties;
 
@@ -116,23 +121,48 @@ public class ComponentController extends Controller {
 
     public boolean isComponentEnabled() throws ForceConnectionException, ForceRemoteException, InterruptedException,
     FactoryException {
-        if (getComponentWizardModel().getProject() == null) {
-            logger.error("Unable to check " + getComponentWizardModel().getComponent().getDisplayName()
-                + " permissions - project is null");
+        final ComponentModel componentWizardModel = getComponentWizardModel();
+
+        final IProject project = componentWizardModel.getProject();
+        if (project == null) {
             return false;
         }
-        ForceProject forceProject = ContainerDelegate.getInstance().getServiceLocator().getProjectService().getForceProject(getComponentWizardModel().getProject());
+
+        final Map<String, Boolean> cache = getComponentTypeEnablementCache(project);
+
+        final String componentType = componentWizardModel.getComponentType();
+        final Boolean cachedResult = cache.get(componentType);
+        if (null != cachedResult) return cachedResult.booleanValue();
+
+        final ServiceLocator serviceLocator = ContainerDelegate.getInstance().getServiceLocator();
+        ForceProject forceProject = serviceLocator.getProjectService().getForceProject(project);
 
         Connection connection = ContainerDelegate.getInstance().getFactoryLocator().getConnectionFactory().getConnection(forceProject);
-        boolean componentEnabled =
-                ContainerDelegate.getInstance().getServiceLocator().getMetadataService().isComponentTypeEnabled(connection,
-                    getComponentWizardModel().getComponentType());
+        boolean componentEnabled = serviceLocator.getMetadataService().isComponentTypeEnabled(connection, componentType);
         if (logger.isDebugEnabled()) {
-            logger.debug(getComponentWizardModel().getComponent().getDisplayName() + " "
+            logger.debug(componentWizardModel.getComponent().getDisplayName() + " "
                     + (componentEnabled ? "are" : "are not") + " enabled");
         }
 
+        cache.put(componentType, componentEnabled);
         return componentEnabled;
+    }
+
+    private static final QualifiedName KEY_ENABLEMENT_CACHE = new QualifiedName(Constants.FILE_PROP_PREFIX_ID, "componentTypeEnablementCache");
+
+    private Map<String, Boolean> getComponentTypeEnablementCache(final IProject project) {
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Boolean> cache = Map.class.cast(project.getSessionProperty(KEY_ENABLEMENT_CACHE));
+            if (null == cache) {
+                cache = new HashMap<>();
+                project.setSessionProperty(KEY_ENABLEMENT_CACHE, cache);
+            }
+            return cache;
+        } catch (final CoreException e) {
+            logger.error("Unable to access session property: " + KEY_ENABLEMENT_CACHE, e);
+            return Collections.emptyMap();
+        }
     }
 
     public boolean isNameUnique(IProgressMonitor monitor) throws ForceConnectionException, FactoryException,

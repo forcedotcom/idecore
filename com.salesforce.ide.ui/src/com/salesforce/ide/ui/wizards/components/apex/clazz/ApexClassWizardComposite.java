@@ -12,6 +12,8 @@ package com.salesforce.ide.ui.wizards.components.apex.clazz;
 
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -28,6 +30,7 @@ public class ApexClassWizardComposite extends ApexCodeWizardComposite {
 
     protected void initialize(Set<String> supportedApiVesions, Set<String> templateNames) {
         setLayout(new GridLayout());
+        setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         Group grpProperties = createPropertiesGroup(this);
         createNameText(grpProperties);

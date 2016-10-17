@@ -16,6 +16,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -53,13 +54,19 @@ public class ApexTriggerWizardPage extends ApexCodeWizardPage {
         loadObjects(false);
     }
 
+    @Override
+    protected void selectedProjectChanged(IProject project) {
+        super.selectedProjectChanged(project);
+        loadObjects(false);
+    }
+
     // load available/trigger-able objects
     private void loadObjects(boolean refresh) {
         if (getApexTriggerWizardComposite().getCmbObjects() != null) {
             getApexTriggerWizardComposite().getCmbObjects().removeAll();
         }
 
-        if (apexEnabled) {
+        if (checkEnabled()) {
             try {
                 SortedSet<String> triggerableObjectNames =
                         componentWizard.getComponentController().getObjectNames(refresh);
@@ -93,16 +100,6 @@ public class ApexTriggerWizardPage extends ApexCodeWizardPage {
                 new ApexTriggerWizardComposite(parent, SWT.NULL, apexTrigger.getDisplayName(), apexTrigger
                         .getSupportedApiVersions(), apexTrigger.getOperationOptions());
         componentWizardComposite.setComponentWizardPage(this);
-    }
-
-    @Override
-    protected void disableAllApexControls() {
-        getApexTriggerWizardComposite().getCmbObjects().setEnabled(false);
-        List<Button> triggerOperationsOptions = getApexTriggerWizardComposite().getCheckboxOperationButtons();
-        for (Button triggerOperationsOption : triggerOperationsOptions) {
-            triggerOperationsOption.setEnabled(false);
-        }
-
     }
 
     @Override
