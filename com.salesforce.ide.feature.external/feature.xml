@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.salesforce.ide.feature.external"
+      label="Force.com IDE (External Build)"
+      version="38.0.0.qualifier"
+      provider-name="salesforce.com"
+      plugin="com.salesforce.ide.branding"
+      image="appExDev32.png">
+
+   <description url="http://wiki.developerforce.com/index.php/Force.com_IDE">
+      The Force.com IDE provides a unified interface for building and deploying Force.com applications. Designed for developers and development teams, the IDE provides tools to accelerate Force.com application development, including source code editors, test execution tools, wizards and integrated help.
+   </description>
+
+   <copyright>
+      Except as otherwise noted, the files in this plugin are Copyright
+(c) 2005-2014, salesforce.com, inc. All rights reserved.
+   </copyright>
+
+   <license url="about.html">
+      Copyright 2016 salesforce.com, inc. All rights reserved.
+
+Use of this software is subject to the salesforce.com Developerforce Terms of
+Use and other applicable terms that salesforce.com may make available, as may be
+amended from time to time. Except as and only to the extent permitted by
+applicable law, or by licensing terms governing use of open-sourced components
+included with the software, You may not decompile, reverse engineer,
+disassemble, attempt to derive the source code of, decrypt, modify, or create
+derivative works of this software, updates thereto, or any part thereof. You may
+not use the software to engage in any development activity that infringes the
+rights of a third party, including that which interferes with, damages, or
+accesses in an unauthorized manner the servers, networks, or other properties or
+services of salesforce.com or any third party.
+
+WITHOUT LIMITING THE GENERALITY OF THE FOREGOING, THE SOFTWARE IS PROVIDED &quot;AS
+IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL
+SALESFORCE.COM HAVE ANY LIABILITY FOR ANY DAMAGES, INCLUDING BUT NOT LIMITED TO,
+DIRECT, INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES, OR
+DAMAGES BASED ON LOST PROFITS, DATA OR USE, IN CONNECTION WITH THE SOFTWARE,
+HOWEVER CAUSED AND, WHETHER IN CONTRACT, TORT OR UNDER ANY OTHER THEORY OF
+LIABILITY, WHETHER OR NOT YOU HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES
+
+Use of any software licensed under the Eclipse Public License (“the Eclipse
+Libraries”) are also governed by the terms below:
+
+All persons or entities that have distributed the Eclipse Libraries disclaim all
+warranties and conditions, express and implied, including warranties or
+conditions of  title and non-infringement, and implied warranties or conditions
+of merchantability and fitness for a particular purpose. In addition, such
+persons or entities are not liable for any damages, including direct, indirect,
+special, incidental and consequential damages, such as lost profits.
+
+Any provisions of this license agreement that differ from the Eclipse Public
+License are offered by Salesforce.com alone and not by any other party.
+
+AspectJ 1.5.4
+aspectjrt.jar
+aspectjweaver.jar
+Your use of the AspectJ code is subject to the terms and conditions
+of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+
+Axis 1.1
+axis.jar
+jaxrpc.jar
+saaj.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Axis code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+Commons Discovery 0.2
+commons-discovery.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Commons Discovery code is subject to the terms
+and conditions of the Apache License, Version 1.1, available
+at http://www.apache.org/licenses/LICENSE-1.1.
+
+Commons Lang 2.3
+commons-lang.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Axis code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+Commons Logging 1.0.3
+commons-logging.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Commons Logging code is subject to the terms
+and conditions of the Apache License, Version 1.1, available
+at http://www.apache.org/licenses/LICENSE-1.1.
+
+Google Guava 19.0
+Google-Collections 1.0
+google-collect-1.0-rc4.jar
+This product includes software developed by Google Inc.
+(http://code.google.com/p/google-collections)
+Your use of the collections code is subject to the terms and
+conditions of the Apache License, Version 2.0, available at
+http://www.apache.org/licenses/LICENSE-2.0
+
+Sun JAXB 1.0.4 and SAAJ 1.2.1
+activation.jar
+mail.jar
+jaxb-api.jar
+jaxb-impl.jar
+Use and redistribution of these components of the Java WSDP are
+subject to the
+Sun Microsystems Inc. JAVA WEB SERVICES DEVELOPER PACK, VERSION
+1.5 Software License Agreement available at http://java.sun.com/webservices/docs/1.5/LICENSE.
+Additional information regarding redistribution of Java WSDP
+components can be found in the release notes available at http://java.sun.com/webservices/docs/1.5/ReleaseNotes.html
+
+Spring Framework 2.5.2
+spring-aop.jar
+spring-beans.jar
+spring-context.jar
+spring-core.jar
+This plug-in includes software developed by the Spring Framework
+Project (http://www.springframework.org).
+Your use of the Spring Framework code is subject to the terms
+and conditions of the Apache License, Version 2.0, available
+at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+Xerces 2.5.0
+xercesImpl.jar
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org)
+Your use of the Xerces code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+j2v8
+Your use of the j2v8 code is subject to the terms and conditions
+of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+
+OrientDB
+Your use of the OrientDB code is subject to the terms and conditions
+of the Apache License, Version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0.html.
+
+h2
+Your use of the h2 code is subject to the terms and conditions
+of the Eclipse Public License Version 1.0, available at http://www.eclipse.org/legal/epl-v10.html.
+
+jodd
+Your use of the jodd code is subject to the terms and conditions
+of the Simplified BSD License, available at http://jodd.org/license.html.
+
+minimatch
+Your use of the minimatch code is subject to the terms and conditions
+of the MIT License, available at
+https://github.com/angelozerr/minimatch.java/blob/minimatch.java-1.1.0/LICENSE.
+   </license>
+
+   <url>
+      <update label="Force.com IDE Update Site" url="http://media.developerforce.com/force-ide/eclipse45"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.log4j"/>
+      <import plugin="com.salesforce.ide.api" version="38.0.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.editors" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="com.salesforce.ide.core" version="38.0.0" match="compatible"/>
+      <import plugin="com.salesforce.ide.ui" version="38.0.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.html.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.html.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.xml.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.sse.ui" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.sse.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.validation" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.browser" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="com.salesforce.ide.ui" version="38.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.cheatsheets" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="com.salesforce.ide.core" version="38.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.compare" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.wst.xml.ui" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.core.refactoring" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help.ui" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.103.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="com.salesforce.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.ui.editors"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.schemabrowser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.deployment"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.upgrade"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.core.compatibility"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.core.compatibility.auth.equinox"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.apex.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.apex.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.salesforce.ide.branding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

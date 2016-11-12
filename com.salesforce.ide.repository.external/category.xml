@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.salesforce.ide.feature.external_38.0.0.qualifier.jar" id="com.salesforce.ide.feature.external" version="38.0.0.qualifier">
+      <category name="Force.com IDE"/>
+   </feature>
+   <category-def name="Force.com IDE" label="Force.com IDE"/>
+</site>

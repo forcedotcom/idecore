@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<groupId>com.salesforce.ide</groupId>
+<artifactId>com.salesforce.ide.main.external</artifactId>
+<version>38.0.0-SNAPSHOT</version>
+<packaging>pom</packaging>
+	<parent>
+		<groupId>com.salesforce.ide</groupId>
+		<version>38.0.0-SNAPSHOT</version>
+		<artifactId>com.salesforce.ide.parent</artifactId>
+		<relativePath>com.salesforce.ide.parent</relativePath>
+	</parent>
+<modules>
+    <!-- Target Definition -->
+    <module>com.salesforce.ide.targetdefinition.external</module>
+
+    <!-- IDE -->
+    <module>com.salesforce.ide</module>
+    <module>com.salesforce.ide.apex.core</module>
+    <module>com.salesforce.ide.apex.ui</module>
+    <module>com.salesforce.ide.api</module>
+    <module>com.salesforce.ide.branding</module>
+    <module>com.salesforce.ide.core</module>
+    <module>com.salesforce.ide.core.compatibility</module>
+    <module>com.salesforce.ide.core.compatibility.auth.equinox</module>
+    <module>com.salesforce.ide.deployment</module>
+    <module>com.salesforce.ide.ui.schemabrowser</module>
+    <module>com.salesforce.ide.ui</module>
+    <module>com.salesforce.ide.ui.editors</module>
+    <module>com.salesforce.ide.upgrade</module>
+
+    <!-- Features -->
+    <module>com.salesforce.ide.feature.external</module>
+    
+    <!-- Update site -->
+    <module>com.salesforce.ide.repository.external</module>
+</modules>
+</project>
