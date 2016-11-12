@@ -18,6 +18,13 @@ Refer to the wiki pages for this repository. You can access those pages
 by clicking on the wiki icon in the navigation on the right side of this
 page.
 
+Building
+--------
+
+To build an external version, issue a `mvn clean package -Dexternal=true`
+in this directory. If everything executes successfully, you shall see
+the artifacts in com.salesforce.ide.repository.external/target/repository.
+
 Contributing
 ------------
 
