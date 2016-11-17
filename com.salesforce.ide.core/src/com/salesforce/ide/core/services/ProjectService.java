@@ -53,7 +53,6 @@ import com.google.common.base.Preconditions;
 import com.salesforce.ide.core.ForceIdeCorePlugin;
 import com.salesforce.ide.core.compatibility.auth.IAuthorizationService;
 import com.salesforce.ide.core.factories.FactoryException;
-import com.salesforce.ide.core.internal.components.lightning.AuraDefinitionBundleUtils;
 import com.salesforce.ide.core.internal.components.lightning.AuraDefinitionBundleUtils.DeployErrorHandler;
 import com.salesforce.ide.core.internal.context.ContainerDelegate;
 import com.salesforce.ide.core.internal.utils.Constants;
@@ -264,7 +263,7 @@ public class ProjectService extends BaseService {
                 ComponentList componentList = getComponentsForSubComponentFolder((IFolder) resource, true);
                 projectPackageList.addComponents(componentList, false);
             } else if (isManagedFile(resource)) { //if we're in a force.com project. "isManaged" is misleading.
-                Component component = getComponentFactory().getComponentFromFile((IFile) resource);
+                Component component = getComponentFromFile(resource);
                 projectPackageList.addComponent(component, true);
 
                 // add dependent or associated components such as folder metadata component if component is sub-folder component
@@ -292,6 +291,16 @@ public class ProjectService extends BaseService {
         }
 
         return projectPackageList;
+    }
+
+    private Component getComponentFromFile(IResource resource) throws FactoryException {
+        Component component = getComponentFactory().getComponentFromFile((IFile) resource);
+        
+        // W-3437959 - You cannot retrieve a StandardObject per-se, the package.xml needs to say CustomObject
+        if (component.getComponentType().equals(Constants.STANDARD_OBJECT)) {
+            component.setComponentType(Constants.CUSTOM_OBJECT);
+        }
+        return component;
     }
 
     public ProjectPackageList getProjectContents(IProject project, IProgressMonitor monitor) throws CoreException,

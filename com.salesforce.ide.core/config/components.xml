@@ -1302,6 +1302,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
       <property name="remoteDeleteable" value="false" />
       <property name="remoteAdd" value="false" />
       <property name="internal" value="true" />
+	  <property name="secondaryComponentType" value="CustomObject"/>
       <!-- Standard Object 'is a' a CustomObject but we don't want a wizard for it.Hence the following line.  -->
       <property name="wizardClassName" value="" />
     </bean>

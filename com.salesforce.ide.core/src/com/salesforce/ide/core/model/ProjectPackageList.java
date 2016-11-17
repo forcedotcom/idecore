@@ -515,14 +515,13 @@ public class ProjectPackageList extends ArrayList<ProjectPackage> {
     }
 
     // if component is not package.xml, check if the type exists in designate list.  if folder, check sub type
-    private static boolean isDesiredComponentType(List<String> designatedSaveComponentTypes, Component component) {
+    boolean isDesiredComponentType(List<String> designatedSaveComponentTypes, Component component) {
         if (component.isPackageManifest() || Utils.isEmpty(designatedSaveComponentTypes)) {
             return true;
         }
-
+        
         return designatedSaveComponentTypes.contains(component.getComponentType())
-            || (Utils.isNotEmpty(component.getSecondaryComponentType())
-                && designatedSaveComponentTypes.contains(component.getSecondaryComponentType()));
+            || (Utils.isNotEmpty(component.getSecondaryComponentType()) && designatedSaveComponentTypes.contains(component.getSecondaryComponentType()));
     }
 
     public int getFilePathZipMappingCount() {

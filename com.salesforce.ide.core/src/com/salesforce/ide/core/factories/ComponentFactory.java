@@ -585,7 +585,8 @@ public class ComponentFactory extends ApplicationContextFactory {
             return null;
         }
 
-        if (CustomObjectNameResolver.getCheckerForStandardObject()
+        if (CustomObjectNameResolver
+            .getCheckerForStandardObject()
             .check(Utils.getNameFromFilePath(filePath), component.getComponentType())) {
             component = getComponentBean(Constants.STANDARD_OBJECT);
         }

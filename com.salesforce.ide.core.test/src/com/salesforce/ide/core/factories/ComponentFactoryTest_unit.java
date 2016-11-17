@@ -137,6 +137,19 @@ public class ComponentFactoryTest_unit extends TestCase {
     public void testWeblinkExists_AsSubtypeOfCustomObject() throws Exception {
         assertTrue(getCustomObjectSubtypes().contains("WebLink"));
     }
+    
+    // Test secondary component of custom object
+    ////////////////////////////////////////////
+    
+    public void testSecondaryComponentOfCustomObject() {
+        // To fetch a standard object, e.g., Account,
+        // you actually have to use a type of CustomObject, not StandardObject in the package.xml
+        // The secondaryComponent allows you to treat an object as a different type of another.
+        // See https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/manifest_samples.htm#manifest_standard_objects
+        final Component customObject = componentFactory.getComponentByComponentType(Constants.STANDARD_OBJECT);
+        String secondaryComponentType = customObject.getSecondaryComponentType();
+        assertEquals(Constants.CUSTOM_OBJECT, secondaryComponentType);
+    }
 
     // Test subcomponents of workflow
     /////////////////////////////////

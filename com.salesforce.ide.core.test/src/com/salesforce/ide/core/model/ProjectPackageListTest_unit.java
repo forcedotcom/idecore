@@ -10,11 +10,15 @@
  ******************************************************************************/
 package com.salesforce.ide.core.model;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 
+import com.google.common.collect.Lists;
 import com.salesforce.ide.core.internal.utils.Constants;
 import com.salesforce.ide.core.internal.utils.Utils;
 import com.salesforce.ide.core.internal.utils.ZipUtils;
@@ -197,5 +201,37 @@ public class ProjectPackageListTest_unit extends NoOrgSetupTest {
         } finally {
             logEnd("testProjectPackageList_getComponentByMetadataFilePath");
         }
+    }
+    
+    public void testIsDesiredComponentType_whenPackageManifest() throws Exception {
+        ProjectPackageList projectPackageList = getLoadedUnpackagedProjectPackageList();
+        Component mComponent = mock(Component.class);
+        when(mComponent.isPackageManifest()).thenReturn(true);
+        
+        assertTrue(projectPackageList.isDesiredComponentType(Lists.newArrayList(), mComponent));
+    }
+
+    public void testIsDesiredComponentType_whenDesignatedSaveComponentsEmptyOrNull() throws Exception {
+        ProjectPackageList projectPackageList = getLoadedUnpackagedProjectPackageList();
+        Component mComponent = mock(Component.class);
+        
+        assertTrue(projectPackageList.isDesiredComponentType(Lists.newArrayList(), mComponent));
+    }
+
+    public void testIsDesiredComponentType_whenDesignatedComponentContainsComponent() throws Exception {
+        ProjectPackageList projectPackageList = getLoadedUnpackagedProjectPackageList();
+        Component mComponent = mock(Component.class);
+        when(mComponent.getComponentType()).thenReturn(Constants.APEX_CLASS);
+        
+        assertTrue(projectPackageList.isDesiredComponentType(Lists.newArrayList(Constants.APEX_CLASS), mComponent));
+    }
+
+    public void testIsDesiredComponentType_whenSecondaryComponentContainsComponent() throws Exception {
+        ProjectPackageList projectPackageList = getLoadedUnpackagedProjectPackageList();
+        Component mComponent = mock(Component.class);
+        when(mComponent.getComponentType()).thenReturn(Constants.STANDARD_OBJECT);
+        when(mComponent.getSecondaryComponentType()).thenReturn(Constants.CUSTOM_OBJECT);
+        
+        assertTrue(projectPackageList.isDesiredComponentType(Lists.newArrayList(Constants.CUSTOM_OBJECT), mComponent));
     }
 }
