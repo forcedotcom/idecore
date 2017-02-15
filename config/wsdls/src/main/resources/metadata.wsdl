@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Metadata API version 38.0
+Salesforce.com Metadata API version 39.0
 
 Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
 -->
@@ -205,27 +205,9 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Canceled"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="AsyncResult">
-    <xsd:sequence>
-     <xsd:element name="done" type="xsd:boolean"/>
-     <xsd:element name="id" type="tns:ID"/>
-     <xsd:element name="message" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="state" type="tns:AsyncRequestState"/>
-     <xsd:element name="statusCode" minOccurs="0" type="tns:StatusCode"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:simpleType name="AsyncRequestState">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="Queued"/>
-     <xsd:enumeration value="InProgress"/>
-     <xsd:enumeration value="Completed"/>
-     <xsd:enumeration value="Error"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:complexType name="Metadata">
     <xsd:sequence>
      <xsd:element name="fullName" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="module" minOccurs="0" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="AccountSettings">
@@ -338,44 +320,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="AddOnDefinition">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="cloudServiceProvider" type="xsd:string"/>
-       <xsd:element name="defaultLicenseDuration" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="defaultStatus" minOccurs="0" type="tns:DefaultLicenseStatus"/>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="includedPlatformLicenseDefinitions" minOccurs="0" maxOccurs="unbounded" type="tns:IncludedPlatformLicenseDefinition"/>
-       <xsd:element name="includedUserLicenseDefinitions" minOccurs="0" maxOccurs="unbounded" type="tns:IncludedUserLicenseDefinition"/>
-       <xsd:element name="managementServiceProvider" type="xsd:string"/>
-       <xsd:element name="managementTenantId" type="xsd:string"/>
-       <xsd:element name="name" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:simpleType name="DefaultLicenseStatus">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="Active"/>
-     <xsd:enumeration value="Trial"/>
-     <xsd:enumeration value="Free"/>
-    </xsd:restriction>
-   </xsd:simpleType>
-   <xsd:complexType name="IncludedPlatformLicenseDefinition">
-    <xsd:sequence>
-     <xsd:element name="fullName" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="name" type="xsd:string"/>
-     <xsd:element name="quantity" minOccurs="0" type="xsd:int"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="IncludedUserLicenseDefinition">
-    <xsd:sequence>
-     <xsd:element name="fullName" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="name" type="xsd:string"/>
-     <xsd:element name="quantity" minOccurs="0" type="xsd:int"/>
-    </xsd:sequence>
-   </xsd:complexType>
    <xsd:complexType name="AddressSettings">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -451,15 +395,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="snapshot"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="AndroidPushApplicationSetup">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="serverKey" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
    <xsd:complexType name="ApexTestSuite">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -469,22 +404,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="ApexTriggerCoupling">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="status" type="tns:ApexCodeUnitStatus"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:simpleType name="ApexCodeUnitStatus">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="Inactive"/>
-     <xsd:enumeration value="Active"/>
-     <xsd:enumeration value="Deleted"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:complexType name="AppMenu">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -498,58 +417,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:sequence>
      <xsd:element name="name" type="xsd:string"/>
      <xsd:element name="type" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="AppNotificationType">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="notificationType" type="xsd:string"/>
-       <xsd:element name="pushByDefault" type="xsd:boolean"/>
-       <xsd:element name="subscribed" type="xsd:boolean"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="ApplePushApplicationSetup">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="certificate" type="xsd:string"/>
-       <xsd:element name="environment" type="xsd:string"/>
-       <xsd:element name="password" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="Application">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="contactEmail" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="contactPhone" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="developerName" type="xsd:string"/>
-       <xsd:element name="iconUrl" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="infoUrl" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="label" type="xsd:string"/>
-       <xsd:element name="logoUrl" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="moduleRefs" type="tns:ModuleRefs"/>
-       <xsd:element name="version" minOccurs="0" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="ModuleRefs">
-    <xsd:sequence>
-     <xsd:element name="moduleRef" minOccurs="0" maxOccurs="unbounded" type="tns:ModuleRef"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="ModuleRef">
-    <xsd:sequence>
-     <xsd:element name="name" type="xsd:string"/>
-     <xsd:element name="namespacePrefix" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="version" minOccurs="0" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="ApprovalProcess">
@@ -636,14 +503,11 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="FieldUpdate"/>
      <xsd:enumeration value="KnowledgePublish"/>
-     <xsd:enumeration value="QuickCreate"/>
      <xsd:enumeration value="Task"/>
-     <xsd:enumeration value="ChatterPost"/>
      <xsd:enumeration value="Alert"/>
      <xsd:enumeration value="Send"/>
      <xsd:enumeration value="OutboundMessage"/>
      <xsd:enumeration value="FlowAction"/>
-     <xsd:enumeration value="Apex"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="ApprovalStepApprover">
@@ -1127,20 +991,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="CanvasMetadata">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="accessMethod" type="xsd:string"/>
-       <xsd:element name="canvasOptions" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="canvasUrl" type="xsd:string"/>
-       <xsd:element name="lifecycleClass" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="locationOptions" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="samlInitiationMethod" minOccurs="0" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
    <xsd:complexType name="CaseSettings">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -1170,7 +1020,9 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="notifyOwnerOnCaseComment" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="notifyOwnerOnCaseOwnerChange" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="showFewerCloseActions" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="systemUserEmail" minOccurs="0" type="xsd:string"/>
        <xsd:element name="useSystemEmailAddress" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="useSystemUserAsDefaultCaseUser" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="webToCase" minOccurs="0" type="tns:WebToCaseSettings"/>
       </xsd:sequence>
      </xsd:extension>
@@ -1372,48 +1224,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Active"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="CloudServiceProvider">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="authParams" type="xsd:string"/>
-       <xsd:element name="authType" type="tns:AuthType"/>
-       <xsd:element name="baseApiUrl" type="xsd:string"/>
-       <xsd:element name="cloudServiceProviderApis" minOccurs="0" maxOccurs="unbounded" type="tns:CloudServiceProviderApi"/>
-       <xsd:element name="externalId" type="xsd:string"/>
-       <xsd:element name="name" type="xsd:string"/>
-       <xsd:element name="sendAggregatedLicenses" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="sendLicenseInfo" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="sendTenantChange" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="sendTenantUsage" minOccurs="0" type="xsd:boolean"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:simpleType name="AuthType">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="SfdcXi"/>
-     <xsd:enumeration value="HttpBasic"/>
-     <xsd:enumeration value="MutualSsl"/>
-     <xsd:enumeration value="Hmac"/>
-     <xsd:enumeration value="None"/>
-    </xsd:restriction>
-   </xsd:simpleType>
-   <xsd:complexType name="CloudServiceProviderApi">
-    <xsd:sequence>
-     <xsd:element name="cloudServiceProviderApiType" type="tns:CloudServiceProviderApiType"/>
-     <xsd:element name="name" type="xsd:string"/>
-     <xsd:element name="version" type="xsd:double"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:simpleType name="CloudServiceProviderApiType">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="Licenses"/>
-     <xsd:enumeration value="Tenants"/>
-     <xsd:enumeration value="Management"/>
-     <xsd:enumeration value="Usage"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:complexType name="Community">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -1496,12 +1306,14 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
    <xsd:complexType name="CommunityTemplatePageSetting">
     <xsd:sequence>
      <xsd:element name="page" type="xsd:string"/>
+     <xsd:element name="themeLayout" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="CommunityThemeDefinition">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
+       <xsd:element name="customThemeLayoutType" minOccurs="0" maxOccurs="unbounded" type="tns:CommunityCustomThemeLayoutType"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="enableExtendedCleanUpOnDelete" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="masterLabel" type="xsd:string"/>
@@ -1510,14 +1322,23 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="CommunityCustomThemeLayoutType">
+    <xsd:sequence>
+     <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="label" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
    <xsd:complexType name="CommunityThemeSetting">
     <xsd:sequence>
+     <xsd:element name="customThemeLayoutType" minOccurs="0" type="xsd:string"/>
      <xsd:element name="themeLayout" type="xsd:string"/>
-     <xsd:element name="themeLayoutType" type="tns:CommunityThemeLayoutType"/>
+     <xsd:element name="themeLayoutType" minOccurs="0" type="tns:CommunityThemeLayoutType"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:simpleType name="CommunityThemeLayoutType">
     <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Login"/>
+     <xsd:enumeration value="Home"/>
      <xsd:enumeration value="Inner"/>
     </xsd:restriction>
    </xsd:simpleType>
@@ -1684,6 +1505,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="OfflineAccess"/>
      <xsd:enumeration value="CustomPermissions"/>
      <xsd:enumeration value="Wave"/>
+     <xsd:enumeration value="Eclair"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="ConnectedAppSamlConfig">
@@ -1747,6 +1569,17 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="CspTrustedSite">
+    <xsd:complexContent>
+     <xsd:extension base="tns:Metadata">
+      <xsd:sequence>
+       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="endpointUrl" type="xsd:string"/>
+       <xsd:element name="isActive" type="xsd:boolean"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
    <xsd:complexType name="CustomApplication">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -1766,20 +1599,24 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="enablePinTabs" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="enableTabHover" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="enableTabLimits" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="footerColor" minOccurs="0" type="xsd:string"/>
        <xsd:element name="formFactors" minOccurs="0" maxOccurs="unbounded" type="tns:FormFactor"/>
+       <xsd:element name="headerColor" minOccurs="0" type="xsd:string"/>
        <xsd:element name="isServiceCloudConsole" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="keyboardShortcuts" minOccurs="0" type="tns:KeyboardShortcuts"/>
        <xsd:element name="label" minOccurs="0" type="xsd:string"/>
        <xsd:element name="listPlacement" minOccurs="0" type="tns:ListPlacement"/>
        <xsd:element name="listRefreshMethod" minOccurs="0" type="xsd:string"/>
        <xsd:element name="liveAgentConfig" minOccurs="0" type="tns:LiveAgentConfig"/>
+       <xsd:element name="logo" minOccurs="0" type="xsd:string"/>
        <xsd:element name="navType" minOccurs="0" type="tns:NavType"/>
        <xsd:element name="primaryTabColor" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="profileActionOverrides" minOccurs="0" maxOccurs="unbounded" type="tns:AppProfileActionOverride"/>
        <xsd:element name="pushNotifications" minOccurs="0" type="tns:PushNotifications"/>
        <xsd:element name="saveUserSessions" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="setupExperience" minOccurs="0" type="xsd:string"/>
        <xsd:element name="tab" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
        <xsd:element name="tabLimitConfig" minOccurs="0" type="tns:TabLimitConfig"/>
-       <xsd:element name="tabSetType" minOccurs="0" type="xsd:string"/>
        <xsd:element name="uiType" minOccurs="0" type="tns:UiType"/>
        <xsd:element name="utilityBar" minOccurs="0" type="xsd:string"/>
        <xsd:element name="workspaceMappings" minOccurs="0" type="tns:WorkspaceMappings"/>
@@ -1895,6 +1732,25 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Console"/>
     </xsd:restriction>
    </xsd:simpleType>
+   <xsd:complexType name="AppProfileActionOverride">
+    <xsd:complexContent>
+     <xsd:extension base="tns:ProfileActionOverride">
+      <xsd:sequence>
+       <xsd:element name="profile" type="xsd:string"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:complexType name="ProfileActionOverride">
+    <xsd:sequence>
+     <xsd:element name="actionName" type="xsd:string"/>
+     <xsd:element name="content" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formFactor" type="tns:FormFactor"/>
+     <xsd:element name="pageOrSobjectType" type="xsd:string"/>
+     <xsd:element name="recordType" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="type" type="tns:ActionOverrideType"/>
+    </xsd:sequence>
+   </xsd:complexType>
    <xsd:complexType name="PushNotifications">
     <xsd:sequence>
      <xsd:element name="pushNotification" minOccurs="0" maxOccurs="unbounded" type="tns:PushNotification"/>
@@ -2006,7 +1862,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Hierarchy"/>
      <xsd:enumeration value="File"/>
      <xsd:enumeration value="MetadataRelationship"/>
-     <xsd:enumeration value="Location"/>
      <xsd:enumeration value="ExternalLookup"/>
      <xsd:enumeration value="IndirectLookup"/>
      <xsd:enumeration value="CustomDataType"/>
@@ -2097,7 +1952,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="deprecated" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="displayFormat" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="displayLocationInDecimal" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="encrypted" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="escapeMarkup" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="externalDeveloperName" minOccurs="0" type="xsd:string"/>
@@ -2116,10 +1970,8 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="maskChar" minOccurs="0" type="tns:EncryptedFieldMaskChar"/>
        <xsd:element name="maskType" minOccurs="0" type="tns:EncryptedFieldMaskType"/>
        <xsd:element name="metadataRelationshipControllingField" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="picklist" minOccurs="0" type="tns:Picklist"/>
        <xsd:element name="populateExistingRows" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="precision" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="readOnlyProxy" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="referenceTargetField" minOccurs="0" type="xsd:string"/>
        <xsd:element name="referenceTo" minOccurs="0" type="xsd:string"/>
        <xsd:element name="relationshipLabel" minOccurs="0" type="xsd:string"/>
@@ -2194,14 +2046,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="nino"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="Picklist">
-    <xsd:sequence>
-     <xsd:element name="controllingField" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="picklistValues" minOccurs="0" maxOccurs="unbounded" type="tns:PicklistValue"/>
-     <xsd:element name="restrictedPicklist" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="sorted" type="xsd:boolean"/>
-    </xsd:sequence>
-   </xsd:complexType>
    <xsd:simpleType name="SummaryOperations">
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="count"/>
@@ -2233,6 +2077,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="default" type="xsd:boolean"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="isActive" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="label" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -2307,7 +2152,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
       <xsd:sequence>
        <xsd:element name="actionOverrides" minOccurs="0" maxOccurs="unbounded" type="tns:ActionOverride"/>
        <xsd:element name="allowInChatterGroups" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="apexTriggerCouplings" minOccurs="0" maxOccurs="unbounded" type="tns:ApexTriggerCoupling"/>
        <xsd:element name="articleTypeChannelDisplay" minOccurs="0" type="tns:ArticleTypeChannelDisplay"/>
        <xsd:element name="businessProcesses" minOccurs="0" maxOccurs="unbounded" type="tns:BusinessProcess"/>
        <xsd:element name="compactLayoutAssignment" minOccurs="0" type="xsd:string"/>
@@ -2329,7 +2173,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="enableSharing" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="enableStreamingApi" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="externalDataSource" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="externalIndexAvailable" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="externalName" minOccurs="0" type="xsd:string"/>
        <xsd:element name="externalRepository" minOccurs="0" type="xsd:string"/>
        <xsd:element name="externalSharingModel" minOccurs="0" type="tns:SharingModel"/>
@@ -2338,7 +2181,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="gender" minOccurs="0" type="tns:Gender"/>
        <xsd:element name="historyRetentionPolicy" minOccurs="0" type="tns:HistoryRetentionPolicy"/>
        <xsd:element name="household" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="implements" minOccurs="0" maxOccurs="unbounded" type="tns:EntityImplements"/>
+       <xsd:element name="indexes" minOccurs="0" maxOccurs="unbounded" type="tns:Index"/>
        <xsd:element name="label" minOccurs="0" type="xsd:string"/>
        <xsd:element name="listViews" minOccurs="0" maxOccurs="unbounded" type="tns:ListView"/>
        <xsd:element name="nameField" minOccurs="0" type="tns:CustomField"/>
@@ -2354,7 +2197,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="validationRules" minOccurs="0" maxOccurs="unbounded" type="tns:ValidationRule"/>
        <xsd:element name="visibility" minOccurs="0" type="tns:SetupObjectVisibility"/>
        <xsd:element name="webLinks" minOccurs="0" maxOccurs="unbounded" type="tns:WebLink"/>
-       <xsd:element name="xorgSpoke" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -2442,20 +2284,21 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="archiveAfterMonths" type="xsd:int"/>
      <xsd:element name="archiveRetentionYears" type="xsd:int"/>
      <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="gracePeriodDays" type="xsd:int"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="EntityImplements">
-    <xsd:sequence>
-     <xsd:element name="fieldMap" minOccurs="0" maxOccurs="unbounded" type="tns:FieldImplements"/>
-     <xsd:element name="interface" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="isDefault" minOccurs="0" type="xsd:boolean"/>
-    </xsd:sequence>
+   <xsd:complexType name="Index">
+    <xsd:complexContent>
+     <xsd:extension base="tns:Metadata">
+      <xsd:sequence>
+       <xsd:element name="fields" minOccurs="0" maxOccurs="unbounded" type="tns:IndexField"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="FieldImplements">
+   <xsd:complexType name="IndexField">
     <xsd:sequence>
-     <xsd:element name="field" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="interfaceField" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="name" type="xsd:string"/>
+     <xsd:element name="sortDirection" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="ListView">
@@ -2484,6 +2327,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="MyTerritory"/>
      <xsd:enumeration value="MyTeamTerritory"/>
      <xsd:enumeration value="Team"/>
+     <xsd:enumeration value="AssignedToMe"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="ListViewFilter">
@@ -3005,6 +2849,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="allowStandardAnswersPages" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="allowStandardIdeasPages" type="xsd:boolean"/>
        <xsd:element name="allowStandardLookups" type="xsd:boolean"/>
+       <xsd:element name="allowStandardPortalPages" type="xsd:boolean"/>
        <xsd:element name="allowStandardSearch" type="xsd:boolean"/>
        <xsd:element name="analyticsTrackingCode" minOccurs="0" type="xsd:string"/>
        <xsd:element name="authorizationRequiredPage" minOccurs="0" type="xsd:string"/>
@@ -3438,19 +3283,17 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="BypassSharingRules"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="EditionDefinition">
+   <xsd:complexType name="EmbeddedServiceBranding">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="cloudServiceProvider" type="xsd:string"/>
-       <xsd:element name="defaultLicenseDuration" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="defaultStatus" minOccurs="0" type="tns:DefaultLicenseStatus"/>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="includedPlatformLicenseDefinitions" minOccurs="0" maxOccurs="unbounded" type="tns:IncludedPlatformLicenseDefinition"/>
-       <xsd:element name="includedUserLicenseDefinitions" minOccurs="0" maxOccurs="unbounded" type="tns:IncludedUserLicenseDefinition"/>
-       <xsd:element name="managementServiceProvider" type="xsd:string"/>
-       <xsd:element name="managementTenantId" type="xsd:string"/>
-       <xsd:element name="name" type="xsd:string"/>
+       <xsd:element name="contrastPrimaryColor" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="embeddedServiceConfig" type="xsd:string"/>
+       <xsd:element name="font" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="masterLabel" type="xsd:string"/>
+       <xsd:element name="navBarColor" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="primaryColor" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="secondaryColor" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -3470,15 +3313,33 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
        <xsd:element name="embeddedServiceConfig" type="xsd:string"/>
+       <xsd:element name="embeddedServiceQuickActions" minOccurs="0" maxOccurs="unbounded" type="tns:EmbeddedServiceQuickAction"/>
        <xsd:element name="liveAgentChatUrl" minOccurs="0" type="xsd:string"/>
        <xsd:element name="liveAgentContentUrl" minOccurs="0" type="xsd:string"/>
        <xsd:element name="liveChatButton" type="xsd:string"/>
        <xsd:element name="liveChatDeployment" type="xsd:string"/>
        <xsd:element name="masterLabel" type="xsd:string"/>
+       <xsd:element name="prechatEnabled" type="xsd:boolean"/>
+       <xsd:element name="prechatJson" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="scenario" type="tns:EmbeddedServiceScenario"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="EmbeddedServiceQuickAction">
+    <xsd:sequence>
+     <xsd:element name="embeddedServiceLiveAgent" type="xsd:string"/>
+     <xsd:element name="order" type="xsd:int"/>
+     <xsd:element name="quickActionDefinition" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="EmbeddedServiceScenario">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Sales"/>
+     <xsd:enumeration value="Service"/>
+     <xsd:enumeration value="Basic"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:complexType name="EntitlementProcess">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -3682,21 +3543,11 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="contentHubItem"/>
      <xsd:enumeration value="Datacloud"/>
      <xsd:enumeration value="Datajourney"/>
-     <xsd:enumeration value="OpenSearch"/>
-     <xsd:enumeration value="ContentHubBox"/>
-     <xsd:enumeration value="ContentHubGDrive"/>
-     <xsd:enumeration value="ContentHubSharepointOneDrive"/>
-     <xsd:enumeration value="ContentHubSharepoint"/>
-     <xsd:enumeration value="ContentHubSharepointOffice365"/>
-     <xsd:enumeration value="ContentHubMock"/>
-     <xsd:enumeration value="ContentHubPerf"/>
      <xsd:enumeration value="Ftest"/>
      <xsd:enumeration value="Identity"/>
      <xsd:enumeration value="Jigsaw"/>
      <xsd:enumeration value="Salesforce"/>
-     <xsd:enumeration value="SfdcOrg"/>
-     <xsd:enumeration value="OData"/>
-     <xsd:enumeration value="OData4"/>
+     <xsd:enumeration value="outgoingemail"/>
      <xsd:enumeration value="Sharepoint"/>
      <xsd:enumeration value="SharepointOnline"/>
      <xsd:enumeration value="SimpleURL"/>
@@ -3710,34 +3561,150 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="label" type="xsd:string"/>
        <xsd:element name="namedCredential" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="schema" type="xsd:string"/>
-       <xsd:element name="schemaType" type="xsd:string"/>
+       <xsd:element name="schema" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="schemaType" minOccurs="0" type="xsd:string"/>
        <xsd:element name="schemaUrl" minOccurs="0" type="xsd:string"/>
        <xsd:element name="status" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="FTestFieldMappingMd">
+   <xsd:complexType name="FileUploadAndDownloadSecuritySettings">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="label" type="xsd:string"/>
+       <xsd:element name="dispositions" minOccurs="0" maxOccurs="unbounded" type="tns:FileTypeDispositionAssignmentBean"/>
+       <xsd:element name="noHtmlUploadAsAttachment" type="xsd:boolean"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="FTestToolingFLU">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="int" type="xsd:int"/>
-       <xsd:element name="stringWithDifferentName" type="xsd:string"/>
-       <xsd:element name="text2" minOccurs="0" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
+   <xsd:complexType name="FileTypeDispositionAssignmentBean">
+    <xsd:sequence>
+     <xsd:element name="behavior" type="tns:FileDownloadBehavior"/>
+     <xsd:element name="fileType" type="tns:FileType"/>
+     <xsd:element name="securityRiskFileType" type="xsd:boolean"/>
+    </xsd:sequence>
    </xsd:complexType>
+   <xsd:simpleType name="FileDownloadBehavior">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="DOWNLOAD"/>
+     <xsd:enumeration value="EXECUTE_IN_BROWSER"/>
+     <xsd:enumeration value="HYBRID"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="FileType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="UNKNOWN"/>
+     <xsd:enumeration value="PDF"/>
+     <xsd:enumeration value="POWER_POINT"/>
+     <xsd:enumeration value="POWER_POINT_X"/>
+     <xsd:enumeration value="POWER_POINT_M"/>
+     <xsd:enumeration value="POWER_POINT_T"/>
+     <xsd:enumeration value="WORD"/>
+     <xsd:enumeration value="WORD_X"/>
+     <xsd:enumeration value="WORD_M"/>
+     <xsd:enumeration value="WORD_T"/>
+     <xsd:enumeration value="PPS"/>
+     <xsd:enumeration value="PPSX"/>
+     <xsd:enumeration value="EXCEL"/>
+     <xsd:enumeration value="EXCEL_X"/>
+     <xsd:enumeration value="EXCEL_M"/>
+     <xsd:enumeration value="EXCEL_T"/>
+     <xsd:enumeration value="GOOGLE_DOCUMENT"/>
+     <xsd:enumeration value="GOOGLE_PRESENTATION"/>
+     <xsd:enumeration value="GOOGLE_SPREADSHEET"/>
+     <xsd:enumeration value="GOOGLE_DRAWING"/>
+     <xsd:enumeration value="GOOGLE_FORM"/>
+     <xsd:enumeration value="GOOGLE_SCRIPT"/>
+     <xsd:enumeration value="LINK"/>
+     <xsd:enumeration value="SLIDE"/>
+     <xsd:enumeration value="AAC"/>
+     <xsd:enumeration value="ACGI"/>
+     <xsd:enumeration value="AI"/>
+     <xsd:enumeration value="AVI"/>
+     <xsd:enumeration value="BMP"/>
+     <xsd:enumeration value="BOXNOTE"/>
+     <xsd:enumeration value="CSV"/>
+     <xsd:enumeration value="EPS"/>
+     <xsd:enumeration value="EXE"/>
+     <xsd:enumeration value="FLASH"/>
+     <xsd:enumeration value="GIF"/>
+     <xsd:enumeration value="GZIP"/>
+     <xsd:enumeration value="HTM"/>
+     <xsd:enumeration value="HTML"/>
+     <xsd:enumeration value="HTX"/>
+     <xsd:enumeration value="JPEG"/>
+     <xsd:enumeration value="JPE"/>
+     <xsd:enumeration value="PJP"/>
+     <xsd:enumeration value="PJPEG"/>
+     <xsd:enumeration value="JFIF"/>
+     <xsd:enumeration value="JPG"/>
+     <xsd:enumeration value="JS"/>
+     <xsd:enumeration value="MHTM"/>
+     <xsd:enumeration value="MHTML"/>
+     <xsd:enumeration value="MP3"/>
+     <xsd:enumeration value="M4A"/>
+     <xsd:enumeration value="M4V"/>
+     <xsd:enumeration value="MP4"/>
+     <xsd:enumeration value="MPEG"/>
+     <xsd:enumeration value="MPG"/>
+     <xsd:enumeration value="MOV"/>
+     <xsd:enumeration value="ODP"/>
+     <xsd:enumeration value="ODS"/>
+     <xsd:enumeration value="ODT"/>
+     <xsd:enumeration value="OGV"/>
+     <xsd:enumeration value="PNG"/>
+     <xsd:enumeration value="PSD"/>
+     <xsd:enumeration value="RTF"/>
+     <xsd:enumeration value="SHTM"/>
+     <xsd:enumeration value="SHTML"/>
+     <xsd:enumeration value="SNOTE"/>
+     <xsd:enumeration value="STYPI"/>
+     <xsd:enumeration value="SVG"/>
+     <xsd:enumeration value="SVGZ"/>
+     <xsd:enumeration value="TEXT"/>
+     <xsd:enumeration value="THTML"/>
+     <xsd:enumeration value="VISIO"/>
+     <xsd:enumeration value="WMV"/>
+     <xsd:enumeration value="WRF"/>
+     <xsd:enumeration value="XML"/>
+     <xsd:enumeration value="ZIP"/>
+     <xsd:enumeration value="XZIP"/>
+     <xsd:enumeration value="WMA"/>
+     <xsd:enumeration value="XSN"/>
+     <xsd:enumeration value="TRTF"/>
+     <xsd:enumeration value="TXML"/>
+     <xsd:enumeration value="WEBVIEW"/>
+     <xsd:enumeration value="RFC822"/>
+     <xsd:enumeration value="ASF"/>
+     <xsd:enumeration value="DWG"/>
+     <xsd:enumeration value="JAR"/>
+     <xsd:enumeration value="XJS"/>
+     <xsd:enumeration value="OPX"/>
+     <xsd:enumeration value="XPSD"/>
+     <xsd:enumeration value="TIF"/>
+     <xsd:enumeration value="TIFF"/>
+     <xsd:enumeration value="WAV"/>
+     <xsd:enumeration value="CSS"/>
+     <xsd:enumeration value="THUMB720BY480"/>
+     <xsd:enumeration value="THUMB240BY180"/>
+     <xsd:enumeration value="THUMB120BY90"/>
+     <xsd:enumeration value="ALLTHUMBS"/>
+     <xsd:enumeration value="PAGED_FLASH"/>
+     <xsd:enumeration value="PACK"/>
+     <xsd:enumeration value="C"/>
+     <xsd:enumeration value="CPP"/>
+     <xsd:enumeration value="WORDT"/>
+     <xsd:enumeration value="INI"/>
+     <xsd:enumeration value="JAVA"/>
+     <xsd:enumeration value="LOG"/>
+     <xsd:enumeration value="POWER_POINTT"/>
+     <xsd:enumeration value="SQL"/>
+     <xsd:enumeration value="XHTML"/>
+     <xsd:enumeration value="EXCELT"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:complexType name="FlexiPage">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -3745,11 +3712,11 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="flexiPageRegions" minOccurs="0" maxOccurs="unbounded" type="tns:FlexiPageRegion"/>
        <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="pageTemplate" type="xsd:string"/>
        <xsd:element name="parentFlexiPage" minOccurs="0" type="xsd:string"/>
        <xsd:element name="platformActionlist" minOccurs="0" type="tns:PlatformActionList"/>
        <xsd:element name="quickActionList" minOccurs="0" type="tns:QuickActionList"/>
        <xsd:element name="sobjectType" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="template" type="tns:FlexiPageTemplateInstance"/>
        <xsd:element name="type" type="tns:FlexiPageType"/>
       </xsd:sequence>
      </xsd:extension>
@@ -3813,6 +3780,12 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="quickActionName" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
+   <xsd:complexType name="FlexiPageTemplateInstance">
+    <xsd:sequence>
+     <xsd:element name="name" type="xsd:string"/>
+     <xsd:element name="properties" minOccurs="0" maxOccurs="unbounded" type="tns:ComponentInstanceProperty"/>
+    </xsd:sequence>
+   </xsd:complexType>
    <xsd:simpleType name="FlexiPageType">
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="AppPage"/>
@@ -3821,13 +3794,17 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="HomePage"/>
      <xsd:enumeration value="MailAppAppPage"/>
      <xsd:enumeration value="CommAppPage"/>
+     <xsd:enumeration value="CommForgotPasswordPage"/>
+     <xsd:enumeration value="CommLoginPage"/>
      <xsd:enumeration value="CommObjectPage"/>
      <xsd:enumeration value="CommQuickActionCreatePage"/>
      <xsd:enumeration value="CommRecordPage"/>
      <xsd:enumeration value="CommRelatedListPage"/>
      <xsd:enumeration value="CommSearchResultPage"/>
+     <xsd:enumeration value="CommSelfRegisterPage"/>
      <xsd:enumeration value="CommThemeLayoutPage"/>
      <xsd:enumeration value="UtilityBar"/>
+     <xsd:enumeration value="RecordPreview"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="Flow">
@@ -4229,6 +4206,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="fieldType" type="tns:FlowScreenFieldType"/>
        <xsd:element name="helpText" minOccurs="0" type="xsd:string"/>
        <xsd:element name="isRequired" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="isVisible" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="scale" minOccurs="0" type="xsd:int"/>
        <xsd:element name="validationRule" minOccurs="0" type="tns:FlowInputValidationRule"/>
       </xsd:sequence>
@@ -4460,6 +4438,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="submit"/>
      <xsd:enumeration value="thanks"/>
      <xsd:enumeration value="thunderResponse"/>
+     <xsd:enumeration value="createServiceReport"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:simpleType name="FlowProcessType">
@@ -4473,6 +4452,8 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="ActionPlan"/>
      <xsd:enumeration value="JourneyBuilderIntegration"/>
      <xsd:enumeration value="UserProvisioningFlow"/>
+     <xsd:enumeration value="Survey"/>
+     <xsd:enumeration value="FieldServiceMobile"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="FlowDefinition">
@@ -4667,40 +4648,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="showQuotas" type="xsd:boolean"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="FtestFirstTopLevel">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="content" type="xsd:int"/>
-       <xsd:element name="isProtected" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="FtestSecondTopLevel">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="content" type="xsd:int"/>
-       <xsd:element name="isProtected" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="GlobalPicklist">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="globalPicklistValues" minOccurs="0" maxOccurs="unbounded" type="tns:GlobalPicklistValue"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="sorted" type="xsd:boolean"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
    <xsd:complexType name="GlobalValueSet">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -4792,6 +4739,33 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:complexType name="InsightType">
+    <xsd:complexContent>
+     <xsd:extension base="tns:Metadata">
+      <xsd:sequence>
+       <xsd:element name="defaultTrendType" type="tns:InsightTrendType"/>
+       <xsd:element name="description" type="xsd:string"/>
+       <xsd:element name="isProtected" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="masterLabel" type="xsd:string"/>
+       <xsd:element name="parentType" type="tns:InsightParentType"/>
+       <xsd:element name="title" type="xsd:string"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:simpleType name="InsightTrendType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Positive"/>
+     <xsd:enumeration value="Negative"/>
+     <xsd:enumeration value="Informational"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="InsightParentType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Opportunity"/>
+     <xsd:enumeration value="Account"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:complexType name="InstalledPackage">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -4902,6 +4876,8 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:sequence>
      <xsd:element name="caseFields" minOccurs="0" type="tns:KnowledgeCaseFieldsSettings"/>
      <xsd:element name="useSuggestedArticlesForCase" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="workOrderFields" minOccurs="0" type="tns:KnowledgeWorkOrderFieldsSettings"/>
+     <xsd:element name="workOrderLineItemFields" minOccurs="0" type="tns:KnowledgeWorkOrderLineItemFieldsSettings"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="KnowledgeCaseFieldsSettings">
@@ -4910,6 +4886,26 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="KnowledgeCaseField">
+    <xsd:sequence>
+     <xsd:element name="name" minOccurs="0" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="KnowledgeWorkOrderFieldsSettings">
+    <xsd:sequence>
+     <xsd:element name="field" minOccurs="0" maxOccurs="unbounded" type="tns:KnowledgeWorkOrderField"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="KnowledgeWorkOrderField">
+    <xsd:sequence>
+     <xsd:element name="name" minOccurs="0" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="KnowledgeWorkOrderLineItemFieldsSettings">
+    <xsd:sequence>
+     <xsd:element name="field" minOccurs="0" maxOccurs="unbounded" type="tns:KnowledgeWorkOrderLineItemField"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="KnowledgeWorkOrderLineItemField">
     <xsd:sequence>
      <xsd:element name="name" minOccurs="0" type="xsd:string"/>
     </xsd:sequence>
@@ -5182,6 +5178,9 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Default"/>
      <xsd:enumeration value="QuoteTemplate"/>
      <xsd:enumeration value="DefaultQuoteTemplate"/>
+     <xsd:enumeration value="ServiceReportTemplate"/>
+     <xsd:enumeration value="ChildServiceReportTemplateStyle"/>
+     <xsd:enumeration value="DefaultServiceReportTemplate"/>
      <xsd:enumeration value="CaseInteraction"/>
      <xsd:enumeration value="QuickActionLayoutLeftRight"/>
      <xsd:enumeration value="QuickActionLayoutTopDown"/>
@@ -5193,6 +5192,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
        <xsd:element name="allowOwnerChange" minOccurs="0" type="xsd:boolean"/>
+       <xsd:element name="objectMapping" minOccurs="0" maxOccurs="unbounded" type="tns:ObjectMapping"/>
        <xsd:element name="opportunityCreationOptions" minOccurs="0" type="tns:VisibleOrRequired"/>
       </xsd:sequence>
      </xsd:extension>
@@ -5515,6 +5515,15 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Replace"/>
     </xsd:restriction>
    </xsd:simpleType>
+   <xsd:complexType name="MacroSettings">
+    <xsd:complexContent>
+     <xsd:extension base="tns:Metadata">
+      <xsd:sequence>
+       <xsd:element name="enableAdvancedSearch" minOccurs="0" type="xsd:boolean"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
    <xsd:complexType name="ManagedTopic">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -5636,6 +5645,13 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
+   <xsd:simpleType name="ApexCodeUnitStatus">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Inactive"/>
+     <xsd:enumeration value="Active"/>
+     <xsd:enumeration value="Deleted"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:complexType name="ApexComponent">
     <xsd:complexContent>
      <xsd:extension base="tns:MetadataWithContent">
@@ -5709,12 +5725,16 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
    </xsd:simpleType>
    <xsd:complexType name="ContentAssetRelationships">
     <xsd:sequence>
+     <xsd:element name="insightsApplication" minOccurs="0" maxOccurs="unbounded" type="tns:ContentAssetLink"/>
+     <xsd:element name="network" minOccurs="0" maxOccurs="unbounded" type="tns:ContentAssetLink"/>
      <xsd:element name="organization" minOccurs="0" type="tns:ContentAssetLink"/>
+     <xsd:element name="workspace" minOccurs="0" maxOccurs="unbounded" type="tns:ContentAssetLink"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="ContentAssetLink">
     <xsd:sequence>
      <xsd:element name="access" type="tns:ContentAssetAccess"/>
+     <xsd:element name="isManagingWorkspace" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="name" minOccurs="0" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
@@ -5765,6 +5785,27 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:complexType name="EclairGeoData">
+    <xsd:complexContent>
+     <xsd:extension base="tns:MetadataWithContent">
+      <xsd:sequence>
+       <xsd:element name="maps" minOccurs="0" maxOccurs="unbounded" type="tns:EclairMap"/>
+       <xsd:element name="masterLabel" type="xsd:string"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:complexType name="EclairMap">
+    <xsd:sequence>
+     <xsd:element name="boundingBoxBottom" minOccurs="0" type="xsd:double"/>
+     <xsd:element name="boundingBoxLeft" minOccurs="0" type="xsd:double"/>
+     <xsd:element name="boundingBoxRight" minOccurs="0" type="xsd:double"/>
+     <xsd:element name="boundingBoxTop" minOccurs="0" type="xsd:double"/>
+     <xsd:element name="mapLabel" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="mapName" type="xsd:string"/>
+     <xsd:element name="projection" type="xsd:string"/>
+    </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="EmailTemplate">
     <xsd:complexContent>
@@ -5927,26 +5968,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="recursChained"/>
     </xsd:restriction>
    </xsd:simpleType>
-   <xsd:complexType name="MobileApplicationDetail">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="applicationBinaryFile" minOccurs="0" type="xsd:base64Binary"/>
-       <xsd:element name="applicationBinaryFileName" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="applicationBundleIdentifier" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="applicationFileLength" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="applicationIconFile" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="applicationIconFileName" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="applicationInstallUrl" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="devicePlatform" type="tns:DevicePlatformType"/>
-       <xsd:element name="deviceType" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="minimumOsVersion" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="privateApp" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="version" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
    <xsd:complexType name="MobileSettings">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -5989,10 +6010,15 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
        <xsd:element name="action" type="tns:ModerationRuleAction"/>
+       <xsd:element name="actionLimit" minOccurs="0" type="xsd:int"/>
        <xsd:element name="active" type="xsd:boolean"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="entitiesAndFields" minOccurs="0" maxOccurs="unbounded" type="tns:ModeratedEntityField"/>
        <xsd:element name="masterLabel" type="xsd:string"/>
+       <xsd:element name="notifyLimit" minOccurs="0" type="xsd:int"/>
+       <xsd:element name="timePeriod" minOccurs="0" type="tns:RateLimitTimePeriod"/>
+       <xsd:element name="type" minOccurs="0" type="tns:ModerationRuleType"/>
+       <xsd:element name="userCriteria" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
        <xsd:element name="userMessage" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
@@ -6014,37 +6040,22 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="keywordList" minOccurs="0" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="Module">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="label" type="xsd:string"/>
-       <xsd:element name="moduleDependencies" minOccurs="0" type="tns:ModuleDependencies"/>
-       <xsd:element name="moduleType" type="xsd:string"/>
-       <xsd:element name="name" type="xsd:string"/>
-       <xsd:element name="types" minOccurs="0" maxOccurs="unbounded" type="tns:PackageTypeMembers"/>
-       <xsd:element name="version" minOccurs="0" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="ModuleDependencies">
-    <xsd:sequence>
-     <xsd:element name="moduleRef" minOccurs="0" maxOccurs="unbounded" type="tns:ModuleRef"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="PackageTypeMembers">
-    <xsd:sequence>
-     <xsd:element name="members" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-     <xsd:element name="name" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
+   <xsd:simpleType name="RateLimitTimePeriod">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Short"/>
+     <xsd:enumeration value="Medium"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="ModerationRuleType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Content"/>
+     <xsd:enumeration value="Rate"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:complexType name="NameSettings">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="enableInformalName" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="enableMiddleName" minOccurs="0" type="xsd:boolean"/>
        <xsd:element name="enableNameSuffix" minOccurs="0" type="xsd:boolean"/>
       </xsd:sequence>
@@ -6139,9 +6150,15 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="label" type="xsd:string"/>
      <xsd:element name="position" type="xsd:int"/>
      <xsd:element name="publiclyAvailable" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="target" type="xsd:string"/>
+     <xsd:element name="subMenu" minOccurs="0" type="tns:NavigationSubMenu"/>
+     <xsd:element name="target" minOccurs="0" type="xsd:string"/>
      <xsd:element name="targetPreference" minOccurs="0" type="xsd:string"/>
      <xsd:element name="type" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="NavigationSubMenu">
+    <xsd:sequence>
+     <xsd:element name="navigationMenuItem" minOccurs="0" maxOccurs="unbounded" type="tns:NavigationMenuItem"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="NetworkMemberGroup">
@@ -6268,52 +6285,16 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="allowDelete" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="allowEdit" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="allowRead" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="customizeSetup" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="deleteSetup" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="modifyAllRecords" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="object" type="xsd:string"/>
      <xsd:element name="viewAllRecords" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="viewSetup" minOccurs="0" type="xsd:boolean"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="PackageBooleanValue">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="isBlacktabEditable" type="xsd:boolean"/>
-       <xsd:element name="isBlacktabReadable" type="xsd:boolean"/>
-       <xsd:element name="isProtected" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="value" type="xsd:boolean"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="PackageDateValue">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="isBlacktabEditable" type="xsd:boolean"/>
-       <xsd:element name="isBlacktabReadable" type="xsd:boolean"/>
-       <xsd:element name="isProtected" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="value" type="xsd:date"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="PackageIntegerValue">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="isBlacktabEditable" type="xsd:boolean"/>
-       <xsd:element name="isBlacktabReadable" type="xsd:boolean"/>
-       <xsd:element name="isProtected" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="value" type="xsd:int"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
+   <xsd:complexType name="PackageTypeMembers">
+    <xsd:sequence>
+     <xsd:element name="members" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="name" type="xsd:string"/>
+    </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="PathAssistant">
     <xsd:complexContent>
@@ -6404,12 +6385,9 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="allowDelete" type="xsd:boolean"/>
      <xsd:element name="allowEdit" type="xsd:boolean"/>
      <xsd:element name="allowRead" type="xsd:boolean"/>
-     <xsd:element name="customizeSetup" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="deleteSetup" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="modifyAllRecords" type="xsd:boolean"/>
      <xsd:element name="object" type="xsd:string"/>
      <xsd:element name="viewAllRecords" type="xsd:boolean"/>
-     <xsd:element name="viewSetup" minOccurs="0" type="xsd:boolean"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="PermissionSetApexPageAccess">
@@ -6485,65 +6463,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="Session"/>
      <xsd:enumeration value="Organization"/>
-    </xsd:restriction>
-   </xsd:simpleType>
-   <xsd:complexType name="PlatformLicenseDefinition">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="cloudServiceProvider" type="xsd:string"/>
-       <xsd:element name="defaultLicenseDuration" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="defaultStatus" minOccurs="0" type="tns:DefaultLicenseStatus"/>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="hasDynamicResourceGroupKey" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="includedFeatures" minOccurs="0" maxOccurs="unbounded" type="tns:IncludedFeature"/>
-       <xsd:element name="managementServiceProvider" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="managementTenantId" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="minPlatformVersion" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="name" type="xsd:string"/>
-       <xsd:element name="settingItems" minOccurs="0" maxOccurs="unbounded" type="tns:SettingItem"/>
-       <xsd:element name="settingUsageDefinitions" minOccurs="0" maxOccurs="unbounded" type="tns:SettingUsageDefinition"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="IncludedFeature">
-    <xsd:sequence>
-     <xsd:element name="name" type="xsd:string"/>
-     <xsd:element name="settingOverrides" minOccurs="0" maxOccurs="unbounded" type="tns:SettingOverride"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="SettingOverride">
-    <xsd:sequence>
-     <xsd:element name="settingId" type="xsd:string"/>
-     <xsd:element name="value" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="SettingItem">
-    <xsd:sequence>
-     <xsd:element name="durableId" type="xsd:string"/>
-     <xsd:element name="editable" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="ignoreQuantity" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="value" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="SettingUsageDefinition">
-    <xsd:sequence>
-     <xsd:element name="frequencyDefault" minOccurs="0" type="tns:Frequency"/>
-     <xsd:element name="hasRolloverDefault" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="isPersistentResource" minOccurs="0" type="xsd:boolean"/>
-     <xsd:element name="overageGraceDefault" minOccurs="0" type="xsd:double"/>
-     <xsd:element name="setting" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:simpleType name="Frequency">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="Weekly"/>
-     <xsd:enumeration value="Fortnightly"/>
-     <xsd:enumeration value="Monthly"/>
-     <xsd:enumeration value="Once"/>
-     <xsd:enumeration value="Quarterly"/>
-     <xsd:enumeration value="Yearly"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="Portal">
@@ -6709,16 +6628,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:sequence>
      <xsd:element name="apexPage" type="xsd:string"/>
      <xsd:element name="enabled" type="xsd:boolean"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="ProfileActionOverride">
-    <xsd:sequence>
-     <xsd:element name="actionName" type="xsd:string"/>
-     <xsd:element name="content" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="formFactor" type="tns:FormFactor"/>
-     <xsd:element name="pageOrSobjectType" type="xsd:string"/>
-     <xsd:element name="recordType" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="type" type="tns:ActionOverrideType"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="ProfileRecordTypeVisibility">
@@ -7100,6 +7009,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:sequence>
      <xsd:element name="column" type="xsd:string"/>
      <xsd:element name="columnToColumn" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="isUnlocked" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="operator" type="tns:FilterOperation"/>
      <xsd:element name="snapshot" minOccurs="0" type="xsd:string"/>
      <xsd:element name="value" minOccurs="0" type="xsd:string"/>
@@ -7739,8 +7649,10 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="enableClickjackNonsetupUser" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="enableClickjackNonsetupUserHeaderless" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="enableClickjackSetup" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="enableContentSniffingProtection" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="enablePostForSessions" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="enableSMSIdentity" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="enableXssProtection" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="enforceIpRangesEveryRequest" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="forceLogoutOnSessionTimeout" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="forceRelogin" minOccurs="0" type="xsd:boolean"/>
@@ -8002,8 +7914,11 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="action" type="tns:TransactionSecurityAction"/>
        <xsd:element name="active" type="xsd:boolean"/>
        <xsd:element name="apexClass" type="xsd:string"/>
+       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="developerName" minOccurs="0" type="xsd:string"/>
        <xsd:element name="eventType" type="tns:MonitoredEvents"/>
        <xsd:element name="executionUser" type="xsd:string"/>
+       <xsd:element name="masterLabel" minOccurs="0" type="xsd:string"/>
        <xsd:element name="resourceName" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
@@ -8120,43 +8035,27 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="name" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="UserLicenseDefinition">
+   <xsd:complexType name="UserCriteria">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="cloudServiceProvider" type="xsd:string"/>
-       <xsd:element name="defaultLicenseDuration" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="defaultStatus" minOccurs="0" type="tns:DefaultLicenseStatus"/>
+       <xsd:element name="creationAgeInSeconds" minOccurs="0" type="xsd:int"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="hasDynamicResourceGroupKey" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="includedFeatures" minOccurs="0" maxOccurs="unbounded" type="tns:IncludedFeature"/>
-       <xsd:element name="isPermissionSetLicense" minOccurs="0" type="xsd:boolean"/>
-       <xsd:element name="licenseKey" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="managementServiceProvider" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="managementTenantId" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="minPlatformVersion" minOccurs="0" type="xsd:int"/>
-       <xsd:element name="name" type="xsd:string"/>
-       <xsd:element name="settingItems" minOccurs="0" maxOccurs="unbounded" type="tns:SettingItem"/>
-       <xsd:element name="settingUsageDefinitions" minOccurs="0" maxOccurs="unbounded" type="tns:SettingUsageDefinition"/>
-       <xsd:element name="standardPermissionSets" minOccurs="0" maxOccurs="unbounded" type="tns:StandardPermissionSet"/>
+       <xsd:element name="lastChatterActivityAgeInSeconds" minOccurs="0" type="xsd:int"/>
+       <xsd:element name="masterLabel" type="xsd:string"/>
+       <xsd:element name="profiles" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+       <xsd:element name="userTypes" minOccurs="0" maxOccurs="unbounded" type="tns:NetworkUserType"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="StandardPermissionSet">
-    <xsd:sequence>
-     <xsd:element name="developerName" type="xsd:string"/>
-     <xsd:element name="profileKey" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="settingValues" minOccurs="0" maxOccurs="unbounded" type="tns:SettingValue"/>
-     <xsd:element name="standardPermissionSetKey" minOccurs="0" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:complexType name="SettingValue">
-    <xsd:sequence>
-     <xsd:element name="durableId" type="xsd:string"/>
-     <xsd:element name="value" type="xsd:string"/>
-    </xsd:sequence>
-   </xsd:complexType>
+   <xsd:simpleType name="NetworkUserType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Internal"/>
+     <xsd:enumeration value="Customer"/>
+     <xsd:enumeration value="Partner"/>
+    </xsd:restriction>
+   </xsd:simpleType>
    <xsd:complexType name="VisualizationPlugin">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
@@ -8234,37 +8133,147 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="WaveTemplateExternalDataMetadata">
+   <xsd:complexType name="WaveXmd">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="edgemartLabel" type="xsd:string"/>
-       <xsd:element name="format" type="xsd:string"/>
-       <xsd:element name="label" type="xsd:string"/>
-       <xsd:element name="simulatedRowCount" minOccurs="0" type="xsd:int"/>
+       <xsd:element name="dataset" type="xsd:string"/>
+       <xsd:element name="datasetConnector" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="datasetFullyQualifiedName" minOccurs="0" type="xsd:string"/>
+       <xsd:element name="dates" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdDate"/>
+       <xsd:element name="dimensions" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdDimension"/>
+       <xsd:element name="measures" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdMeasure"/>
+       <xsd:element name="organizations" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdOrganization"/>
+       <xsd:element name="origin" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="WaveTemplateLensDashboardMetadata">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence/>
-     </xsd:extension>
-    </xsd:complexContent>
+   <xsd:complexType name="WaveXmdDate">
+    <xsd:sequence>
+     <xsd:element name="alias" type="xsd:string"/>
+     <xsd:element name="compact" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="dateFieldDay" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldEpochDay" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldEpochSecond" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldFiscalMonth" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldFiscalQuarter" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldFiscalWeek" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldFiscalYear" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldFullYear" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldHour" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldMinute" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldMonth" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldQuarter" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldSecond" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldWeek" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="dateFieldYear" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="firstDayOfWeek" type="xsd:int"/>
+     <xsd:element name="fiscalMonthOffset" type="xsd:int"/>
+     <xsd:element name="isYearEndFiscalYear" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="label" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="showInExplorer" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdDimension">
+    <xsd:sequence>
+     <xsd:element name="customActions" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdDimensionCustomAction"/>
+     <xsd:element name="customActionsEnabled" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="dateFormat" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="field" type="xsd:string"/>
+     <xsd:element name="fullyQualifiedName" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="imageTemplate" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="isDerived" type="xsd:boolean"/>
+     <xsd:element name="isMultiValue" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="label" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="linkTemplate" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="linkTemplateEnabled" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="linkTooltip" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="members" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdDimensionMember"/>
+     <xsd:element name="origin" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="recordDisplayFields" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdRecordDisplayLookup"/>
+     <xsd:element name="recordIdField" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="recordOrganizationIdField" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="salesforceActions" minOccurs="0" maxOccurs="unbounded" type="tns:WaveXmdDimensionSalesforceAction"/>
+     <xsd:element name="salesforceActionsEnabled" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="showDetailsDefaultFieldIndex" minOccurs="0" type="xsd:int"/>
+     <xsd:element name="showInExplorer" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdDimensionCustomAction">
+    <xsd:sequence>
+     <xsd:element name="customActionName" type="xsd:string"/>
+     <xsd:element name="enabled" type="xsd:boolean"/>
+     <xsd:element name="icon" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="method" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+     <xsd:element name="target" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="tooltip" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="url" minOccurs="0" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdDimensionMember">
+    <xsd:sequence>
+     <xsd:element name="color" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="label" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="member" type="xsd:string"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdRecordDisplayLookup">
+    <xsd:sequence>
+     <xsd:element name="recordDisplayField" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdDimensionSalesforceAction">
+    <xsd:sequence>
+     <xsd:element name="enabled" type="xsd:boolean"/>
+     <xsd:element name="salesforceActionName" type="xsd:string"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdMeasure">
+    <xsd:sequence>
+     <xsd:element name="dateFormat" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="field" type="xsd:string"/>
+     <xsd:element name="formatCustomFormat" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formatDecimalDigits" minOccurs="0" type="xsd:int"/>
+     <xsd:element name="formatIsNegativeParens" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="formatPrefix" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formatSuffix" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formatUnit" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="formatUnitMultiplier" minOccurs="0" type="xsd:double"/>
+     <xsd:element name="fullyQualifiedName" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="isDerived" type="xsd:boolean"/>
+     <xsd:element name="label" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="origin" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="showDetailsDefaultFieldIndex" minOccurs="0" type="xsd:int"/>
+     <xsd:element name="showInExplorer" minOccurs="0" type="xsd:boolean"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WaveXmdOrganization">
+    <xsd:sequence>
+     <xsd:element name="instanceUrl" type="xsd:string"/>
+     <xsd:element name="label" type="xsd:string"/>
+     <xsd:element name="organizationIdentifier" type="xsd:string"/>
+     <xsd:element name="sortIndex" type="xsd:int"/>
+    </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="Workflow">
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
        <xsd:element name="alerts" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowAlert"/>
-       <xsd:element name="apex" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowApex"/>
-       <xsd:element name="chatterPosts" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowChatterPost"/>
        <xsd:element name="fieldUpdates" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowFieldUpdate"/>
        <xsd:element name="flowActions" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowFlowAction"/>
        <xsd:element name="knowledgePublishes" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowKnowledgePublish"/>
        <xsd:element name="outboundMessages" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowOutboundMessage"/>
-       <xsd:element name="quickCreates" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowQuickCreate"/>
        <xsd:element name="rules" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowRule"/>
        <xsd:element name="send" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowSend"/>
        <xsd:element name="tasks" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowTask"/>
@@ -8294,69 +8303,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="WorkflowApex">
-    <xsd:complexContent>
-     <xsd:extension base="tns:WorkflowAction">
-      <xsd:sequence>
-       <xsd:element name="apexClass" type="xsd:string"/>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="label" type="xsd:string"/>
-       <xsd:element name="language" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="protected" type="xsd:boolean"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="WorkflowChatterPost">
-    <xsd:complexContent>
-     <xsd:extension base="tns:WorkflowAction">
-      <xsd:sequence>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="emailTemplate" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="label" type="xsd:string"/>
-       <xsd:element name="language" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="postOnGroupWall" type="xsd:boolean"/>
-       <xsd:element name="postOnObject" type="xsd:boolean"/>
-       <xsd:element name="protected" type="xsd:boolean"/>
-       <xsd:element name="quickTemplate" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="recipients" minOccurs="0" maxOccurs="unbounded" type="tns:WorkflowChatterRecipient"/>
-       <xsd:element name="senderType" minOccurs="0" type="tns:ActionChatterPostSenderType"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="WorkflowChatterRecipient">
-    <xsd:sequence>
-     <xsd:element name="field" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="recipient" minOccurs="0" type="xsd:string"/>
-     <xsd:element name="type" type="tns:ActionChatterPostRecipTypes"/>
-    </xsd:sequence>
-   </xsd:complexType>
-   <xsd:simpleType name="ActionChatterPostRecipTypes">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="CollaborationGroup"/>
-     <xsd:enumeration value="Group"/>
-     <xsd:enumeration value="User"/>
-     <xsd:enumeration value="OpportunityTeam"/>
-     <xsd:enumeration value="AccountTeam"/>
-     <xsd:enumeration value="Owner"/>
-     <xsd:enumeration value="Creator"/>
-     <xsd:enumeration value="PartnerUser"/>
-     <xsd:enumeration value="AccountOwner"/>
-     <xsd:enumeration value="CustomerSuccessUser"/>
-     <xsd:enumeration value="ContactLookup"/>
-     <xsd:enumeration value="UserLookup"/>
-     <xsd:enumeration value="CaseTeam"/>
-     <xsd:enumeration value="CampaignMemberDerivedOwner"/>
-    </xsd:restriction>
-   </xsd:simpleType>
-   <xsd:simpleType name="ActionChatterPostSenderType">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="CurrentUser"/>
-     <xsd:enumeration value="DefaultChatterUser"/>
-     <xsd:enumeration value="DefaultWorkflowUser"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:complexType name="WorkflowFieldUpdate">
     <xsd:complexContent>
      <xsd:extension base="tns:WorkflowAction">
@@ -8446,20 +8392,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
        <xsd:element name="name" type="xsd:string"/>
        <xsd:element name="protected" type="xsd:boolean"/>
        <xsd:element name="useDeadLetterQueue" minOccurs="0" type="xsd:boolean"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:complexType name="WorkflowQuickCreate">
-    <xsd:complexContent>
-     <xsd:extension base="tns:WorkflowAction">
-      <xsd:sequence>
-       <xsd:element name="createFeedItem" type="xsd:boolean"/>
-       <xsd:element name="description" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="label" type="xsd:string"/>
-       <xsd:element name="language" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="protected" type="xsd:boolean"/>
-       <xsd:element name="quickAction" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
@@ -8593,67 +8525,20 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="connections" minOccurs="0" maxOccurs="unbounded" type="tns:XOrgHubConnection"/>
        <xsd:element name="label" type="xsd:string"/>
        <xsd:element name="lockSharedObjects" type="xsd:boolean"/>
        <xsd:element name="permissionSets" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
        <xsd:element name="sharedObjects" minOccurs="0" maxOccurs="unbounded" type="tns:XOrgHubSharedObject"/>
-       <xsd:element name="version" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
      </xsd:extension>
     </xsd:complexContent>
    </xsd:complexType>
-   <xsd:complexType name="XOrgHubConnection">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="invitationCode" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="invitationExpirationDate" minOccurs="0" type="xsd:dateTime"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="proxyUser" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="status" type="tns:XOrgHubConnectionStatus"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:simpleType name="XOrgHubConnectionStatus">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="New"/>
-     <xsd:enumeration value="Pending"/>
-     <xsd:enumeration value="Expired"/>
-     <xsd:enumeration value="Active"/>
-     <xsd:enumeration value="Revoked"/>
-     <xsd:enumeration value="Failed"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:complexType name="XOrgHubSharedObject">
     <xsd:sequence>
      <xsd:element name="fields" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
      <xsd:element name="name" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="XOrgSpoke">
-    <xsd:complexContent>
-     <xsd:extension base="tns:Metadata">
-      <xsd:sequence>
-       <xsd:element name="invitationCode" minOccurs="0" type="xsd:string"/>
-       <xsd:element name="masterLabel" type="xsd:string"/>
-       <xsd:element name="status" minOccurs="0" type="tns:XOrgSpokeStatus"/>
-       <xsd:element name="version" minOccurs="0" type="xsd:string"/>
-      </xsd:sequence>
-     </xsd:extension>
-    </xsd:complexContent>
-   </xsd:complexType>
-   <xsd:simpleType name="XOrgSpokeStatus">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="New"/>
-     <xsd:enumeration value="Connecting"/>
-     <xsd:enumeration value="Failed"/>
-     <xsd:enumeration value="Connected"/>
-     <xsd:enumeration value="Syncing"/>
-     <xsd:enumeration value="Disconnected"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:complexType name="SaveResult">
     <xsd:sequence>
      <xsd:element name="errors" minOccurs="0" maxOccurs="unbounded" type="tns:Error"/>
@@ -8672,7 +8557,8 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
    <xsd:simpleType name="ExtendedErrorCode">
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="FTEST_EXTENSION_CODE_FOR_TEST">
-      <documentation>Errors with this extended error code have the following properties: FTestName, ftestClass</documentation></xsd:enumeration></xsd:restriction></xsd:simpleType>
+      <xsd:annotation>
+       <xsd:documentation>Errors with this extended error code have the following properties: FTestName, ftestClass</xsd:documentation></xsd:annotation></xsd:enumeration></xsd:restriction></xsd:simpleType>
    <xsd:complexType name="ExtendedErrorDetails">
     <xsd:sequence>
      <xsd:element name="extendedErrorCode" type="tns:ExtendedErrorCode"/>
@@ -8706,6 +8592,23 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="RunSpecifiedTests"/>
      <xsd:enumeration value="RunLocalTests"/>
      <xsd:enumeration value="RunAllTestsInOrg"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="AsyncResult">
+    <xsd:sequence>
+     <xsd:element name="done" type="xsd:boolean"/>
+     <xsd:element name="id" type="tns:ID"/>
+     <xsd:element name="message" minOccurs="0" type="xsd:string"/>
+     <xsd:element name="state" type="tns:AsyncRequestState"/>
+     <xsd:element name="statusCode" minOccurs="0" type="tns:StatusCode"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="AsyncRequestState">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Queued"/>
+     <xsd:enumeration value="InProgress"/>
+     <xsd:enumeration value="Completed"/>
+     <xsd:enumeration value="Error"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="DescribeMetadataResult">
@@ -8778,12 +8681,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="unpackaged" minOccurs="0" type="tns:Package"/>
     </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="UpdateMetadata">
-    <xsd:sequence>
-     <xsd:element name="currentName" type="xsd:string"/>
-     <xsd:element name="metadata" type="tns:Metadata"/>
-    </xsd:sequence>
-   </xsd:complexType>
    <xsd:complexType name="UpsertResult">
     <xsd:sequence>
      <xsd:element name="created" type="xsd:boolean"/>
@@ -8803,18 +8700,9 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:complexType>
      <xsd:sequence>
       <xsd:element name="client" type="xsd:string"/>
-      <xsd:element name="perfOption" type="tns:PerfOption"/>
-      <xsd:element name="uiRequestId" type="xsd:string"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
-   <xsd:simpleType name="PerfOption">
-    <xsd:restriction base="xsd:string">
-     <xsd:enumeration value="NONE"/>
-     <xsd:enumeration value="BASIC"/>
-     <xsd:enumeration value="DETAILED"/>
-    </xsd:restriction>
-   </xsd:simpleType>
    <xsd:element name="DebuggingHeader">
     <xsd:complexType>
      <xsd:sequence>
@@ -8839,6 +8727,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Apex_profiling"/>
      <xsd:enumeration value="Visualforce"/>
      <xsd:enumeration value="System"/>
+     <xsd:enumeration value="Wave"/>
      <xsd:enumeration value="All"/>
     </xsd:restriction>
    </xsd:simpleType>
@@ -8931,6 +8820,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="CUSTOM_INDEX_EXISTS"/>
      <xsd:enumeration value="CUSTOM_LINK_LIMIT_EXCEEDED"/>
      <xsd:enumeration value="CUSTOM_METADATA_LIMIT_EXCEEDED"/>
+     <xsd:enumeration value="CUSTOM_METADATA_REL_FIELD_MANAGEABILITY"/>
      <xsd:enumeration value="CUSTOM_SETTINGS_LIMIT_EXCEEDED"/>
      <xsd:enumeration value="CUSTOM_TAB_LIMIT_EXCEEDED"/>
      <xsd:enumeration value="DATACLOUDADDRESS_NO_RECORDS_FOUND"/>
@@ -8953,6 +8843,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="DUPLICATE_VALUE"/>
      <xsd:enumeration value="EMAIL_ADDRESS_BOUNCED"/>
      <xsd:enumeration value="EMAIL_EXTERNAL_TRANSPORT_CONNECTION_ERROR"/>
+     <xsd:enumeration value="EMAIL_EXTERNAL_TRANSPORT_PERMISSION_ERROR"/>
      <xsd:enumeration value="EMAIL_EXTERNAL_TRANSPORT_TOKEN_ERROR"/>
      <xsd:enumeration value="EMAIL_EXTERNAL_TRANSPORT_TOO_MANY_REQUESTS_ERROR"/>
      <xsd:enumeration value="EMAIL_EXTERNAL_TRANSPORT_UNKNOWN_ERROR"/>
@@ -8999,7 +8890,9 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="INSUFFICIENT_ACCESS_OR_READONLY"/>
      <xsd:enumeration value="INSUFFICIENT_ACCESS_TO_INSIGHTSEXTERNALDATA"/>
      <xsd:enumeration value="INSUFFICIENT_CREDITS"/>
+     <xsd:enumeration value="INTERNAL_ERROR"/>
      <xsd:enumeration value="INVALID_ACCESS_LEVEL"/>
+     <xsd:enumeration value="INVALID_ACCESS_TOKEN"/>
      <xsd:enumeration value="INVALID_ARGUMENT_TYPE"/>
      <xsd:enumeration value="INVALID_ASSIGNEE_TYPE"/>
      <xsd:enumeration value="INVALID_ASSIGNMENT_RULE"/>
@@ -9043,8 +8936,10 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="INVALID_PACKAGE_VERSION"/>
      <xsd:enumeration value="INVALID_PARTNER_NETWORK_STATUS"/>
      <xsd:enumeration value="INVALID_PERSON_ACCOUNT_OPERATION"/>
+     <xsd:enumeration value="INVALID_PROVIDER_TYPE"/>
      <xsd:enumeration value="INVALID_QUERY_LOCATOR"/>
      <xsd:enumeration value="INVALID_READ_ONLY_USER_DML"/>
+     <xsd:enumeration value="INVALID_REFRESH_TOKEN"/>
      <xsd:enumeration value="INVALID_RUNTIME_VALUE"/>
      <xsd:enumeration value="INVALID_SAVE_AS_ACTIVITY_FLAG"/>
      <xsd:enumeration value="INVALID_SESSION_ID"/>
@@ -9101,18 +8996,24 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="MAX_TASK_DESCRIPTION_EXCEEEDED"/>
      <xsd:enumeration value="MAX_TM_RULES_EXCEEDED"/>
      <xsd:enumeration value="MAX_TM_RULE_ITEMS_EXCEEDED"/>
+     <xsd:enumeration value="MAX_TRIGGERS_EXCEEDED"/>
      <xsd:enumeration value="MERGE_FAILED"/>
      <xsd:enumeration value="METADATA_FIELD_UPDATE_ERROR"/>
      <xsd:enumeration value="MISSING_ARGUMENT"/>
      <xsd:enumeration value="MISSING_RECORD"/>
      <xsd:enumeration value="MIXED_DML_OPERATION"/>
      <xsd:enumeration value="NONUNIQUE_SHIPPING_ADDRESS"/>
+     <xsd:enumeration value="NO_ACCESS_TOKEN"/>
+     <xsd:enumeration value="NO_ACCESS_TOKEN_FROM_REFRESH"/>
      <xsd:enumeration value="NO_APPLICABLE_PROCESS"/>
      <xsd:enumeration value="NO_ATTACHMENT_PERMISSION"/>
+     <xsd:enumeration value="NO_AUTH_PROVIDER"/>
      <xsd:enumeration value="NO_INACTIVE_DIVISION_MEMBERS"/>
      <xsd:enumeration value="NO_MASS_MAIL_PERMISSION"/>
      <xsd:enumeration value="NO_PARTNER_PERMISSION"/>
+     <xsd:enumeration value="NO_REFRESH_TOKEN"/>
      <xsd:enumeration value="NO_SUCH_USER_EXISTS"/>
+     <xsd:enumeration value="NO_TOKEN_ENDPOINT"/>
      <xsd:enumeration value="NUMBER_OUTSIDE_VALID_RANGE"/>
      <xsd:enumeration value="NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED"/>
      <xsd:enumeration value="OPTED_OUT_OF_MASS_MAIL"/>
@@ -9154,6 +9055,8 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="RETRIEVE_EXCHANGE_ATTACHMENT_FAILED"/>
      <xsd:enumeration value="RETRIEVE_EXCHANGE_EMAIL_FAILED"/>
      <xsd:enumeration value="RETRIEVE_EXCHANGE_EVENT_FAILED"/>
+     <xsd:enumeration value="RETRIEVE_GOOGLE_EMAIL_FAILED"/>
+     <xsd:enumeration value="RETRIEVE_GOOGLE_EVENT_FAILED"/>
      <xsd:enumeration value="SALESFORCE_INBOX_TRANSPORT_CONNECTION_ERROR"/>
      <xsd:enumeration value="SALESFORCE_INBOX_TRANSPORT_TOKEN_ERROR"/>
      <xsd:enumeration value="SALESFORCE_INBOX_TRANSPORT_UNKNOWN_ERROR"/>
@@ -9172,6 +9075,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="TABSET_LIMIT_EXCEEDED"/>
      <xsd:enumeration value="TEMPLATE_NOT_ACTIVE"/>
      <xsd:enumeration value="TEMPLATE_NOT_FOUND"/>
+     <xsd:enumeration value="TERMS_OF_SERVICE_UNREAD"/>
      <xsd:enumeration value="TERRITORY_REALIGN_IN_PROGRESS"/>
      <xsd:enumeration value="TEXT_DATA_OUTSIDE_SUPPORTED_CHARSET"/>
      <xsd:enumeration value="TOO_MANY_APEX_REQUESTS"/>
@@ -9183,6 +9087,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="UNAVAILABLE_REF"/>
      <xsd:enumeration value="UNDELETE_FAILED"/>
      <xsd:enumeration value="UNKNOWN_EXCEPTION"/>
+     <xsd:enumeration value="UNKNOWN_TOKEN_ERROR"/>
      <xsd:enumeration value="UNSAFE_HTML_CONTENT"/>
      <xsd:enumeration value="UNSPECIFIED_EMAIL_ADDRESS"/>
      <xsd:enumeration value="UNSUPPORTED_APEX_TRIGGER_OPERATON"/>
@@ -9240,34 +9145,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
-   <xsd:element name="checkStatus">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="asyncProcessId" minOccurs="0" maxOccurs="unbounded" type="tns:ID"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="checkStatusResponse">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:AsyncResult"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="create">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="metadata" minOccurs="0" maxOccurs="unbounded" type="tns:Metadata"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="createResponse">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:AsyncResult"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
    <xsd:element name="createMetadata">
     <xsd:complexType>
      <xsd:sequence>
@@ -9279,20 +9156,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <xsd:complexType>
      <xsd:sequence>
       <xsd:element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:SaveResult"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="delete">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="metadata" minOccurs="0" maxOccurs="unbounded" type="tns:Metadata"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="deleteResponse">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:AsyncResult"/>
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
@@ -9428,20 +9291,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
      </xsd:sequence>
     </xsd:complexType>
    </xsd:element>
-   <xsd:element name="update">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="UpdateMetadata" minOccurs="0" maxOccurs="unbounded" type="tns:UpdateMetadata"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="updateResponse">
-    <xsd:complexType>
-     <xsd:sequence>
-      <xsd:element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:AsyncResult"/>
-     </xsd:sequence>
-    </xsd:complexType>
-   </xsd:element>
    <xsd:element name="updateMetadata">
     <xsd:complexType>
      <xsd:sequence>
@@ -9499,29 +9348,11 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
  <message name="checkRetrieveStatusResponse">
   <part element="tns:checkRetrieveStatusResponse" name="parameters"/>
  </message>
- <message name="checkStatusRequest">
-  <part element="tns:checkStatus" name="parameters"/>
- </message>
- <message name="checkStatusResponse">
-  <part element="tns:checkStatusResponse" name="parameters"/>
- </message>
- <message name="createRequest">
-  <part element="tns:create" name="parameters"/>
- </message>
- <message name="createResponse">
-  <part element="tns:createResponse" name="parameters"/>
- </message>
  <message name="createMetadataRequest">
   <part element="tns:createMetadata" name="parameters"/>
  </message>
  <message name="createMetadataResponse">
   <part element="tns:createMetadataResponse" name="parameters"/>
- </message>
- <message name="deleteRequest">
-  <part element="tns:delete" name="parameters"/>
- </message>
- <message name="deleteResponse">
-  <part element="tns:deleteResponse" name="parameters"/>
  </message>
  <message name="deleteMetadataRequest">
   <part element="tns:deleteMetadata" name="parameters"/>
@@ -9577,12 +9408,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
  <message name="retrieveResponse">
   <part element="tns:retrieveResponse" name="parameters"/>
  </message>
- <message name="updateRequest">
-  <part element="tns:update" name="parameters"/>
- </message>
- <message name="updateResponse">
-  <part element="tns:updateResponse" name="parameters"/>
- </message>
  <message name="updateMetadataRequest">
   <part element="tns:updateMetadata" name="parameters"/>
  </message>
@@ -9611,25 +9436,10 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
    <input message="tns:checkRetrieveStatusRequest"/>
    <output message="tns:checkRetrieveStatusResponse"/>
   </operation>
-  <operation name="checkStatus">
-   <documentation>Check the current status of an asyncronous call.</documentation>
-   <input message="tns:checkStatusRequest"/>
-   <output message="tns:checkStatusResponse"/>
-  </operation>
-  <operation name="create">
-   <documentation>Creates new metadata entries asyncronously.</documentation>
-   <input message="tns:createRequest"/>
-   <output message="tns:createResponse"/>
-  </operation>
   <operation name="createMetadata">
    <documentation>Creates metadata entries synchronously.</documentation>
    <input message="tns:createMetadataRequest"/>
    <output message="tns:createMetadataResponse"/>
-  </operation>
-  <operation name="delete">
-   <documentation>Deletes metadata entries asyncronously.</documentation>
-   <input message="tns:deleteRequest"/>
-   <output message="tns:deleteResponse"/>
   </operation>
   <operation name="deleteMetadata">
    <documentation>Deletes metadata entries synchronously.</documentation>
@@ -9675,11 +9485,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
    <documentation>Retrieves a set of individually specified metadata entries.</documentation>
    <input message="tns:retrieveRequest"/>
    <output message="tns:retrieveResponse"/>
-  </operation>
-  <operation name="update">
-   <documentation>Updates metadata entries asyncronously.</documentation>
-   <input message="tns:updateRequest"/>
-   <output message="tns:updateResponse"/>
   </operation>
   <operation name="updateMetadata">
    <documentation>Updates metadata entries synchronously.</documentation>
@@ -9728,45 +9533,12 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <soap:body use="literal"/>
    </output>
   </operation>
-  <operation name="checkStatus">
-   <soap:operation soapAction=""/>
-   <input>
-    <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
-    <soap:header use="literal" part="CallOptions" message="tns:Header"/>
-    <soap:body use="literal" parts="parameters"/>
-   </input>
-   <output>
-    <soap:body use="literal"/>
-   </output>
-  </operation>
-  <operation name="create">
-   <soap:operation soapAction=""/>
-   <input>
-    <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
-    <soap:header use="literal" part="CallOptions" message="tns:Header"/>
-    <soap:body use="literal" parts="parameters"/>
-   </input>
-   <output>
-    <soap:body use="literal"/>
-   </output>
-  </operation>
   <operation name="createMetadata">
    <soap:operation soapAction=""/>
    <input>
     <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
     <soap:header use="literal" part="CallOptions" message="tns:Header"/>
     <soap:header use="literal" part="AllOrNoneHeader" message="tns:Header"/>
-    <soap:body use="literal" parts="parameters"/>
-   </input>
-   <output>
-    <soap:body use="literal"/>
-   </output>
-  </operation>
-  <operation name="delete">
-   <soap:operation soapAction=""/>
-   <input>
-    <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
-    <soap:header use="literal" part="CallOptions" message="tns:Header"/>
     <soap:body use="literal" parts="parameters"/>
    </input>
    <output>
@@ -9874,17 +9646,6 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
     <soap:body use="literal"/>
    </output>
   </operation>
-  <operation name="update">
-   <soap:operation soapAction=""/>
-   <input>
-    <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
-    <soap:header use="literal" part="CallOptions" message="tns:Header"/>
-    <soap:body use="literal" parts="parameters"/>
-   </input>
-   <output>
-    <soap:body use="literal"/>
-   </output>
-  </operation>
   <operation name="updateMetadata">
    <soap:operation soapAction=""/>
    <input>
@@ -9913,7 +9674,7 @@ Copyright 2006-2016 Salesforce.com, inc. All Rights Reserved
  <service name="MetadataService">
   <documentation>Manage your Salesforce.com metadata</documentation>
   <port binding="tns:MetadataBinding" name="Metadata">
-   <soap:address location="http://localhost:8080/services/Soap/m/38.0"/>
+   <soap:address location="http://(someAppServerPool)/services/Soap/m/39.0"/>
   </port>
  </service>
 </definitions>

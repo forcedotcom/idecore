@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Partner Web Services API Version 38.0
+Salesforce.com Partner Web Services API Version 39.0
 Generated on (Used notimestamp option).
 
 Copyright 1999-2016 salesforce.com, inc.
@@ -91,21 +91,6 @@ All Rights Reserved
             </complexType>
 
 
-            <complexType name="SetupBriefcaseResult">
-                <sequence>
-                    <element name="briefcaseType"    type="tns:briefcaseType" nillable="false" minOccurs="1" maxOccurs="1"/>
-                </sequence>
-            </complexType>
-
-            <simpleType name="briefcaseType">
-                <restriction base="xsd:string">
-                    <enumeration value="BriefcaseAndAccount"/>
-                    <enumeration value="BriefcaseAndActivity"/>
-                    <enumeration value="BriefcaseAndOpportunity"/>
-                    <enumeration value="Briefcase"/>
-                </restriction>
-            </simpleType>
-
 
             <!-- Search Result -->
             <complexType name="SearchResult">
@@ -138,15 +123,37 @@ All Rights Reserved
 
             <complexType name="SearchResultsMetadata">
                 <sequence>
-                	<element name="entityLabelMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:LabelsSearchMetadata"/>
+                    
+                        <element name="entityLabelMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:LabelsSearchMetadata"/>
+                    
+                    
+                        <element name="entityMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:EntitySearchMetadata"/>
+                    
                 </sequence>
             </complexType>
 
 
             <complexType name="LabelsSearchMetadata">
                 <sequence>
-                	<element name="entityFieldLabels" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:NameValuePair"/>
+                    <element name="entityFieldLabels" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:NameValuePair"/>
                     <element name="entityName" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                </sequence>
+            </complexType>
+
+
+            <complexType name="EntitySearchMetadata">
+                <sequence>
+                    <element name="entityName" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                    <element name="fieldMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:FieldLevelSearchMetadata"/>
+                </sequence>
+            </complexType>
+
+
+            <complexType name="FieldLevelSearchMetadata">
+                <sequence>
+                    <element name="label" nillable="true" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                    <element name="name" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                    <element name="type" nillable="true" minOccurs="1" maxOccurs="1" type="xsd:string"/>
                 </sequence>
             </complexType>
 
@@ -212,99 +219,10 @@ All Rights Reserved
             <complexType name="NameObjectValuePair">
                 <sequence>
                     <element name="name" type="xsd:string"/>
-                    <element name="value" type="xsd:anyType" maxOccurs="unbounded"/>
+                    <element name="value" type="xsd:anyType" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
-
-            <complexType name="StartFlowInterviewRequest">
-                <sequence>
-                    <element name="flowName" type="xsd:string"/>
-                    <element name="inputs" type="tns:NameObjectValuePair" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="versionId" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="NavigateFlowInterviewRequest">
-                <sequence>
-                    <element name="action" type="xsd:string"/>
-                    <element name="screenInputs" type="tns:NameObjectValuePair" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="state" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="ResumeFlowInterviewRequest">
-                <sequence>
-                    <element name="guid" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="NavigateFlowInterviewResult">
-                <sequence>
-                    <element name="availableActions" type="xsd:string" maxOccurs="unbounded" />
-                    <element name="errorMessages" type="xsd:string" maxOccurs="unbounded" />
-                    <element name="flowLabel" type="xsd:string" />
-                    <element name="guid" type="xsd:string" />
-                    <element name="helpText" type="xsd:string" />
-                    <element name="interviewStatus" type="xsd:string" />
-                    <element name="outputVariables" type="tns:FlowInterviewOutputVariable" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="pausedText" type="xsd:string" />
-                    <element name="screenFields" type="tns:FlowInterviewScreenField" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="screenName" type="xsd:string" />
-                    <element name="state" type="xsd:string" />
-                </sequence>
-            </complexType>
-
-            <complexType name="FlowInterviewScreenField">
-                <sequence>
-                    <element name="choices" type="tns:FlowInterviewChoice" maxOccurs="unbounded"/>
-                    <element name="dataType" type="xsd:string" />
-                    <element name="errorMessages" type="xsd:string" maxOccurs="unbounded"/>
-                    <element name="fieldType" type="xsd:string" />
-                    <element name="helpText" type="xsd:string" />
-                    <element name="isRequired" type="xsd:boolean" />
-                    <element name="isValidValue" type="xsd:boolean" />
-                    <element name="label" type="xsd:string" />
-                    <element name="name" type="xsd:string" />
-                    <element name="triggersUpdate" type="xsd:boolean" />
-                    <element name="value" type="xsd:anyType" />
-                </sequence>
-            </complexType>
-
-            <complexType name="FlowInterviewChoice">
-                <sequence>
-                    <element name="isSelected" type="xsd:boolean" />
-                    <element name="label" type="xsd:string" />
-                    <element name="name" type="xsd:string" />
-                    <element name="text" type="xsd:string" />
-                    <element name="userInput" type="tns:FlowInterviewChoiceUserInput" />
-                    <element name="value" type="xsd:anyType" />
-                </sequence>
-            </complexType>
-
-            <complexType name="FlowInterviewChoiceUserInput">
-                <sequence>
-                    <element name="dataType" type="xsd:string" />
-                    <element name="errorMessages" type="xsd:string" maxOccurs="unbounded"/>
-                    <element name="isRequired" type="xsd:boolean" />
-                    <element name="isValidValue" type="xsd:boolean" />
-                    <element name="name" type="xsd:string" />
-                    <element name="label" type="xsd:string" />
-                    <element name="value" type="xsd:anyType" />
-                </sequence>
-            </complexType>
-
-            <complexType name="FlowInterviewOutputVariable">
-                <sequence>
-                    <element name="dataType" type="xsd:string" />
-                    <element name="description" type="xsd:string" />
-                    <element name="isCollection" type="xsd:boolean" />
-                    <element name="name" type="xsd:string" />
-                    <element name="objectType" type="xsd:string" />
-                    <element name="flowName" type="xsd:string" />
-                    <element name="value" type="xsd:anyType" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
 
             <!-- GetUpdated Result -->
             <complexType name="GetUpdatedResult">
@@ -333,41 +251,12 @@ All Rights Reserved
             </complexType>
 
 
-            <!-- Outlook Search Result -->
-            <complexType name="OutlookSearchResult">
-                <sequence>
-                    <element name="records" type="ens:sObject" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="size"    type="xsd:int"/>
-                </sequence>
-            </complexType>
-
-            <!-- Outlook Describe Result -->
-            <complexType name="OutlookDescribeResult">
-                <sequence>
-                    <element name="inboundEmailType"  type="xsd:string" nillable="true"/>
-                    <element name="outboundEmailType" type="xsd:string" nillable="true"/>
-                    <element name="priority"          type="xsd:string" nillable="true"/>
-                    <element name="recordTypeId"      type="tns:ID"     nillable="true"/>
-                    <element name="status"            type="xsd:string" nillable="true"/>
-                </sequence>
-            </complexType>
-
             <complexType name="GetServerTimestampResult">
                 <sequence>
                     <element name="timestamp" type="xsd:dateTime"/>
                 </sequence>
             </complexType>
 
-
-            <!-- ImpersonateUser Result -->
-            <complexType name="ImpersonateUserResult">
-                <sequence>
-                    <element name="errors"    type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="sessionId" type="xsd:string" nillable="true"/>
-                    <element name="success"   type="xsd:boolean"/>
-                    <element name="userId" type="tns:ID" nillable="true"/>
-                </sequence>
-            </complexType>
 
             <!-- InvalidateSessions Result -->
             <complexType name="InvalidateSessionsResult">
@@ -386,23 +275,11 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-            <complexType name="GetAccessInfoResult">
-                <sequence>
-                    <element name="accessMap" type="tns:AccessMapping" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="AccessMapping">
-                <sequence>
-                    <element name="accessName" type="xsd:string"/>
-                    <element name="accessible"   type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
             <complexType name="GetUserInfoResult">
                 <sequence>
                     <element name="accessibilityMode"          type="xsd:boolean"/>
                     <element name="currencySymbol"             type="xsd:string" nillable="true"/>
+                    <element name="defaultAppIdForProfile"     type="tns:ID" minOccurs="0"/>
                     <element name="orgAttachmentFileSizeLimit" type="xsd:int"/>
                     <element name="orgDefaultCurrencyIsoCode"  type="xsd:string" nillable="true"/>
                     <element name="orgDefaultCurrencyLocale"   type="xsd:string" nillable="true"/>
@@ -435,22 +312,11 @@ All Rights Reserved
                     <element name="serverUrl"         type="xsd:string" nillable="true"/>
                     <element name="sessionId"         type="xsd:string" nillable="true"/>
 
-                    <element name="upgradeMessage"   type="xsd:string" minOccurs="0"/>
-                    <element name="upgradeURL"       type="xsd:string" minOccurs="0"/>
-
                     <element name="userId"           type="tns:ID" nillable="true"/>
                     <element name="userInfo"         type="tns:GetUserInfoResult" minOccurs="0"/>
                 </sequence>
             </complexType>
 
-
-            <complexType name="LoginAsSubscriberRequest">
-                <sequence>
-                    <element name="impersonationUserName" type="xsd:string" nillable="true"/>
-                    <element name="packageNamespace" type="xsd:string"/>
-                    <element name="targetOrgId" type="tns:ID"/>
-                </sequence>
-            </complexType>
 
             <simpleType name="StatusCode">
                 <restriction base="xsd:string">
@@ -499,6 +365,7 @@ All Rights Reserved
                     <enumeration value="CUSTOM_INDEX_EXISTS"/>
                     <enumeration value="CUSTOM_LINK_LIMIT_EXCEEDED"/>
                     <enumeration value="CUSTOM_METADATA_LIMIT_EXCEEDED"/>
+                    <enumeration value="CUSTOM_METADATA_REL_FIELD_MANAGEABILITY"/>
                     <enumeration value="CUSTOM_SETTINGS_LIMIT_EXCEEDED"/>
                     <enumeration value="CUSTOM_TAB_LIMIT_EXCEEDED"/>
                     <enumeration value="DATACLOUDADDRESS_NO_RECORDS_FOUND"/>
@@ -521,6 +388,7 @@ All Rights Reserved
                     <enumeration value="DUPLICATE_VALUE"/>
                     <enumeration value="EMAIL_ADDRESS_BOUNCED"/>
                     <enumeration value="EMAIL_EXTERNAL_TRANSPORT_CONNECTION_ERROR"/>
+                    <enumeration value="EMAIL_EXTERNAL_TRANSPORT_PERMISSION_ERROR"/>
                     <enumeration value="EMAIL_EXTERNAL_TRANSPORT_TOKEN_ERROR"/>
                     <enumeration value="EMAIL_EXTERNAL_TRANSPORT_TOO_MANY_REQUESTS_ERROR"/>
                     <enumeration value="EMAIL_EXTERNAL_TRANSPORT_UNKNOWN_ERROR"/>
@@ -567,7 +435,9 @@ All Rights Reserved
                     <enumeration value="INSUFFICIENT_ACCESS_OR_READONLY"/>
                     <enumeration value="INSUFFICIENT_ACCESS_TO_INSIGHTSEXTERNALDATA"/>
                     <enumeration value="INSUFFICIENT_CREDITS"/>
+                    <enumeration value="INTERNAL_ERROR"/>
                     <enumeration value="INVALID_ACCESS_LEVEL"/>
+                    <enumeration value="INVALID_ACCESS_TOKEN"/>
                     <enumeration value="INVALID_ARGUMENT_TYPE"/>
                     <enumeration value="INVALID_ASSIGNEE_TYPE"/>
                     <enumeration value="INVALID_ASSIGNMENT_RULE"/>
@@ -611,8 +481,10 @@ All Rights Reserved
                     <enumeration value="INVALID_PACKAGE_VERSION"/>
                     <enumeration value="INVALID_PARTNER_NETWORK_STATUS"/>
                     <enumeration value="INVALID_PERSON_ACCOUNT_OPERATION"/>
+                    <enumeration value="INVALID_PROVIDER_TYPE"/>
                     <enumeration value="INVALID_QUERY_LOCATOR"/>
                     <enumeration value="INVALID_READ_ONLY_USER_DML"/>
+                    <enumeration value="INVALID_REFRESH_TOKEN"/>
                     <enumeration value="INVALID_RUNTIME_VALUE"/>
                     <enumeration value="INVALID_SAVE_AS_ACTIVITY_FLAG"/>
                     <enumeration value="INVALID_SESSION_ID"/>
@@ -669,18 +541,24 @@ All Rights Reserved
                     <enumeration value="MAX_TASK_DESCRIPTION_EXCEEEDED"/>
                     <enumeration value="MAX_TM_RULES_EXCEEDED"/>
                     <enumeration value="MAX_TM_RULE_ITEMS_EXCEEDED"/>
+                    <enumeration value="MAX_TRIGGERS_EXCEEDED"/>
                     <enumeration value="MERGE_FAILED"/>
                     <enumeration value="METADATA_FIELD_UPDATE_ERROR"/>
                     <enumeration value="MISSING_ARGUMENT"/>
                     <enumeration value="MISSING_RECORD"/>
                     <enumeration value="MIXED_DML_OPERATION"/>
                     <enumeration value="NONUNIQUE_SHIPPING_ADDRESS"/>
+                    <enumeration value="NO_ACCESS_TOKEN"/>
+                    <enumeration value="NO_ACCESS_TOKEN_FROM_REFRESH"/>
                     <enumeration value="NO_APPLICABLE_PROCESS"/>
                     <enumeration value="NO_ATTACHMENT_PERMISSION"/>
+                    <enumeration value="NO_AUTH_PROVIDER"/>
                     <enumeration value="NO_INACTIVE_DIVISION_MEMBERS"/>
                     <enumeration value="NO_MASS_MAIL_PERMISSION"/>
                     <enumeration value="NO_PARTNER_PERMISSION"/>
+                    <enumeration value="NO_REFRESH_TOKEN"/>
                     <enumeration value="NO_SUCH_USER_EXISTS"/>
+                    <enumeration value="NO_TOKEN_ENDPOINT"/>
                     <enumeration value="NUMBER_OUTSIDE_VALID_RANGE"/>
                     <enumeration value="NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED"/>
                     <enumeration value="OPTED_OUT_OF_MASS_MAIL"/>
@@ -722,6 +600,8 @@ All Rights Reserved
                     <enumeration value="RETRIEVE_EXCHANGE_ATTACHMENT_FAILED"/>
                     <enumeration value="RETRIEVE_EXCHANGE_EMAIL_FAILED"/>
                     <enumeration value="RETRIEVE_EXCHANGE_EVENT_FAILED"/>
+                    <enumeration value="RETRIEVE_GOOGLE_EMAIL_FAILED"/>
+                    <enumeration value="RETRIEVE_GOOGLE_EVENT_FAILED"/>
                     <enumeration value="SALESFORCE_INBOX_TRANSPORT_CONNECTION_ERROR"/>
                     <enumeration value="SALESFORCE_INBOX_TRANSPORT_TOKEN_ERROR"/>
                     <enumeration value="SALESFORCE_INBOX_TRANSPORT_UNKNOWN_ERROR"/>
@@ -740,6 +620,7 @@ All Rights Reserved
                     <enumeration value="TABSET_LIMIT_EXCEEDED"/>
                     <enumeration value="TEMPLATE_NOT_ACTIVE"/>
                     <enumeration value="TEMPLATE_NOT_FOUND"/>
+                    <enumeration value="TERMS_OF_SERVICE_UNREAD"/>
                     <enumeration value="TERRITORY_REALIGN_IN_PROGRESS"/>
                     <enumeration value="TEXT_DATA_OUTSIDE_SUPPORTED_CHARSET"/>
                     <enumeration value="TOO_MANY_APEX_REQUESTS"/>
@@ -751,6 +632,7 @@ All Rights Reserved
                     <enumeration value="UNAVAILABLE_REF"/>
                     <enumeration value="UNDELETE_FAILED"/>
                     <enumeration value="UNKNOWN_EXCEPTION"/>
+                    <enumeration value="UNKNOWN_TOKEN_ERROR"/>
                     <enumeration value="UNSAFE_HTML_CONTENT"/>
                     <enumeration value="UNSPECIFIED_EMAIL_ADDRESS"/>
                     <enumeration value="UNSUPPORTED_APEX_TRIGGER_OPERATON"/>
@@ -768,7 +650,7 @@ All Rights Reserved
             <simpleType name="ExtendedErrorCode">
                 <restriction base="xsd:string">
                     <enumeration value="FTEST_EXTENSION_CODE_FOR_TEST">
-                        <documentation>Errors with this extended error code have the following properties: FTestName, ftestClass</documentation>
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: FTestName, ftestClass</xsd:documentation></xsd:annotation>
                     </enumeration>
                 </restriction>
             </simpleType>
@@ -850,6 +732,7 @@ All Rights Reserved
 
             <complexType name="MergeRequest">
                 <sequence>
+                    <element name="additionalInformationMap" minOccurs="0" maxOccurs="unbounded" type="tns:AdditionalInformationMap"/>
                     <element name="masterRecord" type="ens:sObject"/>
                     <element name="recordToMergeIds" type="tns:ID" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
@@ -949,8 +832,8 @@ All Rights Reserved
 
             <complexType name="DescribeQuickActionDefaultValue">
                 <sequence>
-                    <element name="defaultValue"	type="xsd:string" nillable="true"/>
-                    <element name="field" 		type="xsd:string" nillable="false"/>
+                    <element name="defaultValue"    type="xsd:string" nillable="true"/>
+                    <element name="field"       type="xsd:string" nillable="false"/>
                 </sequence>
             </complexType>
 
@@ -973,16 +856,6 @@ All Rights Reserved
 
 
 
-            <complexType name="ProcessArticleRequest">
-                <complexContent>
-                    <extension base="tns:ProcessWorkitemRequest">
-                        <sequence>
-                            <element name="version"  type="xsd:string"/>
-                        </sequence>
-                    </extension>
-                </complexContent>
-            </complexType>
-
 
             <complexType name="ProcessResult">
                 <sequence>
@@ -996,26 +869,6 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-
-            <complexType name="DescribeWorkitemActionResult">
-                <sequence>
-                    <element name="actions"          type="tns:AllowedWorkitemAction" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="errors"           type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="success"          type="xsd:boolean"/>
-                    <element name="targetObjectId"   type="tns:ID"/>
-                    <element name="workitemId"       type="tns:ID"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="AllowedWorkitemAction">
-                <sequence>
-                    <element name="versionRequired"          type="xsd:boolean"/>
-                    <element name="commentsRequired"         type="xsd:boolean"/>
-                    <element name="label"                    type="xsd:string"/>
-                    <element name="name"                     type="xsd:string"/>
-                    <element name="nextOwnerRequired"        type="xsd:boolean"/>
-                </sequence>
-            </complexType>
 
 
 
@@ -1070,29 +923,10 @@ All Rights Reserved
             </complexType>
             
 
-            <complexType name="AddCampaignMemberOptions">
-                <sequence>
-                    <element name="campaignId"              type="tns:ID" nillable="true"/>
-                    <element name="leadOrContactIds"	    type="tns:ID" minOccurs="1" maxOccurs="2000"/>
-                    <element name="newStatus"		        type="xsd:string"/>
-                    <element name="keepExistingStatus"		type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="AddCampaignMemberResult">
-                <sequence>
-                	<element name="errors"        type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="numInserts"    type="xsd:int"/>
-                    <element name="numUpdates"    type="xsd:int"/>
-                    <element name="saveError"     type="xsd:string"/>
-                    <element name="success"       type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
 
             <complexType name="DescribeSObjectResult">
                 <sequence>
-                    <element name="actionOverrides"	  type="tns:ActionOverride" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="actionOverrides"   type="tns:ActionOverride" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="activateable"        type="xsd:boolean"/>
                     <element name="childRelationships"  type="tns:ChildRelationship" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="compactLayoutable"   type="xsd:boolean"/>
@@ -1105,12 +939,11 @@ All Rights Reserved
                     <element name="fields"              type="tns:Field" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="hasSubtypes"         type="xsd:boolean"/>
                     <element name="idEnabled"           type="xsd:boolean"/>
+                    <element name="isSubtype"           type="xsd:boolean"/>
                     <element name="keyPrefix"           type="xsd:string" nillable="true"/>
                     <element name="label"               type="xsd:string"/>
                     <element name="labelPlural"         type="xsd:string"/>
                     <element name="layoutable"          type="xsd:boolean"/>
-                    <element name="listviewable"        type="xsd:boolean" minOccurs="0"/>
-                    <element name="lookupLayoutable"    type="xsd:boolean" minOccurs="0"/>
                     <element name="mergeable"           type="xsd:boolean"/>
                     <element name="mruEnabled"          type="xsd:boolean"/>
                     <element name="name"                type="xsd:string"/>
@@ -1133,22 +966,6 @@ All Rights Reserved
             </complexType>
 
 
-            <complexType name="DescribePicklistResult">
-                <sequence>
-                    <element name="defaultValue"               type="tns:PicklistEntry" nillable="true"/>
-                    <element name="multiSelectable"            type="xsd:boolean"/>
-                    <element name="picklistValues"             type="tns:PicklistEntry" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribePicklistsParam">
-                <sequence>
-                    <element name="entityName"            type="xsd:string"/>
-                    <element name="fieldNames"            type="xsd:string" minOccurs="1" maxOccurs='100'/>
-                    <element name="recordTypeId"          type="xsd:string" nillable="true"/>
-                </sequence>
-            </complexType>
-
 
             <!-- this is a subset of properties for each SObject that is returned by the describeGlobal call -->
             <complexType name="DescribeGlobalSObjectResult">
@@ -1162,6 +979,7 @@ All Rights Reserved
                     <element name="feedEnabled"         type="xsd:boolean"/>
                     <element name="hasSubtypes"         type="xsd:boolean"/>
                     <element name="idEnabled"           type="xsd:boolean"/>
+                    <element name="isSubtype"           type="xsd:boolean"/>
                     <element name="keyPrefix"           type="xsd:string" nillable="true"/>
                     <element name="label"               type="xsd:string"/>
                     <element name="labelPlural"         type="xsd:string"/>
@@ -1217,12 +1035,6 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-
-            <complexType name="DurableIdList">
-                <sequence>
-                    <element name="ids" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
 
 
             <complexType name="StringList">
@@ -1300,11 +1112,6 @@ All Rights Reserved
                     <enumeration value="urn:RecordTypesSupported" />
 
 
-                    <enumeration value="tns:FieldCriteria" />
-                    <enumeration value="tns:FieldCriterion" />
-
-
-                    <enumeration value="tns:DurableIdList" />
 
 
                     <enumeration value="tns:StringList" />
@@ -1347,10 +1154,10 @@ All Rights Reserved
                     <element name="extraTypeInfo"              type="xsd:string"  minOccurs="0"/>
                     <element name="filterable"                 type="xsd:boolean"/>
 
-                    <element name="filteredLookupInfo"			   type="tns:FilteredLookupInfo" nillable="true" minOccurs="0" />
+                    <element name="filteredLookupInfo"             type="tns:FilteredLookupInfo" nillable="true" minOccurs="0" />
 
                     <element name="groupable"                  type="xsd:boolean"/>
-                    <element name="highScaleNumber"			   type="xsd:boolean" minOccurs="0" />
+                    <element name="highScaleNumber"            type="xsd:boolean" minOccurs="0" />
                     <element name="htmlFormatted"              type="xsd:boolean" minOccurs="0"/>
                     <element name="idLookup"                   type="xsd:boolean"/>
                     <element name="inlineHelpText"             type="xsd:string" minOccurs="0"/>
@@ -1493,7 +1300,7 @@ All Rights Reserved
                        <element name="allowSave" type="xsd:boolean"/>
                        <element name="duplicateRule" type="xsd:string"/>
                        <element name="duplicateRuleEntityType" type="xsd:string"/>
-                       <element name="errorMessage" type="xsd:string"/>
+                       <element name="errorMessage" type="xsd:string" nillable="true"/>
                        <element name="matchResults" minOccurs="0" maxOccurs="unbounded" type="tns:MatchResult"/>
                    </sequence>
             </complexType>
@@ -1601,84 +1408,7 @@ All Rights Reserved
             </simpleType>
 
 
-             <complexType name="ObjectMapping">
-                <sequence>
-                    <element name="inputObject" type="xsd:string" nillable="false"/>
-                    <element name="objectMappingFields" minOccurs="0" maxOccurs="unbounded" type="tns:ObjectMappingField" nillable="false"/>
-                    <element name="outputObject" type="xsd:string" nillable="false"/>
-                </sequence>
-            </complexType>
 
-            <complexType name="ObjectMappingField">
-                <sequence>
-                    <element name="inputField" type="xsd:string" nillable="false"/>
-                    <element name="inputLookupObject" type="xsd:string" nillable="true"/>
-                    <element name="outputField" type="xsd:string" nillable="false"/>
-                    <element name="outputLookupObject" type="xsd:string" nillable="true"/>
-                </sequence>
-            </complexType>
-
-
-
-
-            <simpleType name="DuplicateActionType">
-                 <restriction base="xsd:string">
-                    <enumeration value="Allow"/>
-                    <enumeration value="Block"/>
-                </restriction>
-            </simpleType>
-
-            <simpleType name="DuplicateSecurityOptionType">
-                 <restriction base="xsd:string">
-                    <enumeration value="EnforceSharingRules"/>
-                    <enumeration value="BypassSharingRules"/>
-                 </restriction>
-            </simpleType>
-
-            <complexType name="DescribeDuplicateRuleResult">
-                <sequence>
-                    <element name="actionOnInsert" type="tns:DuplicateActionType" nillable="false" minOccurs="1" maxOccurs="1"/>
-                    <element name="actionOnUpdate" type="tns:DuplicateActionType" nillable="false" minOccurs="1" maxOccurs="1"/>
-                    <element name="active" type="xsd:boolean"/>
-                    <element name="alertMessage" type="xsd:string" nillable="true"/>
-                    <element name="developerName" type="xsd:string"/>
-                    <element name="duplicateFilters" minOccurs="0" maxOccurs="unbounded" type="tns:DuplicateRuleFilter"/>
-                    <element name="duplicateRuleMatchInfos" minOccurs="0" maxOccurs="unbounded" type="tns:DuplicateRuleMatchInfo"/>
-                    <element name="name" type="xsd:string"/>
-                    <element name="operationsOnInsert" minOccurs="0" maxOccurs="unbounded" type="xsd:string" nillable="true"/>
-                    <element name="operationsOnUpdate" minOccurs="0" maxOccurs="unbounded" type="xsd:string" nillable="true"/>
-                    <element name="securityOption" type="tns:DuplicateSecurityOptionType" nillable="false" minOccurs="1" maxOccurs="1"/>
-                    <element name="sortOrder" type="xsd:int"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DuplicateRuleFilter">
-                <sequence>
-                    <element name="booleanFilter" type="xsd:string"/>
-                    <element name="filterItems" minOccurs="0" maxOccurs="unbounded" type="tns:DuplicateRuleFilterItem"/>
-                    <element name="ruleCritera" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DuplicateRuleFilterItem">
-                <sequence>
-                    <element name="field" type="xsd:string"/>
-                    <element name="operation" type="xsd:string"/>
-                    <element name="sortOrder" type="xsd:int"/>
-                    <element name="value" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DuplicateRuleMatchInfo">
-                <sequence>
-                    <element name="entityType" type="xsd:string" nillable="false"/>
-                    <element name="mapped" type="xsd:boolean"/>
-                    <element name="matchEngine" type="xsd:string" nillable="false"/>
-                    <element name="matchFields" minOccurs="0" maxOccurs="unbounded" type="xsd:string" nillable="true"/>
-                    <element name="matchRuleName" type="xsd:string" nillable="false"/>
-                    <element name="objectMapping" type="tns:ObjectMapping" nillable="false"/>
-                </sequence>
-            </complexType>
 
 
             <element name="findDuplicates">
@@ -1704,66 +1434,6 @@ All Rights Reserved
                     <element name="success"   type="xsd:boolean"/>
                 </sequence>
             </complexType>
-
-
-            <complexType name="DescribeFlexiPageResult">
-                <sequence>
-                    <element name="id"      		type="tns:ID"/>
-                    <element name="label"            type="xsd:string"/>
-                    <element name="name"            type="xsd:string"/>
-                    <element name="quickActionList"             type="tns:DescribeQuickActionListResult" minOccurs="0" />
-                    <element name="regions"			type="tns:DescribeFlexiPageRegion" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="sobjectType"     type="xsd:string" minOccurs="0" nillable="true"/>
-                    <element name="template"     type="xsd:string" nillable="true"/>
-                    <element name="type"            type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeFlexiPageRegion">
-                <sequence>
-                    <element name="components"  	type="tns:DescribeComponentInstance" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="name"   			type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeComponentInstance">
-                <sequence>
-                    <element name="properties"  	type="tns:DescribeComponentInstanceProperty" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="typeName"   		type="xsd:string"/>
-                    <element name="typeNamespace"   type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeComponentInstanceProperty">
-                <sequence>
-                    <element name="name"   			type="xsd:string"/>
-                    <element name="region"          type="tns:DescribeFlexiPageRegion" nillable="true" minOccurs="0" />
-                    <element name="type"            type="tns:ComponentInstancePropertyTypeEnum"  nillable="true" />
-                    <element name="value"   		type="xsd:string" nillable="true" />
-                </sequence>
-            </complexType>
-            
-            <simpleType name="ComponentInstancePropertyTypeEnum">
-                <restriction base="xsd:string">
-                    <enumeration value="decorator"/>
-                </restriction>
-            </simpleType>
-            
-     
-            <complexType name="FlexipageContext">
-                <sequence>
-                    <element name="type"            type="tns:FlexipageContextTypeEnum"/>
-                    <element name="value"           type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <simpleType name="FlexipageContextTypeEnum">
-                <restriction base="xsd:string">
-                    <enumeration value="ENTITYNAME"/>
-                </restriction>
-            </simpleType>
-
-     
 
 
 
@@ -1803,7 +1473,7 @@ All Rights Reserved
 
             <complexType name="DescribeSoftphoneLayoutResult">
                 <sequence>
-                    <element name="callTypes" type="tns:DescribeSoftphoneLayoutCallType" maxOccurs="unbounded"/>
+                    <element name="callTypes" type="tns:DescribeSoftphoneLayoutCallType" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="id" type="tns:ID"/>
                     <element name="name" type="xsd:string"/>
                 </sequence>
@@ -1811,7 +1481,7 @@ All Rights Reserved
 
             <complexType name="DescribeSoftphoneLayoutCallType">
                 <sequence>
-                    <element name="infoFields" type="tns:DescribeSoftphoneLayoutInfoField" maxOccurs="unbounded"/>
+                    <element name="infoFields" type="tns:DescribeSoftphoneLayoutInfoField" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="name" type="xsd:string"/>
                     <element name="screenPopOptions" type="tns:DescribeSoftphoneScreenPopOption" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="screenPopsOpenWithin" type="xsd:string" minOccurs="0"/>
@@ -1836,7 +1506,7 @@ All Rights Reserved
             <complexType name="DescribeSoftphoneLayoutSection">
                 <sequence>
                     <element name="entityApiName" type="xsd:string"/>
-                    <element name="items" type="tns:DescribeSoftphoneLayoutItem" maxOccurs="unbounded"/>
+                    <element name="items" type="tns:DescribeSoftphoneLayoutItem" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
@@ -1849,7 +1519,7 @@ All Rights Reserved
 
             <complexType name="DescribeCompactLayoutsResult">
                 <sequence>
-                    <element name="compactLayouts" type="tns:DescribeCompactLayout" maxOccurs="unbounded"/>
+                    <element name="compactLayouts" type="tns:DescribeCompactLayout" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="defaultCompactLayoutId" type="tns:ID"/>
                     <element name="recordTypeCompactLayoutMappings" type="tns:RecordTypeCompactLayoutMapping" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
@@ -1929,7 +1599,7 @@ All Rights Reserved
                 <sequence>
                     <element name="id" type="tns:ID"/>
                     <element name="label" type="xsd:string"/>
-                    <element name="layoutItems" type="tns:DescribeLayoutItem" maxOccurs="unbounded"/>
+                    <element name="layoutItems" type="tns:DescribeLayoutItem" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="name" type="xsd:string"/>
                 </sequence>
             </complexType>
@@ -1937,7 +1607,7 @@ All Rights Reserved
 
             <complexType name="DescribeLayoutResult">
                 <sequence>
-                    <element name="layouts"            type="tns:DescribeLayout" maxOccurs="unbounded"/>
+                    <element name="layouts"            type="tns:DescribeLayout" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="recordTypeMappings" type="tns:RecordTypeMapping" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="recordTypeSelectorRequired" type="xsd:boolean" />
                 </sequence>
@@ -1956,10 +1626,6 @@ All Rights Reserved
 
                     <element name="id"                   type="tns:ID" nillable="true"/>
 
-                    <element name="multirowEditLayoutSections"  type="tns:DescribeLayoutSection" minOccurs="0" maxOccurs="unbounded"/>
-
-
-                    <element name="offlineLinks"                type="tns:OfflineLink" minOccurs="0" maxOccurs="unbounded"/>
 
 
                     <element name="quickActionList"             type="tns:DescribeQuickActionListResult" minOccurs="0" />
@@ -1968,14 +1634,9 @@ All Rights Reserved
                     <element name="relatedContent"                type="tns:RelatedContent" minOccurs="0" maxOccurs="1"/>
 
                     <element name="relatedLists"                type="tns:RelatedList" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
 
-            <complexType name="DescribeMiniLayoutResult">
-                <sequence>
-                    <element name="layouts"            type="tns:DescribeLayout" maxOccurs="unbounded"/>
-                    <element name="recordTypeMappings" type="tns:RecordTypeMapping" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="recordTypeSelectorRequired" type="xsd:boolean" />
+                    <element name="saveOptions"                    type="tns:DescribeLayoutSaveOption" minOccurs="0" maxOccurs="unbounded" />
+
                 </sequence>
             </complexType>
 
@@ -2023,6 +1684,18 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
+            
+            <complexType name="DescribeLayoutSaveOption">
+                <sequence>
+                    <element name="defaultValue" type="xsd:boolean" />
+                    <element name="isDisplayed" type="xsd:boolean" />
+                    <element name="label" type="xsd:string" />
+                    <element name="name" type="xsd:string" />
+                    <element name="restHeaderName" type="xsd:string" />
+                    <element name="soapHeaderName" type="xsd:string" />
+               </sequence>
+            </complexType>
+
             <simpleType name="TabOrderType">
                  <restriction base="xsd:string">
                     <enumeration value="LeftToRight"/>
@@ -2032,10 +1705,10 @@ All Rights Reserved
 
             <complexType name="DescribeLayoutSection">
                 <sequence>
-                    <element name="collapsed"  	    	    type="xsd:boolean"/>
+                    <element name="collapsed"               type="xsd:boolean"/>
                     <element name="columns"                 type="xsd:int"/>
                     <element name="heading"                 type="xsd:string" nillable="true"/>
-                    <element name="layoutRows"              type="tns:DescribeLayoutRow" maxOccurs="unbounded"/>
+                    <element name="layoutRows"              type="tns:DescribeLayoutRow" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="layoutSectionId"         type="tns:ID"/>
                     <element name="parentLayoutId"          type="tns:ID"/>
                     <element name="rows"                    type="xsd:int"/>
@@ -2047,12 +1720,12 @@ All Rights Reserved
 
             <complexType name="DescribeLayoutButtonSection">
                 <sequence>
-                    <element name="detailButtons"         type="tns:DescribeLayoutButton" maxOccurs="unbounded"/>
+                    <element name="detailButtons"         type="tns:DescribeLayoutButton" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
             <complexType name="DescribeLayoutRow">
                 <sequence>
-                    <element name="layoutItems"      type="tns:DescribeLayoutItem" maxOccurs="unbounded"/>
+                    <element name="layoutItems"      type="tns:DescribeLayoutItem" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="numItems"         type="xsd:int"/>
                 </sequence>
             </complexType>
@@ -2259,7 +1932,7 @@ All Rights Reserved
                             <element name="filter"                 type="xsd:string"/>
                             <element name="height"                 type="xsd:string"/>
                             <element name="hideOnError"            type="xsd:boolean"/>
-                            <element name="showSharing"       	   type="xsd:boolean"/>
+                            <element name="showSharing"            type="xsd:boolean"/>
                             <element name="showTitle"              type="xsd:boolean"/>
                             <element name="width"                  type="xsd:string"/>
                         </sequence>
@@ -2267,20 +1940,6 @@ All Rights Reserved
                 </complexContent>
             </complexType>
 
-
-            <complexType name="FieldCriteria">
-                <sequence>
-                    <element name="criteria" type="tns:FieldCriterion" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="FieldCriterion">
-                <sequence>
-                    <element name="columnName" type="xsd:string"/>
-                    <element name="operand" type="xsd:string"/>
-                    <element name="operator" type="xsd:string"/>
-                </sequence>
-            </complexType>
 
 
             <complexType name="CustomLinkComponent">
@@ -2344,7 +2003,7 @@ All Rights Reserved
 
              <complexType name="RelatedContent">
                 <sequence>
-                    <element name="relatedContentItems"         type="tns:DescribeRelatedContentItem" maxOccurs="unbounded"/>
+                    <element name="relatedContentItems"         type="tns:DescribeRelatedContentItem" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
@@ -2359,7 +2018,7 @@ All Rights Reserved
                 <sequence>
                     <element name="accessLevelRequiredForCreate"    type="tns:ShareAccessLevel" nillable="true"/> 
  <element name="buttons"    type="tns:DescribeLayoutButton"  maxOccurs="unbounded" minOccurs="0" nillable="true"/> 
-                    <element name="columns"         type="tns:RelatedListColumn" maxOccurs="unbounded"/>
+                    <element name="columns"         type="tns:RelatedListColumn" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="custom"          type="xsd:boolean"/>
                     <element name="field"           type="xsd:string" nillable="true"/>
                     <element name="label"           type="xsd:string"/>
@@ -2388,47 +2047,14 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-            <complexType name="OfflineLink">
-                <sequence>
-                    <element name="name"            type="xsd:string"/>
-                    <element name="openType"        type="xsd:string"/>
-                    <element name="position"        type="xsd:string"/>
-                    <element name="properties"      type="xsd:string"/>
-                    <element name="url"             type="xsd:string"/>
-                    <element name="x"               type="xsd:int"/>
-                    <element name="y"               type="xsd:int"/>
-                </sequence>
-            </complexType>
 
-
-
-            <complexType name="EmailAttachment">
-                <sequence>
-                    <element name="body"                nillable="true" minOccurs="0" type="xsd:base64Binary"/>
-                    
-                    <element name="contentId"           minOccurs="0" type="xsd:string" />
-                    
-                    <element name="contentType"         type="xsd:string" />
-                    <element name="fileName"            type="xsd:string" />
-                </sequence>
-            </complexType>
-
-            <complexType name="HandledEmailMessage">
-                <sequence>
-                    <element name="attachments"         minOccurs="0" maxOccurs="unbounded" type="tns:EmailAttachment"/>
-                    <element name="headers"             minOccurs="0" maxOccurs="unbounded" type="tns:NameValuePair"/>
-                    <element name="htmlBody"            type="xsd:string" />
-                    <element name="subject"             type="xsd:string" />
-                    <element name="textBody"            type="xsd:string" />
-                </sequence>
-            </complexType>
 
             <complexType name="EmailFileAttachment">
                 <sequence>
                     <element name="body"                nillable="true" minOccurs="0" type="xsd:base64Binary"/>
                     <element name="contentType"         nillable="true" minOccurs="0" type="xsd:string" />
                     <element name="fileName"            type="xsd:string" />
-                    <element name="inline"				type="xsd:boolean" minOccurs="0"/>
+                    <element name="inline"              type="xsd:boolean" minOccurs="0"/>
                 </sequence>
             </complexType>
             <simpleType name="EmailPriority">
@@ -2510,64 +2136,6 @@ All Rights Reserved
             </complexType>
 
 
-            <complexType name="DescribeListViewResult">
-                <sequence>
-                    
-                    <element name="listViews"      type="tns:DescribeListView" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeListView">
-                <sequence>
-                    <element name="filterLanguage"  type="xsd:string" minOccurs="0"/>
-                    <element name="id"              type="tns:ID"/>
-                    <element name="limitRows"       type="xsd:int"/>
-                    <element name="listViewAdvancedFilter"    type="xsd:string" nillable="true"/>
-                    <element name="listViewColumns" type="tns:DescribeColumn" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="listViewFilters" type="tns:DescribeFilter" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="listViewName"    type="xsd:string"/>
-                    <element name="listViewScopeFilters" type="tns:DescribeFilter" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="scope"           type="tns:queryOptionsScope" minOccurs="0"/>
-                    <element name="sobjectName"     type="xsd:string" nillable="true"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeFilter">
-                <sequence>
-                    <element name="column"          type="xsd:string" />
-                    <element name="negated"         type="xsd:boolean" />
-                    <element name="operator"        type="xsd:string" />
-                    <element name="value"           type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="valueSeparator"  type="xsd:string" />
-                </sequence>
-            </complexType>
-
-
-            <complexType name="DescribeColumn">
-                <sequence>
-                    <element name="field"       type="xsd:string" />
-                    <element name="format"      type="xsd:string" nillable="true"/>
-                    <element name="label"       type="xsd:string" />
-                    <element name="name"        type="xsd:string" />
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeSort">
-                <sequence>
-                    <element name="ascending"   type="xsd:boolean" />
-                    <element name="column"      type="xsd:string" />
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeLookupLayoutResult">
-                <sequence>
-                    <element name="label"           type="xsd:string" />
-                    <element name="limitRows"       type="xsd:int"/>
-                    <element name="lookupColumns" type="tns:DescribeColumn" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-
 
             <complexType name="ListViewColumn">
                 <sequence>
@@ -2594,9 +2162,9 @@ All Rights Reserved
 
             <complexType name="DescribeSoqlListView">
                 <sequence>
-                    <element name="columns"                  type="tns:ListViewColumn" maxOccurs="unbounded"/>
+                    <element name="columns"                  type="tns:ListViewColumn" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="id"                       type="tns:ID"/>
-                    <element name="orderBy"                  type="tns:ListViewOrderBy" maxOccurs="unbounded"/>
+                    <element name="orderBy"                  type="tns:ListViewOrderBy" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="query"                    type="xsd:string"/>
                     <element name="scope"                    type="xsd:string" nillable="true"/>
                     <element name="sobjectType"              type="xsd:string"/>
@@ -2606,7 +2174,7 @@ All Rights Reserved
 
             <complexType name="DescribeSoqlListViewsRequest">
                 <sequence>
-                    <element name="listViewParams"      type="tns:DescribeSoqlListViewParams" maxOccurs="unbounded"/>
+                    <element name="listViewParams"      type="tns:DescribeSoqlListViewParams" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
@@ -2619,7 +2187,7 @@ All Rights Reserved
 
             <complexType name="DescribeSoqlListViewResult">
                 <sequence>
-                    <element name="describeSoqlListViews"    type="tns:DescribeSoqlListView" maxOccurs="unbounded"/>
+                    <element name="describeSoqlListViews"    type="tns:DescribeSoqlListView" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
@@ -2628,26 +2196,26 @@ All Rights Reserved
                     <element name="developerNameOrId"        type="xsd:string"/>
                     <element name="limit"                    type="xsd:int" nillable="true"/>
                     <element name="offset"                   type="xsd:int" nillable="true"/>
-                    <element name="orderBy"                  type="tns:ListViewOrderBy" maxOccurs="unbounded"/>
+                    <element name="orderBy"                  type="tns:ListViewOrderBy" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="sobjectType"              type="xsd:string"/>
                 </sequence>
             </complexType>
 
             <complexType name="ExecuteListViewResult">
                 <sequence>
-                    <element name="columns"                  type="tns:ListViewColumn" maxOccurs="unbounded"/>
+                    <element name="columns"                  type="tns:ListViewColumn" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="developerName"            type="xsd:string"/>
                     <element name="done"                     type="xsd:boolean"/>
                     <element name="id"                       type="tns:ID"/>
                     <element name="label"                    type="xsd:string"/>
-                    <element name="records"                  type="tns:ListViewRecord" maxOccurs="unbounded"/>
+                    <element name="records"                  type="tns:ListViewRecord" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="size"                     type="xsd:int"/>
                 </sequence>
             </complexType>
 
             <complexType name="ListViewRecord">
                 <sequence>
-                    <element name="columns"                  type="tns:ListViewRecordColumn" maxOccurs="unbounded"/>
+                    <element name="columns"                  type="tns:ListViewRecordColumn" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
 
@@ -2706,7 +2274,7 @@ All Rights Reserved
                         <sequence>
                             <element name="field"                    type="xsd:string"/>
                             <element name="operator"                 type="tns:soqlOperator"/>
-                            <element name="values"                   type="xsd:string" maxOccurs="unbounded"/>
+                            <element name="values"                   type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
                         </sequence>
                     </extension>
                 </complexContent>
@@ -2758,6 +2326,15 @@ All Rights Reserved
                 </sequence>
             </complexType>
         
+
+                <complexType name="DescribeColumn">
+                    <sequence>
+                        <element name="field" type="xsd:string" />
+                        <element name="format" type="xsd:string" nillable="true"/>
+                        <element name="label" type="xsd:string" />
+                        <element name="name" type="xsd:string" />
+                    </sequence>
+                </complexType>
 
 
 
@@ -2837,361 +2414,8 @@ All Rights Reserved
             </sequence>
         </complexType>
 
-            <complexType name="ActivateResult">
-                <sequence>
-                    <element name="errors"    minOccurs="0" maxOccurs="unbounded" type="tns:Error"/>
-                    <element name="id"        type="tns:ID" nillable="true"/>
-                    <element name="success"   type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="SnapshotItem">
-                <sequence>
-                    <element name="oid"    type="tns:ID"/>
-                    <element name="uid"    type="tns:ID"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="SnapshotResult">
-                <sequence>
-                    <element name="add"             type="tns:SnapshotItem" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="fullSnapshot"    type="xsd:boolean"/>
-                    <element name="id"              type="tns:ID"/>
-                    <element name="locator"         type="xsd:string" nillable="true"/>
-                    <element name="remove"          type="tns:SnapshotItem" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <!-- snapshot Message Types -->
-            <element name="createSnapshot">
-                <complexType>
-                    <sequence>
-                        <element name="sObject"           type="xsd:string"/>
-                        <element name="forceFullSnapshot" type="xsd:boolean"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="createSnapshotResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:SnapshotResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="moreSnapshot">
-                <complexType>
-                    <sequence>
-                        <element name="snapshotLocator"   type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="moreSnapshotResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:SnapshotResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="ackSnapshot">
-                <complexType>
-                    <sequence>
-                        <element name="snapshotId"   type="tns:ID"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="ackSnapshotResponse">
-                <complexType>
-                    <sequence>
-                    </sequence>
-                </complexType>
-            </element>
 
 
-            <complexType name="SyncOfflineDataResult">
-                <sequence>
-                    <element name="lastConfigChange" type="xsd:dateTime"/>
-                    <element name="lastFullQuery"   type="xsd:dateTime"/>
-                    <element name="lastQuery"       type="xsd:dateTime"/>
-                    <element name="lastReset"       type="xsd:dateTime"/>
-                    <element name="removed"         type="tns:ID" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="timestamp"       type="xsd:dateTime"/>
-                    <element name="token"           type="xsd:string"/>
-                    <element name="updates"         type="tns:QueryResult"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="EmailSyncAdvancedSetting">
-                <sequence>
-                    <element name="name" type="xsd:string"/>
-                    <element name="type" type="xsd:string"/>
-                    <element name="value" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="EmailSyncEntity">
-                <sequence>
-                    <element name="clientFolderName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <element name="conflictResolution" type="tns:EmailSyncConflictResolution"/>
-                    <element name="dataSetFilter" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <element name="fieldMapping" type="tns:EmailSyncFieldMapping" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="matchPreference" nillable="true" type="tns:EmailSyncMatchPreference"/>
-                    <element name="name" type="xsd:string"/>
-                    <element name="recordTypeId" nillable="true" type="tns:ID"/>
-                    <element name="syncDirection" type="tns:EmailSyncDirection"/>
-                    <element name="syncFollowed" type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="EmailSyncFieldMapping">
-                <sequence>
-                    <element name="clientName" type="xsd:string"/>
-                    <element name="clientType" type="tns:EmailSyncClientFieldType"/>
-                    <element name="name" type="xsd:string"/>
-                    <element name="type" type="tns:fieldType"/>
-                    <element name="usedForMatching" type="xsd:boolean"/>
-                    <element name="valueMapping" type="tns:EmailSyncFieldValueMapping" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="EmailSyncFieldValueMapping">
-                <sequence>
-                    <element name="clientValue" type="xsd:string"/>
-                    <element name="value" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="EmailSyncRoutingAddress">
-                <sequence>
-                    <element name="emailAddress" type="xsd:string"/>
-                    <element name="fromAddressFilter" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="name" type="xsd:string"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeEmailSyncSettings">
-                <sequence>
-                    <element name="addCase" type="xsd:boolean"/>
-                    <element name="addEmail" type="xsd:boolean"/>
-                    <element name="addEmailAttachment" type="xsd:boolean"/>
-                    <element name="advancedSetting" type="tns:EmailSyncAdvancedSetting" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="attachmentSizeLimit" type="xsd:int" minOccurs="0" maxOccurs="1"/>
-                    <element name="automaticallySyncOutlookObjects" type="xsd:boolean" />
-                    <element name="cannotChangeClientSyncSetting" type="xsd:boolean" />
-                    <element name="clientVersionNumber" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <element name="emailToCaseRoutingAddress" type="tns:EmailSyncRoutingAddress" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="entitySetting" type="tns:EmailSyncEntity" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="expandedRecurringEventSyncWindow" type="xsd:boolean" />
-                    <element name="isSyncThrottlingEnabled" type="xsd:boolean"/>
-                    <element name="logActivityEmailAddress" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <element name="personAccountRecordTypeId" nillable="true" type="tns:ID"/>
-                    <element name="recurringEvents" type="xsd:boolean"/>
-                    <element name="recurringTasks" type="xsd:boolean"/>
-                    <element name="showPersonAccountsAsAccounts" type="xsd:boolean"/>
-                    <element name="showPersonAccountsAsContacts" type="xsd:boolean"/>
-                    <element name="sidePanel" type="xsd:boolean"/>
-                    <element name="upgradeNotification" type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileResult">
-                <sequence>
-                    <element name="configured" type="xsd:boolean"/>
-                    <element name="defaultConfiguration" type="xsd:boolean"/>
-                    <element name="emailSyncSettings" type="tns:DescribeEmailSyncSettings" minOccurs="0" maxOccurs="1"/>
-                    <element name="feedEnabledObjects" type="tns:DescribeMobileSObject" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="mobileSObject" type="tns:DescribeMobileSObject" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="mobileSettings" type="tns:DescribeMobileSettings" minOccurs="0" maxOccurs="1"/>
-                    <element name="mobileView" type="tns:DescribeMobileView" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="mobileViewDispColumn" type="tns:DescribeMobileViewDispColumn" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="mobileViewFilter" type="tns:DescribeMobileViewFilter" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="mobileViewSortOrder" type="tns:DescribeMobileViewSortOrder" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="tabSet" type="tns:DescribeTabSetResult" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileSObject">
-                <sequence>
-                    <element name="iconUrl" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <element name="layout" type="tns:DescribeLayoutResult" minOccurs="0"/>
-                    <element name="searchLayout" type="tns:DescribeSearchLayoutResult" nillable="true" minOccurs="0" maxOccurs="1"/>
-                    <element name="sobject" type="tns:DescribeSObjectResult"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileView">
-                <sequence>
-                    <element name="SObject" type="xsd:string"/>
-                    <element name="matchAll" type="xsd:boolean"/>
-                    <element name="name" type="xsd:string"/>
-                    <element name="viewId" type="tns:ID"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileViewDispColumn">
-                <sequence>
-                    <element name="column" type="xsd:int"/>
-                    <element name="field" type="xsd:string"/>
-                    <element name="viewId" type="tns:ID"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileViewFilter">
-                <sequence>
-                    <element name="field" type="xsd:string"/>
-                    <element name="operator" type="xsd:string"/>
-                    <element name="value" type="xsd:string"/>
-                    <element name="viewId" type="tns:ID"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileViewSortOrder">
-                <sequence>
-                    <element name="ascending" type="xsd:boolean"/>
-                    <element name="field" type="xsd:string"/>
-                    <element name="order" type="xsd:int"/>
-                    <element name="viewId" type="tns:ID"/>
-                </sequence>
-            </complexType>
-
-            <complexType name="DescribeMobileSettings">
-                <sequence>
-                    <element name="lockUserToMobileDevice" type="xsd:boolean"/>
-                    <element name="mappingURL" type="xsd:string"/>
-                    <element name="maxTextFieldSize" type="xsd:int" minOccurs="0" maxOccurs="1"/>
-                    <element name="mobileDeviceHelpUrl" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-                    <element name="mobileLite" type="xsd:boolean"/>
-                    <element name="mobilizeFollowed" type="xsd:boolean"/>
-                    <element name="multiDayEventsEnabled" type="xsd:boolean"/>
-                </sequence>
-            </complexType>
-
-            <simpleType name="EmailSyncDirection">
-                <restriction base="xsd:string">
-                    <enumeration value="None"/>
-                    <enumeration value="Import"/>
-                    <enumeration value="Export"/>
-                    <enumeration value="Sync"/>
-                    <enumeration value="S2X"/>
-                    <enumeration value="X2S"/>
-                </restriction>
-            </simpleType>
-            <simpleType name="EmailSyncConflictResolution">
-                <restriction base="xsd:string">
-                    <enumeration value="SFDCWins"/>
-                    <enumeration value="ClientWins"/>
-                    <enumeration value="ServerWins"/>
-                </restriction>
-            </simpleType>
-            <simpleType name="EmailSyncMatchPreference">
-                <restriction base="xsd:string">
-                    <enumeration value="LastModified"/>
-                    <enumeration value="LastActivity"/>
-                    <enumeration value="Oldest"/>
-                </restriction>
-            </simpleType>
-            <simpleType name="EmailSyncClientFieldType">
-                <restriction base="xsd:string">
-                    <enumeration value="date"/>
-                    <enumeration value="datetime"/>
-                    <enumeration value="string"/>
-                    <enumeration value="int"/>
-                    <enumeration value="double"/>
-                    <enumeration value="boolean"/>
-                    <enumeration value="picklist"/>
-                    <enumeration value="reference"/>
-                    <enumeration value="EventSensitivityType"/>
-                    <enumeration value="ReminderType"/>
-                </restriction>
-            </simpleType>
-
-
-            <!-- sync Message Types -->
-            <element name="syncOfflineData">
-                <complexType>
-                    <sequence>
-                        <element name="reset" type="xsd:boolean"/>
-                        <element name="userRequested" type="xsd:boolean"/>
-                        <element name="syncStateId" type="xsd:string"/>
-                        <element name="syncFull" type="xsd:boolean"/>
-                        <element name="skipNewsFeeds" type="xsd:boolean"/>
-                        <element name="idsToSpider" type="tns:ID" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
-                        <element name="entitiesToSync" type="xsd:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="syncOfflineDataResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:SyncOfflineDataResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="ackSyncOfflineData">
-                <complexType>
-                    <sequence>
-                        <element name="token" type="xsd:string"/>
-                        <element name="syncStateId" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="ackSyncOfflineDataResponse">
-                <complexType>
-                    <sequence/>
-                </complexType>
-            </element>
-
-            <element name="describeMobile">
-                <complexType>
-                    <sequence>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="describeMobileResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeMobileResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-
-
-            <!-- Login Message Types -->
-            <element name="loginXi">
-                <complexType>
-                    <sequence>
-                        <element name="username" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="loginXiResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:LoginResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-
-            <!-- Login Message Types -->
-            <element name="loginAsSubscriber">
-                <complexType>
-                    <sequence>
-                        <element name="loginAs" type="tns:LoginAsSubscriberRequest"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="loginAsSubscriberResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:LoginResult"/>
-                    </sequence>
-                </complexType>
-            </element>
 
             <!-- Login Message Types -->
             <element name="login">
@@ -3226,22 +2450,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <element name="describePicklists">
-                <complexType>
-                    <sequence>
-                        <element name="param" type="tns:DescribePicklistsParam"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="describePicklistsResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribePicklistResult" nillable="true" minOccurs='0' maxOccurs='100'/>
-                    </sequence>
-                </complexType>
-            </element>
 
 
             <!-- DescibeSObjects Message Types -->
@@ -3354,22 +2562,6 @@ All Rights Reserved
 
 
 
-            <element name="describeDuplicateRules">
-                <complexType>
-                    <sequence>
-                        <element name="sObjectType" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="describeDuplicateRulesResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeDuplicateRuleResult" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-
 
 
             <element name="ftestPatch">
@@ -3401,22 +2593,6 @@ All Rights Reserved
             </element>
 
 
-
-            <element name="describeFlexiPages">
-                <complexType>
-                    <sequence>
-                        <element name="flexiPages" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
-                        <element name="contexts" type="tns:FlexipageContext" minOccurs="0" maxOccurs="unbounded" />
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="describeFlexiPagesResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeFlexiPageResult" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
 
 
 
@@ -3461,23 +2637,6 @@ All Rights Reserved
                 <complexType>
                     <sequence>
                         <element name="result" type="tns:DescribeLayoutResult" nillable="true"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="describeMiniLayout">
-                <complexType>
-                    <sequence>
-                        <element name="sObjectType" type="xsd:string"/>
-                        <element name="layoutName" type="xsd:string" nillable="true"/>
-                        <element name="recordTypeIds" type="tns:ID" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="describeMiniLayoutResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeMiniLayoutResult" nillable="true"/>
                     </sequence>
                 </complexType>
             </element>
@@ -3559,37 +2718,6 @@ All Rights Reserved
                 <complexType>
                     <sequence>
                         <element name="result" type="tns:DescribeSoftphoneLayoutResult" nillable="true"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-
-            <element name="describeListViews">
-                <complexType>
-                    <sequence>
-                        <element name="sObjectType" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="describeListViewsResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeListViewResult" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="describeLookupLayouts">
-                <complexType>
-                    <sequence>
-                        <element name="sObjectType" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="describeLookupLayoutsResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeLookupLayoutResult" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
                     </sequence>
                 </complexType>
             </element>
@@ -3704,18 +2832,9 @@ All Rights Reserved
 
             <element name="describeTabs">
                 <complexType>
-                    <sequence>
-                        <element name="uiType" type="tns:UiType" nillable="true" minOccurs="0"/>
-                    </sequence>
+                    <sequence/>
                 </complexType>
             </element>
-
-            <simpleType name="UiType">
-                <restriction base="xsd:string">
-                    <enumeration value="Aloha"/>
-                    <enumeration value="Lightning"/>
-                </restriction>
-            </simpleType>
 
             <element name="describeTabsResponse">
                 <complexType>
@@ -3775,22 +2894,6 @@ All Rights Reserved
             </element>
 
 
-            <!-- Email Message Types -->
-            <element name="handleEmailMessage">
-                <complexType>
-                    <sequence>
-                        <element name="messages" type="tns:HandledEmailMessage" minOccurs="0" maxOccurs="10"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="handleEmailMessageResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:SaveResult" minOccurs="0" maxOccurs="10"/>
-                    </sequence>
-                </complexType>
-            </element>
-
 
             <!-- Send Email Types -->
             <element name="sendEmail">
@@ -3829,7 +2932,7 @@ All Rights Reserved
             <complexType name="RenderEmailTemplateResult">
                 <sequence>
                     <element name="bodyResults"         type="tns:RenderEmailTemplateBodyResult" minOccurs="0" maxOccurs="10"/>
-                    <element name="errors"    			type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="errors"              type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="success"             type="xsd:boolean" />
                 </sequence>
             </complexType>
@@ -3865,23 +2968,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <!-- Email Merge Types -->
-            <element name="emailMerge">
-                <complexType>
-                    <sequence>
-                        <element name="template"       type="tns:ID" />
-                        <element name="id"             type="tns:ID" minOccurs="1" maxOccurs="unbounded" />
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="emailMergeResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result"              minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
 
             <!-- Update Message Types -->
             <element name="update">
@@ -4078,21 +3164,6 @@ All Rights Reserved
             </element>
 
 
-            <element name="describeWorkitemActions">
-                <complexType>
-                    <sequence>
-                        <element name="workitemIds"       type="tns:ID" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="describeWorkitemActionsResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:DescribeWorkitemActionResult" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-
 
             <!-- Retrieve (ID List) Message Types -->
             <element name="retrieve">
@@ -4113,25 +3184,6 @@ All Rights Reserved
             </element>
 
       
-            <!-- RetrieveDefaultValues Message Types -->
-            <element name="retrieveDefaultValues">
-                <complexType>
-                    <sequence>
-                        <element name="sObjectType"  type="xsd:string"/>
-                        <element name="recordTypeId" type="tns:ID" nillable="true" />
-                        <element name="fieldList"    type="xsd:string" nillable="true"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="retrieveDefaultValuesResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="ens:sObject" nillable="true"/>
-                    </sequence>
-                </complexType>
-            </element>
-      
 
             <!-- Convert Lead Message Types -->
             <element name="convertLead">
@@ -4145,22 +3197,6 @@ All Rights Reserved
                 <complexType>
                     <sequence>
                         <element name="result" type="tns:LeadConvertResult" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-            
-            <!-- Add Campaign Member Message Types -->
-            <element name="addCampaignMember">
-                <complexType>
-                    <sequence>
-                    	<element name="AddCampaignMemberOptions" type="tns:AddCampaignMemberOptions"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="addCampaignMemberResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:AddCampaignMemberResult"/>
                     </sequence>
                 </complexType>
             </element>
@@ -4202,22 +3238,6 @@ All Rights Reserved
             </element>
 
 
-            <element name="impersonateUser">
-                <complexType>
-                    <sequence>
-                        <element name="userIds" type="tns:ID" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="impersonateUserResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:ImpersonateUserResult" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-
             <!-- Logout current session -->
             <element name="logout">
                 <complexType>
@@ -4242,54 +3262,6 @@ All Rights Reserved
                 <complexType>
                     <sequence>
                         <element name="result" type="tns:InvalidateSessionsResult" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="startFlowInterview">
-                <complexType>
-                    <sequence>
-                        <element name="request" type="tns:StartFlowInterviewRequest"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="startFlowInterviewResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:NavigateFlowInterviewResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="resumeFlowInterview">
-                <complexType>
-                    <sequence>
-                        <element name="request" type="tns:ResumeFlowInterviewRequest"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="resumeFlowInterviewResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:NavigateFlowInterviewResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="navigateFlowInterview">
-                <complexType>
-                    <sequence>
-                        <element name="request" type="tns:NavigateFlowInterviewRequest"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <element name="navigateFlowInterviewResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:NavigateFlowInterviewResult"/>
                     </sequence>
                 </complexType>
             </element>
@@ -4343,19 +3315,6 @@ All Rights Reserved
             </element>
 
 
-            <element name="setupBriefcase">
-                <complexType>
-                    <sequence/>
-                </complexType>
-            </element>
-            <element name="setupBriefcaseResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:SetupBriefcaseResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
 
             <!-- Create Search -->
             <element name="search">
@@ -4373,37 +3332,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <!-- Create Outlook Search -->
-            <element name="outlookSearch">
-                <complexType>
-                    <sequence>
-                        <element name="searchExpr" type="xsd:string"/>
-                        <element name="contextString" type="xsd:string"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="outlookSearchResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:OutlookSearchResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
-            <!-- Create Outlook Describe -->
-            <element name="outlookDescribe">
-                <complexType>
-                    <sequence/>
-                </complexType>
-            </element>
-            <element name="outlookDescribeResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:OutlookDescribeResult"/>
-                    </sequence>
-                </complexType>
-            </element>
 
 
             <element name="getServerTimestamp">
@@ -4450,19 +3378,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-            <element name="getAccessInfo">
-                <complexType>
-                    <sequence/>
-                </complexType>
-            </element>
-            <element name="getAccessInfoResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:GetAccessInfoResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
             <element name="getUserInfo">
                 <complexType>
                     <sequence/>
@@ -4476,22 +3391,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <!-- Activate Message Types -->
-            <element name="activate">
-                <complexType>
-                    <sequence>
-                        <element name="ids"  minOccurs="0" maxOccurs="unbounded" type="tns:ID"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="activateResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:ActivateResult"/>
-                    </sequence>
-                </complexType>
-            </element>
 
 
             <!-- Header Elements -->
@@ -4519,32 +3418,12 @@ All Rights Reserved
                         <element name="client"               type="xsd:string" nillable="true"/>
                         <element name="defaultNamespace"     type="xsd:string" nillable="true"/>
 
-                        <element name="returnFieldDataTypes" type="xsd:boolean" nillable="true"/>
 
-
-                        <element name="clientLog"         type="xsd:string"/>
-                        <element name="debugExceptions"   type="xsd:boolean"/>
-                        <element name="platform"          type="xsd:string"/>
-                        <element name="remoteApplication" type="xsd:string"/>
-
-                        <element name="uiRequestId"       type="xsd:string"/>
-
-
-
-                        <xsd:element name="perfOption" type="tns:PerfOption" />
 
                     </sequence>
                 </complexType>
             </element>
- 
-            <xsd:simpleType name="PerfOption">
-                <xsd:restriction base="xsd:string">
-                    <xsd:enumeration value="NONE" />
-                    <xsd:enumeration value="BASIC" />
-                    <xsd:enumeration value="DETAILED" />
-                </xsd:restriction>
-            </xsd:simpleType> 
- 
+  
 
 
             <element name="QueryOptions">
@@ -4552,22 +3431,10 @@ All Rights Reserved
                     <sequence>
                         <element name="batchSize"       type="xsd:int" minOccurs="0"/>
 
-                        <element name="filterLanguage"  type="xsd:string" minOccurs="0"/>
-                        <element name="scope"           type="tns:queryOptionsScope"/>
-
                     </sequence>
                 </complexType>
             </element>
 
-
-            <simpleType name="queryOptionsScope">
-                <restriction base="xsd:string">
-                    <enumeration value="Briefcase"/>
-                    <enumeration value="Mine"/>
-                    <enumeration value="Mru"/>
-                    <enumeration value="ContactList"/>
-                </restriction>
-            </simpleType>
 
             <simpleType name="DebugLevel">
                 <restriction base="xsd:string">
@@ -4583,46 +3450,7 @@ All Rights Reserved
             </simpleType>
 
 
-        <xsd:element name="APIPerformanceInfo">
-          <xsd:complexType>
-             <xsd:sequence>
-               <xsd:element name="HandlerMetric" minOccurs="0" maxOccurs="unbounded" type="tns:NameValuePair"/>
-               <xsd:element name="EncodedIntervalTimerTree" minOccurs="0" maxOccurs="1" type="xsd:string"/>
-             </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
 
-
-
-               <xsd:element name="MetadataVersionCheck">
-                <xsd:complexType>
-                 <xsd:sequence>
-                  <xsd:element name="facts" minOccurs="0" maxOccurs="unbounded" type="tns:Fact"/>
-                  <xsd:element name="operation" type="tns:Operation"/>
-                 </xsd:sequence>
-                </xsd:complexType>
-               </xsd:element>
-               <xsd:complexType name="Fact">
-                <xsd:sequence>
-                 <xsd:element name="fact" type="tns:MetadataVersionCheckFact"/>
-                 <xsd:element name="subject" type="xsd:string"/>
-                 <xsd:element name="token" type="xsd:string"/>
-                </xsd:sequence>
-               </xsd:complexType>
-               <xsd:simpleType name="MetadataVersionCheckFact">
-                <xsd:restriction base="xsd:string">
-                 <xsd:enumeration value="DescribeLayoutVersion"/>
-                 <xsd:enumeration value="DescribeSObjectVersion"/>
-                 <xsd:enumeration value="SystemConfigurationVersion"/>
-                </xsd:restriction>
-               </xsd:simpleType>
-               <xsd:simpleType name="Operation">
-                <xsd:restriction base="xsd:string">
-                 <xsd:enumeration value="RetrieveTokens"/>
-                 <xsd:enumeration value="ErrorOnNewerVersion"/>
-                 <xsd:enumeration value="SkipOnSameVersion"/>
-                </xsd:restriction>
-            </xsd:simpleType>
 
             <element name="DebuggingHeader">
                 <complexType>
@@ -4699,24 +3527,22 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <element name="DisableFeedTrackingHeader">
-                <complexType>
-                    <sequence>
-                        <element name="disableFeedTracking" type="xsd:boolean" />
-                    </sequence>
-                </complexType>
-            </element>
-
+   <element name="DisableFeedTrackingHeader">
+       <complexType>
+           <sequence>
+               <element name="disableFeedTracking" type="xsd:boolean" />
+           </sequence>
+       </complexType>
+   </element>
 
 
-            <element name="StreamingEnabledHeader">
-                <complexType>
-                    <sequence>
-                        <element name="streamingEnabled" type="xsd:boolean" />
-                    </sequence>
-                </complexType>
-            </element>
+            <element name="StreamingEnabledHeader"> 
+       <complexType>
+           <sequence>
+               <element name="streamingEnabled" type="xsd:boolean" /> 
+           </sequence> 
+       </complexType>
+   </element>
 
 
 
@@ -4771,36 +3597,6 @@ All Rights Reserved
 
 
 
-        <complexType name="MatchOptions">
-            <sequence>
-                <element name="fields" type="xsd:string" />
-                <element name="matchEngine" type="xsd:string" />
-                <element name="maxMatchResults" type="xsd:int" />
-                <element name="minMatchConfidence" type="xsd:int" />
-                <element name="rule" type="xsd:string" />
-                <element name="sObjectType" type="xsd:string" />
-            </sequence>
-        </complexType>
-
-
-        <element name="match">
-            <complexType>
-                <sequence>
-                    <element name="sObjects" type="ens:sObject" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="matchOptions" type="tns:MatchOptions"/>
-                </sequence>
-            </complexType>
-        </element>
-
-        <element name="matchResponse">
-            <complexType>
-                <sequence>
-                    <element name="result" type="tns:MatchResult" minOccurs="0" maxOccurs="unbounded"/>
-                </sequence>
-            </complexType>
-        </element>
-
-
 
             <!-- ideally this could of just been elem name="..." type="xsd:boolean"
                  but is required to be nested within a complexType for .NET 1.1 compatibility -->
@@ -4831,19 +3627,6 @@ All Rights Reserved
                 </complexType>
     </element>
 
-            <element name="ConditionalRequestHeader">
-                <complexType>
-                    <sequence>
-
-                        <element name="ifModifiedBefore" nillable="true" type="xsd:dateTime" />
-                        <element name="ifModifiedSince"  nillable="true" type="xsd:dateTime" />
-
-                        <element name="ifModifiedBeforeArray" nillable="true" type="xsd:dateTime" minOccurs="0" maxOccurs="unbounded"/>
-
-                    </sequence>
-                </complexType>
-            </element>
-
             <element name="UserTerritoryDeleteHeader">
                 <complexType>
                     <sequence>
@@ -4852,16 +3635,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <element name="PartnerNetworkHeader">
-                <complexType>
-                    <sequence>
-                        <element name="connectionId" type="tns:ID" nillable="true"/>
-                        <element name="partnerEntityIds" type="tns:ID" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-                        <element name="parentEntityIds" type="tns:ID" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
 
 
             <element name="LocaleOptions">
@@ -5033,6 +3806,7 @@ All Rights Reserved
                     <enumeration value="NOT_ACCEPTABLE"/>
                     <enumeration value="NOT_MODIFIED"/>
                     <enumeration value="NO_ACTIVE_DUPLICATE_RULE"/>
+                    <enumeration value="NO_RECIPIENTS"/>
                     <enumeration value="NO_SOFTPHONE_LAYOUT"/>
                     <enumeration value="NUMBER_OUTSIDE_VALID_RANGE"/>
                     <enumeration value="OPERATION_TOO_LARGE"/>
@@ -5046,6 +3820,7 @@ All Rights Reserved
                     <enumeration value="POST_BODY_PARSE_ERROR"/>
                     <enumeration value="QUERY_TIMEOUT"/>
                     <enumeration value="QUERY_TOO_COMPLICATED"/>
+                    <enumeration value="REALTIME_PROCESSING_TIME_EXCEEDED_LIMIT"/>
                     <enumeration value="REQUEST_LIMIT_EXCEEDED"/>
                     <enumeration value="REQUEST_RUNNING_TOO_LONG"/>
                     <enumeration value="SERVER_UNAVAILABLE"/>
@@ -5197,6 +3972,7 @@ All Rights Reserved
                     <enumeration value="fns:NOT_ACCEPTABLE"/>
                     <enumeration value="fns:NOT_MODIFIED"/>
                     <enumeration value="fns:NO_ACTIVE_DUPLICATE_RULE"/>
+                    <enumeration value="fns:NO_RECIPIENTS"/>
                     <enumeration value="fns:NO_SOFTPHONE_LAYOUT"/>
                     <enumeration value="fns:NUMBER_OUTSIDE_VALID_RANGE"/>
                     <enumeration value="fns:OPERATION_TOO_LARGE"/>
@@ -5210,6 +3986,7 @@ All Rights Reserved
                     <enumeration value="fns:POST_BODY_PARSE_ERROR"/>
                     <enumeration value="fns:QUERY_TIMEOUT"/>
                     <enumeration value="fns:QUERY_TOO_COMPLICATED"/>
+                    <enumeration value="fns:REALTIME_PROCESSING_TIME_EXCEEDED_LIMIT"/>
                     <enumeration value="fns:REQUEST_LIMIT_EXCEEDED"/>
                     <enumeration value="fns:REQUEST_RUNNING_TOO_LONG"/>
                     <enumeration value="fns:SERVER_UNAVAILABLE"/>
@@ -5247,9 +4024,6 @@ All Rights Reserved
 
                     <element name="extendedErrorDetails" type="tns:ExtendedErrorDetails" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 
-
-                    <element name="upgradeURL"       type="xsd:string" minOccurs="0"/>
-                    <element name="upgradeMessage"   type="xsd:string" minOccurs="0"/>
 
                 </sequence>
             </complexType>
@@ -5356,28 +4130,19 @@ All Rights Reserved
         <part element="tns:DuplicateRuleHeader"          name="DuplicateRuleHeader"/>
 
 
-
         <part element="tns:DisableFeedTrackingHeader"    name="DisableFeedTrackingHeader"/>
-
+        
 
         <part element="tns:StreamingEnabledHeader"       name="StreamingEnabledHeader"/>
 
         <part element="tns:MruHeader"                    name="MruHeader"/>
         <part element="tns:EmailHeader"                  name="EmailHeader"/>
 
-        <part element="tns:ConditionalRequestHeader"     name="ConditionalRequestHeader"/>
-
         <part element="tns:UserTerritoryDeleteHeader"    name="UserTerritoryDeleteHeader"/>
-
-        <part element="tns:PartnerNetworkHeader"         name="PartnerNetworkHeader"/>
 
         <part element="tns:DebuggingHeader"              name="DebuggingHeader"/>
         <part element="tns:PackageVersionHeader"         name="PackageVersionHeader"/>
 
-        <part name="MetadataVersionCheck" element="tns:MetadataVersionCheck"/>
-
-
-        <part element="tns:APIPerformanceInfo"           name="APIPerformanceInfo"/>"
 
         <part element="tns:DebuggingInfo"                name="DebuggingInfo"/>
 
@@ -5474,13 +4239,6 @@ All Rights Reserved
         <part element="tns:describeKnowledgeSettingsResponse" name="parameters"/>
     </message>
 
-    <message name="describeFlexiPagesRequest">
-        <part element="tns:describeFlexiPages" name="parameters"/>
-    </message>
-    <message name="describeFlexiPagesResponse">
-        <part element="tns:describeFlexiPagesResponse" name="parameters"/>
-    </message>
-
     <message name="describeAppMenuRequest">
         <part element="tns:describeAppMenu" name="parameters"/>
     </message>
@@ -5509,13 +4267,6 @@ All Rights Reserved
         <part element="tns:describeLayoutResponse" name="parameters"/>
     </message>
 
-    <message name="describeMiniLayoutRequest">
-        <part element="tns:describeMiniLayout" name="parameters"/>
-    </message>
-    <message name="describeMiniLayoutResponse">
-        <part element="tns:describeMiniLayoutResponse" name="parameters"/>
-    </message>
-
     <message name="describeSoftphoneLayoutRequest">
         <part element="tns:describeSoftphoneLayout" name="parameters"/>
     </message>
@@ -5528,20 +4279,6 @@ All Rights Reserved
     </message>
     <message name="describeSearchLayoutsResponse">
         <part element="tns:describeSearchLayoutsResponse" name="parameters"/>
-    </message>
-
-    <message name="describeListViewsRequest">
-        <part element="tns:describeListViews" name="parameters"/>
-    </message>
-    <message name="describeListViewsResponse">
-        <part element="tns:describeListViewsResponse" name="parameters"/>
-    </message>
-
-    <message name="describeLookupLayoutsRequest">
-        <part element="tns:describeLookupLayouts" name="parameters"/>
-    </message>
-    <message name="describeLookupLayoutsResponse">
-        <part element="tns:describeLookupLayoutsResponse" name="parameters"/>
     </message>
 
     <message name="describeSearchableEntitiesRequest">
@@ -5621,13 +4358,6 @@ All Rights Reserved
         <part element="tns:describePrimaryCompactLayoutsResponse" name="parameters"/>
     </message>
 
-    <message name="getAccessInfoRequest">
-        <part element="tns:getAccessInfo" name="parameters"/>
-    </message>
-    <message name="getAccessInfoResponse">
-        <part element="tns:getAccessInfoResponse" name="parameters"/>
-    </message>
-
     <message name="createRequest">
         <part element="tns:create" name="parameters"/>
     </message>
@@ -5684,13 +4414,6 @@ All Rights Reserved
         <part element="tns:retrieveResponse" name="parameters"/>
     </message>
 
-    <message name="retrieveDefaultValuesRequest">
-        <part element="tns:retrieveDefaultValues" name="parameters"/>
-    </message>
-    <message name="retrieveDefaultValuesResponse">
-        <part element="tns:retrieveDefaultValuesResponse" name="parameters"/>
-    </message>
-
     <message name="processRequest">
         <part element="tns:process" name="parameters"/>
     </message>
@@ -5703,13 +4426,6 @@ All Rights Reserved
     </message>
     <message name="convertLeadResponse">
         <part element="tns:convertLeadResponse" name="parameters"/>
-    </message>
-
-    <message name="impersonateUserRequest">
-        <part element="tns:impersonateUser" name="parameters"/>
-    </message>
-    <message name="impersonateUserResponse">
-        <part element="tns:impersonateUserResponse" name="parameters"/>
     </message>
 
     <message name="logoutRequest">
@@ -5761,32 +4477,11 @@ All Rights Reserved
         <part element="tns:queryMoreResponse" name="parameters"/>
     </message>
 
-    <message name="setupBriefcaseRequest">
-        <part element="tns:setupBriefcase" name="parameters"/>
-    </message>
-    <message name="setupBriefcaseResponse">
-        <part element="tns:setupBriefcaseResponse" name="parameters"/>
-    </message>
-
     <message name="searchRequest">
         <part element="tns:search" name="parameters"/>
     </message>
     <message name="searchResponse">
         <part element="tns:searchResponse" name="parameters"/>
-    </message>
-
-    <message name="outlookSearchRequest">
-        <part element="tns:outlookSearch" name="parameters"/>
-    </message>
-    <message name="outlookSearchResponse">
-        <part element="tns:outlookSearchResponse" name="parameters"/>
-    </message>
-
-    <message name="outlookDescribeRequest">
-        <part element="tns:outlookDescribe" name="parameters"/>
-    </message>
-    <message name="outlookDescribeResponse">
-        <part element="tns:outlookDescribeResponse" name="parameters"/>
     </message>
 
     <message name="getServerTimestampRequest">
@@ -5817,27 +4512,6 @@ All Rights Reserved
         <part element="tns:getUserInfoResponse" name="parameters"/>
     </message>
 
-    <message name="addCampaignMemberRequest">
-        <part element="tns:addCampaignMember" name="parameters"/>
-    </message>
-    <message name="addCampaignMemberResponse">
-        <part element="tns:addCampaignMemberResponse" name="parameters"/>
-    </message>
-
-    <message name="activateRequest">
-        <part element="tns:activate" name="parameters"/>
-    </message>
-    <message name="activateResponse">
-        <part element="tns:activateResponse" name="parameters"/>
-    </message>
-
-    <message name="handleEmailMessageRequest">
-        <part element="tns:handleEmailMessage" name="parameters"/>
-    </message>
-    <message name="handleEmailMessageResponse">
-        <part element="tns:handleEmailMessageResponse" name="parameters"/>
-    </message>
-
     <message name="sendEmailMessageRequest">
         <part element="tns:sendEmailMessage" name="parameters"/>
     </message>
@@ -5857,76 +4531,6 @@ All Rights Reserved
     </message>
     <message name="renderEmailTemplateResponse">
         <part element="tns:renderEmailTemplateResponse" name="parameters"/>
-    </message>
-
-    <message name="emailMergeRequest">
-        <part element="tns:emailMerge" name="parameters"/>
-    </message>
-    <message name="emailMergeResponse">
-        <part element="tns:emailMergeResponse" name="parameters"/>
-    </message>
-
-    <message name="createSnapshotRequest">
-        <part element="tns:createSnapshot" name="parameters"/>
-    </message>
-    <message name="createSnapshotResponse">
-        <part element="tns:createSnapshotResponse" name="parameters"/>
-    </message>
-
-    <message name="moreSnapshotRequest">
-        <part element="tns:moreSnapshot" name="parameters"/>
-    </message>
-    <message name="moreSnapshotResponse">
-        <part element="tns:moreSnapshotResponse" name="parameters"/>
-    </message>
-
-    <message name="ackSnapshotRequest">
-        <part element="tns:ackSnapshot" name="parameters"/>
-    </message>
-    <message name="ackSnapshotResponse">
-        <part element="tns:ackSnapshotResponse" name="parameters"/>
-    </message>
-
-    <message name="syncOfflineDataRequest">
-        <part element="tns:syncOfflineData" name="parameters"/>
-    </message>
-    <message name="syncOfflineDataResponse">
-        <part element="tns:syncOfflineDataResponse" name="parameters"/>
-    </message>
-
-    <message name="ackSyncOfflineDataRequest">
-        <part element="tns:ackSyncOfflineData" name="parameters"/>
-    </message>
-    <message name="ackSyncOfflineDataResponse">
-        <part element="tns:ackSyncOfflineDataResponse" name="parameters"/>
-    </message>
-
-    <message name="describeMobileRequest">
-        <part element="tns:describeMobile" name="parameters"/>
-    </message>
-    <message name="describeMobileResponse">
-        <part element="tns:describeMobileResponse" name="parameters"/>
-    </message>
-
-    <message name="loginXiRequest">
-        <part element="tns:loginXi" name="parameters"/>
-    </message>
-    <message name="loginXiResponse">
-        <part element="tns:loginXiResponse" name="parameters"/>
-    </message>
-
-    <message name="loginAsSubscriberRequest">
-        <part element="tns:loginAsSubscriber" name="parameters"/>
-    </message>
-    <message name="loginAsSubscriberResponse">
-        <part element="tns:loginAsSubscriberResponse" name="parameters"/>
-    </message>
-
-    <message name="describeWorkitemActionsRequest">
-        <part element="tns:describeWorkitemActions" name="parameters"/>
-    </message>
-    <message name="describeWorkitemActionsResponse">
-        <part element="tns:describeWorkitemActionsResponse" name="parameters"/>
     </message>
 
     <message name="performQuickActionsRequest">
@@ -5964,20 +4568,6 @@ All Rights Reserved
         <part element="tns:describeVisualForceResponse" name="parameters"/>
     </message>
 
-    <message name="matchRequest">
-        <part element="tns:match" name="parameters"/>
-    </message>
-    <message name="matchResponse">
-        <part element="tns:matchResponse" name="parameters"/>
-    </message>
-
-    <message name="describeDuplicateRulesRequest">
-        <part element="tns:describeDuplicateRules" name="parameters"/>
-    </message>
-    <message name="describeDuplicateRulesResponse">
-        <part element="tns:describeDuplicateRulesResponse" name="parameters"/>
-    </message>
-
     <message name="findDuplicatesRequest">
         <part element="tns:findDuplicates" name="parameters"/>
     </message>
@@ -6004,34 +4594,6 @@ All Rights Reserved
     </message>
     <message name="describeNounsResponse">
         <part element="tns:describeNounsResponse" name="parameters"/>
-    </message>
-
-    <message name="describePicklistsRequest">
-        <part element="tns:describePicklists" name="parameters"/>
-    </message>
-    <message name="describePicklistsResponse">
-        <part element="tns:describePicklistsResponse" name="parameters"/>
-    </message>
-
-    <message name="navigateFlowInterviewRequest">
-        <part element="tns:navigateFlowInterview" name="parameters"/>
-    </message>
-    <message name="navigateFlowInterviewResponse">
-        <part element="tns:navigateFlowInterviewResponse" name="parameters"/>
-    </message>
-
-    <message name="startFlowInterviewRequest">
-        <part element="tns:startFlowInterview" name="parameters"/>
-    </message>
-    <message name="startFlowInterviewResponse">
-        <part element="tns:startFlowInterviewResponse" name="parameters"/>
-    </message>
-
-    <message name="resumeFlowInterviewRequest">
-        <part element="tns:resumeFlowInterview" name="parameters"/>
-    </message>
-    <message name="resumeFlowInterviewResponse">
-        <part element="tns:resumeFlowInterviewResponse" name="parameters"/>
     </message>
 
 
@@ -6093,14 +4655,6 @@ All Rights Reserved
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
-        <operation name="describeFlexiPages">
-            <documentation>Describe a list of FlexiPage and their contents</documentation>
-            <input  message="tns:describeFlexiPagesRequest"/>
-            <output message="tns:describeFlexiPagesResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
-        </operation>
-
         <operation name="describeAppMenu">
             <documentation>Describe the items in an AppMenu</documentation>
             <input  message="tns:describeAppMenuRequest"/>
@@ -6131,14 +4685,6 @@ All Rights Reserved
             <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
         </operation>
 
-        <operation name="describeMiniLayout">
-            <documentation>Describe the mini layout of an sObject</documentation>
-            <input  message="tns:describeMiniLayoutRequest"/>
-            <output message="tns:describeMiniLayoutResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
         <operation name="describeSoftphoneLayout">
             <documentation>Describe the layout of the SoftPhone</documentation>
             <input  message="tns:describeSoftphoneLayoutRequest"/>
@@ -6150,22 +4696,6 @@ All Rights Reserved
             <documentation>Describe the search view of an sObject</documentation>
             <input  message="tns:describeSearchLayoutsRequest"/>
             <output message="tns:describeSearchLayoutsResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="describeListViews">
-            <documentation>Describe the views of an sObject</documentation>
-            <input  message="tns:describeListViewsRequest"/>
-            <output message="tns:describeListViewsResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="describeLookupLayouts">
-            <documentation>Describe the lookup view of an sObject</documentation>
-            <input  message="tns:describeLookupLayoutsRequest"/>
-            <output message="tns:describeLookupLayoutsResponse"/>
             <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
@@ -6242,12 +4772,6 @@ All Rights Reserved
             <output message="tns:describePrimaryCompactLayoutsResponse"/>
         </operation>
 
-        <operation name="getAccessInfo">
-            <documentation>Returns access information relevant to the current user</documentation>
-            <input  message="tns:getAccessInfoRequest"/>
-            <output message="tns:getAccessInfoResponse"/>
-        </operation>
-
         <operation name="create">
             <documentation>Create a set of new sObjects</documentation>
             <input  message="tns:createRequest"/>
@@ -6320,15 +4844,6 @@ All Rights Reserved
             <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
         </operation>
 
-        <operation name="retrieveDefaultValues">
-            <documentation>Get the defaults for a given sobject type</documentation>
-            <input  message="tns:retrieveDefaultValuesRequest"/>
-            <output message="tns:retrieveDefaultValuesResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
         <operation name="process">
             <documentation>Submit an entity to a workflow process or process a workitem</documentation>
             <input  message="tns:processRequest"/>
@@ -6341,13 +4856,6 @@ All Rights Reserved
             <documentation>convert a set of leads</documentation>
             <input  message="tns:convertLeadRequest"/>
             <output message="tns:convertLeadResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="impersonateUser">
-            <documentation>Impersonate as a given user in the current organization using the Salesforce.com SOAP API</documentation>
-            <input  message="tns:impersonateUserRequest"/>
-            <output message="tns:impersonateUserResponse"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
@@ -6415,13 +4923,6 @@ All Rights Reserved
             <fault  message="tns:MalformedQueryFault" name="MalformedQueryFault"/>
         </operation>
 
-        <operation name="setupBriefcase">
-            <documentation>initialize briefcase</documentation>
-            <input  message="tns:setupBriefcaseRequest"/>
-            <output message="tns:setupBriefcaseResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
         <operation name="search">
             <documentation>Search for sObjects</documentation>
             <input  message="tns:searchRequest"/>
@@ -6429,23 +4930,6 @@ All Rights Reserved
             <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
             <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
             <fault  message="tns:MalformedSearchFault" name="MalformedSearchFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="outlookSearch">
-            <documentation>Search for sObjects</documentation>
-            <input  message="tns:outlookSearchRequest"/>
-            <output message="tns:outlookSearchResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
-            <fault  message="tns:MalformedSearchFault" name="MalformedSearchFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="outlookDescribe">
-            <documentation>Describe Outlook Plugin-specific information</documentation>
-            <input  message="tns:outlookDescribeRequest"/>
-            <output message="tns:outlookDescribeResponse"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
@@ -6480,29 +4964,6 @@ All Rights Reserved
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
-        <operation name="addCampaignMember">
-            <documentation>Add or update campaign member</documentation>
-            <input  message="tns:addCampaignMemberRequest"/>
-            <output message="tns:addCampaignMemberResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-            <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
-        </operation>
-
-        <operation name="activate">
-            <documentation>Activate a set of sObjects</documentation>
-            <input  message="tns:activateRequest"/>
-            <output message="tns:activateResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="handleEmailMessage">
-            <documentation>Handle incoming email messages</documentation>
-            <input  message="tns:handleEmailMessageRequest"/>
-            <output message="tns:handleEmailMessageResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
         <operation name="sendEmailMessage">
             <documentation>Send existing draft EmailMessage</documentation>
             <input  message="tns:sendEmailMessageRequest"/>
@@ -6522,78 +4983,6 @@ All Rights Reserved
             <input  message="tns:renderEmailTemplateRequest"/>
             <output message="tns:renderEmailTemplateResponse"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="emailMerge">
-            <documentation>Merge Email using the specified template</documentation>
-            <input  message="tns:emailMergeRequest"/>
-            <output message="tns:emailMergeResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="createSnapshot">
-            <documentation>Create a current sharing access snapshot for this sObject type</documentation>
-            <input  message="tns:createSnapshotRequest"/>
-            <output message="tns:createSnapshotResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-            <fault  message="tns:InvalidQueryLocatorFault" name="InvalidQueryLocatorFault"/>
-        </operation>
-
-        <operation name="moreSnapshot">
-            <documentation>Get the next chunk of snapshot results</documentation>
-            <input  message="tns:moreSnapshotRequest"/>
-            <output message="tns:moreSnapshotResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="ackSnapshot">
-            <documentation>Make this snapshot the new baseline snapshot</documentation>
-            <input  message="tns:ackSnapshotRequest"/>
-            <output message="tns:ackSnapshotResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="syncOfflineData">
-            <documentation>Get changed records for this user</documentation>
-            <input  message="tns:syncOfflineDataRequest"/>
-            <output message="tns:syncOfflineDataResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="ackSyncOfflineData">
-            <documentation>Ack the receipt of changed records for this user</documentation>
-            <input  message="tns:ackSyncOfflineDataRequest"/>
-            <output message="tns:ackSyncOfflineDataResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="describeMobile">
-            <documentation>Mega describe with mobile specific info</documentation>
-            <input  message="tns:describeMobileRequest"/>
-            <output message="tns:describeMobileResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="loginXi">
-            <documentation>Login as a different user name across instances</documentation>
-            <input  message="tns:loginXiRequest"/>
-            <output message="tns:loginXiResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="loginAsSubscriber">
-            <documentation>Login as a different user name across instances</documentation>
-            <input  message="tns:loginAsSubscriberRequest"/>
-            <output message="tns:loginAsSubscriberResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="describeWorkitemActions">
-            <documentation>Determine which actions are available for the given workitem</documentation>
-            <input  message="tns:describeWorkitemActionsRequest"/>
-            <output message="tns:describeWorkitemActionsResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
         </operation>
 
         <operation name="performQuickActions">
@@ -6626,22 +5015,6 @@ All Rights Reserved
             <output message="tns:describeVisualForceResponse"/>
         </operation>
 
-        <operation name="match">
-            <documentation>Match a  set of sObjects with rule specified or default rule</documentation>
-            <input  message="tns:matchRequest"/>
-            <output message="tns:matchResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-            <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
-        </operation>
-
-        <operation name="describeDuplicateRules">
-            <documentation>Describe the DuplicateRule</documentation>
-            <input  message="tns:describeDuplicateRulesRequest"/>
-            <output message="tns:describeDuplicateRulesResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
         <operation name="findDuplicates">
             <documentation>Find duplicates for a set of sObjects</documentation>
             <input  message="tns:findDuplicatesRequest"/>
@@ -6667,33 +5040,6 @@ All Rights Reserved
             <documentation>Return the renameable nouns from the server for use in presentation using the salesforce grammar engine</documentation>
             <input  message="tns:describeNounsRequest"/>
             <output message="tns:describeNounsResponse"/>
-        </operation>
-
-        <operation name="describePicklists">
-            <documentation>Describe a Picklist field</documentation>
-            <input  message="tns:describePicklistsRequest"/>
-            <output message="tns:describePicklistsResponse"/>
-            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-            <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
-        </operation>
-
-        <operation name="navigateFlowInterview">
-            <documentation>Navigates a flow interview</documentation>
-            <input  message="tns:navigateFlowInterviewRequest"/>
-            <output message="tns:navigateFlowInterviewResponse"/>
-        </operation>
-
-        <operation name="startFlowInterview">
-            <documentation>Starts a flow interview</documentation>
-            <input  message="tns:startFlowInterviewRequest"/>
-            <output message="tns:startFlowInterviewResponse"/>
-        </operation>
-
-        <operation name="resumeFlowInterview">
-            <documentation>Resumes a paused flow interview</documentation>
-            <input  message="tns:resumeFlowInterviewRequest"/>
-            <output message="tns:resumeFlowInterviewResponse"/>
         </operation>
 
     </portType>
@@ -6727,14 +5073,12 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6750,14 +5094,12 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6773,13 +5115,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6797,7 +5137,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6818,7 +5157,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6839,31 +5177,10 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="describeFlexiPages">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-            <fault name="InvalidIdFault">
-                <soap:fault name="InvalidIdFault" use="literal"/>
             </fault>
         </operation>
         <operation name="describeAppMenu">
@@ -6876,7 +5193,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6893,7 +5209,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6910,7 +5225,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6923,12 +5237,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -6941,27 +5253,6 @@ All Rights Reserved
                 <soap:fault name="InvalidIdFault" use="literal"/>
             </fault>
         </operation>
-        <operation name="describeMiniLayout">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
         <operation name="describeSoftphoneLayout">
             <soap:operation soapAction=""/>
             <input>
@@ -6972,7 +5263,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -6985,54 +5275,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="describeListViews">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="describeLookupLayouts">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7052,7 +5298,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7066,7 +5311,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7076,12 +5320,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7091,12 +5333,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7106,12 +5346,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7121,12 +5359,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7146,7 +5382,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7156,12 +5391,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7181,7 +5414,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7198,7 +5430,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7211,26 +5442,10 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-        </operation>
-        <operation name="getAccessInfo">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -7248,17 +5463,14 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="DebuggingHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
-                <soap:header use="literal" message="tns:Header" part="PartnerNetworkHeader"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7288,19 +5500,15 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="DebuggingHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
                 <soap:header use="literal" message="tns:Header" part="OwnerChangeOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PartnerNetworkHeader"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7330,9 +5538,7 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="DebuggingHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
                 <soap:header use="literal" message="tns:Header" part="OwnerChangeOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
@@ -7341,7 +5547,6 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7370,7 +5575,6 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="DebuggingHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
                 <soap:body parts="parameters" use="literal"/>
@@ -7378,7 +5582,6 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7400,7 +5603,6 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="UserTerritoryDeleteHeader"/>
                 <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
                 <soap:header use="literal" message="tns:Header" part="AllowFieldTruncationHeader"/>
@@ -7416,7 +5618,6 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7441,7 +5642,6 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7457,7 +5657,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7472,13 +5671,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="QueryOptions"/>
                 <soap:header use="literal" message="tns:Header" part="MruHeader"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7495,28 +5692,6 @@ All Rights Reserved
             </fault>
             <fault name="InvalidIdFault">
                 <soap:fault name="InvalidIdFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="retrieveDefaultValues">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="InvalidIdFault">
-                <soap:fault name="InvalidIdFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
             </fault>
         </operation>
         <operation name="process">
@@ -7536,7 +5711,6 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7563,23 +5737,6 @@ All Rights Reserved
             <output>
                 <soap:header use="literal" message="tns:Header" part="DebuggingInfo"/>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="impersonateUser">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7595,7 +5752,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7611,7 +5767,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7628,7 +5783,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7648,7 +5802,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7666,13 +5819,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="QueryOptions"/>
                 <soap:header use="literal" message="tns:Header" part="MruHeader"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7705,7 +5856,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7738,7 +5888,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidQueryLocatorFault">
@@ -7754,22 +5903,6 @@ All Rights Reserved
                 <soap:fault name="MalformedQueryFault" use="literal"/>
             </fault>
         </operation>
-        <operation name="setupBriefcase">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
         <operation name="search">
             <soap:operation soapAction=""/>
             <input>
@@ -7781,7 +5914,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -7793,50 +5925,6 @@ All Rights Reserved
             <fault name="MalformedSearchFault">
                 <soap:fault name="MalformedSearchFault" use="literal"/>
             </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="outlookSearch">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="InvalidFieldFault">
-                <soap:fault name="InvalidFieldFault" use="literal"/>
-            </fault>
-            <fault name="MalformedSearchFault">
-                <soap:fault name="MalformedSearchFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="outlookDescribe">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
             <fault name="UnexpectedErrorFault">
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
             </fault>
@@ -7850,7 +5938,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7866,7 +5953,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidIdFault">
@@ -7889,7 +5975,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidIdFault">
@@ -7908,64 +5993,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="addCampaignMember">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-            <fault name="InvalidFieldFault">
-                <soap:fault name="InvalidFieldFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="activate">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="handleEmailMessage">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="AssignmentRuleHeader"/>
-                <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7981,7 +6008,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -7997,7 +6023,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
@@ -8013,179 +6038,10 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="UnexpectedErrorFault">
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="emailMerge">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="createSnapshot">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-            <fault name="InvalidQueryLocatorFault">
-                <soap:fault name="InvalidQueryLocatorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="moreSnapshot">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="ackSnapshot">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="syncOfflineData">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="QueryOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="ackSyncOfflineData">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="describeMobile">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="loginXi">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="loginAsSubscriber">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="describeWorkitemActions">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-            <fault name="InvalidIdFault">
-                <soap:fault name="InvalidIdFault" use="literal"/>
             </fault>
         </operation>
         <operation name="performQuickActions">
@@ -8202,16 +6058,13 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:header use="literal" message="tns:Header" part="DebuggingHeader"/>
-                <soap:header use="literal" message="tns:Header" part="MetadataVersionCheck"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="EmailHeader"/>
                 <soap:header use="literal" message="tns:Header" part="OwnerChangeOptions"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8221,13 +6074,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8237,13 +6088,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8253,13 +6102,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8273,49 +6120,8 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
-        </operation>
-        <operation name="match">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-            <fault name="InvalidFieldFault">
-                <soap:fault name="InvalidFieldFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="describeDuplicateRules">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
         </operation>
         <operation name="findDuplicates">
             <soap:operation soapAction=""/>
@@ -8328,7 +6134,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
             <fault name="InvalidSObjectFault">
@@ -8351,7 +6156,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8365,7 +6169,6 @@ All Rights Reserved
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8375,72 +6178,11 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
                 <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-        </operation>
-        <operation name="describePicklists">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
-                <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
-                <soap:header use="literal" message="tns:Header" part="PatchHeader"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="InvalidSObjectFault">
-                <soap:fault name="InvalidSObjectFault" use="literal"/>
-            </fault>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-            <fault name="InvalidFieldFault">
-                <soap:fault name="InvalidFieldFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="navigateFlowInterview">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-        </operation>
-        <operation name="startFlowInterview">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-        </operation>
-        <operation name="resumeFlowInterview">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
                 <soap:body use="literal"/>
             </output>
         </operation>
@@ -8451,7 +6193,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="http://localhost:8080/services/Soap/u/38.0"/>
+            <soap:address location="http://(someAppServerPool)/services/Soap/u/39.0"/>
         </port>
     </service>
 </definitions>
