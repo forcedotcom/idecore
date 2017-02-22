@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.salesforce.ide</groupId>
 	<artifactId>com.salesforce.ide.parent</artifactId>
-	<version>38.0.0-SNAPSHOT</version>
+	<version>39.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Salesforce.com</name>
@@ -115,7 +115,7 @@
 								<artifact>
 									<groupId>com.salesforce.ide</groupId>
 									<artifactId>com.salesforce.ide.targetdefinition</artifactId>
-									<version>38.0.0-SNAPSHOT</version>
+									<version>39.0.0-SNAPSHOT</version>
 								</artifact>
 							</target>
 							<environments>
@@ -168,7 +168,7 @@
 								<artifact>
 									<groupId>com.salesforce.ide</groupId>
 									<artifactId>com.salesforce.ide.targetdefinition.external</artifactId>
-									<version>38.0.0-SNAPSHOT</version>
+									<version>39.0.0-SNAPSHOT</version>
 								</artifact>
 						</target>
 						<environments>

@@ -36,7 +36,6 @@ import com.sforce.soap.metadata.FieldType;
 import com.sforce.soap.metadata.Folder;
 import com.sforce.soap.metadata.FolderAccessTypes;
 import com.sforce.soap.metadata.Metadata;
-import com.sforce.soap.metadata.Picklist;
 import com.sforce.soap.metadata.PicklistValue;
 import com.sforce.soap.metadata.Profile;
 import com.sforce.soap.metadata.RecordType;
@@ -227,20 +226,6 @@ public class MetadataTestingUtil extends BaseTestingUtil {
         } else if (ft == FieldType.LongTextArea) {
             f.setVisibleLines(5);
             f.setLength(5000);
-        } else if (ft == FieldType.Picklist || ft == FieldType.MultiselectPicklist) {
-            PicklistValue first = new PicklistValue();
-            first.setFullName("a");
-
-            PicklistValue second = new PicklistValue();
-            second.setFullName("b");
-
-            Picklist picklist = new Picklist();
-            picklist.setPicklistValues(new PicklistValue[] { first, second });
-            f.setPicklist(picklist);
-
-            if (ft == FieldType.MultiselectPicklist) {
-                f.setVisibleLines(5);
-            }
         } else if (ft == FieldType.EncryptedText) {
             f.setLength(100);
             f.setMaskType(EncryptedFieldMaskType.lastFour);

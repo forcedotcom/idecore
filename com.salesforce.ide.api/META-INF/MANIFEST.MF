@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.api;singleton:=true
-Bundle-Version: 38.0.0.qualifier
+Bundle-Version: 39.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.api.ForceIdeAPIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin

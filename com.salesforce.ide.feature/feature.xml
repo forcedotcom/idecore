@@ -2,7 +2,7 @@
 <feature
       id="com.salesforce.ide.feature"
       label="Force.com IDE"
-      version="38.0.0.qualifier"
+      version="39.0.0.qualifier"
       provider-name="salesforce.com"
       plugin="com.salesforce.ide.branding"
       image="appExDev32.png">
@@ -159,14 +159,14 @@ https://github.com/angelozerr/minimatch.java/blob/minimatch.java-1.1.0/LICENSE.
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
-      <import plugin="com.salesforce.ide.api" version="38.0.0" match="compatible"/>
+      <import plugin="com.salesforce.ide.api" version="39.0.0" match="compatible"/>
       <import plugin="org.eclipse.ui.ide" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
-      <import plugin="com.salesforce.ide.core" version="38.0.0" match="compatible"/>
-      <import plugin="com.salesforce.ide.ui" version="38.0.0" match="compatible"/>
+      <import plugin="com.salesforce.ide.core" version="39.0.0" match="compatible"/>
+      <import plugin="com.salesforce.ide.ui" version="39.0.0" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.8.0" match="greaterOrEqual"/>
@@ -182,9 +182,9 @@ https://github.com/angelozerr/minimatch.java/blob/minimatch.java-1.1.0/LICENSE.
       <import plugin="org.eclipse.ui.browser" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="com.salesforce.ide.ui" version="38.0.0" match="greaterOrEqual"/>
+      <import plugin="com.salesforce.ide.ui" version="39.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.cheatsheets" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="com.salesforce.ide.core" version="38.0.0" match="greaterOrEqual"/>
+      <import plugin="com.salesforce.ide.core" version="39.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator.resources" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.compare" version="3.5.0" match="greaterOrEqual"/>

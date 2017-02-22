@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apex Core Tests
 Bundle-SymbolicName: com.salesforce.ide.apex.core.test
-Bundle-Version: 38.0.0.qualifier
+Bundle-Version: 39.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.apex.core.test.Activator
 Bundle-Vendor: salesforce.com
 Require-Bundle: org.junit,
@@ -10,10 +10,10 @@ Require-Bundle: org.junit,
  org.eclipse.core.resources;bundle-version="3.10.1",
  org.eclipse.core.runtime;bundle-version="3.11.1",
  org.eclipse.ui.workbench;bundle-version="3.107.0",
- com.salesforce.ide.apex.core;bundle-version="38.0.0",
- com.salesforce.ide.apex.ui;bundle-version="38.0.0",
- com.salesforce.ide.core;bundle-version="38.0.0",
- com.salesforce.ide.test.commonlibs;bundle-version="38.0.0"
+ com.salesforce.ide.apex.core;bundle-version="39.0.0",
+ com.salesforce.ide.apex.ui;bundle-version="39.0.0",
+ com.salesforce.ide.core;bundle-version="39.0.0",
+ com.salesforce.ide.test.commonlibs;bundle-version="39.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.salesforce.ide.apex.core.test,
  com.salesforce.ide.apex.core.utils

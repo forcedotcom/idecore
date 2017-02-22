@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %bundleName
 Bundle-SymbolicName: com.salesforce.ide.core.test
-Bundle-Version: 38.0.0.qualifier
+Bundle-Version: 39.0.0.qualifier
 Fragment-Host: com.salesforce.ide.core
 Bundle-Vendor: %providerName
 Require-Bundle: org.junit,
  org.apache.xerces;bundle-version="2.9.0",
  org.eclipse.swtbot.swt.finder;bundle-version="2.3.0",
- com.salesforce.ide.test.commonlibs;bundle-version="38.0.0",
+ com.salesforce.ide.test.commonlibs;bundle-version="39.0.0",
  org.eclipse.core.resources;bundle-version="3.10.1"
 Export-Package: com.salesforce.ide.core.test,
  com.salesforce.ide.test.common,

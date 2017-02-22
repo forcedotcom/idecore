@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %displayName
 Bundle-SymbolicName: com.salesforce.ide.upgrade;singleton:=true
-Bundle-Version: 38.0.0.qualifier
+Bundle-Version: 39.0.0.qualifier
 Bundle-Activator: com.salesforce.ide.upgrade.ForceIdeUpgradePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: com.salesforce.ide.api;bundle-version="[38.0.0,39.0.0)",
- com.salesforce.ide.core;bundle-version="[38.0.0,39.0.0)",
- com.salesforce.ide.ui;bundle-version="[38.0.0,39.0.0)",
- com.salesforce.ide.ui.editors;bundle-version="[38.0.0,39.0.0)",
+Require-Bundle: com.salesforce.ide.api;bundle-version="[39.0.0,40.0.0)",
+ com.salesforce.ide.core;bundle-version="[39.0.0,40.0.0)",
+ com.salesforce.ide.ui;bundle-version="[39.0.0,40.0.0)",
+ com.salesforce.ide.ui.editors;bundle-version="[39.0.0,40.0.0)",
  org.eclipse.ui.ide;bundle-version="3.11.0",
  org.eclipse.ui;bundle-version="3.107.0",
  org.eclipse.ui.navigator;bundle-version="3.6.0",
