@@ -1,0 +1,4 @@
+global class @@NAME@@ implements Schedulable {
+   global void execute(SchedulableContext ctx) {
+   }   
+}
