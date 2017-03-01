@@ -40,7 +40,8 @@ public class ForceProject extends Org {
     private IProject project = null;
     private String ideVersion = null;
     private String projectIdentifier = null;
-    private boolean preferToolingDeployment = true;
+    private boolean preferToolingDeployment = false;
+    private boolean disableSaveToServerDirtyResourceCheck = false;
     private String[] enabledComponentTypes;
 
     //   C O N S T R U C T O R S
@@ -126,6 +127,15 @@ public class ForceProject extends Org {
     public void setPreferToolingDeployment(boolean isPreferred) {
         preferToolingDeployment = isPreferred;
     }
+    
+    public boolean getDisableSaveToServerDirtyResourceCheck() {
+        return disableSaveToServerDirtyResourceCheck;
+    }
+    
+    public void setDisableSaveToServerDirtyResourceCheck(boolean bValue) {
+        disableSaveToServerDirtyResourceCheck = bValue;
+    }
+    
 
     @Override
     public String getFullLogDisplay() {

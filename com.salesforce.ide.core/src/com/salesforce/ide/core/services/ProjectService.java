@@ -1650,6 +1650,7 @@ public class ProjectService extends BaseService {
 
         forceProject.setKeepEndpoint(preferences.getBoolean(Constants.PROP_KEEP_ENDPOINT, false));
         forceProject.setPreferToolingDeployment(preferences.getBoolean(Constants.PROP_PREFER_TOOLING_DEPLOYMENT, true));
+        forceProject.setDisableSaveToServerDirtyResourceCheck(preferences.getBoolean(Constants.PROP_DISABLE_SAVE_TO_SERVER_DIRTY_RESOURCE_CHECK, false));
         forceProject.setHttpsProtocol(preferences.getBoolean(Constants.PROP_HTTPS_PROTOCOL, true));
         forceProject.setReadTimeoutSecs(preferences.getInt(Constants.PROP_READ_TIMEOUT,
             Constants.READ_TIMEOUT_IN_SECONDS_DEFAULT));
@@ -1781,6 +1782,7 @@ public class ProjectService extends BaseService {
         setBoolean(project, Constants.PROP_KEEP_ENDPOINT, forceProject.isKeepEndpoint());
         setBoolean(project, Constants.PROP_HTTPS_PROTOCOL, forceProject.isHttpsProtocol());
         setBoolean(project, Constants.PROP_PREFER_TOOLING_DEPLOYMENT, forceProject.getPreferToolingDeployment());
+        setBoolean(project, Constants.PROP_DISABLE_SAVE_TO_SERVER_DIRTY_RESOURCE_CHECK, forceProject.getDisableSaveToServerDirtyResourceCheck());
         setInt(project, Constants.PROP_READ_TIMEOUT, forceProject.getReadTimeoutSecs());
 
         Map<String, String> credentialMap = new HashMap<>();

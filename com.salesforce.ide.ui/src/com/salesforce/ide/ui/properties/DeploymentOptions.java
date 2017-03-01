@@ -24,10 +24,10 @@ import com.salesforce.ide.core.project.ProjectController;
 import com.salesforce.ide.ui.internal.utils.UIMessages;
 
 /**
- * Preference page for controlling the deployment options. As of v31, we are letting the user decide if they would
- * prefer to use the Tooling API path when applicable (default). The Tooling API is faster but uses a different
- * execution path than the Metadata API path since not all components are supported yet. The speed is usually
- * significant enough to justify using a specialized path.
+ * Preference page for controlling project's deployment options ('Right click project > Force.com > Deployments Options'). 
+ * As of v31, we are letting the user decide if they would prefer to use the Tooling API path when applicable (default). The 
+ * Tooling API is faster but uses a different execution path than the Metadata API path since not all components are supported yet. 
+ * The speed is usually significant enough to justify using a specialized path.
  * 
  * @author nchen
  * 
@@ -35,6 +35,7 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
 public class DeploymentOptions extends BasePropertyPage {
 
     private Button preferToolingDeploymentCheckbox;
+    private Button disableSaveToServerDirtyResourceCheckCheckbox;
     private ProjectController projectController = null;
     private ForceProject forceProject;
 
@@ -70,9 +71,14 @@ public class DeploymentOptions extends BasePropertyPage {
         deploymentComposite.setLayout(gridLayout);
         deploymentComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
 
+        // 'Right click project > Force.com > Deployments Options > Use Tooling API Deploy path when possible'
         preferToolingDeploymentCheckbox = new Button(deploymentComposite, SWT.CHECK);
         preferToolingDeploymentCheckbox.setText(UIMessages.getString("DeploymentOptions_UseToolingAPI"));
 
+        // 'Right click project > Force.com > Deployments Options > Disable 'Save to Server' dirty resource check'
+        disableSaveToServerDirtyResourceCheckCheckbox = new Button(deploymentComposite, SWT.CHECK);
+        disableSaveToServerDirtyResourceCheckCheckbox.setText(UIMessages.getString("DeploymentOptions_DisableSaveToServerDirtyResourceCheck"));;
+        
         loadFromPreferences();
 
         return deploymentComposite;
@@ -82,6 +88,8 @@ public class DeploymentOptions extends BasePropertyPage {
         forceProject = getProjectService().getForceProject(getProject());
         boolean preferToolingDeployment = forceProject.getPreferToolingDeployment();
         preferToolingDeploymentCheckbox.setSelection(preferToolingDeployment);
+        
+        disableSaveToServerDirtyResourceCheckCheckbox.setSelection(forceProject.getDisableSaveToServerDirtyResourceCheck());
 
         projectController.getProjectModel().setForceProject(forceProject);
     }
@@ -90,6 +98,7 @@ public class DeploymentOptions extends BasePropertyPage {
     public boolean performOk() {
         try {
             forceProject.setPreferToolingDeployment(preferToolingDeploymentCheckbox.getSelection());
+            forceProject.setDisableSaveToServerDirtyResourceCheck(disableSaveToServerDirtyResourceCheckCheckbox.getSelection());
             projectController.saveSettings(new NullProgressMonitor());
         } catch (InterruptedException e) {
             // Not possible with a NullProgressMonitor
