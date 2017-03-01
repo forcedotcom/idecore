@@ -1,0 +1,18 @@
+global class @@NAME@@ implements Database.Batchable<sObject> {
+  global Database.QueryLocator start(Database.BatchableContext BC){
+    //TODO: Change to your query
+    String s = 'SELECT id FROM Account LIMIT 1';
+    return Database.getQueryLocator(s);
+  }
+
+  global void execute(Database.BatchableContext BC, List<sObject> scope){
+    for(sObject o : scope) {
+      //TODO: Fill me in
+    }
+  }
+
+  global void finish(Database.BatchableContext BC){
+    //TODO: Fill me in
+  }
+}
+
