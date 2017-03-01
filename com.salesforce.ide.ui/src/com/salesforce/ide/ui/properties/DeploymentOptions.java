@@ -35,6 +35,7 @@ import com.salesforce.ide.ui.internal.utils.UIMessages;
 public class DeploymentOptions extends BasePropertyPage {
 
     private Button preferToolingDeploymentCheckbox;
+    private Button disableSaveToServerDirtyResourceCheckCheckbox;
     private ProjectController projectController = null;
     private ForceProject forceProject;
 
@@ -73,6 +74,9 @@ public class DeploymentOptions extends BasePropertyPage {
         preferToolingDeploymentCheckbox = new Button(deploymentComposite, SWT.CHECK);
         preferToolingDeploymentCheckbox.setText(UIMessages.getString("DeploymentOptions_UseToolingAPI"));
 
+        disableSaveToServerDirtyResourceCheckCheckbox = new Button(deploymentComposite, SWT.CHECK);
+        disableSaveToServerDirtyResourceCheckCheckbox.setText(UIMessages.getString("DeploymentOptions_DisableSaveToServerDirtyResourceCheck"));;
+        
         loadFromPreferences();
 
         return deploymentComposite;
@@ -82,6 +86,8 @@ public class DeploymentOptions extends BasePropertyPage {
         forceProject = getProjectService().getForceProject(getProject());
         boolean preferToolingDeployment = forceProject.getPreferToolingDeployment();
         preferToolingDeploymentCheckbox.setSelection(preferToolingDeployment);
+        
+        disableSaveToServerDirtyResourceCheckCheckbox.setSelection(forceProject.getDisableSaveToServerDirtyResourceCheck());
 
         projectController.getProjectModel().setForceProject(forceProject);
     }
@@ -90,6 +96,7 @@ public class DeploymentOptions extends BasePropertyPage {
     public boolean performOk() {
         try {
             forceProject.setPreferToolingDeployment(preferToolingDeploymentCheckbox.getSelection());
+            forceProject.setDisableSaveToServerDirtyResourceCheck(disableSaveToServerDirtyResourceCheckCheckbox.getSelection());
             projectController.saveSettings(new NullProgressMonitor());
         } catch (InterruptedException e) {
             // Not possible with a NullProgressMonitor
