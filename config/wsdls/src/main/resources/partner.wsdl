@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Partner Web Services API Version 39.0
+Salesforce.com Partner Web Services API Version 40.0
 Generated on (Used notimestamp option).
 
-Copyright 1999-2016 salesforce.com, inc.
+Copyright 1999-2017 salesforce.com, inc.
 All Rights Reserved
 -->
 
@@ -124,9 +124,21 @@ All Rights Reserved
             <complexType name="SearchRecord">
                 <sequence>
                     <element name="record" type="ens:sObject"/>
+                    
+                    <element name="searchRecordMetadata" nillable="false" minOccurs="0" maxOccurs="1" type="tns:SearchRecordMetadata"/>
+                    
+                    
                     <element name="snippet" nillable="true" minOccurs="0" maxOccurs="1" type="tns:SearchSnippet"/>
+                    
                 </sequence>
             </complexType>
+
+            <complexType name="SearchRecordMetadata">
+                <sequence>
+                    <element name="spellCorrected" minOccurs="1" maxOccurs="1" type="xsd:boolean"/>
+                </sequence>
+            </complexType>
+
 
             <complexType name="SearchSnippet">
                 <sequence>
@@ -138,37 +150,48 @@ All Rights Reserved
 
             <complexType name="SearchResultsMetadata">
                 <sequence>
-                    
-                        <element name="entityLabelMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:LabelsSearchMetadata"/>
-                    
-                    
-                        <element name="entityMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:EntitySearchMetadata"/>
-                    
-                </sequence>
-            </complexType>
+                	
+                		<element name="entityLabelMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:LabelsSearchMetadata"/>
+              		
+              		
+              			<element name="entityMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:EntitySearchMetadata"/>
+           			
+       			</sequence>
+   			</complexType>
 
 
-            <complexType name="LabelsSearchMetadata">
-                <sequence>
-                    <element name="entityFieldLabels" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:NameValuePair"/>
-                    <element name="entityName" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
-                </sequence>
-            </complexType>
+			<complexType name="LabelsSearchMetadata">
+				<sequence>
+					<element name="entityFieldLabels" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:NameValuePair"/>
+					<element name="entityName" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+				</sequence>
+			</complexType>
 
 
             <complexType name="EntitySearchMetadata">
                 <sequence>
-                    <element name="entityName" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
-                    <element name="fieldMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:FieldLevelSearchMetadata"/>
+                	<element name="entityName" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                	<element name="fieldMetadata" nillable="false" minOccurs="0" maxOccurs="unbounded" type="tns:FieldLevelSearchMetadata"/>
+                    
+                    <element name="spellCorrectionMetadata" nillable="false" minOccurs="0" maxOccurs="1" type="tns:EntitySpellCorrectionMetadata"/>
+                    
                 </sequence>
             </complexType>
 
 
             <complexType name="FieldLevelSearchMetadata">
                 <sequence>
-                    <element name="label" nillable="true" minOccurs="1" maxOccurs="1" type="xsd:string"/>
-                    <element name="name" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
-                    <element name="type" nillable="true" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                	<element name="label" nillable="true" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                	<element name="name" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                	<element name="type" nillable="true" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                </sequence>
+            </complexType>
+
+
+            <complexType name="EntitySpellCorrectionMetadata">
+                <sequence>
+                    <element name="correctedQuery" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:string"/>
+                    <element name="hasNonCorrectedResults" nillable="false" minOccurs="1" maxOccurs="1" type="xsd:boolean"/>
                 </sequence>
             </complexType>
 
@@ -409,6 +432,9 @@ All Rights Reserved
             <complexType name="SetPasswordResult">
             </complexType>
 
+            <complexType name="ChangeOwnPasswordResult">
+            </complexType>
+
             <complexType name="ResetPasswordResult">
                 <sequence>
                     <element name="password" type="xsd:string"/>
@@ -431,6 +457,7 @@ All Rights Reserved
             <complexType name="GetUserInfoResult">
                 <sequence>
                     <element name="accessibilityMode"          type="xsd:boolean"/>
+                    <element name="chatterExternal"   type="xsd:boolean"/>
                     <element name="currencySymbol"             type="xsd:string" nillable="true"/>
                     <element name="defaultAppIdForProfile"     type="tns:ID" minOccurs="0"/>
                     <element name="orgAttachmentFileSizeLimit" type="xsd:int"/>
@@ -474,14 +501,6 @@ All Rights Reserved
             </complexType>
 
 
-            <complexType name="LoginAsSubscriberRequest">
-                <sequence>
-                    <element name="impersonationUserName" type="xsd:string" nillable="true"/>
-                    <element name="packageNamespace" type="xsd:string"/>
-                    <element name="targetOrgId" type="tns:ID"/>
-                </sequence>
-            </complexType>
-
             <simpleType name="StatusCode">
                 <restriction base="xsd:string">
                     <enumeration value="ALL_OR_NONE_OPERATION_ROLLED_BACK"/>
@@ -519,6 +538,7 @@ All Rights Reserved
                     <enumeration value="CIRCULAR_DEPENDENCY"/>
                     <enumeration value="CLEAN_SERVICE_ERROR"/>
                     <enumeration value="COLLISION_DETECTED"/>
+                    <enumeration value="COMMERCIAL_CONTROL_ERROR"/>
                     <enumeration value="COMMUNITY_NOT_ACCESSIBLE"/>
                     <enumeration value="CONFLICTING_ENVIRONMENT_HUB_MEMBER"/>
                     <enumeration value="CONFLICTING_SSO_USER_MAPPING"/>
@@ -532,6 +552,8 @@ All Rights Reserved
                     <enumeration value="CUSTOM_METADATA_REL_FIELD_MANAGEABILITY"/>
                     <enumeration value="CUSTOM_SETTINGS_LIMIT_EXCEEDED"/>
                     <enumeration value="CUSTOM_TAB_LIMIT_EXCEEDED"/>
+                    <enumeration value="DATAASSESSMENT_CONFIG_ASSESSMENT_IN_PROGRESS_ERROR"/>
+                    <enumeration value="DATAASSESSMENT_CONFIG_SERVICE_ERROR"/>
                     <enumeration value="DATACLOUDADDRESS_NO_RECORDS_FOUND"/>
                     <enumeration value="DATACLOUDADDRESS_PROCESSING_ERROR"/>
                     <enumeration value="DATACLOUDADDRESS_SERVER_ERROR"/>
@@ -588,6 +610,7 @@ All Rights Reserved
                     <enumeration value="FILE_SIZE_LIMIT_EXCEEDED"/>
                     <enumeration value="FILTERED_LOOKUP_LIMIT_EXCEEDED"/>
                     <enumeration value="FIND_DUPLICATES_ERROR"/>
+                    <enumeration value="FLOW_EXCEPTION"/>
                     <enumeration value="FUNCTIONALITY_NOT_ENABLED"/>
                     <enumeration value="HAS_PUBLIC_REFERENCES"/>
                     <enumeration value="HTML_FILE_UPLOAD_NOT_ALLOWED"/>
@@ -623,6 +646,7 @@ All Rights Reserved
                     <enumeration value="INVALID_ENVIRONMENT_HUB_MEMBER"/>
                     <enumeration value="INVALID_EVENT_DELIVERY"/>
                     <enumeration value="INVALID_EVENT_SUBSCRIPTION"/>
+                    <enumeration value="INVALID_EXTENSION_ID"/>
                     <enumeration value="INVALID_FIELD"/>
                     <enumeration value="INVALID_FIELD_FOR_INSERT_UPDATE"/>
                     <enumeration value="INVALID_FIELD_WHEN_USING_TEMPLATE"/>
@@ -644,6 +668,7 @@ All Rights Reserved
                     <enumeration value="INVALID_PACKAGE_LICENSE"/>
                     <enumeration value="INVALID_PACKAGE_VERSION"/>
                     <enumeration value="INVALID_PARTNER_NETWORK_STATUS"/>
+                    <enumeration value="INVALID_PAYLOAD_VERSION"/>
                     <enumeration value="INVALID_PERSON_ACCOUNT_OPERATION"/>
                     <enumeration value="INVALID_PROVIDER_TYPE"/>
                     <enumeration value="INVALID_QUERY_LOCATOR"/>
@@ -660,6 +685,7 @@ All Rights Reserved
                     <enumeration value="INVALID_SITE_FILE_TYPE_EXCEPTION"/>
                     <enumeration value="INVALID_STATUS"/>
                     <enumeration value="INVALID_SUBDOMAIN"/>
+                    <enumeration value="INVALID_TEXT_REPRESENTATION"/>
                     <enumeration value="INVALID_TYPE"/>
                     <enumeration value="INVALID_TYPE_FOR_OPERATION"/>
                     <enumeration value="INVALID_TYPE_ON_FIELD_IN_RECORD"/>
@@ -700,6 +726,7 @@ All Rights Reserved
                     <enumeration value="MAX_APPROVAL_STEPS_EXCEEDED"/>
                     <enumeration value="MAX_DEPTH_IN_FLOW_EXECUTION"/>
                     <enumeration value="MAX_FORMULAS_PER_RULE_EXCEEDED"/>
+                    <enumeration value="MAX_LIMIT_EXCEEDED"/>
                     <enumeration value="MAX_RULES_EXCEEDED"/>
                     <enumeration value="MAX_RULE_ENTRIES_EXCEEDED"/>
                     <enumeration value="MAX_TASK_DESCRIPTION_EXCEEEDED"/>
@@ -738,6 +765,7 @@ All Rights Reserved
                     <enumeration value="PAL_INVALID_FLEXIPAGE_ID"/>
                     <enumeration value="PAL_INVALID_LAYOUT_ID"/>
                     <enumeration value="PAL_INVALID_PARAMETERS"/>
+                    <enumeration value="PAYLOAD_SIZE_EXCEEDED"/>
                     <enumeration value="PA_API_EXCEPTION"/>
                     <enumeration value="PA_AXIS_FAULT"/>
                     <enumeration value="PA_INVALID_ID_EXCEPTION"/>
@@ -766,6 +794,7 @@ All Rights Reserved
                     <enumeration value="RETRIEVE_EXCHANGE_EVENT_FAILED"/>
                     <enumeration value="RETRIEVE_GOOGLE_EMAIL_FAILED"/>
                     <enumeration value="RETRIEVE_GOOGLE_EVENT_FAILED"/>
+                    <enumeration value="RETRIEVE_USER_CONFIG_ERROR"/>
                     <enumeration value="SALESFORCE_INBOX_TRANSPORT_CONNECTION_ERROR"/>
                     <enumeration value="SALESFORCE_INBOX_TRANSPORT_TOKEN_ERROR"/>
                     <enumeration value="SALESFORCE_INBOX_TRANSPORT_UNKNOWN_ERROR"/>
@@ -775,6 +804,7 @@ All Rights Reserved
                     <enumeration value="SINGLE_EMAIL_LIMIT_EXCEEDED"/>
                     <enumeration value="SOCIAL_ACCOUNT_NOT_FOUND"/>
                     <enumeration value="SOCIAL_ACTION_INVALID"/>
+                    <enumeration value="SOCIAL_PERSONA_NOT_FOUND"/>
                     <enumeration value="SOCIAL_POST_INVALID"/>
                     <enumeration value="SOCIAL_POST_NOT_FOUND"/>
                     <enumeration value="STANDARD_PRICE_NOT_DEFINED"/>
@@ -800,7 +830,9 @@ All Rights Reserved
                     <enumeration value="UNSAFE_HTML_CONTENT"/>
                     <enumeration value="UNSPECIFIED_EMAIL_ADDRESS"/>
                     <enumeration value="UNSUPPORTED_APEX_TRIGGER_OPERATON"/>
+                    <enumeration value="UNSUPPORTED_SOCIAL_PROVIDER"/>
                     <enumeration value="UNVERIFIED_SENDER_ADDRESS"/>
+                    <enumeration value="UPDATE_GOOGLE_EMAIL_LABEL_FAILED"/>
                     <enumeration value="USER_OWNS_PORTAL_ACCOUNT_EXCEPTION"/>
                     <enumeration value="USER_WITH_APEX_SHARES_EXCEPTION"/>
                     <enumeration value="VF_COMPILE_ERROR"/>
@@ -813,8 +845,761 @@ All Rights Reserved
             <!-- These are the extension code to provide additional error information -->
             <simpleType name="ExtendedErrorCode">
                 <restriction base="xsd:string">
+                    <enumeration value="ACTIONCALL_DUPLICATE_INPUT_PARAM">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: actionCallName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ACTIONCALL_DUPLICATE_OUTPUT_PARAM">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: actionCallName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ACTIONCALL_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ACTIONCALL_MISSING_REQUIRED_PARAM">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: actionCallName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ACTIONCALL_MISSING_REQUIRED_TYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: actionCallName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ACTIONCALL_NOT_FOUND_WITH_NAME_AND_TYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ACTIONCALL_NOT_SUPPORTED_FOR_PROCESSTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: processType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_INPUT_DUPLICATE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_INPUT_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_MISSING_CLASSNAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_OUTPUT_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_OUTPUT_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCALLOUT_REQUIRED_INPUT_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="APEXCLASS_MISSING_INTERFACE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: apexClassName, parentScreenFieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_ELEMENT_MISSING_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: assignmentName, operatorName, elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_ELEMENT_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, assignmentName, elementType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_FIELD_INVALID_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldValue, dataType, incompatibleDataType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_FIELD_INVALID_DATATYPE_WITH_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, acceptedDataType, dataType, fieldValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_INCOMPATIBLE_DATATYPES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: assignmentName, operatorName, leftElementName, leftElementType, rightElementName, rightElementType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_INVALID_COLLECTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: assignmentName, operatorName, leftElementName, rightElementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_INVALID_DATATYPE_IN_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, dataType, incompatibleDataType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_INVALID_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName, operatorName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_LEFT_DATATYPE_INVALID_FOR_OPERATOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: assignmentName, operatorName, dataType, elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_MODIFIES_NONVARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: assignmentName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_NONEXISTENT_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName, operatorName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_REQUIRED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: assignmentName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ASSIGNMENTITEM_RIGHT_DATATYPE_INVALID_FOR_OPERATOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="AUTOLAUNCHED_CHOICELOOKUP_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceLookupName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="AUTOLAUNCHED_CHOICE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="AUTOLAUNCHED_SCREEN_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="AUTOLAUNCHED_STEP_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="AUTOLAUNCHED_SUBFLOW_INCOMPATIBLE_FLOWTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="AUTOLAUNCHED_WAIT_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CHOICEFIELD_DEFAULT_CHOICE_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenFieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CHOICEFIELD_MISSING_CHOICE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: questionName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CHOICELOOKUP_DATATYPE_INCOMPATIBLE_WITH_CHOICEFIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName, parentScreenFieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CHOICE_DATATYPE_INCOMPATIBLE_WITH_CHOICEFIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName, parentScreenFieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CHOICE_NOT_SUPPORTED_FOR_SCREENFIELDTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, screenFieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CHOICE_USED_MULTIPLE_TIMES_IN_SAME_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_DATATYPE_INCOMPATIBLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: leftElementName, leftElementType, operatorName, rightElementName, rightElementType, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_DATATYPE_INCOMPATIBLE_WITH_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, dataType, operatorName, parameterName, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_ELEMENT_DATATYPES_INCOMPATIBLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, leftElementType, operatorName, rightElementType, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_INVALID_LEFTOPERAND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_INVALID_LEFT_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, dataType, operatorName, parameterName, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_LOGIC_EXCEEDS_LIMIT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, characterLimit</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_LOGIC_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_LOGIC_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_MISSING_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, dataType, operatorName, parameterName, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_MISSING_OPERATOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_REFERENCED_ELEMENT_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONDITION_RIGHTOPERAND_NULL">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONNECTOR_MISSING_TARGET">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CONSTANT_INCLUDES_REFERENCES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: constantName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CUSTOMEVENTS_NOT_ENABLED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CUSTOMEVENT_MISSING_PROCESSMETADATAVALUES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CUSTOMEVENT_OBJECTTYPE_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CUSTOMEVENT_OBJECTTYPE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CUSTOMEVENT_PROCESSMETADATAVALUES_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: metadataValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="CUSTOMEVENT_PROCESSMETADATAVALUES_MORE_THAN_ONE_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: metadataValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="DATATYPE_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, dataType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="DATATYPE_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="DECISION_DEFAULT_CONNECTOR_MISSING_LABEL">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowDecision</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="DECISION_MISSING_OUTCOME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowDecision</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_CONNECTS_TO_SELF">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_COORDINATES_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: coordinateLimit, coordinateName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_INVALID_CONNECTOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_INVALID_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_MISSING_CONNECTOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_MISSING_LABEL">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: characterLimit, elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: characterLimit</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_MISSING_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_MORE_THAN_ONE_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_NAME_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_NEVER_USED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="ELEMENT_SCALE_SMALLER_THAN_DEFAULTVALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="EXTERNAL_OBJECTS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="EXTERNAL_OBJECT_FIELDS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldReference</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_FIELD_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_INVALID_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName, assignmentName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_INVALID_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName, elementType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_INVALID_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_MULTIPLE_REFERENCES_SAME_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_PICKLISTFIELD_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, dataType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELDASSIGNMENT_REFERENCED_ELEMENT_MISSING_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName, elementType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELD_INVALID_VALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELD_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName, fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FIELD_RELATIONSHIP_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldRelationshipName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLEXIPAGE_COMPONENT_ATTRIBUTE_GENERIC_EXCEPTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, errorIdentifier, errorParams</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLEXIPAGE_COMPONENT_ATTRIBUTE_MISSING_REQUIRED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLEXIPAGE_COMPONENT_ATTRIBUTE_TOO_LONG">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, maxLength</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLEXIPAGE_COMPONENT_RULE_VALIDATION_EXCEPTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, criterionIndex</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLEXIPAGE_PICKLIST_INVALID_VALUE_EXCEPTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, invalidValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLOW_INCLUDES_STEP">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLOW_NAME_USED_IN_OTHER_CLIENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FORMULA_EXPRESSION_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: formulaExpression</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="FTEST_EXTENSION_CODE_FOR_TEST">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: FTestName, ftestClass</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="INPUTPARAM_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="INPUTPARAM_INCOMPATIBLE_WITH_COLLECTION_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="INPUTPARAM_INCOMPATIBLE_WITH_NONCOLLECTION_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="INPUTPARAM_MISMATCHED_OBJECTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="INVALID_FLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="INVALID_SURVEY_VARIABLE_NAME_OR_TYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: surveyName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_ASSIGNNEXTVALUETO_MISMATCHED_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_ASSIGNNEXTVALUETO_MISMATCHED_OBJECTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_ASSIGNNEXTVALUETO_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_ASSIGNNEXTVALUETO_MISSING_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_ASSIGNNEXTVALUETO_REFERENCE_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldRelationshipName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_COLLECTION_ELEMENT_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_COLLECTION_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_COLLECTION_NOT_SUPPORTED_FOR_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="LOOP_MISSING_COLLECTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECTTYPE_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECT_CANNOT_BE_CREATED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECT_CANNOT_BE_DELETED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECT_CANNOT_BE_QUERIED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECT_CANNOT_BE_UPDATED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECT_ENCRYPTED_FIELDS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OBJECT_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OUTPUTPARAM_ASSIGNTOREFERENCE_NOTFOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OUTPUTPARAM_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OUTPUTPARAM_MISMATCHED_OBJECTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OUTPUTPARAM_MISMATCHED_WITH_COLLECTION_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OUTPUTPARAM_MISSING_ASSIGNTOREFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="OUTPUTPARAM_MISTMATCHED_WITH_NONCOLLECTION_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="PARAM_DATATYPE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="PROCESSMETADATAVALUES_NOT_SUPPORTED_FOR_PROCESSTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: processType, metadataValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="PROCESSMETADATAVALUE_NONEXISTENT_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: metadataValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="PROCESSTYPE_ELEMENT_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: processType, elementType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="PROCESSTYPE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: processType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_ENCRYPTED_FIELDS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_GEOLOCATION_FIELDS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_INVALID_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName, elementType, operatorName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_INVALID_ELEMENT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, assignmentName, elementName, elementType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_INVALID_OPERATOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, operatorName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_INVALID_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, operatorName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_MISSING_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName, elementType, operatorName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDFILTER_MULTIPLE_QUERIES_SAME_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDLOOKUP_IDASSIGNMENT_VARIABLE_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDLOOKUP_IDASSIGNMENT_VARIABLE_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RECORDUPDATE_MISSING_FILTERS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="REFERENCED_ELEMENT_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, mergeFieldReference</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="RULE_MISSING_CONDITION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_BOOLEAN_ISREQUIRED_IS_FALSE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_DEFAULTVALUE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_INVALID_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: dataType, fieldType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_MULTISELECTCHOICE_SEMICOLON_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_USERINPUT_NOT_SUPPORTED_FOR_CHOICETYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_VALIDATIONRULE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ACTION_INVALID_ATTRIBUTE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName, attributeName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ACTION_INVALID_ATTRIBUTE_FOR_API_VERSION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName, attributeName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ACTION_INVALID_VALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName, acceptedValues, actionValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ACTION_MISSING_ATTRIBUTE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ACTION_MISSING_FIELDREFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ACTION_MISSING_VALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_ATTRIBUTE_NOT_SUPPORTED_FOR_SCREENFIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName, attributeName, fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_FIELD_NOT_FOUND_ON_SCREEN">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName, fieldValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_MISSING_ACTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: screenRuleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_NOT_SUPPORTED_IN_ORG">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_SCREENFIELD_NOT_VISIBLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENRULE_VISIBILITY_NOT_SUPPORTED_IN_ORG">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREEN_ALLOWBACK_ALLOWFINISH_BOTH_FALSE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREEN_MISSING_LABEL">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: characterLimit</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREEN_MULTISELECTFIELD_DOESNT_SUPPORT_CHOICE_WITH_USERINPUT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREEN_PAUSEDTEXT_NOT_SHOWN_WHEN_ALLOWPAUSE_IS_FALSE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SETTING_FIELD_MAKES_OTHER_FIELD_REQUIRED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, requiredField</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SETTING_FIELD_MAKES_OTHER_FIELD_UNSUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, otherFieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SOBJECT_ELEMENT_INCOMPATIBLE_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, fieldValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SOBJECT_ELEMENT_MISMATCHED_OBJECTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType, sobjectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SORT_ENCRYPTED_FIELDS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, objectType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SORT_FIELD_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: sortOrder</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SORT_FIELD_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SORT_GEOLOCATION_FIELDS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, objectName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SORT_LIMIT_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: maxLimit</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SORT_ORDER_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SPECIFIC_FIELD_VALUE_MAKES_OTHER_FIELD_REQUIRED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, fieldType, requiedField</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="START_ELEMENT_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_DESKTOP_DESIGNER_FLOWS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_ELEMENT_INCOMPATIBLE_DATATYPES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputAssignmentNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_INVALID_VALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputAssignmentNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_MISMATCHED_COLLECTIONTYPES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputParameterNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_MISMATCHED_OBJECTS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputParameterNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_MULTIPLE_ASSIGNMENTS_TO_ONE_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: inputVariableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_REFERENCES_FIELD_ON_SOBJECT_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: inputVariableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_VALUE_INCOMPATIBLE_DATATYPES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputAssignmentNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_VARIABLE_NOT_FOUND_IN_MASTERFLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputAssignmentNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_VARIABLE_NOT_FOUND_IN_REFERENCEDFLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputAssignmentNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INPUT_VARIABLE_NO_INPUT_ACCESS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, inputAssignmentNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INVALID_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_INVALID_REFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_MASTER_FLOW_TYPE_NOT_AUTOLAUNCHED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parentFlowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_NO_ACTIVE_VERSION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, flowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_INCOMPATIBLE_DATATYPES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, flowVersion, outputParameterNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_MISMATCHED_COLLECTIONTYPES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, flowVersion, outputParameterNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_MISMATCHED_OBJECTS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, flowVersion, outputParameterNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_MISSING_ASSIGNTOREFERENCE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: outputAssignment</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_MULTIPLE_ASSIGNMENTS_TO_ONE_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: outputVariableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_REFERENCES_FIELD_ON_SOBJECT_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: outputAssignment</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_TARGET_DOES_NOT_EXIST_IN_MASTER_FLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, outputAssignmentName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_VARIABLE_NOT_FOUND_IN_MASTERFLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, variableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_VARIABLE_NOT_FOUND_IN_REFERENCEDFLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, flowVersion, outputParameterNames</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_OUTPUT_VARIABLE_NO_OUTPUT_ACCESS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, variableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SUBFLOW_REFERENCES_MASTERFLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_CHOICE_NOT_REFERENCED_BY_A_QUESTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_CHOICE_REFERENCED_BY_MULTIPLE_QUESTIONS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_INACTIVE_SUBFLOWS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_MISSING_QUESTION_OR_SUBFLOW">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: surveyName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_MISSING_REQUIRED_VARIABLES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: surveyName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_NESTED_SUBFLOWS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_NONSURVEY_SUBFLOWS">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_SCREENFIELD_TYPE_NOT_SUPPORTED_FOR_QUESTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_START_ELEMENT_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_VARIABLE_ACCESS_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: surveyName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="UNEXPECTED_ERROR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VALUE_CHAR_LIMIT_EXCEEDED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, characterLimit</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VARIABLE_FIELD_NOT_SUPPORTED_FOR_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, datatype</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VARIABLE_FIELD_NOT_SUPPORTED_FOR_DATATYPE_AND_COLLECTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, datatype</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VARIABLE_FIELD_REQUIRED_FOR_DATATYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: datatype, fieldName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VARIABLE_SCALE_EXCEEDS_LIMIT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VARIABLE_SCALE_NEGATIVE_INTEGER">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="VARIABLE_SCALE_NULL">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_DEFAULT_CONNECTOR_MISSING_LABEL">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_DUPLICATE_INPUT_PARAM">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_INPUT_NOT_SUPPORTED_FOR_EVENTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, inputParameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_INPUT_REQUIRES_LITERAL_VALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_INVALID_CONDITION_LOGIC">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_MISSING_CONNECTOR">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_MISSING_EVENTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_OBJECT_NOT_SUPPORTED_FOR_EVENTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_OUTPUT_NOT_SUPPORTED_FOR_EVENTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, outputParameter</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_RELATIVEALARM_INVALID_DATETIME_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, eventParameterName, incompatibleValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_RELATIVEALARM_INVALID_FIELD">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, eventParameterName, incompatibleValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_RELATIVEALARM_INVALID_OBJECTTYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, inputParameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_RELATIVEALARM_INVALID_OFFSETNUMBER">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, eventParameterName, incompatibleValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_RELATIVEALARM_INVALID_OFFSETUNIT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, eventParameterName, incompatibleValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_REQUIRED_INPUT_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WAITEVENT_TYPE_INVALID_OR_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: waitEventName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_MISSING_PROCESSMETADATAVALUES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_OBJECTTYPE_NOT_FOUND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_OBJECTTYPE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_OBJECTVARIABLE_AND_OLDOBJECTVARIABLE_REFERENCE_SAME_SOBJECT_VARIABLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectVariableName, oldObjectVariableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_OBJECTVARIABLE_DOESNT_SUPPORT_INPUT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType, objectVariableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_OLDOBJECTVARIABLE_DOESNT_SUPPORT_INPUT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: objectType, oldObjectVariableName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_PROCESSMETADATAVALUES_MORE_THAN_ONE_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: metadataValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_PROCESS_METADATAVALUES_MISSING_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: metadataValue</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_RECURSIVECOUNTVARIABLE_DOESNT_SUPPORT_INPUT">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="WORKFLOW_TRIGGERTYPE_INVALID_VALUE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
                     </enumeration>
                 </restriction>
             </simpleType>
@@ -996,8 +1781,8 @@ All Rights Reserved
 
             <complexType name="DescribeQuickActionDefaultValue">
                 <sequence>
-                    <element name="defaultValue"    type="xsd:string" nillable="true"/>
-                    <element name="field"       type="xsd:string" nillable="false"/>
+                    <element name="defaultValue"	type="xsd:string" nillable="true"/>
+                    <element name="field" 		type="xsd:string" nillable="false"/>
                 </sequence>
             </complexType>
 
@@ -1098,6 +1883,7 @@ All Rights Reserved
                     <element name="convertedStatus"        type="xsd:string"/>
                     <element name="doNotCreateOpportunity" type="xsd:boolean"/>
                     <element name="leadId"                 type="tns:ID"/>
+                    <element name="opportunityId"          type="tns:ID" nillable="true"/>
                     <element name="opportunityName"        type="xsd:string" nillable="true"/>
                     <element name="overwriteLeadSource"    type="xsd:boolean"/>
                     <element name="ownerId"                type="tns:ID"     nillable="true"/>
@@ -1115,20 +1901,22 @@ All Rights Reserved
                     <element name="success"       type="xsd:boolean"/>
                 </sequence>
             </complexType>
-            
+
 
             <complexType name="AddCampaignMemberOptions">
                 <sequence>
                     <element name="campaignId"              type="tns:ID" nillable="true"/>
-                    <element name="leadOrContactIds"        type="tns:ID" minOccurs="1" maxOccurs="2000"/>
-                    <element name="newStatus"               type="xsd:string"/>
-                    <element name="keepExistingStatus"      type="xsd:boolean"/>
+                    <element name="keepExistingStatus"      type="xsd:boolean"/>                    
+                    <element name="leadOrContactIds"	    type="tns:ID" minOccurs="0" maxOccurs="2000"/>
+                    <element name="newStatus"		        type="xsd:string"/>
+                    <element name="reportId"                type="tns:ID" nillable="true"/>
+                    <element name="reportMetadata"          type="xsd:string"/>
                 </sequence>
             </complexType>
 
             <complexType name="AddCampaignMemberResult">
                 <sequence>
-                    <element name="errors"        type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
+                	<element name="errors"        type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="numInserts"    type="xsd:int"/>
                     <element name="numUpdates"    type="xsd:int"/>
                     <element name="saveError"     type="xsd:string"/>
@@ -1139,7 +1927,7 @@ All Rights Reserved
 
             <complexType name="DescribeSObjectResult">
                 <sequence>
-                    <element name="actionOverrides"   type="tns:ActionOverride" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="actionOverrides"	  type="tns:ActionOverride" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="activateable"        type="xsd:boolean"/>
                     <element name="childRelationships"  type="tns:ChildRelationship" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="compactLayoutable"   type="xsd:boolean"/>
@@ -1280,6 +2068,30 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
+           
+
+        <simpleType name="changeEventType">
+                <restriction base="xsd:string">
+                    <enumeration value="create"/>
+                    <enumeration value="update"/>
+                    <enumeration value="delete"/>
+                    <enumeration value="undelete"/>
+                </restriction>
+            </simpleType>
+            
+            <complexType name="ChangeEventHeader">
+                <sequence>
+                    <element name="entityName"       type="xsd:string"/>
+                    <element name="objectId"         type="xsd:string"/>
+                    <element name="changeType"       type="tns:changeEventType"/>
+                    <element name="changeOrigin"     type="xsd:string"/>
+                    <element name="transactionKey"   type="xsd:string"/>
+                    <element name="sequenceNumber"   type="xsd:int"/>
+                    <element name="isTransactionEnd" type="xsd:boolean"/>
+                    <element name="nulledFields"     type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+
 
         <simpleType name="fieldType">
                 <restriction base="xsd:string">
@@ -1359,6 +2171,9 @@ All Rights Reserved
                     <enumeration value="tns:StringList" />
 
 
+                    <enumeration value="tns:ChangeEventHeader" />
+
+
                 </restriction>
             </simpleType>
 
@@ -1396,10 +2211,10 @@ All Rights Reserved
                     <element name="extraTypeInfo"              type="xsd:string"  minOccurs="0"/>
                     <element name="filterable"                 type="xsd:boolean"/>
 
-                    <element name="filteredLookupInfo"             type="tns:FilteredLookupInfo" nillable="true" minOccurs="0" />
+                    <element name="filteredLookupInfo"			   type="tns:FilteredLookupInfo" nillable="true" minOccurs="0" />
 
                     <element name="groupable"                  type="xsd:boolean"/>
-                    <element name="highScaleNumber"            type="xsd:boolean" minOccurs="0" />
+                    <element name="highScaleNumber"			   type="xsd:boolean" minOccurs="0" />
                     <element name="htmlFormatted"              type="xsd:boolean" minOccurs="0"/>
                     <element name="idLookup"                   type="xsd:boolean"/>
                     <element name="inlineHelpText"             type="xsd:string" minOccurs="0"/>
@@ -1413,6 +2228,7 @@ All Rights Reserved
                     <element name="nillable"                   type="xsd:boolean"/>
                     <element name="permissionable"             type="xsd:boolean"/>
                     <element name="picklistValues"             type="tns:PicklistEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                 <element name="polymorphicForeignKey"        type="xsd:boolean"/>
                     <element name="precision"                  type="xsd:int"/>
                     <element name="queryByDistance"            type="xsd:boolean" />
                     <element name="referenceTargetField"       type="xsd:string" minOccurs="0"/>
@@ -1422,6 +2238,7 @@ All Rights Reserved
                     <element name="restrictedDelete"           type="xsd:boolean" minOccurs="0"/>
                     <element name="restrictedPicklist"         type="xsd:boolean"/>
                     <element name="scale"                      type="xsd:int"/>
+                    <element name="searchPrefilterable"        type="xsd:boolean"/>
                     <element name="soapType"                   type="tns:soapType"/>
                     <element name="sortable"                   type="xsd:boolean" minOccurs="0"/>
                     <element name="type"                       type="tns:fieldType"/>
@@ -1575,7 +2392,7 @@ All Rights Reserved
                      <element name="caseType" nillable="true"  type="tns:CaseType"/>
                      <element name="number" nillable="true" type="tns:GrammaticalNumber"/>
                      <element name="possessive" nillable="true"  type="tns:Possessive"/>
-                     <element name="value" type="xsd:string"/>
+                     <element name="value" nillable="true" type="xsd:string"/>
                 </sequence>
            </complexType>
 
@@ -1725,7 +2542,7 @@ All Rights Reserved
                     <element name="matchEngine" type="xsd:string" nillable="false"/>
                     <element name="matchFields" minOccurs="0" maxOccurs="unbounded" type="xsd:string" nillable="true"/>
                     <element name="matchRuleName" type="xsd:string" nillable="false"/>
-                    <element name="objectMapping" type="tns:ObjectMapping" nillable="false"/>
+                    <element name="objectMapping" type="tns:ObjectMapping" nillable="true"/>
                 </sequence>
             </complexType>
 
@@ -1734,6 +2551,21 @@ All Rights Reserved
                 <complexType>
                     <sequence>
                         <element name="sObjects" type="ens:sObject" minOccurs="0" maxOccurs="unbounded"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="findDuplicatesByIds">
+                <complexType>
+                    <sequence>
+                        <element name="ids" type="tns:ID" minOccurs="1" maxOccurs="unbounded"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="findDuplicatesByIdsResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:FindDuplicatesResult" minOccurs="0" maxOccurs="unbounded"/>
                     </sequence>
                 </complexType>
             </element>
@@ -1757,11 +2589,11 @@ All Rights Reserved
 
             <complexType name="DescribeFlexiPageResult">
                 <sequence>
-                    <element name="id"              type="tns:ID"/>
+                    <element name="id"      		type="tns:ID"/>
                     <element name="label"            type="xsd:string"/>
                     <element name="name"            type="xsd:string"/>
                     <element name="quickActionList"             type="tns:DescribeQuickActionListResult" minOccurs="0" />
-                    <element name="regions"         type="tns:DescribeFlexiPageRegion" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="regions"			type="tns:DescribeFlexiPageRegion" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="sobjectType"     type="xsd:string" minOccurs="0" nillable="true"/>
                     <element name="template"     type="xsd:string" nillable="true"/>
                     <element name="type"            type="xsd:string"/>
@@ -1770,34 +2602,34 @@ All Rights Reserved
 
             <complexType name="DescribeFlexiPageRegion">
                 <sequence>
-                    <element name="components"      type="tns:DescribeComponentInstance" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="name"            type="xsd:string"/>
+                    <element name="components"  	type="tns:DescribeComponentInstance" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="name"   			type="xsd:string"/>
                 </sequence>
             </complexType>
 
             <complexType name="DescribeComponentInstance">
                 <sequence>
-                    <element name="properties"      type="tns:DescribeComponentInstanceProperty" minOccurs="0" maxOccurs="unbounded"/>
-                    <element name="typeName"        type="xsd:string"/>
+                    <element name="properties"  	type="tns:DescribeComponentInstanceProperty" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="typeName"   		type="xsd:string"/>
                     <element name="typeNamespace"   type="xsd:string"/>
                 </sequence>
             </complexType>
 
             <complexType name="DescribeComponentInstanceProperty">
                 <sequence>
-                    <element name="name"            type="xsd:string"/>
+                    <element name="name"   			type="xsd:string"/>
                     <element name="region"          type="tns:DescribeFlexiPageRegion" nillable="true" minOccurs="0" />
                     <element name="type"            type="tns:ComponentInstancePropertyTypeEnum"  nillable="true" />
-                    <element name="value"           type="xsd:string" nillable="true" />
+                    <element name="value"   		type="xsd:string" nillable="true" />
                 </sequence>
             </complexType>
-            
+
             <simpleType name="ComponentInstancePropertyTypeEnum">
                 <restriction base="xsd:string">
                     <enumeration value="decorator"/>
                 </restriction>
             </simpleType>
-            
+
      
             <complexType name="FlexipageContext">
                 <sequence>
@@ -1984,6 +2816,15 @@ All Rights Reserved
             </complexType>
 
 
+
+        <complexType name="DescribeLayoutByIdResult">
+            <sequence>
+                <element name="errors" type="tns:Error" minOccurs="0" nillable="true" maxOccurs="unbounded"/>
+                <element name="layouts" type="tns:DescribeLayout" minOccurs="0" nillable="true" maxOccurs="unbounded"/>
+                <element name="recordTypeMappings" type="tns:RecordTypeMapping" minOccurs="0" maxOccurs="unbounded"/>
+            </sequence>
+        </complexType>
+
             <complexType name="DescribeLayoutResult">
                 <sequence>
                     <element name="layouts"            type="tns:DescribeLayout" minOccurs="1" maxOccurs="unbounded"/>
@@ -2075,7 +2916,7 @@ All Rights Reserved
                 </sequence>
             </complexType>
 
-            
+
             <complexType name="DescribeLayoutSaveOption">
                 <sequence>
                     <element name="defaultValue" type="xsd:boolean" />
@@ -2096,11 +2937,11 @@ All Rights Reserved
 
             <complexType name="DescribeLayoutSection">
                 <sequence>
-                    <element name="collapsed"               type="xsd:boolean"/>
+                    <element name="collapsed"  	    	    type="xsd:boolean"/>
                     <element name="columns"                 type="xsd:int"/>
                     <element name="heading"                 type="xsd:string" nillable="true"/>
                     <element name="layoutRows"              type="tns:DescribeLayoutRow" minOccurs="1" maxOccurs="unbounded"/>
-                    <element name="layoutSectionId"         type="tns:ID"/>
+                    <element name="layoutSectionId"         type="tns:ID" nillable="true"/>
                     <element name="parentLayoutId"          type="tns:ID"/>
                     <element name="rows"                    type="xsd:int"/>
                     <element name="tabOrder"                type="tns:TabOrderType"/>
@@ -2323,7 +3164,7 @@ All Rights Reserved
                             <element name="filter"                 type="xsd:string"/>
                             <element name="height"                 type="xsd:string"/>
                             <element name="hideOnError"            type="xsd:boolean"/>
-                            <element name="showSharing"            type="xsd:boolean"/>
+                            <element name="showSharing"       	   type="xsd:boolean"/>
                             <element name="showTitle"              type="xsd:boolean"/>
                             <element name="width"                  type="xsd:string"/>
                         </sequence>
@@ -2492,7 +3333,10 @@ All Rights Reserved
                     <element name="body"                nillable="true" minOccurs="0" type="xsd:base64Binary"/>
                     <element name="contentType"         nillable="true" minOccurs="0" type="xsd:string" />
                     <element name="fileName"            type="xsd:string" />
-                    <element name="inline"              type="xsd:boolean" minOccurs="0"/>
+                    
+                    <element name="id"                  nillable="true" minOccurs="0" type="tns:ID"/>
+                    
+                    <element name="inline"				type="xsd:boolean" minOccurs="0"/>
                 </sequence>
             </complexType>
             <simpleType name="EmailPriority">
@@ -2510,6 +3354,14 @@ All Rights Reserved
                     <enumeration value="SEND"/>
                     <enumeration value="FILTER"/>
                     <enumeration value="REJECT"/>
+                </restriction>
+            </simpleType>
+
+            <simpleType name="AttachmentRetrievalOption">
+                <restriction base="xsd:string">
+                    <enumeration value="None"/>
+                    <enumeration value="MetadataOnly"/>
+                    <enumeration value="MetadataWithBody"/>
                 </restriction>
             </simpleType>
 
@@ -2897,7 +3749,7 @@ All Rights Reserved
                 <element name="isAvailableInTouch" type="xsd:boolean"/>
                 <element name="name" type="xsd:string"/>
                 <element name="pageId" type="tns:ID"/>
-                <element name="url" type="xsd:string"/>
+                <element name="url" type="xsd:string" nillable="true"/>
             </sequence>
         </complexType>
 
@@ -3240,23 +4092,6 @@ All Rights Reserved
                 </complexType>
             </element>
 
-
-            <!-- Login Message Types -->
-            <element name="loginAsSubscriber">
-                <complexType>
-                    <sequence>
-                        <element name="loginAs" type="tns:LoginAsSubscriberRequest"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <element name="loginAsSubscriberResponse">
-                <complexType>
-                    <sequence>
-                        <element name="result" type="tns:LoginResult"/>
-                    </sequence>
-                </complexType>
-            </element>
-
             <!-- Login Message Types -->
             <element name="login">
                 <complexType>
@@ -3521,6 +4356,50 @@ All Rights Reserved
                     </sequence>
                 </complexType>
             </element>
+            
+            
+            <element name="describeLayoutByUiType">
+                <complexType>
+                    <sequence>
+                        <element name="sObjectType" type="xsd:string"/>
+                        <element name="layoutName" type="xsd:string" nillable="true"/>
+                   <element name="recordTypeIds" type="tns:ID" minOccurs="0" maxOccurs="unbounded"/>
+                        <element name="uiType" type="tns:UiType" minOccurs="0" nillable="true"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="describeLayoutByUiTypeResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:DescribeLayoutResult" nillable="true"/>
+                    </sequence>
+                </complexType>
+            </element>
+             <simpleType name="UiType">
+                <restriction base="xsd:string">
+                    <enumeration value="Aloha"/>
+                    <enumeration value="Lightning"/>
+                </restriction>
+            </simpleType>
+ 
+            
+
+        <element name="describeLayoutById">
+            <complexType>
+                <sequence>
+                    <element name="sObjectType" type="xsd:string"/>
+                    <element name="layoutIds" type="tns:ID" minOccurs="1" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+        </element>
+        <element name="describeLayoutByIdResponse">
+            <complexType>
+                <sequence>
+                    <element name="result" type="tns:DescribeLayoutByIdResult"/>
+                </sequence>
+            </complexType>
+        </element>
+
             <element name="describeLayoutResponse">
                 <complexType>
                     <sequence>
@@ -3768,19 +4647,9 @@ All Rights Reserved
 
             <element name="describeTabs">
                 <complexType>
-                    <sequence>
-                        <element name="uiType" type="tns:UiType" nillable="true" minOccurs="0"/>
-                    </sequence>
+                    <sequence/>
                 </complexType>
             </element>
-
-            <simpleType name="UiType">
-                <restriction base="xsd:string">
-                    <enumeration value="Aloha"/>
-                    <enumeration value="Lightning"/>
-                </restriction>
-            </simpleType>
-
             <element name="describeTabsResponse">
                 <complexType>
                     <sequence>
@@ -3893,7 +4762,7 @@ All Rights Reserved
             <complexType name="RenderEmailTemplateResult">
                 <sequence>
                     <element name="bodyResults"         type="tns:RenderEmailTemplateBodyResult" minOccurs="0" maxOccurs="10"/>
-                    <element name="errors"              type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="errors"    			type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="success"             type="xsd:boolean" />
                 </sequence>
             </complexType>
@@ -3909,6 +4778,39 @@ All Rights Reserved
                 <complexType>
                     <sequence>
                         <element name="result" minOccurs="0" maxOccurs="10" type="tns:RenderEmailTemplateResult"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <!-- RenderStoredEmailTemplate -->
+            <complexType name="RenderStoredEmailTemplateRequest">
+                    <sequence>
+                        <element name="attachmentRetrievalOption"  type="tns:AttachmentRetrievalOption" nillable="true"/>
+                        <element name="templateId"  type="tns:ID" minOccurs="1" maxOccurs="1" nillable="false" />
+                        <element name="whatId"      type="tns:ID" minOccurs="0" maxOccurs="1" />
+                        <element name="whoId"       type="tns:ID" minOccurs="0" maxOccurs="1" />
+                    </sequence>
+            </complexType>
+
+            <complexType name="RenderStoredEmailTemplateResult">
+                <sequence>
+                    <element name="errors"              type="tns:Error" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="renderedEmail"  type="tns:SingleEmailMessage" nillable="true" />
+                    <element name="success"             type="xsd:boolean" />
+                </sequence>
+            </complexType>
+
+            <element name="renderStoredEmailTemplate">
+                <complexType>
+                    <sequence>
+                        <element name="request" type="tns:RenderStoredEmailTemplateRequest" minOccurs="1" maxOccurs="1"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="renderStoredEmailTemplateResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" minOccurs="1" maxOccurs="1" type="tns:RenderStoredEmailTemplateResult"/>
                     </sequence>
                 </complexType>
             </element>
@@ -4212,12 +5114,12 @@ All Rights Reserved
                     </sequence>
                 </complexType>
             </element>
-            
+
             <!-- Add Campaign Member Message Types -->
             <element name="addCampaignMember">
                 <complexType>
                     <sequence>
-                        <element name="AddCampaignMemberOptions" type="tns:AddCampaignMemberOptions"/>
+                    	<element name="AddCampaignMemberOptions" type="tns:AddCampaignMemberOptions"/>
                     </sequence>
                 </complexType>
             </element>
@@ -4499,6 +5401,22 @@ All Rights Reserved
                 </complexType>
             </element>
 
+            <element name="changeOwnPassword">
+                <complexType>
+                    <sequence>
+                        <element name="oldPassword" type="xsd:string"/>
+                        <element name="newPassword" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="changeOwnPasswordResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:ChangeOwnPasswordResult"/>
+                    </sequence>
+                </complexType>
+            </element>
+
             <element name="resetPassword">
                 <complexType>
                     <sequence>
@@ -4607,8 +5525,8 @@ All Rights Reserved
                     <xsd:enumeration value="BASIC" />
                     <xsd:enumeration value="DETAILED" />
                 </xsd:restriction>
-            </xsd:simpleType> 
- 
+            </xsd:simpleType>
+
 
 
             <element name="QueryOptions">
@@ -4769,13 +5687,13 @@ All Rights Reserved
                <element name="disableFeedTracking" type="xsd:boolean" />
            </sequence>
        </complexType>
-   </element> 
-   
-   <element name="StreamingEnabledHeader"> 
+   </element>
+
+   <element name="StreamingEnabledHeader">
        <complexType>
            <sequence>
-               <element name="streamingEnabled" type="xsd:boolean" /> 
-           </sequence> 
+               <element name="streamingEnabled" type="xsd:boolean" />
+           </sequence>
        </complexType>
    </element>
 
@@ -5010,6 +5928,14 @@ All Rights Reserved
                     <enumeration value="DATACLOUD_API_SERVER_EXCEPTION"/>
                     <enumeration value="DATACLOUD_API_TIMEOUT_EXCEPTION"/>
                     <enumeration value="DATACLOUD_API_UNAVAILABLE"/>
+                    <enumeration value="DATA_INTEGRATION_BAD_REQUEST"/>
+                    <enumeration value="DATA_INTEGRATION_DATA_NOT_FOUND"/>
+                    <enumeration value="DATA_INTEGRATION_INVALID_QUERY"/>
+                    <enumeration value="DATA_INTEGRATION_SEARCH_ERROR"/>
+                    <enumeration value="DATA_INTEGRATION_SEARCH_INPUT_ERROR"/>
+                    <enumeration value="DISCOVERY_IMPORT_LIMIT_EXCEEDED"/>
+                    <enumeration value="DISCOVERY_ORG_LICENSE_REQUIRED"/>
+                    <enumeration value="DISCOVERY_USER_LICENSE_REQUIRED"/>
                     <enumeration value="DUPLICATE_ARGUMENT_VALUE"/>
                     <enumeration value="DUPLICATE_VALUE"/>
                     <enumeration value="EMAIL_BATCH_SIZE_LIMIT_EXCEEDED"/>
@@ -5037,6 +5963,7 @@ All Rights Reserved
                     <enumeration value="INACTIVE_PORTAL"/>
                     <enumeration value="INSERT_UPDATE_DELETE_NOT_ALLOWED_DURING_MAINTENANCE"/>
                     <enumeration value="INSUFFICIENT_ACCESS"/>
+                    <enumeration value="INSUFFICIENT_ACCESS_APEX_METADATA_DEPLOY"/>
                     <enumeration value="INTERNAL_CANVAS_ERROR"/>
                     <enumeration value="INVALID_ASSIGNMENT_RULE"/>
                     <enumeration value="INVALID_BATCH_REQUEST"/>
@@ -5054,6 +5981,7 @@ All Rights Reserved
                     <enumeration value="INVALID_LOGIN"/>
                     <enumeration value="INVALID_MULTIPART_REQUEST"/>
                     <enumeration value="INVALID_NEW_PASSWORD"/>
+                    <enumeration value="INVALID_OLD_PASSWORD"/>
                     <enumeration value="INVALID_OPERATION"/>
                     <enumeration value="INVALID_OPERATION_WITH_EXPIRED_PASSWORD"/>
                     <enumeration value="INVALID_PACKAGE_VERSION"/>
@@ -5176,6 +6104,14 @@ All Rights Reserved
                     <enumeration value="fns:DATACLOUD_API_SERVER_EXCEPTION"/>
                     <enumeration value="fns:DATACLOUD_API_TIMEOUT_EXCEPTION"/>
                     <enumeration value="fns:DATACLOUD_API_UNAVAILABLE"/>
+                    <enumeration value="fns:DATA_INTEGRATION_BAD_REQUEST"/>
+                    <enumeration value="fns:DATA_INTEGRATION_DATA_NOT_FOUND"/>
+                    <enumeration value="fns:DATA_INTEGRATION_INVALID_QUERY"/>
+                    <enumeration value="fns:DATA_INTEGRATION_SEARCH_ERROR"/>
+                    <enumeration value="fns:DATA_INTEGRATION_SEARCH_INPUT_ERROR"/>
+                    <enumeration value="fns:DISCOVERY_IMPORT_LIMIT_EXCEEDED"/>
+                    <enumeration value="fns:DISCOVERY_ORG_LICENSE_REQUIRED"/>
+                    <enumeration value="fns:DISCOVERY_USER_LICENSE_REQUIRED"/>
                     <enumeration value="fns:DUPLICATE_ARGUMENT_VALUE"/>
                     <enumeration value="fns:DUPLICATE_VALUE"/>
                     <enumeration value="fns:EMAIL_BATCH_SIZE_LIMIT_EXCEEDED"/>
@@ -5203,6 +6139,7 @@ All Rights Reserved
                     <enumeration value="fns:INACTIVE_PORTAL"/>
                     <enumeration value="fns:INSERT_UPDATE_DELETE_NOT_ALLOWED_DURING_MAINTENANCE"/>
                     <enumeration value="fns:INSUFFICIENT_ACCESS"/>
+                    <enumeration value="fns:INSUFFICIENT_ACCESS_APEX_METADATA_DEPLOY"/>
                     <enumeration value="fns:INTERNAL_CANVAS_ERROR"/>
                     <enumeration value="fns:INVALID_ASSIGNMENT_RULE"/>
                     <enumeration value="fns:INVALID_BATCH_REQUEST"/>
@@ -5220,6 +6157,7 @@ All Rights Reserved
                     <enumeration value="fns:INVALID_LOGIN"/>
                     <enumeration value="fns:INVALID_MULTIPART_REQUEST"/>
                     <enumeration value="fns:INVALID_NEW_PASSWORD"/>
+                    <enumeration value="fns:INVALID_OLD_PASSWORD"/>
                     <enumeration value="fns:INVALID_OPERATION"/>
                     <enumeration value="fns:INVALID_OPERATION_WITH_EXPIRED_PASSWORD"/>
                     <enumeration value="fns:INVALID_PACKAGE_VERSION"/>
@@ -5352,6 +6290,13 @@ All Rights Reserved
             </complexType>
             <element name="InvalidNewPasswordFault" type="fns:InvalidNewPasswordFault"/>
 
+            <complexType name="InvalidOldPasswordFault">
+                <complexContent>
+                    <extension base="fns:ApiFault"/>
+                </complexContent>
+            </complexType>
+            <element name="InvalidOldPasswordFault" type="fns:InvalidOldPasswordFault"/>
+
             <complexType name="InvalidIdFault">
                 <complexContent>
                     <extension base="fns:ApiFault"/>
@@ -5463,6 +6408,9 @@ All Rights Reserved
     </message>
     <message name="InvalidNewPasswordFault">
         <part name="fault" element="fns:InvalidNewPasswordFault"/>
+    </message>
+    <message name="InvalidOldPasswordFault">
+        <part name="fault" element="fns:InvalidOldPasswordFault"/>
     </message>
     <message name="InvalidIdFault">
         <part name="fault" element="fns:InvalidIdFault"/>
@@ -5637,6 +6585,20 @@ All Rights Reserved
     </message>
     <message name="describeApprovalLayoutResponse">
         <part element="tns:describeApprovalLayoutResponse" name="parameters"/>
+    </message>
+
+    <message name="describeLayoutByIdRequest">
+        <part element="tns:describeLayoutById" name="parameters"/>
+    </message>
+    <message name="describeLayoutByIdResponse">
+        <part element="tns:describeLayoutByIdResponse" name="parameters"/>
+    </message>
+
+    <message name="describeLayoutByUiTypeRequest">
+        <part element="tns:describeLayoutByUiType" name="parameters"/>
+    </message>
+    <message name="describeLayoutByUiTypeResponse">
+        <part element="tns:describeLayoutByUiTypeResponse" name="parameters"/>
     </message>
 
     <message name="describeSoqlListViewsRequest">
@@ -5863,6 +6825,13 @@ All Rights Reserved
         <part element="tns:setPasswordResponse" name="parameters"/>
     </message>
 
+    <message name="changeOwnPasswordRequest">
+        <part element="tns:changeOwnPassword" name="parameters"/>
+    </message>
+    <message name="changeOwnPasswordResponse">
+        <part element="tns:changeOwnPasswordResponse" name="parameters"/>
+    </message>
+
     <message name="resetPasswordRequest">
         <part element="tns:resetPassword" name="parameters"/>
     </message>
@@ -5919,6 +6888,13 @@ All Rights Reserved
         <part element="tns:renderEmailTemplateResponse" name="parameters"/>
     </message>
 
+    <message name="renderStoredEmailTemplateRequest">
+        <part element="tns:renderStoredEmailTemplate" name="parameters"/>
+    </message>
+    <message name="renderStoredEmailTemplateResponse">
+        <part element="tns:renderStoredEmailTemplateResponse" name="parameters"/>
+    </message>
+
     <message name="emailMergeRequest">
         <part element="tns:emailMerge" name="parameters"/>
     </message>
@@ -5973,13 +6949,6 @@ All Rights Reserved
     </message>
     <message name="loginXiResponse">
         <part element="tns:loginXiResponse" name="parameters"/>
-    </message>
-
-    <message name="loginAsSubscriberRequest">
-        <part element="tns:loginAsSubscriber" name="parameters"/>
-    </message>
-    <message name="loginAsSubscriberResponse">
-        <part element="tns:loginAsSubscriberResponse" name="parameters"/>
     </message>
 
     <message name="describeWorkitemActionsRequest">
@@ -6043,6 +7012,13 @@ All Rights Reserved
     </message>
     <message name="findDuplicatesResponse">
         <part element="tns:findDuplicatesResponse" name="parameters"/>
+    </message>
+
+    <message name="findDuplicatesByIdsRequest">
+        <part element="tns:findDuplicatesByIds" name="parameters"/>
+    </message>
+    <message name="findDuplicatesByIdsResponse">
+        <part element="tns:findDuplicatesByIdsResponse" name="parameters"/>
     </message>
 
     <message name="ftestPatchRequest">
@@ -6258,6 +7234,24 @@ All Rights Reserved
             <documentation>Describe the approval layouts of the given sObject</documentation>
             <input  message="tns:describeApprovalLayoutRequest"/>
             <output message="tns:describeApprovalLayoutResponse"/>
+        </operation>
+
+        <operation name="describeLayoutById">
+            <documentation>Describe the given layouts on the given sObject type.</documentation>
+            <input  message="tns:describeLayoutByIdRequest"/>
+            <output message="tns:describeLayoutByIdResponse"/>
+            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
+            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
+        </operation>
+
+        <operation name="describeLayoutByUiType">
+            <documentation>Describe the layout of the given sObject or the given actionable global page.</documentation>
+            <input  message="tns:describeLayoutByUiTypeRequest"/>
+            <output message="tns:describeLayoutByUiTypeResponse"/>
+            <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
+            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
         </operation>
 
         <operation name="describeSoqlListViews">
@@ -6525,6 +7519,15 @@ All Rights Reserved
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
+        <operation name="changeOwnPassword">
+            <documentation>Change the current user's password</documentation>
+            <input  message="tns:changeOwnPasswordRequest"/>
+            <output message="tns:changeOwnPasswordResponse"/>
+            <fault  message="tns:InvalidNewPasswordFault" name="InvalidNewPasswordFault"/>
+            <fault  message="tns:InvalidOldPasswordFault" name="InvalidOldPasswordFault"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
+        </operation>
+
         <operation name="resetPassword">
             <documentation>Reset a user's password</documentation>
             <input  message="tns:resetPasswordRequest"/>
@@ -6584,6 +7587,13 @@ All Rights Reserved
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
+        <operation name="renderStoredEmailTemplate">
+            <documentation>Perform a template merge using an email template stored in the database.</documentation>
+            <input  message="tns:renderStoredEmailTemplateRequest"/>
+            <output message="tns:renderStoredEmailTemplateResponse"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
+        </operation>
+
         <operation name="emailMerge">
             <documentation>Merge Email using the specified template</documentation>
             <input  message="tns:emailMergeRequest"/>
@@ -6638,13 +7648,6 @@ All Rights Reserved
             <documentation>Login as a different user name across instances</documentation>
             <input  message="tns:loginXiRequest"/>
             <output message="tns:loginXiResponse"/>
-            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
-        </operation>
-
-        <operation name="loginAsSubscriber">
-            <documentation>Login as a different user name across instances</documentation>
-            <input  message="tns:loginAsSubscriberRequest"/>
-            <output message="tns:loginAsSubscriberResponse"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
@@ -6709,6 +7712,14 @@ All Rights Reserved
             <fault  message="tns:InvalidSObjectFault" name="InvalidSObjectFault"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
             <fault  message="tns:InvalidFieldFault" name="InvalidFieldFault"/>
+        </operation>
+
+        <operation name="findDuplicatesByIds">
+            <documentation>Find duplicates for a set of ids</documentation>
+            <input  message="tns:findDuplicatesByIdsRequest"/>
+            <output message="tns:findDuplicatesByIdsResponse"/>
+            <fault  message="tns:InvalidIdFault" name="InvalidIdFault"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
         <operation name="ftestPatch">
@@ -7174,6 +8185,54 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
                 <soap:body use="literal"/>
             </output>
+        </operation>
+        <operation name="describeLayoutById">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="InvalidSObjectFault">
+                <soap:fault name="InvalidSObjectFault" use="literal"/>
+            </fault>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+            <fault name="InvalidIdFault">
+                <soap:fault name="InvalidIdFault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="describeLayoutByUiType">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="InvalidSObjectFault">
+                <soap:fault name="InvalidSObjectFault" use="literal"/>
+            </fault>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+            <fault name="InvalidIdFault">
+                <soap:fault name="InvalidIdFault" use="literal"/>
+            </fault>
         </operation>
         <operation name="describeSoqlListViews">
             <soap:operation soapAction=""/>
@@ -7939,6 +8998,28 @@ All Rights Reserved
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
             </fault>
         </operation>
+        <operation name="changeOwnPassword">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="InvalidNewPasswordFault">
+                <soap:fault name="InvalidNewPasswordFault" use="literal"/>
+            </fault>
+            <fault name="InvalidOldPasswordFault">
+                <soap:fault name="InvalidOldPasswordFault" use="literal"/>
+            </fault>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+        </operation>
         <operation name="resetPassword">
             <soap:operation soapAction=""/>
             <input>
@@ -8080,6 +9161,22 @@ All Rights Reserved
                 <soap:fault name="UnexpectedErrorFault" use="literal"/>
             </fault>
         </operation>
+        <operation name="renderStoredEmailTemplate">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+        </operation>
         <operation name="emailMerge">
             <soap:operation soapAction=""/>
             <input>
@@ -8198,22 +9295,6 @@ All Rights Reserved
             </fault>
         </operation>
         <operation name="loginXi">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
-                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
-                <soap:body parts="parameters" use="literal"/>
-            </input>
-            <output>
-                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
-                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="UnexpectedErrorFault">
-                <soap:fault name="UnexpectedErrorFault" use="literal"/>
-            </fault>
-        </operation>
-        <operation name="loginAsSubscriber">
             <soap:operation soapAction=""/>
             <input>
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
@@ -8401,6 +9482,27 @@ All Rights Reserved
                 <soap:fault name="InvalidFieldFault" use="literal"/>
             </fault>
         </operation>
+        <operation name="findDuplicatesByIds">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="DuplicateRuleHeader"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="InvalidIdFault">
+                <soap:fault name="InvalidIdFault" use="literal"/>
+            </fault>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+        </operation>
         <operation name="ftestPatch">
             <soap:operation soapAction=""/>
             <input>
@@ -8511,7 +9613,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="http://localhost:8080/services/Soap/u/39.0"/>
+            <soap:address location="http://localhost:8080/services/Soap/u/40.0"/>
         </port>
     </service>
 </definitions>
