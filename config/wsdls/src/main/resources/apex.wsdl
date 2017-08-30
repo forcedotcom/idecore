@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 40.0
+Salesforce.com Apex API version 41.0
 
 Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
 -->
@@ -24,6 +24,14 @@ Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="maxFailedTests" minOccurs="0" type="xsd:int"/>
      <xsd:element name="namespace" type="xsd:string"/>
      <xsd:element name="packages" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="tests" minOccurs="0" maxOccurs="unbounded" type="tns:TestsNode"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="TestsNode">
+    <xsd:sequence>
+     <xsd:element name="classId" type="xsd:string"/>
+     <xsd:element name="className" type="xsd:string"/>
+     <xsd:element name="testMethods" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="CompileAndTestResult">
@@ -531,7 +539,7 @@ Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/40.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/41.0"/>
   </port>
  </service>
 </definitions>

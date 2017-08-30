@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Partner Web Services API Version 40.0
+Salesforce.com Partner Web Services API Version 41.0
 Generated on (Used notimestamp option).
 
 Copyright 1999-2017 salesforce.com, inc.
@@ -297,10 +297,10 @@ All Rights Reserved
                     <element name="errorMessages" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
                     <element name="flowLabel" type="xsd:string" />
                     <element name="guid" type="xsd:string" />
-                    <element name="helpText" type="xsd:string" />
+                    <element name="helpText" type="xsd:string" nillable="true" />
                     <element name="interviewStatus" type="xsd:string" />
                     <element name="outputVariables" type="tns:FlowInterviewOutputVariable" minOccurs="0" maxOccurs="unbounded" />
-                    <element name="pausedText" type="xsd:string" />
+                    <element name="pausedText" type="xsd:string"  nillable="true" />
                     <element name="screenFields" type="tns:FlowInterviewScreenField" minOccurs="0" maxOccurs="unbounded" />
                     <element name="screenName" type="xsd:string" />
                     <element name="state" type="xsd:string" />
@@ -312,25 +312,46 @@ All Rights Reserved
                     <element name="choices" type="tns:FlowInterviewChoice" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="dataType" type="xsd:string" />
                     <element name="errorMessages" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="extensionName" type="xsd:string" nillable="true" />
                     <element name="fieldType" type="xsd:string" />
-                    <element name="helpText" type="xsd:string" />
+                    <element name="helpText" type="xsd:string" nillable="true" />
+                    <element name="inputs" type="tns:FlowInterviewScreenFieldInput" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="isRequired" type="xsd:boolean" />
                     <element name="isValidValue" type="xsd:boolean" />
                     <element name="label" type="xsd:string" />
                     <element name="name" type="xsd:string" />
+                    <element name="outputs" type="tns:FlowInterviewScreenFieldOutput" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="triggersUpdate" type="xsd:boolean" />
-                    <element name="value" type="xsd:anyType" />
+                    <element name="value" type="xsd:anyType" nillable="true" />
                 </sequence>
             </complexType>
-
+            
+             <complexType name="FlowInterviewScreenFieldInput">
+                <sequence>
+                    <element name="dataType" type="xsd:string" />
+                    <element name="isCollection" type="xsd:boolean" />
+                    <element name="name" type="xsd:string" />
+                    <element name="objectType" type="xsd:string" nillable="true" />
+                    <element name="value" type="xsd:anyType" minOccurs="1" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+            
+            <complexType name="FlowInterviewScreenFieldOutput">
+                <sequence>
+                    <element name="dataType" type="xsd:string" />
+                    <element name="isCollection" type="xsd:boolean" />
+                    <element name="name" type="xsd:string" />
+                    <element name="objectType" type="xsd:string" nillable="true" />
+                </sequence>
+            </complexType>
+            
             <complexType name="FlowInterviewChoice">
                 <sequence>
                     <element name="isSelected" type="xsd:boolean" />
                     <element name="label" type="xsd:string" />
                     <element name="name" type="xsd:string" />
-                    <element name="text" type="xsd:string" />
-                    <element name="userInput" type="tns:FlowInterviewChoiceUserInput" />
-                    <element name="value" type="xsd:anyType" />
+                    <element name="text" type="xsd:string"  nillable="true"/>
+                    <element name="userInput" type="tns:FlowInterviewChoiceUserInput" nillable="true" />
                 </sequence>
             </complexType>
 
@@ -342,17 +363,17 @@ All Rights Reserved
                     <element name="isValidValue" type="xsd:boolean" />
                     <element name="name" type="xsd:string" />
                     <element name="label" type="xsd:string" />
-                    <element name="value" type="xsd:anyType" />
+                    <element name="value" type="xsd:anyType" nillable="true" />
                 </sequence>
             </complexType>
 
             <complexType name="FlowInterviewOutputVariable">
                 <sequence>
                     <element name="dataType" type="xsd:string" />
-                    <element name="description" type="xsd:string" />
+                    <element name="description" type="xsd:string" nillable="true" />
                     <element name="isCollection" type="xsd:boolean" />
                     <element name="name" type="xsd:string" />
-                    <element name="objectType" type="xsd:string" />
+                    <element name="objectType" type="xsd:string" nillable="true" />
                     <element name="flowName" type="xsd:string" />
                     <element name="value" type="xsd:anyType" minOccurs="1" maxOccurs="unbounded"/>
                 </sequence>
@@ -691,6 +712,7 @@ All Rights Reserved
                     <enumeration value="INVALID_TYPE_ON_FIELD_IN_RECORD"/>
                     <enumeration value="INVALID_USERID"/>
                     <enumeration value="IP_RANGE_LIMIT_EXCEEDED"/>
+                    <enumeration value="ITEM_NOT_FOUND"/>
                     <enumeration value="JIGSAW_IMPORT_LIMIT_EXCEEDED"/>
                     <enumeration value="LICENSE_LIMIT_EXCEEDED"/>
                     <enumeration value="LIGHT_PORTAL_USER_EXCEPTION"/>
@@ -1103,6 +1125,9 @@ All Rights Reserved
                     <enumeration value="FIELDASSIGNMENT_REFERENCED_ELEMENT_MISSING_DATATYPE">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, elementName, elementType</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="FIELDSERVICE_UNSUPPORTED_FIELD_TYPE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="FIELD_INVALID_VALUE">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName, parameterName</xsd:documentation></xsd:annotation>
                     </enumeration>
@@ -1112,6 +1137,9 @@ All Rights Reserved
                     <enumeration value="FIELD_RELATIONSHIP_NOT_SUPPORTED">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldRelationshipName</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="FLEXIPAGE_COMPONENT_ATTRIBUTE_EXPRESSION_EXCEPTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, errorCode, invalidTokens</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="FLEXIPAGE_COMPONENT_ATTRIBUTE_GENERIC_EXCEPTION">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, errorIdentifier, errorParams</xsd:documentation></xsd:annotation>
                     </enumeration>
@@ -1120,6 +1148,9 @@ All Rights Reserved
                     </enumeration>
                     <enumeration value="FLEXIPAGE_COMPONENT_ATTRIBUTE_TOO_LONG">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, maxLength</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLEXIPAGE_COMPONENT_MAX_LIMIT_EXCEPTION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="FLEXIPAGE_COMPONENT_RULE_VALIDATION_EXCEPTION">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, criterionIndex</xsd:documentation></xsd:annotation>
@@ -1283,11 +1314,38 @@ All Rights Reserved
                     <enumeration value="SCREENFIELD_DEFAULTVALUE_NOT_SUPPORTED">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="SCREENFIELD_EXTENSION_DUPLICATE_INPUT_PARAM">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, extensionName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_EXTENSION_DUPLICATE_OUTPUT_PARAM">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, extensionName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_EXTENSION_NAME_INVALID">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, extensionName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_EXTENSION_NAME_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, fieldType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_EXTENSION_NAME_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, fieldType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_EXTENSION_REQUIRED_INPUT_MISSING">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, extensionName, parameterName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_INPUTS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, fieldType</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="SCREENFIELD_INVALID_DATATYPE">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: dataType, fieldType</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SCREENFIELD_MULTISELECTCHOICE_SEMICOLON_NOT_SUPPORTED">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_OUTPUTS_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, fieldType</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_TYPE_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, fieldType</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SCREENFIELD_USERINPUT_NOT_SUPPORTED_FOR_CHOICETYPE">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
@@ -1756,6 +1814,8 @@ All Rights Reserved
                     <element name="colors" type="tns:DescribeColor" minOccurs="0" maxOccurs="unbounded"/> 
                     <element name="contextSobjectType"    type="xsd:string" nillable="true"/> 
                     <element name="defaultValues" type="tns:DescribeQuickActionDefaultValue" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="flowDevName" type="xsd:string" nillable="true"/>
+                    <element name="flowRecordIdVar" type="xsd:string" nillable="true"/>
                     <element name="height"        type="xsd:int" nillable="true"/>
                     <element name="iconName"      type="xsd:string" nillable="true"/>
                     <element name="iconUrl"       type="xsd:string" nillable="true"/>
@@ -1879,12 +1939,17 @@ All Rights Reserved
             <complexType name="LeadConvert">
                 <sequence>
                     <element name="accountId"              type="tns:ID" nillable="true"/>
+                    <element name="accountRecord" type="ens:sObject"/>
+                    <element name="bypassAccountDedupeCheck" type="xsd:boolean" nillable="true"/>
+                    <element name="bypassContactDedupeCheck" type="xsd:boolean" nillable="true"/> 
                     <element name="contactId"              type="tns:ID" nillable="true"/>
+                    <element name="contactRecord" type="ens:sObject"/>
                     <element name="convertedStatus"        type="xsd:string"/>
                     <element name="doNotCreateOpportunity" type="xsd:boolean"/>
                     <element name="leadId"                 type="tns:ID"/>
                     <element name="opportunityId"          type="tns:ID" nillable="true"/>
                     <element name="opportunityName"        type="xsd:string" nillable="true"/>
+                    <element name="opportunityRecord" type="ens:sObject"/>
                     <element name="overwriteLeadSource"    type="xsd:boolean"/>
                     <element name="ownerId"                type="tns:ID"     nillable="true"/>
                     <element name="sendNotificationEmail"  type="xsd:boolean"/>
@@ -2070,19 +2135,27 @@ All Rights Reserved
 
            
 
-        <simpleType name="changeEventType">
+            <simpleType name="changeEventType">
                 <restriction base="xsd:string">
-                    <enumeration value="create"/>
-                    <enumeration value="update"/>
-                    <enumeration value="delete"/>
-                    <enumeration value="undelete"/>
+                    <enumeration value="CREATE"/>
+                    <enumeration value="UPDATE"/>
+                    <enumeration value="DELETE"/>
+                    <enumeration value="UNDELETE"/>
+                    <enumeration value="GAP_CREATE"/>
+                    <enumeration value="GAP_UPDATE"/>
+                    <enumeration value="GAP_DELETE"/>
+                    <enumeration value="GAP_UNDELETE"/>
                 </restriction>
             </simpleType>
-            
+
             <complexType name="ChangeEventHeader">
                 <sequence>
                     <element name="entityName"       type="xsd:string"/>
-                    <element name="objectId"         type="xsd:string"/>
+                    <element name="recordIds"        type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                    <element name="commitTimestamp"  type="xsd:long"/>
+                    <element name="commitNumber"     type="xsd:long"/>
+                    <element name="commitUser"       type="xsd:string"/>
+                    <element name="diffFields"       type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="changeType"       type="tns:changeEventType"/>
                     <element name="changeOrigin"     type="xsd:string"/>
                     <element name="transactionKey"   type="xsd:string"/>
@@ -3215,6 +3288,9 @@ All Rights Reserved
 
             <complexType name="RecordTypeInfo">
                 <sequence>
+
+                    <element name="active"                    type="xsd:boolean"/>
+                    
                     <element name="available"                 type="xsd:boolean"/>
                     <element name="defaultRecordTypeMapping"  type="xsd:boolean"/>
 
@@ -3227,6 +3303,9 @@ All Rights Reserved
 
             <complexType name="RecordTypeMapping">
                 <sequence>
+
+                    <element name="active"                    type="xsd:boolean"/>
+     
                     <element name="available"                 type="xsd:boolean"/>
                     <element name="defaultRecordTypeMapping"  type="xsd:boolean"/>
                     <element name="layoutId"                  type="tns:ID"/>
@@ -3602,6 +3681,9 @@ All Rights Reserved
                     <enumeration value="notEquals"/>
                     <enumeration value="notIn"/>
                     <enumeration value="within"/>
+            
+                    <enumeration value="notLike"/>
+            
                 </restriction>
             </simpleType>
 
@@ -4745,6 +4827,7 @@ All Rights Reserved
             <!-- Template Merge -->
             <complexType name="RenderEmailTemplateRequest">
                     <sequence>
+                        <element name="escapeHtmlInMergeFields" type="xsd:boolean" minOccurs="0" maxOccurs="1" />
                         <element name="templateBodies" type="xsd:string" minOccurs="1" maxOccurs="10" nillable="false" />
                         <element name="whatId"         type="tns:ID" minOccurs="0" maxOccurs="1" />
                         <element name="whoId"          type="tns:ID" minOccurs="0" maxOccurs="1" />
@@ -5890,6 +5973,7 @@ All Rights Reserved
             <import namespace="urn:partner.soap.sforce.com"/>
             <simpleType name="ExceptionCode">
                 <restriction base="xsd:string">
+                    <enumeration value="APEX_REST_SERVICES_DISABLED"/>
                     <enumeration value="APEX_TRIGGER_COUPLING_LIMIT"/>
                     <enumeration value="API_CURRENTLY_DISABLED"/>
                     <enumeration value="API_DISABLED_FOR_ORG"/>
@@ -5908,6 +5992,7 @@ All Rights Reserved
                     <enumeration value="CONTENT_CUSTOM_DOWNLOAD_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_AUTHENTICATION_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_FILE_DOWNLOAD_EXCEPTION"/>
+                    <enumeration value="CONTENT_HUB_FILE_HAS_NO_URL_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_FILE_NOT_FOUND_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_INVALID_OBJECT_TYPE_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_INVALID_PAGE_NUMBER_EXCEPTION"/>
@@ -5928,14 +6013,9 @@ All Rights Reserved
                     <enumeration value="DATACLOUD_API_SERVER_EXCEPTION"/>
                     <enumeration value="DATACLOUD_API_TIMEOUT_EXCEPTION"/>
                     <enumeration value="DATACLOUD_API_UNAVAILABLE"/>
-                    <enumeration value="DATA_INTEGRATION_BAD_REQUEST"/>
-                    <enumeration value="DATA_INTEGRATION_DATA_NOT_FOUND"/>
-                    <enumeration value="DATA_INTEGRATION_INVALID_QUERY"/>
-                    <enumeration value="DATA_INTEGRATION_SEARCH_ERROR"/>
-                    <enumeration value="DATA_INTEGRATION_SEARCH_INPUT_ERROR"/>
-                    <enumeration value="DISCOVERY_IMPORT_LIMIT_EXCEEDED"/>
-                    <enumeration value="DISCOVERY_ORG_LICENSE_REQUIRED"/>
-                    <enumeration value="DISCOVERY_USER_LICENSE_REQUIRED"/>
+                    <enumeration value="DATA_INTEGRATION_INPUT_ERROR"/>
+                    <enumeration value="DATA_INTEGRATION_NO_ACCESS"/>
+                    <enumeration value="DATA_INTEGRATION_SERVER_ERROR"/>
                     <enumeration value="DUPLICATE_ARGUMENT_VALUE"/>
                     <enumeration value="DUPLICATE_VALUE"/>
                     <enumeration value="EMAIL_BATCH_SIZE_LIMIT_EXCEEDED"/>
@@ -6066,6 +6146,7 @@ All Rights Reserved
             <!-- For convenience these QNames are returned in the standard soap faultcode element -->
             <simpleType name="FaultCode">
                 <restriction base="xsd:QName">
+                    <enumeration value="fns:APEX_REST_SERVICES_DISABLED"/>
                     <enumeration value="fns:APEX_TRIGGER_COUPLING_LIMIT"/>
                     <enumeration value="fns:API_CURRENTLY_DISABLED"/>
                     <enumeration value="fns:API_DISABLED_FOR_ORG"/>
@@ -6084,6 +6165,7 @@ All Rights Reserved
                     <enumeration value="fns:CONTENT_CUSTOM_DOWNLOAD_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_AUTHENTICATION_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_FILE_DOWNLOAD_EXCEPTION"/>
+                    <enumeration value="fns:CONTENT_HUB_FILE_HAS_NO_URL_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_FILE_NOT_FOUND_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_INVALID_OBJECT_TYPE_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_INVALID_PAGE_NUMBER_EXCEPTION"/>
@@ -6104,14 +6186,9 @@ All Rights Reserved
                     <enumeration value="fns:DATACLOUD_API_SERVER_EXCEPTION"/>
                     <enumeration value="fns:DATACLOUD_API_TIMEOUT_EXCEPTION"/>
                     <enumeration value="fns:DATACLOUD_API_UNAVAILABLE"/>
-                    <enumeration value="fns:DATA_INTEGRATION_BAD_REQUEST"/>
-                    <enumeration value="fns:DATA_INTEGRATION_DATA_NOT_FOUND"/>
-                    <enumeration value="fns:DATA_INTEGRATION_INVALID_QUERY"/>
-                    <enumeration value="fns:DATA_INTEGRATION_SEARCH_ERROR"/>
-                    <enumeration value="fns:DATA_INTEGRATION_SEARCH_INPUT_ERROR"/>
-                    <enumeration value="fns:DISCOVERY_IMPORT_LIMIT_EXCEEDED"/>
-                    <enumeration value="fns:DISCOVERY_ORG_LICENSE_REQUIRED"/>
-                    <enumeration value="fns:DISCOVERY_USER_LICENSE_REQUIRED"/>
+                    <enumeration value="fns:DATA_INTEGRATION_INPUT_ERROR"/>
+                    <enumeration value="fns:DATA_INTEGRATION_NO_ACCESS"/>
+                    <enumeration value="fns:DATA_INTEGRATION_SERVER_ERROR"/>
                     <enumeration value="fns:DUPLICATE_ARGUMENT_VALUE"/>
                     <enumeration value="fns:DUPLICATE_VALUE"/>
                     <enumeration value="fns:EMAIL_BATCH_SIZE_LIMIT_EXCEEDED"/>
@@ -9613,7 +9690,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="http://localhost:8080/services/Soap/u/40.0"/>
+            <soap:address location="http://localhost:8080/services/Soap/u/41.0"/>
         </port>
     </service>
 </definitions>
