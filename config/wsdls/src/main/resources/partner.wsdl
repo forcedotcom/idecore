@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Partner Web Services API Version 42.0
+Salesforce.com Partner Web Services API Version 43.0
 Generated on (Used notimestamp option).
 
-Copyright 1999-2017 salesforce.com, inc.
+Copyright 1999-2018 salesforce.com, inc.
 All Rights Reserved
 -->
 
@@ -280,6 +280,7 @@ All Rights Reserved
                     <element name="flowName" type="xsd:string"/>
                     <element name="inputs" type="tns:NameObjectValuePair" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="versionId" type="xsd:string"/>
+                    <element name="debug" type="tns:FlowInterviewDebugInput" minOccurs="0"/>
                 </sequence>
             </complexType>
 
@@ -288,6 +289,7 @@ All Rights Reserved
                     <element name="action" type="xsd:string"/>
                     <element name="screenInputs" type="tns:NameObjectValuePair" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="state" type="xsd:string"/>
+                    <element name="debug" type="tns:FlowInterviewDebugInput" minOccurs="0"/>
                 </sequence>
             </complexType>
 
@@ -309,6 +311,7 @@ All Rights Reserved
                     <element name="activeStages" type="tns:FlowInterviewStage" minOccurs="0" maxOccurs="unbounded" />
                     <element name="availableActions" type="tns:FlowInterviewAction" minOccurs="0" maxOccurs="unbounded" />
                     <element name="currentStage" type="tns:FlowInterviewStage" minOccurs="0" nillable="true" />
+                    <element name="debug" type="tns:FlowInterviewDebugOutput" minOccurs="0" nillable="true" />
                     <element name="errorMessages" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
                     <element name="flowLabel" type="xsd:string" />
                     <element name="guid" type="xsd:string" />
@@ -323,7 +326,7 @@ All Rights Reserved
                     <element name="screenFields" type="tns:FlowInterviewScreenField" minOccurs="0" maxOccurs="unbounded" />
                     <element name="showFooter" type="xsd:boolean" />
                     <element name="showHeader" type="xsd:boolean" />
-                    <element name="state" type="xsd:string" />
+                    <element name="state" type="xsd:string"  nillable="true" />
                 </sequence>
             </complexType>
 
@@ -401,8 +404,8 @@ All Rights Reserved
                     <element name="errorMessages" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="isRequired" type="xsd:boolean" />
                     <element name="isValidValue" type="xsd:boolean" />
-                    <element name="name" type="xsd:string" />
                     <element name="label" type="xsd:string" />
+                    <element name="name" type="xsd:string" />
                     <element name="value" type="xsd:anyType" nillable="true" />
                 </sequence>
             </complexType>
@@ -423,6 +426,19 @@ All Rights Reserved
                 <sequence>
                     <element name="label" type="xsd:string" />
                     <element name="name" type="xsd:string" />
+                </sequence>
+            </complexType>
+
+            <complexType name="FlowInterviewDebugInput">
+                <sequence>
+                    <element name="enableTrace" type="xsd:boolean" minOccurs="0"/>
+                    <element name="useLatestSubflow" type="xsd:boolean" minOccurs="0"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="FlowInterviewDebugOutput">
+                <sequence>
+                    <element name="trace" type="xsd:string" minOccurs="0"/>
                 </sequence>
             </complexType>
 
@@ -585,6 +601,8 @@ All Rights Reserved
                     <enumeration value="APEX_DATA_ACCESS_RESTRICTION"/>
                     <enumeration value="ASSIGNEE_TYPE_REQUIRED"/>
                     <enumeration value="AURA_COMPILE_ERROR"/>
+                    <enumeration value="AUTH_PROVIDER_NEEDS_AUTH"/>
+                    <enumeration value="AUTH_PROVIDER_NOT_FOUND"/>
                     <enumeration value="BAD_CUSTOM_ENTITY_PARENT_DOMAIN"/>
                     <enumeration value="BCC_NOT_ALLOWED_IF_BCC_COMPLIANCE_ENABLED"/>
                     <enumeration value="CANNOT_CASCADE_PRODUCT_ACTIVE"/>
@@ -677,6 +695,7 @@ All Rights Reserved
                     <enumeration value="ENVIRONMENT_HUB_MEMBERSHIP_USER_NOT_ORG_ADMIN"/>
                     <enumeration value="ERROR_IN_MAILER"/>
                     <enumeration value="EXCHANGE_WEB_SERVICES_URL_INVALID"/>
+                    <enumeration value="EXTERNAL_RESOURCE_FORBIDDEN"/>
                     <enumeration value="FAILED_ACTIVATION"/>
                     <enumeration value="FIELD_CUSTOM_VALIDATION_EXCEPTION"/>
                     <enumeration value="FIELD_FILTER_VALIDATION_EXCEPTION"/>
@@ -708,6 +727,7 @@ All Rights Reserved
                     <enumeration value="INVALID_ARGUMENT_TYPE"/>
                     <enumeration value="INVALID_ASSIGNEE_TYPE"/>
                     <enumeration value="INVALID_ASSIGNMENT_RULE"/>
+                    <enumeration value="INVALID_AUTH_HEADER"/>
                     <enumeration value="INVALID_BATCH_OPERATION"/>
                     <enumeration value="INVALID_CONTENT_TYPE"/>
                     <enumeration value="INVALID_CREDIT_CARD_INFO"/>
@@ -924,6 +944,11 @@ All Rights Reserved
                     <enumeration value="WEBLINK_SIZE_LIMIT_EXCEEDED"/>
                     <enumeration value="WEBLINK_URL_INVALID"/>
                     <enumeration value="WRONG_CONTROLLER_TYPE"/>
+                    <enumeration value="XCLEAN_DJ_MATCH_IGNORABLE_ERROR"/>
+                    <enumeration value="XCLEAN_DJ_MATCH_INTERNAL_DJ_ERROR"/>
+                    <enumeration value="XCLEAN_DJ_MATCH_NON_RETRIABLE_ERROR"/>
+                    <enumeration value="XCLEAN_DJ_MATCH_RETRIABLE_ERROR"/>
+                    <enumeration value="XCLEAN_DJ_MATCH_UNKNOWN_ERROR"/>
                     <enumeration value="XCLEAN_UNEXPECTED_ERROR"/>
                 </restriction>
             </simpleType>
@@ -1221,11 +1246,26 @@ All Rights Reserved
                     <enumeration value="FLEXIPAGE_PICKLIST_INVALID_VALUE_EXCEPTION">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: componentName, propertyName, propertyType, invalidValue</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="FLOW_ELEMENT_SCALE_LESS_THAN_ZERO">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="FLOW_INCLUDES_STEP">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="FLOW_INVALID_NAME">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: maxDevNameLength</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="FLOW_NAME_USED_IN_OTHER_CLIENT">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLOW_STAGE_INCLUDES_REFERENCES">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: stageName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLOW_STAGE_ORDER_DUPLICATE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: stageName, stageOrder, stageWithSameOrder</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="FLOW_STAGE_ORDER_OUT_OF_RANGE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: stageName, invalidStageOrder, maxOrder, minOrder</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="FORMULA_EXPRESSION_INVALID">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: formulaExpression</xsd:documentation></xsd:annotation>
@@ -1332,6 +1372,9 @@ All Rights Reserved
                     <enumeration value="PROCESSTYPE_NOT_SUPPORTED">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: processType</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="PROCESS_TYPE_INCOMPATIBLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: currentProcessType, flowName, incompatibleProcessType</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="RECORDFILTER_ENCRYPTED_FIELDS_NOT_SUPPORTED">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
                     </enumeration>
@@ -1370,6 +1413,9 @@ All Rights Reserved
                     </enumeration>
                     <enumeration value="RULE_MISSING_CONDITION">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName, ruleName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SCREENFIELD_API_VERSION_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SCREENFIELD_BOOLEAN_ISREQUIRED_IS_FALSE">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: fieldName</xsd:documentation></xsd:annotation>
@@ -1602,14 +1648,23 @@ All Rights Reserved
                     <enumeration value="SUBFLOW_OUTPUT_VARIABLE_NO_OUTPUT_ACCESS">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, variableName</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="SUBFLOW_PROCESS_TYPE_INCOMPATIBLE">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName, flowName, processType</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="SUBFLOW_REFERENCES_MASTERFLOW">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: </xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_ADVANCED_CONDITION_LOGIC_NOT_SUPPORTED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SURVEY_CHOICE_NOT_REFERENCED_BY_A_QUESTION">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SURVEY_CHOICE_REFERENCED_BY_MULTIPLE_QUESTIONS">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: choiceName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_ELEMENT_NEVER_REACHED">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SURVEY_INACTIVE_SUBFLOWS">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
@@ -1620,11 +1675,17 @@ All Rights Reserved
                     <enumeration value="SURVEY_MISSING_REQUIRED_VARIABLES">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: surveyName</xsd:documentation></xsd:annotation>
                     </enumeration>
+                    <enumeration value="SURVEY_MULTIPLE_SCREENS_CANNOT_CONNECT_TO_SAME_DECISION">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: flowDecision</xsd:documentation></xsd:annotation>
+                    </enumeration>
                     <enumeration value="SURVEY_NESTED_SUBFLOWS">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SURVEY_NONSURVEY_SUBFLOWS">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: subflowName</xsd:documentation></xsd:annotation>
+                    </enumeration>
+                    <enumeration value="SURVEY_RULE_INVALID_RIGHT_OPERAND">
+                        <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
                     </enumeration>
                     <enumeration value="SURVEY_SCREENFIELD_TYPE_NOT_SUPPORTED_FOR_QUESTION">
                         <xsd:annotation><xsd:documentation>Errors with this extended error code have the following properties: elementName</xsd:documentation></xsd:annotation>
@@ -2353,6 +2414,7 @@ All Rights Reserved
             <complexType name="Field">
                 <sequence>
                     <element name="aggregatable"               type="xsd:boolean"/>
+                    <element name="aiPredictionField"          type="xsd:boolean"/>
                     <element name="autoNumber"                 type="xsd:boolean"/>
                     <element name="byteLength"                 type="xsd:int"/>
                     <element name="calculated"                 type="xsd:boolean"/>
@@ -2377,6 +2439,7 @@ All Rights Reserved
 
                     <element name="filteredLookupInfo"			   type="tns:FilteredLookupInfo" nillable="true" minOccurs="0" />
 
+                    <element name="formulaTreatNullNumberAsZero"   type="xsd:boolean"  minOccurs="0"/>
                     <element name="groupable"                  type="xsd:boolean"/>
                     <element name="highScaleNumber"			   type="xsd:boolean" minOccurs="0" />
                     <element name="htmlFormatted"              type="xsd:boolean" minOccurs="0"/>
@@ -2469,6 +2532,7 @@ All Rights Reserved
             <complexType name="KnowledgeLanguageItem">
                    <sequence>
                        <element name="active" type="xsd:boolean"/>
+                       <element name="assigneeId" type="xsd:string" nillable="true"/>
                        <element name="name" type="xsd:string" />
                    </sequence>
             </complexType>
@@ -3376,6 +3440,9 @@ All Rights Reserved
                     <element name="available"                 type="xsd:boolean"/>
                     <element name="defaultRecordTypeMapping"  type="xsd:boolean"/>
 
+                    <element name="developerName"             type="xsd:string"/>
+
+
                     <element name="master"                    type="xsd:boolean"/>
 
                     <element name="name"                      type="xsd:string"/>
@@ -3390,6 +3457,9 @@ All Rights Reserved
      
                     <element name="available"                 type="xsd:boolean"/>
                     <element name="defaultRecordTypeMapping"  type="xsd:boolean"/>
+
+                    <element name="developerName"             type="xsd:string"/>
+                    
                     <element name="layoutId"                  type="tns:ID"/>
 
                     <element name="master"                    type="xsd:boolean"/>
@@ -3406,6 +3476,82 @@ All Rights Reserved
                     <element name="picklistValues"    type="tns:PicklistEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
             </complexType>
+
+
+            <complexType name="DescribeForm">
+                <sequence>
+                    <element name="label" type="xsd:string"/>
+                    <element name="name" type="xsd:string"/>
+                    <element name="sections" type="tns:DescribeFormSection" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="DescribeFormSection">
+                <sequence>
+                    <element name="columns" type="xsd:int"/>
+                    <element name="formRows" type="tns:DescribeFormRow" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="label" type="xsd:string"/>
+                    <element name="name" type="xsd:string"/>
+                    <element name="tabOrder" type="tns:TabOrderType"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="DescribeFormRow">
+                <sequence>
+                    <element name="items" type="tns:DescribeFormItem" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="DescribeFormItem">
+                <sequence>
+                    <element name="components" type="tns:DescribeFormComponent" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="editableForNew"         type="xsd:boolean"/>
+                    <element name="editableForUpdate"      type="xsd:boolean"/>
+                    <element name="label" type="xsd:string" nillable="true"/>
+                    <element name="placeholder" type="xsd:boolean"/>
+                    <element name="required" type="xsd:boolean"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="DescribeFormComponent">
+                <sequence>
+                    <element name="displayLines"      type="xsd:int"/>
+                    <element name="tabOrder"          type="xsd:int"/>
+                    <element name="type"              type="tns:FormComponentType"/>
+                    <element name="value"             type="xsd:string" nillable="true"/>
+                </sequence>
+            </complexType>
+
+            <complexType name="FormFieldComponent">
+                <complexContent>
+                    <extension base="tns:DescribeFormComponent">
+                        <sequence>
+                            <element name="field"              type="tns:Field"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+
+            <complexType name="FormCompoundFieldComponent">
+                <complexContent>
+                    <extension base="tns:DescribeFormComponent">
+                        <sequence>
+                            <element name="components"             type="tns:DescribeFormComponent" minOccurs="0" maxOccurs="unbounded"/>
+                            <element name="fieldType"              type="tns:fieldType"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+
+            <simpleType name="FormComponentType">
+                <restriction base="xsd:string">
+                    <enumeration value="Field"/>
+                    <enumeration value="EmptySpace"/>
+                    <enumeration value="Expression"/>
+                    <enumeration value="Separator"/>
+                </restriction>
+            </simpleType>
+
 
 
              <complexType name="RelatedContent">
@@ -3608,7 +3754,13 @@ All Rights Reserved
                     <element name="listViewFilters" type="tns:DescribeFilter" minOccurs="0" maxOccurs="unbounded"/>
                     <element name="listViewName"    type="xsd:string"/>
                     <element name="listViewScopeFilters" type="tns:DescribeFilter" minOccurs="0" maxOccurs="unbounded"/>
+                    
+                    <element name="relatedEntityId"  type="tns:ID" nillable="true" minOccurs="0"/>
+ 
                     <element name="scope"           type="tns:queryOptionsScope" minOccurs="0"/>
+                    
+                    <element name="scopeEntityId"   type="tns:ID" nillable="true" minOccurs="0"/>
+                    
                     <element name="sobjectName"     type="xsd:string" nillable="true"/>
                 </sequence>
             </complexType>
@@ -3679,7 +3831,10 @@ All Rights Reserved
                     <element name="id"                       type="tns:ID"/>
                     <element name="orderBy"                  type="tns:ListViewOrderBy" minOccurs="1" maxOccurs="unbounded"/>
                     <element name="query"                    type="xsd:string"/>
+                    <element name="relatedEntityId"           type="tns:ID" nillable="true" minOccurs="0"/>
+
                     <element name="scope"                    type="xsd:string" nillable="true"/>
+                    <element name="scopeEntityId"            type="tns:ID" nillable="true" minOccurs="0"/>
                     <element name="sobjectType"              type="xsd:string"/>
                     <element name="whereCondition"           type="tns:SoqlWhereCondition" minOccurs="0"/>
                 </sequence>
@@ -4610,6 +4765,22 @@ All Rights Reserved
             </element>
 
 
+            <element name="describeFormByName">
+                <complexType>
+                    <sequence>
+                        <element name="formName" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="describeFormByNameResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:DescribeForm" nillable="true"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+
             <element name="describePathAssistants">
                 <complexType>
                     <sequence>
@@ -5193,6 +5364,23 @@ All Rights Reserved
                 </complexType>
             </element>
             <element name="describeQuickActionsResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:DescribeQuickActionResult" minOccurs="0" maxOccurs="unbounded"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+
+            <element name="describeQuickActionsForRecordType">
+                <complexType>
+                    <sequence>
+                        <element name="quickActions"       type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                        <element name="recordTypeId"       type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="describeQuickActionsForRecordTypeResponse">
                 <complexType>
                     <sequence>
                         <element name="result" type="tns:DescribeQuickActionResult" minOccurs="0" maxOccurs="unbounded"/>
@@ -6110,6 +6298,7 @@ All Rights Reserved
                     <enumeration value="CIRCULAR_OBJECT_GRAPH"/>
                     <enumeration value="CLIENT_NOT_ACCESSIBLE_FOR_USER"/>
                     <enumeration value="CLIENT_REQUIRE_UPDATE_FOR_USER"/>
+                    <enumeration value="CONTENT_ALREADY_AN_ASSET_EXCEPTION"/>
                     <enumeration value="CONTENT_CUSTOM_DOWNLOAD_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_AUTHENTICATION_EXCEPTION"/>
                     <enumeration value="CONTENT_HUB_FILE_DOWNLOAD_EXCEPTION"/>
@@ -6155,6 +6344,7 @@ All Rights Reserved
                     <enumeration value="ENVIRONMENT_HUB_MEMBERSHIP_CONFLICT"/>
                     <enumeration value="EXCEEDED_ID_LIMIT"/>
                     <enumeration value="EXCEEDED_LEAD_CONVERT_LIMIT"/>
+                    <enumeration value="EXCEEDED_MAX_FILTER_ENTITIES"/>
                     <enumeration value="EXCEEDED_MAX_SIZE_REQUEST"/>
                     <enumeration value="EXCEEDED_MAX_SOBJECTS"/>
                     <enumeration value="EXCEEDED_MAX_TYPES_LIMIT"/>
@@ -6175,6 +6365,7 @@ All Rights Reserved
                     <enumeration value="INSUFFICIENT_ACCESS_APEX_METADATA_DEPLOY"/>
                     <enumeration value="INTERNAL_CANVAS_ERROR"/>
                     <enumeration value="INVALID_ASSIGNMENT_RULE"/>
+                    <enumeration value="INVALID_AUTH_HEADER"/>
                     <enumeration value="INVALID_BATCH_REQUEST"/>
                     <enumeration value="INVALID_BATCH_SIZE"/>
                     <enumeration value="INVALID_CLIENT"/>
@@ -6262,6 +6453,7 @@ All Rights Reserved
                     <enumeration value="TOO_MANY_RECORDS"/>
                     <enumeration value="TRIAL_EXPIRED"/>
                     <enumeration value="TXN_SECURITY_END_A_SESSION"/>
+                    <enumeration value="TXN_SECURITY_FAIL_CLOSE"/>
                     <enumeration value="TXN_SECURITY_NO_ACCESS"/>
                     <enumeration value="TXN_SECURITY_TWO_FA_REQUIRED"/>
                     <enumeration value="UNABLE_TO_LOCK_ROW"/>
@@ -6294,6 +6486,7 @@ All Rights Reserved
                     <enumeration value="fns:CIRCULAR_OBJECT_GRAPH"/>
                     <enumeration value="fns:CLIENT_NOT_ACCESSIBLE_FOR_USER"/>
                     <enumeration value="fns:CLIENT_REQUIRE_UPDATE_FOR_USER"/>
+                    <enumeration value="fns:CONTENT_ALREADY_AN_ASSET_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_CUSTOM_DOWNLOAD_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_AUTHENTICATION_EXCEPTION"/>
                     <enumeration value="fns:CONTENT_HUB_FILE_DOWNLOAD_EXCEPTION"/>
@@ -6339,6 +6532,7 @@ All Rights Reserved
                     <enumeration value="fns:ENVIRONMENT_HUB_MEMBERSHIP_CONFLICT"/>
                     <enumeration value="fns:EXCEEDED_ID_LIMIT"/>
                     <enumeration value="fns:EXCEEDED_LEAD_CONVERT_LIMIT"/>
+                    <enumeration value="fns:EXCEEDED_MAX_FILTER_ENTITIES"/>
                     <enumeration value="fns:EXCEEDED_MAX_SIZE_REQUEST"/>
                     <enumeration value="fns:EXCEEDED_MAX_SOBJECTS"/>
                     <enumeration value="fns:EXCEEDED_MAX_TYPES_LIMIT"/>
@@ -6359,6 +6553,7 @@ All Rights Reserved
                     <enumeration value="fns:INSUFFICIENT_ACCESS_APEX_METADATA_DEPLOY"/>
                     <enumeration value="fns:INTERNAL_CANVAS_ERROR"/>
                     <enumeration value="fns:INVALID_ASSIGNMENT_RULE"/>
+                    <enumeration value="fns:INVALID_AUTH_HEADER"/>
                     <enumeration value="fns:INVALID_BATCH_REQUEST"/>
                     <enumeration value="fns:INVALID_BATCH_SIZE"/>
                     <enumeration value="fns:INVALID_CLIENT"/>
@@ -6446,6 +6641,7 @@ All Rights Reserved
                     <enumeration value="fns:TOO_MANY_RECORDS"/>
                     <enumeration value="fns:TRIAL_EXPIRED"/>
                     <enumeration value="fns:TXN_SECURITY_END_A_SESSION"/>
+                    <enumeration value="fns:TXN_SECURITY_FAIL_CLOSE"/>
                     <enumeration value="fns:TXN_SECURITY_NO_ACCESS"/>
                     <enumeration value="fns:TXN_SECURITY_TWO_FA_REQUIRED"/>
                     <enumeration value="fns:UNABLE_TO_LOCK_ROW"/>
@@ -6714,6 +6910,13 @@ All Rights Reserved
     </message>
     <message name="describeAppMenuResponse">
         <part element="tns:describeAppMenuResponse" name="parameters"/>
+    </message>
+
+    <message name="describeFormByNameRequest">
+        <part element="tns:describeFormByName" name="parameters"/>
+    </message>
+    <message name="describeFormByNameResponse">
+        <part element="tns:describeFormByNameResponse" name="parameters"/>
     </message>
 
     <message name="describeGlobalThemeRequest">
@@ -7199,6 +7402,13 @@ All Rights Reserved
         <part element="tns:describeQuickActionsResponse" name="parameters"/>
     </message>
 
+    <message name="describeQuickActionsForRecordTypeRequest">
+        <part element="tns:describeQuickActionsForRecordType" name="parameters"/>
+    </message>
+    <message name="describeQuickActionsForRecordTypeResponse">
+        <part element="tns:describeQuickActionsForRecordTypeResponse" name="parameters"/>
+    </message>
+
     <message name="describeAvailableQuickActionsRequest">
         <part element="tns:describeAvailableQuickActions" name="parameters"/>
     </message>
@@ -7375,6 +7585,13 @@ All Rights Reserved
             <documentation>Describe the items in an AppMenu</documentation>
             <input  message="tns:describeAppMenuRequest"/>
             <output message="tns:describeAppMenuResponse"/>
+            <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
+        </operation>
+
+        <operation name="describeFormByName">
+            <documentation>Describe a Form given its API name</documentation>
+            <input  message="tns:describeFormByNameRequest"/>
+            <output message="tns:describeFormByNameResponse"/>
             <fault  message="tns:UnexpectedErrorFault" name="UnexpectedErrorFault"/>
         </operation>
 
@@ -7909,6 +8126,12 @@ All Rights Reserved
             <output message="tns:describeQuickActionsResponse"/>
         </operation>
 
+        <operation name="describeQuickActionsForRecordType">
+            <documentation>Describe the details of a series of quick actions in context of requested recordType id for Update actions</documentation>
+            <input  message="tns:describeQuickActionsForRecordTypeRequest"/>
+            <output message="tns:describeQuickActionsForRecordTypeResponse"/>
+        </operation>
+
         <operation name="describeAvailableQuickActions">
             <documentation>Describe the details of a series of quick actions available for the given contextType</documentation>
             <input  message="tns:describeAvailableQuickActionsRequest"/>
@@ -8187,6 +8410,24 @@ All Rights Reserved
                 <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
                 <soap:header use="literal" message="tns:Header" part="CallOptions"/>
                 <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="UnexpectedErrorFault">
+                <soap:fault name="UnexpectedErrorFault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="describeFormByName">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
                 <soap:body parts="parameters" use="literal"/>
             </input>
             <output>
@@ -9635,6 +9876,22 @@ All Rights Reserved
                 <soap:body use="literal"/>
             </output>
         </operation>
+        <operation name="describeQuickActionsForRecordType">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" message="tns:Header" part="SessionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="CallOptions"/>
+                <soap:header use="literal" message="tns:Header" part="PackageVersionHeader"/>
+                <soap:header use="literal" message="tns:Header" part="ConditionalRequestHeader"/>
+                <soap:header use="literal" message="tns:Header" part="LocaleOptions"/>
+                <soap:body parts="parameters" use="literal"/>
+            </input>
+            <output>
+                <soap:header use="literal" message="tns:Header" part="LimitInfoHeader"/>
+                <soap:header use="literal" message="tns:Header" part="APIPerformanceInfo"/>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
         <operation name="describeAvailableQuickActions">
             <soap:operation soapAction=""/>
             <input>
@@ -9892,7 +10149,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="http://localhost:8080/services/Soap/u/42.0"/>
+            <soap:address location="http://localhost:8080/services/Soap/u/43.0"/>
         </port>
     </service>
 </definitions>

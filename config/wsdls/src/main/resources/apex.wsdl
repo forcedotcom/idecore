@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 42.0
+Salesforce.com Apex API version 43.0
 
-Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
+Copyright 2006-2018 Salesforce.com, inc. All Rights Reserved
 -->
 <definitions targetNamespace="http://soap.sforce.com/2006/08/apex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/2006/08/apex">
  <types>
@@ -24,6 +24,7 @@ Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="maxFailedTests" minOccurs="0" type="xsd:int"/>
      <xsd:element name="namespace" type="xsd:string"/>
      <xsd:element name="packages" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="skipCodeCoverage" minOccurs="0" type="xsd:boolean"/>
      <xsd:element name="tests" minOccurs="0" maxOccurs="unbounded" type="tns:TestsNode"/>
     </xsd:sequence>
    </xsd:complexType>
@@ -196,8 +197,6 @@ Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
     <xsd:restriction base="xsd:string">
      <xsd:enumeration value="NONE"/>
      <xsd:enumeration value="MINIMUM"/>
-     <xsd:enumeration value="BASIC"/>
-     <xsd:enumeration value="DETAILED"/>
     </xsd:restriction>
    </xsd:simpleType>
    <xsd:element name="DebuggingHeader">
@@ -225,6 +224,7 @@ Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
      <xsd:enumeration value="Visualforce"/>
      <xsd:enumeration value="System"/>
      <xsd:enumeration value="Wave"/>
+     <xsd:enumeration value="Nba"/>
      <xsd:enumeration value="All"/>
     </xsd:restriction>
    </xsd:simpleType>
@@ -540,7 +540,7 @@ Copyright 2006-2017 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/42.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/43.0"/>
   </port>
  </service>
 </definitions>
