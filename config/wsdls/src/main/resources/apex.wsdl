@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Apex API version 43.0
+Salesforce.com Apex API version 44.0
 
 Copyright 2006-2018 Salesforce.com, inc. All Rights Reserved
 -->
@@ -78,6 +78,8 @@ Copyright 2006-2018 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="codeCoverage" minOccurs="0" maxOccurs="unbounded" type="tns:CodeCoverageResult"/>
      <xsd:element name="codeCoverageWarnings" minOccurs="0" maxOccurs="unbounded" type="tns:CodeCoverageWarning"/>
      <xsd:element name="failures" minOccurs="0" maxOccurs="unbounded" type="tns:RunTestFailure"/>
+     <xsd:element name="flowCoverage" minOccurs="0" maxOccurs="unbounded" type="tns:FlowCoverageResult"/>
+     <xsd:element name="flowCoverageWarnings" minOccurs="0" maxOccurs="unbounded" type="tns:FlowCoverageWarning"/>
      <xsd:element name="numFailures" type="xsd:int"/>
      <xsd:element name="numTestsRun" type="xsd:int"/>
      <xsd:element name="successes" minOccurs="0" maxOccurs="unbounded" type="tns:RunTestSuccess"/>
@@ -122,6 +124,45 @@ Copyright 2006-2018 Salesforce.com, inc. All Rights Reserved
      <xsd:element name="stackTrace" type="xsd:string" nillable="true"/>
      <xsd:element name="time" type="xsd:double"/>
      <xsd:element name="type" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="FlowCoverageResult">
+    <xsd:sequence>
+     <xsd:element name="elementsNotCovered" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+     <xsd:element name="flowId" type="xsd:string"/>
+     <xsd:element name="flowName" type="xsd:string"/>
+     <xsd:element name="flowNamespace" type="xsd:string" nillable="true"/>
+     <xsd:element name="numElements" type="xsd:int"/>
+     <xsd:element name="numElementsNotCovered" type="xsd:int"/>
+     <xsd:element name="processType" type="tns:FlowProcessType"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="FlowProcessType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="AutoLaunchedFlow"/>
+     <xsd:enumeration value="Flow"/>
+     <xsd:enumeration value="Workflow"/>
+     <xsd:enumeration value="CustomEvent"/>
+     <xsd:enumeration value="InvocableProcess"/>
+     <xsd:enumeration value="LoginFlow"/>
+     <xsd:enumeration value="ActionPlan"/>
+     <xsd:enumeration value="JourneyBuilderIntegration"/>
+     <xsd:enumeration value="UserProvisioningFlow"/>
+     <xsd:enumeration value="Survey"/>
+     <xsd:enumeration value="Form"/>
+     <xsd:enumeration value="FieldServiceMobile"/>
+     <xsd:enumeration value="OrchestrationFlow"/>
+     <xsd:enumeration value="FieldServiceWeb"/>
+     <xsd:enumeration value="TransactionSecurityFlow"/>
+     <xsd:enumeration value="ContactRequestFlow"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="FlowCoverageWarning">
+    <xsd:sequence>
+     <xsd:element name="flowId" type="xsd:string" nillable="true"/>
+     <xsd:element name="flowName" type="xsd:string" nillable="true"/>
+     <xsd:element name="flowNamespace" type="xsd:string" nillable="true"/>
+     <xsd:element name="message" type="xsd:string"/>
     </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="RunTestSuccess">
@@ -540,7 +581,7 @@ Copyright 2006-2018 Salesforce.com, inc. All Rights Reserved
  <service name="ApexService">
   <documentation>Manage your Salesforce.com Apex classes and triggers</documentation>
   <port binding="tns:ApexBinding" name="Apex">
-   <soap:address location="http://localhost:8080/services/Soap/s/43.0"/>
+   <soap:address location="http://localhost:8080/services/Soap/s/44.0"/>
   </port>
  </service>
 </definitions>
