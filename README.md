@@ -25,11 +25,5 @@ To build an external version, issue a `mvn clean package -Dexternal=true`
 in this directory. If everything executes successfully, you shall see
 the artifacts in com.salesforce.ide.repository.external/target/repository.
 
-Contributing
-------------
-
-Please refer to [this][3] wiki page.
-
 [1]: https://developer.salesforce.com/page/Force.com_IDE
 [2]: http://wiki.eclipse.org/EPL
-[3]: https://github.com/forcedotcom/idecore/wiki/Contributing-Code
