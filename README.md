@@ -28,7 +28,7 @@ the artifacts in com.salesforce.ide.repository.external/target/repository.
 
 Contributing
 --------
-As this project is in a maintenance only state, we will no longer accept issues or pull requests through Github. 
+As this project is in a maintenance-only state, we will no longer accept issues or pull requests through Github. 
 
 [1]: https://developer.salesforce.com/page/Force.com_IDE
 [2]: http://wiki.eclipse.org/EPL
